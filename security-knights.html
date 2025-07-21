@@ -2,34 +2,100 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Security Knights Project</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Knights - Project Overview</title>
+  <link rel="stylesheet" href="css/styles.css">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 20px;
-      line-height: 1.6;
-      background-color: #f9f9f9;
+      font-family: 'Lato', sans-serif;
+      background-color: #f7f9fc;
+      margin: 0;
+      padding: 0;
     }
-    h1 {
+    .container {
+      max-width: 900px;
+      margin: 60px auto;
+      padding: 30px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    }
+    .project-title {
+      color: #2c3e50;
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+    .section-title {
+      margin-top: 30px;
       color: #007bff;
+      font-weight: bold;
     }
-    strong {
+    .section-content {
+      margin-top: 10px;
       color: #333;
+      line-height: 1.6;
+    }
+    .badge-row {
+      margin-top: 20px;
+      display: flex;
+      gap: 20px;
+    }
+    .badge-row img {
+      height: 80px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
   </style>
 </head>
 <body>
-  <h1>Security Knights - Full Project Overview</h1>
-  <p><strong>Introduction:</strong> A gamified secure development training program for developers across the organization, structured around medieval ranks like Paige, Squire, and Knight.</p>
-  <p><strong>Description:</strong> Designed to embed security culture into developer workflows through engaging learning paths, hands-on challenges, and badge-based progress.</p>
-  <p><strong>Objective:</strong> To enhance secure coding awareness and reduce vulnerabilities in the SDLC.</p>
-  <p><strong>Process:</strong> Created course content based on OWASP Top 10, facilitated secure code review sessions, collaborated with engineering leads, and iterated on feedback.</p>
-  <p><strong>Tools and Technologies:</strong> GitHub, Microsoft Teams, PowerPoint, Lucidchart, JavaScript, OWASP Juice Shop.</p>
-  <p><strong>Value Proposition:</strong> Improved developer security skills and embedded security earlier in the development lifecycle.</p>
-  <p><strong>Unique Value:</strong> Fun, themed, and gamified — increases participation and retention.</p>
-  <p><strong>Relevance:</strong> Perfect for modern AppSec strategies where developers are the first line of defense.</p>
+  <div class="container">
+    <h1 class="project-title">Security Knights - Full Project Overview</h1>
+
+    <h2 class="section-title">Introduction</h2>
+    <p class="section-content">
+      A gamified secure development training program for developers across the organization, structured around medieval ranks like Paige, Squire, and Knight.
+    </p>
+
+    <h2 class="section-title">Description</h2>
+    <p class="section-content">
+      Designed to embed security culture into developer workflows through engaging learning paths, hands-on challenges, and badge-based progress.
+    </p>
+
+    <h2 class="section-title">Objective</h2>
+    <p class="section-content">
+      To enhance secure coding awareness and reduce vulnerabilities in the SDLC.
+    </p>
+
+    <h2 class="section-title">Process</h2>
+    <p class="section-content">
+      Created course content based on OWASP Top 10, facilitated secure code review sessions, collaborated with engineering leads, and iterated on feedback.
+    </p>
+
+    <h2 class="section-title">Tools and Technologies</h2>
+    <p class="section-content">
+      GitHub, Microsoft Teams, PowerPoint, Lucidchart, JavaScript, OWASP Juice Shop.
+    </p>
+
+    <h2 class="section-title">Value Proposition</h2>
+    <p class="section-content">
+      Improved developer security skills and embedded security earlier in the development lifecycle.
+    </p>
+
+    <h2 class="section-title">Unique Value</h2>
+    <p class="section-content">
+      Fun, themed, and gamified — increases participation and retention.
+    </p>
+
+    <h2 class="section-title">Relevance</h2>
+    <p class="section-content">
+      Perfect for modern AppSec strategies where developers are the first line of defense.
+    </p>
+
+    <div class="badge-row">
+      <img src="images/paige-badge.jpg" alt="Paige Badge">
+      <img src="images/squire-badge.jpg" alt="Squire Badge">
+      <img src="images/knight-badge.jpg" alt="Knight Badge">
+    </div>
+  </div>
 </body>
 </html>
-Add Security Knights project page
