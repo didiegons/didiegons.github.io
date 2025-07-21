@@ -88,36 +88,115 @@
     📁 Projects
   </a>
 </div>
+    
+<div class="container">
+  <h1>Smart Travel by AirLytics</h1>
+  <p style="text-align: center; color: #333; max-width: 700px; margin: auto;">
+    An AI-powered chatbot designed to make travel planning smarter, fairer, and stress-free.
+  </p>
+</div>
 
-    <div class="container">
-        <h1>Smart Travel by AirLytics</h1>
+    <!-- Begin Accordion Section -->
+<style>
+  .accordion-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
+  }
 
-        <img src="images/smart-travel-airlytics.jpg" alt="Smart Travel by AirLytics" class="project-image">
+  .accordion {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    padding: 15px;
+    margin: 5px 0;
+    border: none;
+    border-radius: 8px;
+    text-align: left;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    width: 100%;
+  }
 
-        <div class="section">
-            <h2>Overview</h2>
-            <p>Smart Travel by AirLytics is a user-friendly AI chatbot designed to help travelers find fair-priced flight tickets. It assists in planning trips by suggesting flights, comparing prices, and offering booking tips in a natural, conversational style.</p>
-        </div>
+  .accordion:hover {
+    background-color: #0056b3;
+  }
 
-        <div class="section">
-            <h2>Objective</h2>
-            <p>The goal was to create an AI-powered assistant that enhances transparency in ticket pricing and helps users make informed travel decisions.</p>
-        </div>
+  .panel {
+    padding: 0 15px 15px;
+    background-color: #f1f1f1;
+    border-radius: 0 0 8px 8px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+  }
+</style>
 
-        <div class="section">
-            <h2>My Role</h2>
-            <p>I designed and trained the chatbot using ChatGPT. My contributions included prompt engineering, user flow design, and interaction refinement for different travel queries.</p>
-        </div>
+<div class="accordion-container">
+  <button class="accordion">🔖 Introduction</button>
+  <div class="panel">
+    <p>Smart Travel by AirLytics is an AI-powered chatbot designed to assist travelers in navigating flight prices, ensuring fair value, and making informed booking decisions.</p>
+  </div>
 
-        <div class="section">
-            <h2>Team Contributions</h2>
-            <p>My team members gathered real flight pricing data from Kaggle, analyzed patterns, and created a PowerPoint deck summarizing findings and recommendations.</p>
-        </div>
+  <button class="accordion">📌 Description</button>
+  <div class="panel">
+    <p>This project addresses the common frustrations of flight pricing. The chatbot helps users explore travel options, understand fare dynamics, and provides basic support without the complexity of traditional travel tools.</p>
+  </div>
 
-        <div class="section">
-            <h2>Target Audience</h2>
-            <p>The project serves budget-conscious travelers, travel agents, and casual consumers looking for personalized, fair, and efficient flight planning support.</p>
-        </div>
+  <button class="accordion">🎯 Objective</button>
+  <div class="panel">
+    <p>To offer travelers and agents an AI-driven assistant that simplifies decision-making, highlights fair ticket prices, and boosts confidence in travel planning.</p>
+  </div>
+
+  <button class="accordion">⚙️ Process</button>
+  <div class="panel">
+    <p>I used ChatGPT to design and teach the chatbot. My team sourced real-world airfare data from Kaggle and built a PowerPoint presentation to explain the value. We collaborated across research, UX, and presentation tasks.</p>
+  </div>
+
+  <button class="accordion">🛠️ Tools and Technologies Used</button>
+  <div class="panel">
+    <p>ChatGPT, Kaggle datasets, Microsoft PowerPoint, Prezi, and collaborative team tools.</p>
+  </div>
+
+  <button class="accordion">💡 Value Proposition</button>
+  <div class="panel">
+    <p>Gives users clarity on travel pricing, reduces overpayment risk, and empowers fair booking choices using AI assistance.</p>
+  </div>
+
+  <button class="accordion">✨ Unique Value</button>
+  <div class="panel">
+    <p>Unlike traditional booking platforms, this chatbot is focused on fairness and guidance — not just transactions.</p>
+  </div>
+
+  <button class="accordion">🌍 Relevance</button>
+  <div class="panel">
+    <p>Travelers face price fluctuations daily. Smart Travel brings AI clarity to a confusing space, aligning with ethical AI and user empowerment trends.</p>
+  </div>
+
+  <button class="accordion">📚 References</button>
+  <div class="panel">
+    <p>
+      <a href="https://prezi.com/view/A2Acb8z6jVtPf1cvplw7/" target="_blank">Presentation (Prezi)</a><br>
+      <a href="https://chatgpt.com/g/g-68729015f7d08191860acce915096a45-smart-travel-by-airlytics" target="_blank">Chatbot Link</a>
+    </p>
+  </div>
+</div>
+
+<script>
+  const acc = document.getElementsByClassName("accordion");
+  for (let i = 0; i < acc.length; i++) {
+    acc[i].addEventListener("click", function () {
+      this.classList.toggle("active");
+      let panel = this.nextElementSibling;
+      if (panel.style.maxHeight) {
+        panel.style.maxHeight = null;
+      } else {
+        panel.style.maxHeight = panel.scrollHeight + "px";
+      }
+    });
+  }
+</script>
+<!-- End Accordion Section -->
 
         <div class="section">
             <h2>Project Files</h2>
