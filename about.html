@@ -59,6 +59,11 @@
       border-radius: 6px;
       text-decoration: none;
     }
+    .email-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
   </style>
 </head>
 <body>
@@ -112,21 +117,23 @@
         <p>
           I’m ready to collaborate and answer any questions within my domain. Whether you're a business owner, developer, or just curious — let’s talk security, trust, and transformation.
         </p>
-        <a href="mailto:dayo.egonu@myemail.indwes.edu" style="
-  display: inline-block;
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: #fff;
-  border-radius: 6px;
-  text-decoration: none;
-  font-weight: bold;
-  margin-top: 20px;
-">
-📧 Email Me
-</a>
+     <div class="email-buttons">
+  <a href="mailto:dayo.egonu@myemail.indwes.edu" class="button">📧 Email Me</a>
+  <button class="button" onclick="copyEmail()">📋 Copy Email</button>
+</div>
 
       </div>
     </div>
   </div>
+  <script>
+  function copyEmail() {
+    const email = "dayo.egonu@myemail.indwes.edu";
+    navigator.clipboard.writeText(email).then(function () {
+      alert("Email copied to clipboard!");
+    }, function (err) {
+      alert("Failed to copy email.");
+    });
+  }
+</script>
 </body>
 </html>
