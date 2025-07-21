@@ -1,36 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Projects – Dayo Egonu</title>
-  <link rel="stylesheet" href="css/styles.css" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700&display=swap" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects - Dayo Egonu</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,900" rel="stylesheet">
+  <link rel="stylesheet" href="libs/font-awesome/css/font-awesome.min.css">
+  <style>
+    body {
+      font-family: 'Lato', sans-serif;
+      margin: 0;
+      background-color: #f4f4f4;
+    }
+    header {
+      background-color: #222;
+      padding: 20px;
+      text-align: center;
+    }
+    header a {
+      color: #fff;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    h1 {
+      text-align: center;
+      margin: 40px 0 20px;
+    }
+    .project-card {
+      max-width: 800px;
+      margin: 40px auto;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      overflow: hidden;
+      background-color: #fff;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    }
+    .project-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .project-card div {
+      padding: 20px;
+    }
+    .project-card a {
+      display: inline-block;
+      margin-top: 10px;
+      background-color: #007bff;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+    }
+    footer {
+      text-align: center;
+      padding: 30px 0;
+      color: #aaa;
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Header Nav -->
-  <div style="padding: 20px; text-align: center; background-color: #f8f8f8; border-bottom: 1px solid #ddd;">
-    <a href="index.html" style="margin-right: 20px; text-decoration: none; color: #007bff; font-weight: bold;">🏠 Home</a>
-    <a href="projects.html" style="text-decoration: none; color: #007bff; font-weight: bold;">📁 Projects</a>
+<header>
+  <a href="index.html">Home</a>
+  <a href="about.html">About</a>
+  <a href="projects.html">Projects</a>
+</header>
+
+<h1>📁 Project Artifacts</h1>
+
+<div class="project-card">
+  <img src="images/security-knights.jpg" alt="Security Knights">
+  <div>
+    <h3>Security Knights</h3>
+    <p>A gamified secure development training program using medieval ranks to boost secure coding awareness.</p>
+    <a href="security-knights.html">Learn More</a>
   </div>
+</div>
 
-  <div class="container" style="max-width: 1000px; margin: 40px auto; padding: 20px;">
-    <h1 style="text-align: center;">My Projects</h1>
+<div class="project-card">
+  <img src="images/ai-shield.jpg" alt="AI Shield">
+  <div>
+    <h3>AI Shield</h3>
+    <p>A friendly AI-powered cybersecurity assistant built for small business owners — clear, calm, and actionable.</p>
+    <a href="#">Learn More</a>
+  </div>
+</div>
 
-    <!-- Project 1: Security Knights -->
-    <div class="project-card" style="margin: 40px auto; border: 1px solid #ddd; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.1);">
-      <img src="images/security-knights.jpg" alt="Security Knights" style="width: 100%; height: 200px; object-fit: cover;">
-      <div style="padding: 20px;">
-        <h3 style="margin-top: 0;">Security Knights</h3>
-        <p style="color: #555;">
-          A gamified secure development training program using medieval ranks like Paige, Squire, and Knight to help developers level up their secure coding skills.
-        </p>
-        <a href="security-knights.html" style="display: inline-block; margin-top: 10px; background-color: #007bff; color: #fff; padding: 10px 20px; border-radius: 6px; text-decoration: none;">Learn More</a>
-      </div>
-    </div>
+<!-- You can add more cards below -->
 
-    <!-- You can duplicate the block above for AI Shield, PromptCraft, etc -->
+<footer>
+  <p>© 2025 Dayo Egonu. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
+
 
   </div>
 
