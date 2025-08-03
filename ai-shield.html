@@ -3,13 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <title>AI Shield - Artifact 4</title>
-  <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      padding: 0;
       background-color: #f4f9ff;
       color: #0a0a23;
     }
@@ -53,31 +51,30 @@
     .banner-img:hover {
       transform: scale(1.02);
     }
-    section {
-      margin-bottom: 40px;
+    details {
+      margin-bottom: 16px;
+      border-radius: 8px;
+      overflow: hidden;
     }
-    section h3 {
-      font-size: 1.3em;
-      color: #0a0a23;
-      margin-bottom: 10px;
-      border-bottom: 2px solid #0a0a23;
-      padding-bottom: 5px;
+    summary {
+      background-color: #007bff;
+      color: #fff;
+      padding: 12px 20px;
+      font-size: 1.2em;
+      cursor: pointer;
+      font-weight: bold;
     }
-    section h3::before {
-      font-family: 'Font Awesome 6 Free';
-      font-weight: 900;
-      display: inline-block;
+    summary:hover {
+      background-color: #0056b3;
+    }
+    details p, details ul {
+      padding: 16px;
+      background-color: #f0f0f0;
+      margin: 0;
+    }
+    summary i {
       margin-right: 10px;
     }
-    section:nth-of-type(1) h3::before { content: "\f129"; } /* Introduction - info */
-    section:nth-of-type(2) h3::before { content: "\f03a"; } /* Description - file */
-    section:nth-of-type(3) h3::before { content: "\f0a1"; } /* Objective - bullhorn */
-    section:nth-of-type(4) h3::before { content: "\f085"; } /* Process - cogs */
-    section:nth-of-type(5) h3::before { content: "\f121"; } /* Tools - code */
-    section:nth-of-type(6) h3::before { content: "\f201"; } /* Value - chart */
-    section:nth-of-type(7) h3::before { content: "\f005"; } /* Unique Value - star */
-    section:nth-of-type(8) h3::before { content: "\f0e8"; } /* Relevance - lightbulb */
-    section:nth-of-type(9) h3::before { content: "\f02d"; } /* References - book */
     footer {
       text-align: center;
       padding: 30px 0;
@@ -98,55 +95,55 @@
   <div class="container">
     <img src="images/ai-shield.jpg" alt="AI Shield Banner" class="banner-img">
 
-    <section>
-      <h3>Introduction</h3>
+    <details open>
+      <summary><i class="fas fa-rocket"></i>Introduction</summary>
       <p>AI Shield is an AI-powered cybersecurity assistant designed to help small business owners navigate digital threats with ease. It simplifies complex security topics and provides actionable insights in plain language.</p>
-    </section>
+    </details>
 
-    <section>
-      <h3>Description</h3>
+    <details>
+      <summary><i class="fas fa-thumbtack"></i>Description</summary>
       <p>Built with accessibility in mind, AI Shield helps non-technical users stay safe by detecting risks like phishing attempts, outdated software, and weak passwords. The dashboard displays alerts, recommended actions, and links to educational content.</p>
-    </section>
+    </details>
 
-    <section>
-      <h3>Objective</h3>
+    <details>
+      <summary><i class="fas fa-bullseye"></i>Objective</summary>
       <p>To empower small businesses with smart, easy-to-understand cybersecurity tools that reduce their risk exposure without requiring technical expertise.</p>
-    </section>
+    </details>
 
-    <section>
-      <h3>Process</h3>
+    <details>
+      <summary><i class="fas fa-cogs"></i>Process</summary>
       <p>The project began with user interviews and a competitive analysis of small business pain points. After identifying the need for a guided security interface, I designed mockups, built the front-end, and integrated AI-driven feedback loops with placeholder logic.</p>
-    </section>
+    </details>
 
-    <section>
-      <h3>Tools and Technologies Used</h3>
+    <details>
+      <summary><i class="fas fa-code"></i>Tools and Technologies Used</summary>
       <ul>
         <li>HTML, CSS</li>
         <li>GitHub Pages</li>
         <li>Figma (for mockups)</li>
         <li>ChatGPT (AI content generator)</li>
       </ul>
-    </section>
+    </details>
 
-    <section>
-      <h3>Value Proposition</h3>
+    <details>
+      <summary><i class="fas fa-chart-line"></i>Value Proposition</summary>
       <p>AI Shield bridges the gap between high-end security tools and the average small business owner by making cybersecurity guidance approachable and visually clear.</p>
-    </section>
+    </details>
 
-    <section>
-      <h3>Unique Value</h3>
+    <details>
+      <summary><i class="fas fa-star"></i>Unique Value</summary>
       <p>Unlike traditional platforms, AI Shield speaks in plain language, auto-explains issues, and teaches while protecting. It’s not just a tool — it’s a security companion.</p>
-    </section>
+    </details>
 
-    <section>
-      <h3>Relevance</h3>
+    <details>
+      <summary><i class="fas fa-lightbulb"></i>Relevance</summary>
       <p>Cyberattacks on small businesses are rising. With remote work, cloud tools, and limited IT staff, businesses need tools like AI Shield to stay ahead without costly enterprise solutions.</p>
-    </section>
+    </details>
 
-    <section>
-      <h3>References</h3>
+    <details>
+      <summary><i class="fas fa-book"></i>References</summary>
       <p>AI Shield demo site: <a href="https://didiegons.github.io/ai-shield/" target="_blank">https://didiegons.github.io/ai-shield/</a></p>
-    </section>
+    </details>
   </div>
 
   <footer>
@@ -154,4 +151,3 @@
   </footer>
 </body>
 </html>
-
