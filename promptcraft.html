@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PromptCraft – AI Prompt Marketplace & Optimization Platform | Dayo Egonu</title>
+  <meta name="description" content="Artifact 4: PromptCraft – a curated AI prompt marketplace with versioning, analytics, collaboration, and model‑specific optimization." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkfEvN9GmA1QfN8x7rX2q1CjvQb9f0P+JQ1pA6b8J0JvZ1z0h7rN3S0A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    :root {
+      --bg: #0b1020;
+      --bg-alt: #0f1428;
+      --card: #111832;
+      --text: #eaf0ff;
+      --muted: #b7c2e8;
+      --brand: #5b8cff; /* blue */
+      --brand-2: #9b5bff; /* purple */
+      --accent: #00d4ff; /* cyan */
+      --ok: #38d39f;
+      --warn: #ffd166;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 16px;
+      --radius-lg: 22px;
+      --maxw: 1100px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: linear-gradient(180deg, var(--bg) 0%, #0a0f1e 50%, var(--bg) 100%);
+      color: var(--text);
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 24px; }
+
+    /* Header / Hero */
+    .hero {
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(91,140,255,.20), transparent 60%),
+                  radial-gradient(1000px 600px at 80% 10%, rgba(155,91,255,.18), transparent 60%),
+                  linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,0));
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .hero-inner { display: grid; grid-template-columns: 1.2fr .8fr; gap: 28px; align-items: center; }
+    @media (max-width: 900px){ .hero-inner { grid-template-columns: 1fr; } }
+
+    .title {
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.06; margin: 8px 0 12px; font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .subtitle { color: var(--muted); font-size: clamp(14px, 1.6vw, 18px); margin: 0 0 18px; }
+
+    .chip-row { display:flex; flex-wrap:wrap; gap:10px; margin: 12px 0 18px; }
+    .chip {
+      background: linear-gradient(90deg, rgba(91,140,255,.12), rgba(155,91,255,.12));
+      border: 1px solid rgba(255,255,255,.08);
+      padding: 8px 12px; border-radius: 999px; font-size: 13px; color: var(--text);
+      backdrop-filter: blur(6px);
+    }
+
+    .cta-row { display:flex; flex-wrap:wrap; gap:12px; margin-top: 10px; }
+    .btn {
+      display:inline-flex; align-items:center; gap:10px; padding:12px 16px; border-radius: 12px; font-weight: 600;
+      border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.04);
+      transition: transform .2s ease, background .2s ease, border-color .2s ease;
+    }
+    .btn:hover { transform: translateY(-1px); border-color: rgba(255,255,255,.2); background: rgba(255,255,255,.06); text-decoration:none; }
+    .btn.primary { background: linear-gradient(90deg, var(--brand), var(--brand-2)); border: none; box-shadow: var(--shadow); }
+    .btn.primary:hover { filter: brightness(1.08); }
+
+    .hero-card {
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border: 1px solid rgba(255,255,255,.1); border-radius: var(--radius-lg);
+      padding: 18px; box-shadow: var(--shadow);
+    }
+    .hero-card h3 { margin: 0 0 12px; font-size: 18px; }
+    .kv-list { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .kv { background: rgba(0,0,0,.25); border: 1px solid rgba(255,255,255,.08); padding: 12px; border-radius: 12px; font-size: 13px; }
+    .kv strong { display:block; font-size: 12px; color: var(--muted); font-weight: 600; margin-bottom: 4px; }
+
+    /* Sections */
+    section { padding: 54px 0; }
+    .section-title { font-size: clamp(22px, 2.6vw, 30px); margin: 0 0 18px; }
+    .section-sub { color: var(--muted); margin: 0 0 20px; }
+
+    .grid { display:grid; gap: 16px; }
+    .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    @media (max-width: 900px){ .grid.two, .grid.three, .grid.four { grid-template-columns: 1fr; } }
+
+    .card { background: var(--card); border: 1px solid rgba(255,255,255,.08); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); }
+    .card h4 { margin: 0 0 10px; font-size: 17px; }
+    .card p { margin: 0; color: var(--muted); }
+
+    .feat-bullet { display:flex; gap: 12px; align-items:flex-start; }
+    .feat-bullet i { margin-top: 2px; color: var(--ok); }
+
+    .figure { aspect-ratio: 16/9; border-radius: 14px; border: 1px dashed rgba(255,255,255,.2); display:grid; place-items:center; color: var(--muted); background: rgba(255,255,255,.02); font-size: 14px; }
+
+    /* Timeline */
+    .timeline { position: relative; padding-left: 28px; }
+    .timeline::before { content:""; position:absolute; left: 10px; top: 0; bottom: 0; width: 2px; background: linear-gradient(var(--brand), var(--brand-2)); border-radius: 2px; opacity: .6; }
+    .t-item { position: relative; margin: 0 0 18px; }
+    .t-item::before { content:""; position:absolute; left: 3px; top: 4px; width: 14px; height:14px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px rgba(0,212,255,.15); }
+
+    .pill { display:inline-block; padding: 6px 10px; border-radius: 999px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); font-size: 12px; color: var(--muted); }
+
+    .kpi { display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .kpi .k { background: rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 16px; text-align:center; }
+    .k .v { font-size: 24px; font-weight: 800; }
+    .k .l { color: var(--muted); font-size: 12px; }
+
+    footer { border-top: 1px solid rgba(255,255,255,.08); padding: 20px 0 40px; color: var(--muted); }
+
+    .top { position: fixed; right: 20px; bottom: 20px; background: linear-gradient(90deg, var(--brand), var(--brand-2)); border: none; color: white; width: 42px; height: 42px; border-radius: 50%; display:grid; place-items:center; box-shadow: var(--shadow); cursor: pointer; }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="container hero-inner">
+      <div>
+        <p class="pill">Artifact 4</p>
+        <h1 class="title">PromptCraft – AI Prompt Marketplace & Optimization Platform</h1>
+        <p class="subtitle">A curated marketplace to discover, version, analyze, and collaborate on high‑quality prompts for ChatGPT, Claude, Gemini, and more – built for individuals, teams, and enterprises.</p>
+
+        <div class="chip-row" aria-label="Key highlights">
+          <span class="chip"><i class="fa-solid fa-code-branch"></i> Versioning</span>
+          <span class="chip"><i class="fa-solid fa-chart-line"></i> Performance Analytics</span>
+          <span class="chip"><i class="fa-solid fa-people-group"></i> Team Collaboration</span>
+          <span class="chip"><i class="fa-solid fa-shield-heart"></i> Governance & Compliance</span>
+          <span class="chip"><i class="fa-solid fa-robot"></i> Model‑specific Tuning</span>
+        </div>
+
+        <div class="cta-row">
+          <a class="btn primary" href="#" target="_blank" rel="noopener">
+            <i class="fa-brands fa-github"></i> View Repository
+          </a>
+          <a class="btn" href="index.html"><i class="fa-solid fa-arrow-left"></i> Back to Portfolio</a>
+          <a class="btn" href="#contact"><i class="fa-regular fa-envelope"></i> Contact</a>
+        </div>
+      </div>
+
+      <aside class="hero-card" role="complementary" aria-label="Project quick facts">
+        <h3><i class="fa-regular fa-circle-question"></i> Quick Facts</h3>
+        <div class="kv-list">
+          <div class="kv"><strong>Role</strong> Product Designer & Builder</div>
+          <div class="kv"><strong>Focus</strong> Marketplace, Editor, Analytics</div>
+          <div class="kv"><strong>Stack</strong> React, Node, MongoDB, APIs</div>
+          <div class="kv"><strong>Timeline</strong> 2025 – ongoing</div>
+        </div>
+      </aside>
+    </div>
+  </header>
+
+  <main>
+    <!-- Objective -->
+    <section id="objective">
+      <div class="container">
+        <h2 class="section-title">Objective</h2>
+        <p class="section-sub">Design a platform that helps users <strong>discover</strong> high‑quality prompts, <strong>optimize</strong> them per model, and <strong>manage</strong> their lifecycle with versioning, analytics, and collaboration.</p>
+        <div class="grid two">
+          <div class="card">
+            <h4>Problem</h4>
+            <p>Prompt quality varies widely, is hard to measure, and even harder to maintain across models and teams. Existing marketplaces lack robust <em>version control</em>, <em>performance visibility</em>, and <em>team workflows</em>.</p>
+          </div>
+          <div class="card">
+            <h4>Solution</h4>
+            <p>PromptCraft introduces <strong>prompt versioning</strong>, <strong>A/B testing & metrics</strong>, and <strong>shared workspaces</strong> so individuals and organizations can ship reliable AI workflows faster.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Value Proposition -->
+    <section id="value-prop" style="background: var(--bg-alt);">
+      <div class="container">
+        <h2 class="section-title">Value Proposition</h2>
+        <div class="grid four">
+          <div class="card">
+            <h4><i class="fa-regular fa-user"></i> Everyday Users</h4>
+            <p>Ready‑to‑use, rated prompts for common tasks across models. Save favorites and remix confidently.</p>
+          </div>
+          <div class="card">
+            <h4><i class="fa-solid fa-code"></i> Developers & Teams</h4>
+            <p>Analytics, testing sandboxes, and collaborative reviews to improve quality and reduce drift.</p>
+          </div>
+          <div class="card">
+            <h4><i class="fa-solid fa-building"></i> Enterprises</h4>
+            <p>Private libraries, role‑based access, audit trails, and governance to meet compliance needs.</p>
+          </div>
+          <div class="card">
+            <h4><i class="fa-regular fa-star"></i> Community</h4>
+            <p>Share, rate, and iterate prompts together; foster learning with templates and best practices.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Process -->
+    <section id="process">
+      <div class="container">
+        <h2 class="section-title">Process</h2>
+        <p class="section-sub">From discovery to delivery, emphasizing iteration and measurable improvement.</p>
+        <div class="grid three">
+          <div class="card t-item">
+            <h4>1) Ideation & Research</h4>
+            <p>Mapped competitor gaps: weak versioning, limited analytics, minimal collaboration.</p>
+          </div>
+          <div class="card t-item">
+            <h4>2) Feature Blueprint</h4>
+            <p>Defined MVP around <em>Versioning</em>, <em>Analytics</em>, <em>Workspaces</em>, and <em>Subscriptions</em>.</p>
+          </div>
+          <div class="card t-item">
+            <h4>3) Prototyping</h4>
+            <p>Wireframes for marketplace, prompt editor with preview, and analytics dashboard.</p>
+          </div>
+          <div class="card t-item">
+            <h4>4) User Testing</h4>
+            <p>Feedback loops with students, devs, and analysts to validate usability & discoverability.</p>
+          </div>
+          <div class="card t-item">
+            <h4>5) Iteration</h4>
+            <p>Added scoring rubric, model‑compatibility badges, and guardrail templates.</p>
+          </div>
+          <div class="card t-item">
+            <h4>6) Rollout</h4>
+            <p>Planned tiers: Free, Pro, Enterprise. Private org workspaces with SSO.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tools & Stack -->
+    <section id="tools" style="background: var(--bg-alt);">
+      <div class="container">
+        <h2 class="section-title">Tools & Stack</h2>
+        <div class="grid three">
+          <div class="card">
+            <h4><i class="fa-brands fa-react"></i> Frontend</h4>
+            <p>React + TailwindCSS for responsive UI; shadcn/ui & lucide icons for components.</p>
+          </div>
+          <div class="card">
+            <h4><i class="fa-brands fa-node-js"></i> Backend</h4>
+            <p>Node.js + Express APIs for prompts, versions, ratings, and analytics ingestion.</p>
+          </div>
+          <div class="card">
+            <h4><i class="fa-solid fa-database"></i> Database</h4>
+            <p>MongoDB for prompt docs, version history, and usage metrics.</p>
+          </div>
+          <div class="card">
+            <h4><i class="fa-solid fa-robot"></i> AI Integration</h4>
+            <p>OpenAI & Anthropic SDKs for testing runs; adapters for model‑specific parameters.</p>
+          </div>
+          <div class="card">
+            <h4><i class="fa-solid fa-chart-simple"></i> Analytics</h4>
+            <p>Custom scoring, A/B tests, and dashboards (Recharts) to visualize success rates.</p>
+          </div>
+          <div class="card">
+            <h4><i class="fa-solid fa-cloud"></i> Hosting & Auth</h4>
+            <p>GitHub Pages for artifacts, Vercel for app preview; SSO (OAuth/OIDC) for orgs.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Visuals / Mockups -->
+    <section id="visuals">
+      <div class="container">
+        <h2 class="section-title">Visuals & Design</h2>
+        <p class="section-sub">Representative mockups of the marketplace, prompt editor, and analytics dashboard.</p>
+        <div class="grid three">
+          <figure class="card figure" aria-label="Marketplace mockup">Marketplace Grid Mockup (Prompts, Ratings, Badges)</figure>
+          <figure class="card figure" aria-label="Editor mockup">Prompt Editor + Live Preview + Version History</figure>
+          <figure class="card figure" aria-label="Analytics mockup">Analytics: Success Rate, Latency, Cost per Run</figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" style="background: var(--bg-alt);">
+      <div class="container">
+        <h2 class="section-title">How It Works</h2>
+        <div class="grid three">
+          <div class="card">
+            <h4>Discover</h4>
+            <p>Search by model, task, and quality score. Use filters for ratings, domain, and cost.</p>
+          </div>
+          <div class="card">
+            <h4>Optimize</h4>
+            <p>Adjust parameters per model, run tests, compare outputs, and save new versions.</p>
+          </div>
+          <div class="card">
+            <h4>Deploy</h4>
+            <p>Pin a version, export SDK snippets, and monitor performance in production.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KPIs / Impact -->
+    <section id="impact">
+      <div class="container">
+        <h2 class="section-title">Impact</h2>
+        <div class="kpi">
+          <div class="k"><div class="v">↑ Quality</div><div class="l">Measured success rate across tasks</div></div>
+          <div class="k"><div class="v">↓ Drift</div><div class="l">Stable outputs across models</div></div>
+          <div class="k"><div class="v">↓ Cost</div><div class="l">Fewer retries via tuning & tests</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Roadmap -->
+    <section id="roadmap" style="background: var(--bg-alt);">
+      <div class="container">
+        <h2 class="section-title">Roadmap</h2>
+        <div class="grid two">
+          <div class="card">
+            <h4>Near‑term</h4>
+            <ul>
+              <li>Prompt scoring rubric & benchmark suites</li>
+              <li>Model adapters for ChatGPT, Claude, Gemini</li>
+              <li>Collections & team workspaces</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4>Next</h4>
+            <ul>
+              <li>Private enterprise libraries & SSO</li>
+              <li>Compliance guardrails & audit logs</li>
+              <li>Revenue share for creators</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact">
+      <div class="container">
+        <h2 class="section-title">Contact</h2>
+        <p class="section-sub">Questions or collaboration ideas? Reach out.</p>
+        <div class="card">
+          <p><i class="fa-regular fa-envelope"></i> <a href="mailto:dayo.egonu@myemail.indwes.edu">dayo.egonu@myemail.indwes.edu</a> • <i class="fa-solid fa-location-dot"></i> St. Louis, Missouri</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div>© <span id="year"></span> Dayo Egonu • Artifact 4: PromptCraft • Last updated: Aug 24, 2025</div>
+    </div>
+  </footer>
+
+  <button class="top" aria-label="Back to top" title="Back to top" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
