@@ -1,216 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>AI Shield - Artifact 4</title>
+  <meta charset="UTF-8" />
+  <title>AI Shield | Dayo Egonu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Fonts + Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <style>
-  body {
-    font-family: 'Segoe UI', sans-serif;
-    margin: 0;
-    background-color: #f4f9ff;
-    color: #0a0a23;
-  }
-  nav {
-    background-color: #0a0a23;
-    padding: 15px;
-    text-align: center;
-  }
-  nav a {
-    color: #fff;
-    margin: 0 20px;
-    text-decoration: none;
-    font-weight: bold;
-    transition: color 0.3s ease;
-  }
-  nav a:hover {
-    color: #4fc3f7;
-  }
-  h1, h2 {
-    text-align: center;
-    color: #0a0a23;
-  }
-  .artifact-header {
-    font-size: 1.2em;
-    font-weight: 600;
-    margin-top: -10px;
-  }
-  .container {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 30px;
-  }
-  .banner-img {
-    display: block;
-    margin: 20px auto;
-    max-width: 60%;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease;
-  }
-  .banner-img:hover {
-    transform: scale(1.02);
-  }
-  details {
-    margin-bottom: 16px;
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  summary {
-    background-color: #007bff;
-    color: #fff;
-    padding: 12px 20px;
-    font-size: 1.2em;
-    cursor: pointer;
-    font-weight: bold;
-  }
-  summary:hover {
-    background-color: #0056b3;
-  }
-  details p,
-  details ul {
-    padding: 16px;
-    background-color: #f0f0f0;
-    margin: 0;
-    animation: slideDown 0.3s ease-in-out;
-  }
-
-  details[open] summary ~ * {
-    animation: slideDown 0.3s ease-in-out;
-  }
-
-  @keyframes slideDown {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  details:not([open]) summary ~ * {
-    animation: slideUp 0.2s ease-in-out;
-  }
-
-  @keyframes slideUp {
-    from {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    to {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-  }
-
-  summary i {
-    margin-right: 10px;
-  }
-
-  footer {
-    text-align: center;
-    padding: 30px 0;
-    font-size: 0.9em;
-    color: #888;
-  }
-</style>
+    body { font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; }
+  </style>
 </head>
-<body>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="projects.html">Projects</a>
+<body class="bg-[#0b1020] text-slate-100">
+
+  <!-- Sticky mini nav -->
+  <nav class="sticky top-0 z-50 bg-[#0b1020]/80 backdrop-blur border-b border-white/10">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-end gap-3 text-sm">
+      <a href="index.html" class="px-3 py-1.5 rounded-md border border-white/15 bg-white/5 hover:bg-white/10">🏠 Home</a>
+      <a href="projects.html" class="px-3 py-1.5 rounded-md border border-white/15 bg-white/5 hover:bg-white/10">📁 Projects</a>
+    </div>
   </nav>
 
-  <h1>AI Shield</h1>
-  <h2 class="artifact-header">Artifact 4</h2>
+  <!-- Hero -->
+  <header class="relative border-b border-white/10">
+    <div class="absolute inset-0">
+      <div class="h-full w-full bg-gradient-to-b from-[#111832] via-[#0c1328] to-[#0b1020] opacity-90"></div>
+    </div>
+    <div class="relative max-w-5xl mx-auto px-4 py-12">
+      <span class="inline-block text-xs font-semibold tracking-wide text-indigo-300 bg-indigo-400/10 border border-indigo-300/30 rounded-full px-2.5 py-1">Artifact 3</span>
+      <h1 class="text-4xl md:text-5xl font-extrabold mt-3">AI Shield</h1>
+      <p class="mt-3 text-slate-200/90 text-lg max-w-3xl">
+        A friendly AI-powered cybersecurity assistant for small business owners—clear, calm, and actionable guidance without jargon.
+      </p>
+      <div class="mt-6 overflow-hidden rounded-2xl border border-white/10 shadow">
+        <img src="images/ai-shield.jpg" alt="AI Shield Banner" class="w-full h-64 md:h-80 object-cover">
+      </div>
+    </div>
+  </header>
 
-  <div class="container">
-    <img src="images/ai-shield.jpg" alt="AI Shield Banner" class="banner-img">
+  <main class="max-w-5xl mx-auto px-4 py-10 space-y-10">
 
-   <details open>
-  <summary><i class="fas fa-rocket"></i>Introduction</summary>
-  <p>
-    AI Shield is an AI-powered cybersecurity assistant built specifically for small business owners and non-technical users. As cyber threats grow more complex and targeted, many smaller organizations find themselves vulnerable due to limited IT expertise or budget constraints. AI Shield was created to bridge that gap — delivering clear, actionable protection without the jargon.
-    <br><br>
-    Think of it as a friendly security coach that actively monitors your digital environment, explains potential risks in plain English, and guides you through resolving them. Whether it's phishing emails, weak passwords, or outdated software, AI Shield ensures you’re not facing modern threats alone.
-  </p>
-</details>
+    <!-- Intro -->
+    <section class="bg-white/5 border border-white/10 rounded-2xl p-6">
+      <h2 class="text-xl font-bold">Overview</h2>
+      <p class="mt-2 text-slate-200/90">
+        AI Shield is built for non-technical users. Think of it as a friendly security coach that explains risks in plain English and guides quick, confident fixes.
+      </p>
+    </section>
 
-   <details>
-  <summary><i class="fas fa-thumbtack"></i>Description</summary>
-  <p>
-    AI Shield combines user-friendly design with behind-the-scenes AI analysis to deliver a seamless security experience. It features a clean dashboard with prioritized alerts, recommendations, and links to curated educational content. The tool detects suspicious behavior, risky app permissions, and vulnerabilities that often go unnoticed by the average user.
-    <br><br>
-    Users receive real-time notifications when their actions or systems need attention — from reusing passwords to clicking suspicious links. A built-in knowledge base explains concepts like 2FA, malware, or ransomware in plain, accessible language. By learning from user interactions, AI Shield continuously improves its guidance, becoming smarter and more tailored over time.
-  </p>
-</details>
+    <!-- Details (accordion via <details>) -->
+    <section class="space-y-3">
 
-    <details>
-      <summary><i class="fas fa-bullseye"></i>Objective</summary>
-      <p>To empower small businesses with smart, easy-to-understand cybersecurity tools that reduce their risk exposure without requiring technical expertise.</p>
-    </details>
+      <details class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden">
+        <summary class="cursor-pointer list-none px-4 py-3 flex items-center justify-between">
+          <span class="font-semibold"><i class="fas fa-rocket mr-2"></i>Introduction</span>
+          <span class="transition-transform group-open:rotate-180">▾</span>
+        </summary>
+        <div class="px-4 pb-4 text-slate-200/90">
+          AI Shield is an AI-powered cybersecurity assistant built specifically for small business owners and non-technical users. It monitors your digital environment,
+          explains potential risks in plain English, and guides you through resolving them—no jargon required.
+        </div>
+      </details>
 
-    <details>
-  <summary><i class="fas fa-cogs"></i>Process</summary>
-  <p>
-    The design journey began with user research — interviews and surveys with over 25 small business owners from various industries. Many expressed frustration with overwhelming tools, unclear warnings, and a lack of trusted guidance. Based on this, we crafted a low-fidelity prototype focused on clarity and empathy.
-    <br><br>
-    After iterative usability testing, we moved to high-fidelity mockups in Figma, prioritizing intuitive icons, readable fonts, and simplified flows. I then built the front-end using HTML and CSS, integrating placeholder AI logic for real-time feedback loops. The chatbot and recommendation engine were tested using GPT-4 prompts to simulate real user scenarios.
-    <br><br>
-    This project taught us that security isn’t just technical — it’s emotional. People want to feel safe, not shamed. That insight drove every decision we made.
-  </p>
-</details>
+      <details class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden">
+        <summary class="cursor-pointer list-none px-4 py-3 flex items-center justify-between">
+          <span class="font-semibold"><i class="fas fa-thumbtack mr-2"></i>Description</span>
+          <span class="transition-transform group-open:rotate-180">▾</span>
+        </summary>
+        <div class="px-4 pb-4 text-slate-200/90">
+          A prioritized dashboard surfaces what matters: risky permissions, suspicious behavior, weak passwords, and simple, guided remediations.
+          A built-in knowledge base explains concepts like 2FA, malware, or ransomware in approachable language.
+        </div>
+      </details>
 
-    <details>
-  <summary><i class="fas fa-code"></i>Tools and Technologies Used</summary>
-  <ul>
-    <li><strong>HTML & CSS</strong> – Built a clean, responsive UI to ensure usability across desktops, tablets, and mobile devices.</li>
-    <li><strong>GitHub Pages</strong> – Hosted the prototype for rapid iteration and user testing with live feedback.</li>
-    <li><strong>Figma</strong> – Used for wireframing and high-fidelity design mockups. Focused on accessibility and visual clarity.</li>
-    <li><strong>ChatGPT</strong> – Employed for simulated user interactions and generating dynamic AI guidance responses.</li>
-    <li><strong>JavaScript (Planned)</strong> – Future integration of behavior monitoring logic and dynamic content loading.</li>
-  </ul>
-</details>
+      <details class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden">
+        <summary class="cursor-pointer list-none px-4 py-3 flex items-center justify-between">
+          <span class="font-semibold"><i class="fas fa-bullseye mr-2"></i>Objective</span>
+          <span class="transition-transform group-open:rotate-180">▾</span>
+        </summary>
+        <div class="px-4 pb-4 text-slate-200/90">
+          Empower small businesses with smart, easy-to-understand tools that reduce risk without requiring technical expertise.
+        </div>
+      </details>
 
-   <details>
-  <summary><i class="fas fa-chart-line"></i>Value Proposition</summary>
-  <p>
-    Cybersecurity tools often cater to tech-savvy users or large enterprises, leaving small business owners underserved. AI Shield provides expert-level protection wrapped in an interface that’s approachable and empowering. It breaks down threats into simple terms, making it easier to take timely and effective action.
-    <br><br>
-    Instead of overwhelming users with logs or dashboards, it focuses on what really matters: What’s the risk? Why does it matter? And what should I do about it? With AI Shield, even a solopreneur with no IT staff can confidently protect their business in minutes a week.
-  </p>
-</details>
+      <details class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden">
+        <summary class="cursor-pointer list-none px-4 py-3 flex items-center justify-between">
+          <span class="font-semibold"><i class="fas fa-cogs mr-2"></i>Process</span>
+          <span class="transition-transform group-open:rotate-180">▾</span>
+        </summary>
+        <div class="px-4 pb-4 text-slate-200/90">
+          User research with 25+ small business owners → low-fi prototypes focused on clarity and empathy → usability testing →
+          high-fi mockups in Figma → front-end prototype with placeholder AI → scenario testing with GPT prompts. Key insight:
+          security is emotional—people want to feel safe, not shamed.
+        </div>
+      </details>
 
-    <details>
-  <summary><i class="fas fa-star"></i>Unique Value</summary>
-  <p>
-    What makes AI Shield stand out is not just its technology — but its tone. The platform is intentionally designed to be a security **companion**, not just a tool. Instead of red flags and cryptic messages, users receive friendly nudges, understandable feedback, and proactive tips.
-    <br><br>
-    Unlike traditional antivirus or monitoring platforms, AI Shield:
-    <ul>
-      <li>Explains problems using real-world analogies.</li>
-      <li>Adjusts language based on user behavior and comfort level.</li>
-      <li>Includes bite-sized tutorials with each alert to promote long-term learning.</li>
-    </ul>
-    It doesn’t just protect — it educates, encourages, and evolves with the user.
-  </p>
-</details>
+      <details class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden">
+        <summary class="cursor-pointer list-none px-4 py-3 flex items-center justify-between">
+          <span class="font-semibold"><i class="fas fa-code mr-2"></i>Tools and Technologies Used</span>
+          <span class="transition-transform group-open:rotate-180">▾</span>
+        </summary>
+        <div class="px-4 pb-4">
+          <ul class="list-disc pl-5 text-slate-200/90 space-y-1">
+            <li><strong>HTML & CSS</strong> – Clean, responsive UI for desktop and mobile.</li>
+            <li><strong>GitHub Pages</strong> – Live prototype hosting for quick feedback.</li>
+            <li><strong>Figma</strong> – Wireframes & high-fi designs with accessibility focus.</li>
+            <li><strong>ChatGPT</strong> – Simulated guidance & user scenarios.</li>
+            <li><strong>JavaScript (Planned)</strong> – Behavior monitoring & dynamic content.</li>
+          </ul>
+        </div>
+      </details>
 
-    <details>
-      <summary><i class="fas fa-lightbulb"></i>Relevance</summary>
-      <p>Cyberattacks on small businesses are rising. With remote work, cloud tools, and limited IT staff, businesses need tools like AI Shield to stay ahead without costly enterprise solutions.</p>
-    </details>
+      <details class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden">
+        <summary class="cursor-pointer list-none px-4 py-3 flex items-center justify-between">
+          <span class="font-semibold"><i class="fas fa-chart-line mr-2"></i>Value Proposition</span>
+          <span class="transition-transform group-open:rotate-180">▾</span>
+        </summary>
+        <div class="px-4 pb-4 text-slate-200/90">
+          Expert-level protection in an approachable interface. It focuses on: What’s the risk? Why does it matter? What should I do now?
+          Even a solo founder can protect their business in minutes a week.
+        </div>
+      </details>
 
-    <details>
-      <summary><i class="fas fa-book"></i>References</summary>
-      <p>AI Shield demo site: <a href="https://didiegons.github.io/ai-shield/" target="_blank">https://didiegons.github.io/ai-shield/</a></p>
-    </details>
-  </div>
+      <details class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden">
+        <summary class="cursor-pointer list-none px-4 py-3 flex items-center justify-between">
+          <span class="font-semibold"><i class="fas fa-star mr-2"></i>Unique Value</span>
+          <span class="transition-transform group-open:rotate-180">▾</span>
+        </summary>
+        <div class="px-4 pb-4 text-slate-200/90">
+          A supportive tone and coaching mindset. Real-world analogies, adaptive language, and bite-sized tutorials with each alert
+          help users learn while staying protected.
+        </div>
+      </details>
 
-  <footer>
-    © 2025 Dayo Egonu. All rights reserved.
+      <details class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden">
+        <summary class="cursor-pointer list-none px-4 py-3 flex items-center justify-between">
+          <span class="font-semibold"><i class="fas fa-lightbulb mr-2"></i>Relevance</span>
+          <span class="transition-transform group-open:rotate-180">▾</span>
+        </summary>
+        <div class="px-4 pb-4 text-slate-200/90">
+          With remote work and SaaS sprawl, small businesses face growing threats without enterprise budgets. AI Shield bridges that gap.
+        </div>
+      </details>
+
+      <details class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden">
+        <summary class="cursor-pointer list-none px-4 py-3 flex items-center justify-between">
+          <span class="font-semibold"><i class="fas fa-book mr-2"></i>References</span>
+          <span class="transition-transform group-open:rotate-180">▾</span>
+        </summary>
+        <div class="px-4 pb-4 text-slate-200/90">
+          AI Shield demo site:
+          <a class="underline text-indigo-300 hover:text-indigo-200" href="https://didiegons.github.io/ai-shield/" target="_blank" rel="noopener">
+            https://didiegons.github.io/ai-shield/
+          </a>
+        </div>
+      </details>
+
+    </section>
+
+    <!-- Back links -->
+    <section class="pt-2">
+      <div class="flex flex-wrap gap-3">
+        <a href="projects.html" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-white/15 bg-white/5 hover:bg-white/10">← Back to Projects</a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="border-t border-white/10">
+    <div class="max-w-5xl mx-auto px-4 py-6 text-sm text-slate-300/80">
+      © <span id="y"></span> Dayo Egonu • AI Shield
+    </div>
   </footer>
+
+  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
 </body>
 </html>
+
