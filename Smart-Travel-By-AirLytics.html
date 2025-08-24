@@ -2,94 +2,103 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <title>Smart Travel by AirLytics | Dayo Egonu</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Smart Travel by AirLytics</title>
 
-  <!-- Tailwind CDN -->
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Optional: keep Lato to match your site -->
-  <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,900" rel="stylesheet">
-  <style>
-    body{font-family:'Lato',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
-  </style>
+
+  <!-- Fonts & (optional) icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style> body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial} </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body class="bg-[#0b1020] text-slate-100">
 
+  <!-- Hero (dark, PromptCraft style) -->
+  <header class="relative border-b border-white/10">
+    <!-- gradient backdrop -->
+    <div class="absolute inset-0">
+      <div class="h-full w-full bg-[radial-gradient(60%_40%_at_20%_0%,rgba(91,140,255,.18),transparent_60%),radial-gradient(55%_40%_at_80%_10%,rgba(155,91,255,.16),transparent_60%),linear-gradient(180deg,rgba(255,255,255,.03),transparent)]"></div>
+      <div class="absolute inset-0 bg-gradient-to-b from-transparent via-[#0b1020]/40 to-[#0b1020]"></div>
+    </div>
 
-  <!-- Hero -->
-  <header class="bg-white border-b border-gray-200">
-    <div class="max-w-5xl mx-auto px-4 py-10">
-      <p class="inline-block text-xs font-semibold tracking-wide text-blue-700 bg-blue-50 border border-blue-200 rounded-full px-2.5 py-1">Artifact 1</p>
-      <h1 class="text-3xl md:text-4xl font-extrabold mt-3 text-blue-800">Smart Travel by AirLytics</h1>
-      <p class="mt-3 text-gray-700 max-w-3xl">
+    <div class="relative max-w-5xl mx-auto px-4 py-12">
+      <span class="inline-block text-xs font-semibold tracking-wide text-cyan-300 bg-cyan-400/10 border border-cyan-300/30 rounded-full px-2.5 py-1">Artifact 1</span>
+      <h1 class="text-4xl md:text-5xl font-extrabold mt-3">Smart Travel by AirLytics</h1>
+      <p class="mt-3 text-slate-200/90 max-w-3xl">
         An AI-powered chatbot designed to make travel planning smarter, fairer, and stress-free.
       </p>
-      <div class="mt-6 overflow-hidden rounded-xl border border-gray-200">
-        <img src="images/smart-travel-airlytics.jpg" alt="Smart Travel by AirLytics preview" class="w-full h-64 md:h-72 object-cover">
-      </div>
-      
-      <!-- PromptCraft-style CTA row (light) -->
-<div class="mt-6 flex flex-wrap gap-3">
-  <a href="#" target="_blank" rel="noopener"
-     class="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-violet-500 shadow hover:opacity-95">
-    View Repository
-  </a>
-  <a href="index.html"
-     class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 bg-white hover:bg-gray-50">
-    Home
-  </a>
-  <a href="projects.html"
-     class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 bg-white hover:bg-gray-50">
-    Projects
-  </a>
-  <a href="#contact"
-     class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 bg-white hover:bg-gray-50">
-    Contact
-  </a>
-</div>
 
+      <!-- chips (like PromptCraft highlights) -->
+      <div class="mt-4 flex flex-wrap gap-2">
+        <span class="px-3 py-1 rounded-full text-sm border border-white/10 bg-white/5">Fair Pricing</span>
+        <span class="px-3 py-1 rounded-full text-sm border border-white/10 bg-white/5">Guided Choices</span>
+        <span class="px-3 py-1 rounded-full text-sm border border-white/10 bg-white/5">Transparent Explanations</span>
+        <span class="px-3 py-1 rounded-full text-sm border border-white/10 bg-white/5">Deal Alerts</span>
+      </div>
+
+      <div class="mt-6 overflow-hidden rounded-2xl border border-white/10 shadow">
+        <img src="images/smart-travel-airlytics.jpg" alt="Smart Travel by AirLytics preview" class="w-full h-64 md:h-80 object-cover">
+      </div>
+
+      <!-- PromptCraft-style CTA row -->
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href="#" target="_blank" rel="noopener"
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-violet-500 shadow hover:opacity-95">
+          View Repository
+        </a>
+        <a href="index.html"
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-white/15 bg-white/5 hover:bg-white/10">
+          Home
+        </a>
+        <a href="projects.html"
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-white/15 bg-white/5 hover:bg-white/10">
+          Projects
+        </a>
+        <a href="mailto:dayo.egonu@myemail.indwes.edu"
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-white/15 bg-white/5 hover:bg-white/10">
+          Contact
+        </a>
+      </div>
+      <!-- /CTA -->
     </div>
   </header>
 
-  <main class="max-w-5xl mx-auto px-4 py-10 space-y-12">
+  <main class="max-w-5xl mx-auto px-4 py-10 space-y-10">
 
-    <!-- Intro card -->
-    <section class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-      <h2 class="text-xl font-bold text-blue-800">Overview</h2>
-      <p class="mt-2 text-gray-700">
-        Smart Travel by AirLytics helps travelers navigate flight prices, understand fairness, and make informed booking decisions with calm, clear AI guidance.
+    <!-- Overview card -->
+    <section class="bg-white/5 border border-white/10 rounded-2xl p-6">
+      <h2 class="text-xl font-bold">Overview</h2>
+      <p class="mt-2 text-slate-200/90">
+        Smart Travel helps travelers navigate flight prices, understand fairness, and make informed booking decisions with calm, clear AI guidance.
       </p>
     </section>
 
-    <!-- Accordion -->
+    <!-- Details (accordion using your same content) -->
     <section>
       <h2 class="text-xl font-bold">Details</h2>
 
       <div class="mt-4 space-y-3">
-
-        <!-- Intro -->
-        <button class="acc-btn w-full text-left bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg">🔖 Introduction</button>
-        <div class="acc-panel hidden bg-gray-50 border border-gray-200 rounded-lg px-4 py-3">
+        <!-- Each toggle: dark button + glass panel -->
+        <button class="acc-btn w-full text-left bg-white/10 hover:bg-white/15 text-white px-4 py-3 rounded-lg border border-white/15">🔖 Introduction</button>
+        <div class="acc-panel hidden bg-white/5 border border-white/10 rounded-lg px-4 py-3">
           <p>Smart Travel by AirLytics is an AI-powered chatbot designed to assist travelers in navigating flight prices, ensuring fair value, and making informed booking decisions.</p>
         </div>
 
-        <!-- Description -->
-        <button class="acc-btn w-full text-left bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg">📌 Description</button>
-        <div class="acc-panel hidden bg-gray-50 border border-gray-200 rounded-lg px-4 py-3">
+        <button class="acc-btn w-full text-left bg-white/10 hover:bg-white/15 text-white px-4 py-3 rounded-lg border border-white/15">📌 Description</button>
+        <div class="acc-panel hidden bg-white/5 border border-white/10 rounded-lg px-4 py-3">
           <p>This project addresses the common frustrations of flight pricing. The chatbot helps users explore travel options, understand fare dynamics, and provides basic support without the complexity of traditional travel tools.</p>
         </div>
 
-        <!-- Objective -->
-        <button class="acc-btn w-full text-left bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg">🎯 Objective</button>
-        <div class="acc-panel hidden bg-gray-50 border border-gray-200 rounded-lg px-4 py-3">
+        <button class="acc-btn w-full text-left bg-white/10 hover:bg-white/15 text-white px-4 py-3 rounded-lg border border-white/15">🎯 Objective</button>
+        <div class="acc-panel hidden bg-white/5 border border-white/10 rounded-lg px-4 py-3">
           <p>To offer travelers and agents an AI-driven assistant that simplifies decision-making, highlights fair ticket prices, and boosts confidence in travel planning.</p>
         </div>
 
-        <!-- Process -->
-        <button class="acc-btn w-full text-left bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg">🛠️ Process</button>
-        <div class="acc-panel hidden bg-gray-50 border border-gray-200 rounded-lg px-4 py-3">
+        <button class="acc-btn w-full text-left bg-white/10 hover:bg-white/15 text-white px-4 py-3 rounded-lg border border-white/15">🛠️ Process</button>
+        <div class="acc-panel hidden bg-white/5 border border-white/10 rounded-lg px-4 py-3">
           <p>The development of Smart Travel by AirLytics was a collaborative effort combining data science, AI design, and user-centered thinking.</p>
-          <ul class="list-disc pl-5 mt-2 space-y-1 text-gray-700">
+          <ul class="list-disc pl-5 mt-2 space-y-1 text-slate-200/90">
             <li>I used the <strong>GPT-4o Mini-High model</strong> to design and instruct the travel assistant chatbot for intelligence, transparency, and empathy.</li>
             <li>My teammates sourced relevant <strong>flight pricing and booking datasets</strong> from Kaggle to support price fairness and benchmarking analysis.</li>
             <li>I engineered the AI’s behavior with a detailed prompt, guiding it to:
@@ -111,47 +120,41 @@
           <p class="mt-2">These elements helped ensure the chatbot was not only functional but truly useful for travelers making informed decisions.</p>
         </div>
 
-        <!-- Tools -->
-        <button class="acc-btn w-full text-left bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg">🛠️ Tools and Technologies Used</button>
-        <div class="acc-panel hidden bg-gray-50 border border-gray-200 rounded-lg px-4 py-3">
+        <button class="acc-btn w-full text-left bg-white/10 hover:bg-white/15 text-white px-4 py-3 rounded-lg border border-white/15">🛠️ Tools and Technologies Used</button>
+        <div class="acc-panel hidden bg-white/5 border border-white/10 rounded-lg px-4 py-3">
           <p>ChatGPT, Kaggle datasets, Microsoft PowerPoint, Prezi, and collaborative team tools.</p>
         </div>
 
-        <!-- Value Prop -->
-        <button class="acc-btn w-full text-left bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg">💡 Value Proposition</button>
-        <div class="acc-panel hidden bg-gray-50 border border-gray-200 rounded-lg px-4 py-3">
+        <button class="acc-btn w-full text-left bg-white/10 hover:bg-white/15 text-white px-4 py-3 rounded-lg border border-white/15">💡 Value Proposition</button>
+        <div class="acc-panel hidden bg-white/5 border border-white/10 rounded-lg px-4 py-3">
           <p>Gives users clarity on travel pricing, reduces overpayment risk, and empowers fair booking choices using AI assistance.</p>
         </div>
 
-        <!-- Unique Value -->
-        <button class="acc-btn w-full text-left bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg">✨ Unique Value</button>
-        <div class="acc-panel hidden bg-gray-50 border border-gray-200 rounded-lg px-4 py-3">
+        <button class="acc-btn w-full text-left bg-white/10 hover:bg-white/15 text-white px-4 py-3 rounded-lg border border-white/15">✨ Unique Value</button>
+        <div class="acc-panel hidden bg-white/5 border border-white/10 rounded-lg px-4 py-3">
           <p>Unlike traditional booking platforms, this chatbot is focused on fairness and guidance — not just transactions.</p>
         </div>
 
-        <!-- Relevance -->
-        <button class="acc-btn w-full text-left bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg">🌍 Relevance</button>
-        <div class="acc-panel hidden bg-gray-50 border border-gray-200 rounded-lg px-4 py-3">
+        <button class="acc-btn w-full text-left bg-white/10 hover:bg-white/15 text-white px-4 py-3 rounded-lg border border-white/15">🌍 Relevance</button>
+        <div class="acc-panel hidden bg-white/5 border border-white/10 rounded-lg px-4 py-3">
           <p>Travelers face price fluctuations daily. Smart Travel brings AI clarity to a confusing space, aligning with ethical AI and user empowerment trends.</p>
         </div>
 
-        <!-- References -->
-        <button class="acc-btn w-full text-left bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg">📚 References</button>
-        <div class="acc-panel hidden bg-gray-50 border border-gray-200 rounded-lg px-4 py-3">
+        <button class="acc-btn w-full text-left bg-white/10 hover:bg-white/15 text-white px-4 py-3 rounded-lg border border-white/15">📚 References</button>
+        <div class="acc-panel hidden bg-white/5 border border-white/10 rounded-lg px-4 py-3">
           <p>
-            <a class="underline text-blue-700" href="https://prezi.com/view/A2Acb8z6jVtPf1cvplw7/" target="_blank" rel="noopener">Presentation (Prezi)</a><br>
-            <a class="underline text-blue-700" href="https://chatgpt.com/g/g-68729015f7d08191860acce915096a45-smart-travel-by-airlytics" target="_blank" rel="noopener">Chatbot Link</a>
+            <a class="underline text-cyan-300" href="https://prezi.com/view/A2Acb8z6jVtPf1cvplw7/" target="_blank" rel="noopener">Presentation (Prezi)</a><br>
+            <a class="underline text-cyan-300" href="https://chatgpt.com/g/g-68729015f7d08191860acce915096a45-smart-travel-by-airlytics" target="_blank" rel="noopener">Chatbot Link</a>
           </p>
         </div>
-
       </div>
     </section>
 
     <!-- Project files -->
-    <section class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+    <section class="bg-white/5 border border-white/10 rounded-2xl p-6">
       <h2 class="text-xl font-bold">Project Files</h2>
       <a href="https://prezi.com/view/A2Acb8z6jVtPf1cvplw7/" target="_blank" rel="noopener"
-         class="inline-block mt-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg">
+         class="inline-block mt-3 bg-gradient-to-r from-blue-500 to-violet-500 hover:opacity-95 text-white font-semibold px-4 py-2 rounded-lg shadow">
         📥 View Presentation
       </a>
     </section>
@@ -167,13 +170,13 @@
 
   </main>
 
-  <footer class="border-t border-gray-200 bg-white">
-    <div class="max-w-5xl mx-auto px-4 py-6 text-sm text-gray-500">
+  <footer class="border-t border-white/10">
+    <div class="max-w-5xl mx-auto px-4 py-6 text-sm text-slate-300/80">
       © <span id="y"></span> Dayo Egonu • Smart Travel by AirLytics
     </div>
   </footer>
 
-  <!-- Minimal accordion JS -->
+  <!-- Minimal accordion JS (re-uses your existing behavior) -->
   <script>
     document.querySelectorAll('.acc-btn').forEach(btn => {
       btn.addEventListener('click', () => {
