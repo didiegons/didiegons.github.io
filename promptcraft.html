@@ -120,9 +120,51 @@
     footer { border-top: 1px solid rgba(255,255,255,.08); padding: 20px 0 40px; color: var(--muted); }
 
     .top { position: fixed; right: 20px; bottom: 20px; background: linear-gradient(90deg, var(--brand), var(--brand-2)); border: none; color: white; width: 42px; height: 42px; border-radius: 50%; display:grid; place-items:center; box-shadow: var(--shadow); cursor: pointer; }
+/* Mini top nav */
+.pc-mini-nav{
+  position: sticky; top: 0; z-index: 1100;
+  display: flex; justify-content: flex-end; gap: 12px;
+  padding: 10px 20px;
+  background: rgba(11,16,32,0.65);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.pc-mini-nav a{
+  color: var(--text); text-decoration: none; font-weight: 600; font-size: 14px;
+  padding: 8px 12px; border-radius: 10px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.04);
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.pc-mini-nav a:hover{ background: rgba(255,255,255,.08); text-decoration: none; }
+.pc-mini-nav .primary{
+  background: linear-gradient(90deg, var(--brand), var(--brand-2));
+  border: none; box-shadow: var(--shadow);
+}
+@media (max-width: 720px){
+  .pc-mini-nav{ justify-content: center; flex-wrap: wrap; gap: 10px; }
+}    
+    /* Hide hero buttons on desktop, keep them on mobile */
+@media (min-width: 721px){
+  .cta-row { display: none; }
+}
   </style>
 </head>
 <body>
+  <nav class="pc-mini-nav" aria-label="Quick links">
+  <a class="primary" href="#" target="_blank" rel="noopener">
+    <i class="fa-brands fa-github"></i> View Repository
+  </a>
+  <a href="index.html">
+    <i class="fa-solid fa-house"></i> Home
+  </a>
+  <a href="projects.html">
+    <i class="fa-regular fa-folder-open"></i> Projects
+  </a>
+  <a href="#contact">
+    <i class="fa-regular fa-envelope"></i> Contact
+  </a>
+</nav>
   <header class="hero">
     <div class="container hero-inner">
       <div>
@@ -151,8 +193,8 @@
   <a class="btn" href="#contact">
     <i class="fa-regular fa-envelope"></i> Contact
   </a>
-</div>
-
+</div> <!-- close the left column -->
+        
       <aside class="hero-card" role="complementary" aria-label="Project quick facts">
         <h3><i class="fa-regular fa-circle-question"></i> Quick Facts</h3>
         <div class="kv-list">
