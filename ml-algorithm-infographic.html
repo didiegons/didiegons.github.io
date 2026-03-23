@@ -6,75 +6,166 @@
   <title>Machine Learning Algorithms Visual Framework</title>
   <style>
     :root {
-      --bg: #f5f7fb;
+      --bg: #f4f7fb;
       --panel: #ffffff;
-      --text: #1f2937;
-      --muted: #6b7280;
-      --line: #d1d5db;
-      --supervised: #dbeafe;
-      --unsupervised: #dcfce7;
-      --deep: #ede9fe;
-      --accent1: #2563eb;
-      --accent2: #16a34a;
-      --accent3: #7c3aed;
-      --shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
-      --radius: 22px;
+      --text: #172033;
+      --muted: #5f6b7a;
+      --line: #d8dee9;
+      --supervised: #e8f1ff;
+      --unsupervised: #e9f9ef;
+      --deep: #f0ebff;
+      --accent1: #1d4ed8;
+      --accent2: #15803d;
+      --accent3: #6d28d9;
+      --dark: #0f172a;
+      --shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+      --radius: 24px;
+      --gold: #caa74a;
     }
 
     * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(180deg, #eef2ff 0%, var(--bg) 35%, #f8fafc 100%);
+      background: linear-gradient(180deg, #edf3ff 0%, var(--bg) 38%, #f9fbfd 100%);
       color: var(--text);
     }
 
-    .page {
-      max-width: 1400px;
+    a { color: inherit; }
+
+    .topbar {
+      background: var(--dark);
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 8px 24px rgba(2, 6, 23, 0.18);
+    }
+
+    .topbar-inner {
+      max-width: 1280px;
       margin: 0 auto;
-      padding: 32px 20px 60px;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      font-size: 18px;
+    }
+
+    .brand span {
+      color: var(--gold);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      transition: background 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      background: rgba(255,255,255,0.1);
+    }
+
+    .page {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 28px 20px 56px;
     }
 
     .hero {
       background: var(--panel);
-      border-radius: 28px;
-      padding: 28px;
+      border-radius: 30px;
+      padding: 30px;
       box-shadow: var(--shadow);
-      border: 1px solid rgba(209, 213, 219, 0.8);
+      border: 1px solid rgba(216, 222, 233, 0.95);
       margin-bottom: 26px;
     }
 
     .eyebrow {
       display: inline-block;
       font-size: 12px;
-      letter-spacing: 1.2px;
+      letter-spacing: 1.3px;
       text-transform: uppercase;
       color: var(--accent1);
-      font-weight: 700;
+      font-weight: 800;
       margin-bottom: 10px;
     }
 
     h1 {
       margin: 0 0 12px;
-      font-size: 34px;
-      line-height: 1.15;
+      font-size: 38px;
+      line-height: 1.1;
     }
 
     .subtitle {
       margin: 0;
       color: var(--muted);
       font-size: 16px;
-      line-height: 1.6;
-      max-width: 920px;
+      line-height: 1.7;
+      max-width: 980px;
     }
 
-    .legend {
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 0.65fr;
+      gap: 22px;
+      margin-top: 24px;
+      align-items: stretch;
+    }
+
+    .hero-panel {
+      background: linear-gradient(180deg, #fbfdff 0%, #f6f9fc 100%);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 20px;
+    }
+
+    .hero-panel h2,
+    .artifact-box h2,
+    .reflection-box h2,
+    .framework-section h2,
+    .footer-panel h2 {
+      margin-top: 0;
+      font-size: 22px;
+      margin-bottom: 12px;
+    }
+
+    .hero-panel p,
+    .artifact-box p,
+    .reflection-box p,
+    .framework-section p,
+    .footer-panel p {
+      color: #374151;
+      line-height: 1.7;
+      margin: 8px 0;
+    }
+
+    .mini-badges {
       display: flex;
-      gap: 14px;
       flex-wrap: wrap;
-      margin-top: 20px;
+      gap: 10px;
+      margin-top: 14px;
     }
 
+    .mini-badges span,
     .legend span {
       display: inline-flex;
       align-items: center;
@@ -88,6 +179,13 @@
       background: #fff;
     }
 
+    .legend {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 22px;
+    }
+
     .dot {
       width: 12px;
       height: 12px;
@@ -95,10 +193,46 @@
       display: inline-block;
     }
 
+    .artifact-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+      margin-bottom: 26px;
+    }
+
+    .artifact-box,
+    .reflection-box,
+    .footer-panel,
+    .framework-shell {
+      background: var(--panel);
+      border-radius: 26px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--line);
+    }
+
+    .artifact-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .artifact-item {
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .artifact-item strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
     .framework-title {
       text-align: center;
-      margin: 18px 0 22px;
-      font-size: 22px;
+      margin: 0 0 22px;
+      font-size: 24px;
       font-weight: 800;
     }
 
@@ -109,18 +243,18 @@
     }
 
     .root {
-      width: min(420px, 100%);
-      background: var(--panel);
-      border: 2px solid #c7d2fe;
+      width: min(430px, 100%);
+      background: #ffffff;
+      border: 2px solid #c8d6ff;
       box-shadow: var(--shadow);
       border-radius: 24px;
       padding: 20px;
       text-align: center;
     }
 
-    .root h2 {
+    .root h3 {
       margin: 0 0 8px;
-      font-size: 28px;
+      font-size: 30px;
     }
 
     .root p {
@@ -137,7 +271,6 @@
     }
 
     .branch {
-      position: relative;
       border-radius: var(--radius);
       padding: 18px;
       box-shadow: var(--shadow);
@@ -150,14 +283,14 @@
     .branch.deep { background: var(--deep); }
 
     .branch-header {
-      background: rgba(255,255,255,0.8);
+      background: rgba(255,255,255,0.84);
       border-radius: 18px;
       padding: 16px;
-      border: 1px solid rgba(255,255,255,0.9);
+      border: 1px solid rgba(255,255,255,0.95);
       margin-bottom: 16px;
     }
 
-    .branch h3 {
+    .branch h4 {
       margin: 0 0 8px;
       font-size: 22px;
     }
@@ -175,13 +308,13 @@
     }
 
     .card {
-      background: rgba(255,255,255,0.92);
+      background: rgba(255,255,255,0.95);
       border-radius: 18px;
-      border: 1px solid rgba(209, 213, 219, 0.8);
+      border: 1px solid rgba(209, 213, 219, 0.86);
       padding: 15px;
     }
 
-    .card h4 {
+    .card h5 {
       margin: 0 0 8px;
       font-size: 18px;
     }
@@ -210,18 +343,9 @@
 
     .small {
       font-size: 13px;
-      line-height: 1.55;
+      line-height: 1.6;
       color: #374151;
       margin: 6px 0;
-    }
-
-    .footer-panel {
-      margin-top: 26px;
-      background: var(--panel);
-      border-radius: 24px;
-      padding: 22px;
-      box-shadow: var(--shadow);
-      border: 1px solid var(--line);
     }
 
     .footer-grid {
@@ -230,17 +354,11 @@
       gap: 20px;
     }
 
-    .footer-panel h3 {
-      margin-top: 0;
-      margin-bottom: 12px;
-      font-size: 20px;
-    }
-
     ul {
       margin: 10px 0 0;
       padding-left: 18px;
       color: #374151;
-      line-height: 1.65;
+      line-height: 1.7;
     }
 
     .domain-list {
@@ -261,48 +379,97 @@
       margin-bottom: 6px;
     }
 
+    .site-footer {
+      background: var(--dark);
+      color: white;
+      margin-top: 28px;
+    }
+
+    .site-footer-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 22px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .site-footer a {
+      color: #dbeafe;
+      text-decoration: none;
+      margin-left: 16px;
+    }
+
     @media (max-width: 1100px) {
-      .branch-grid { grid-template-columns: 1fr; }
-      .footer-grid { grid-template-columns: 1fr; }
+      .hero-grid,
+      .artifact-grid,
+      .branch-grid,
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 700px) {
-      h1 { font-size: 28px; }
-      .root h2 { font-size: 24px; }
+      h1 { font-size: 30px; }
+      .root h3 { font-size: 24px; }
       .domain-list { grid-template-columns: 1fr; }
+      .topbar-inner, .site-footer-inner { justify-content: center; }
     }
   </style>
 </head>
 <body>
-  <header style="background:#111; padding:12px 0; position:sticky; top:0; z-index:1000;">
-  <nav style="max-width:1100px; margin:auto; display:flex; justify-content:space-between; align-items:center;">
-    
-    <div style="color:white; font-weight:bold; font-size:18px;">
-      Dayo Portfolio
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">Dayo <span>Portfolio</span></div>
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="projects.html">Projects</a>
+        <a href="about.html">About</a>
+        <a href="index.html#contact">Contact</a>
+      </nav>
     </div>
+  </header>
 
-    <div>
-      <a href="index.html" style="color:white; margin:0 15px; text-decoration:none;">Home</a>
-      <a href="projects.html" style="color:white; margin:0 15px; text-decoration:none;">Projects</a>
-      <a href="about.html" style="color:white; margin:0 15px; text-decoration:none;">About</a>
-      <a href="index.html#contact" style="color:white; margin:0 15px; text-decoration:none;">Contact</a>
-    </div>
-
-  </nav>
-</header>
   <main class="page">
     <section class="hero">
-      <div class="eyebrow">Portfolio Artifact • Machine Learning Overview</div>
+      <div class="eyebrow">Portfolio Artifact • Applied Machine Learning</div>
       <h1>Machine Learning Algorithms: Visual Framework</h1>
       <p class="subtitle">
-        This infographic organizes major machine learning algorithms by learning style, domain relevance, and real-world use.
-        It highlights how traditional supervised and unsupervised methods differ from deep learning approaches used in computer vision,
-        natural language processing, and generative AI.
+        This portfolio artifact presents a structured infographic of major machine learning algorithms and shows how they relate across supervised learning, unsupervised learning, and deep learning. It was designed to demonstrate conceptual understanding, technical communication, and professional portfolio presentation for applied AI leadership and interdisciplinary collaboration.
       </p>
+
+      <div class="hero-grid">
+        <div class="hero-panel">
+          <h2>Professional Framing</h2>
+          <p>
+            As an emerging AI leader with a cybersecurity and applied systems perspective, I created this artifact to translate complex machine learning concepts into a format that is visually clear, technically accurate, and accessible to both technical and non-technical audiences.
+          </p>
+          <p>
+            The framework emphasizes how algorithm choice depends on problem type, data structure, and application domain. Rather than listing models in isolation, it presents them as part of a connected machine learning landscape.
+          </p>
+          <div class="mini-badges">
+            <span>AI Leadership</span>
+            <span>Technical Communication</span>
+            <span>Portfolio Artifact</span>
+            <span>Academic Showcase</span>
+          </div>
+        </div>
+
+        <div class="hero-panel">
+          <h2>Artifact Snapshot</h2>
+          <p><strong>Focus:</strong> Machine learning taxonomy and practical application</p>
+          <p><strong>Coverage:</strong> 10 major algorithms across 4 AI domains</p>
+          <p><strong>Domains:</strong> Tabular Data, Computer Vision, NLP, Generative AI</p>
+          <p><strong>Purpose:</strong> Show relationships, differences, and real-world use</p>
+        </div>
+      </div>
+
       <div class="legend">
-        <span><i class="dot" style="background:#2563eb"></i> Supervised Learning</span>
-        <span><i class="dot" style="background:#16a34a"></i> Unsupervised Learning</span>
-        <span><i class="dot" style="background:#7c3aed"></i> Deep Learning / Modern AI</span>
+        <span><i class="dot" style="background:#1d4ed8"></i> Supervised Learning</span>
+        <span><i class="dot" style="background:#15803d"></i> Unsupervised Learning</span>
+        <span><i class="dot" style="background:#6d28d9"></i> Deep Learning / Modern AI</span>
         <span>📊 Tabular Data</span>
         <span>🖼️ Computer Vision</span>
         <span>💬 NLP</span>
@@ -310,189 +477,280 @@
       </div>
     </section>
 
-    <div class="framework-title">From General Categories to Specific Algorithms</div>
-
-    <div class="root-wrap">
-      <section class="root">
-        <h2>Machine Learning</h2>
-        <p>Systems that learn patterns from data in order to predict, classify, group, or generate outputs.</p>
-      </section>
-    </div>
-
-    <section class="branch-grid">
-      <article class="branch supervised">
-        <div class="branch-header">
-          <h3>Supervised Learning</h3>
-          <p>Uses labeled data to learn direct relationships between input features and known outputs.</p>
+    <section class="artifact-grid">
+      <div class="artifact-box">
+        <h2>Artifact Overview</h2>
+        <div class="artifact-list">
+          <div class="artifact-item">
+            <strong>Title</strong>
+            Machine Learning Algorithms: Visual Framework
+          </div>
+          <div class="artifact-item">
+            <strong>Introduction</strong>
+            This artifact provides a visual overview of core machine learning algorithms and organizes them by learning style, domain relevance, and real-world application.
+          </div>
+          <div class="artifact-item">
+            <strong>Objective</strong>
+            To classify major algorithms clearly, explain how they work, and demonstrate how they support different AI problem spaces.
+          </div>
+          <div class="artifact-item">
+            <strong>Process</strong>
+            I researched representative algorithms, grouped them into supervised, unsupervised, and deep learning categories, and designed a visual structure that communicates both distinctions and relationships.
+          </div>
         </div>
-        <div class="cards">
-          <section class="card">
-            <h4>Linear Regression</h4>
-            <div class="meta">
-              <span class="badge">Supervised</span>
-              <span class="badge">📊 Tabular Data</span>
-            </div>
-            <p class="small"><span class="label">How it works:</span> Fits a line that models the relationship between input variables and a numeric outcome.</p>
-            <p class="small"><span class="label">Use case:</span> Predicting house prices or sales revenue.</p>
-          </section>
+      </div>
 
-          <section class="card">
-            <h4>Logistic Regression</h4>
-            <div class="meta">
-              <span class="badge">Supervised</span>
-              <span class="badge">📊 Tabular Data</span>
-              <span class="badge">💬 NLP</span>
-            </div>
-            <p class="small"><span class="label">How it works:</span> Estimates the probability that an input belongs to a category.</p>
-            <p class="small"><span class="label">Use case:</span> Spam detection or loan approval prediction.</p>
-          </section>
-
-          <section class="card">
-            <h4>Decision Tree</h4>
-            <div class="meta">
-              <span class="badge">Supervised</span>
-              <span class="badge">📊 Tabular Data</span>
-            </div>
-            <p class="small"><span class="label">How it works:</span> Splits data into branches using if-then rules until it reaches a final decision.</p>
-            <p class="small"><span class="label">Use case:</span> Credit risk analysis or fruit classification.</p>
-          </section>
-
-          <section class="card">
-            <h4>Random Forest</h4>
-            <div class="meta">
-              <span class="badge">Supervised</span>
-              <span class="badge">📊 Tabular Data</span>
-            </div>
-            <p class="small"><span class="label">How it works:</span> Combines many decision trees and votes on the final prediction.</p>
-            <p class="small"><span class="label">Use case:</span> Fraud detection and customer churn prediction.</p>
-          </section>
-
-          <section class="card">
-            <h4>Support Vector Machine</h4>
-            <div class="meta">
-              <span class="badge">Supervised</span>
-              <span class="badge">📊 Tabular Data</span>
-              <span class="badge">🖼️ Computer Vision</span>
-            </div>
-            <p class="small"><span class="label">How it works:</span> Finds the best boundary that separates classes with the widest margin.</p>
-            <p class="small"><span class="label">Use case:</span> Image categorization and medical diagnosis support.</p>
-          </section>
+      <div class="artifact-box">
+        <h2>Professional Value</h2>
+        <div class="artifact-list">
+          <div class="artifact-item">
+            <strong>Tools and Technologies Used</strong>
+            HTML, CSS, GitHub Pages, machine learning concepts, portfolio design principles
+          </div>
+          <div class="artifact-item">
+            <strong>Value Proposition</strong>
+            Demonstrates my ability to synthesize technical material into a polished artifact for academic and professional audiences.
+          </div>
+          <div class="artifact-item">
+            <strong>Unique Value</strong>
+            Combines technical understanding, visual communication, and strategic AI framing in one portfolio-ready deliverable.
+          </div>
+          <div class="artifact-item">
+            <strong>Relevance</strong>
+            Supports my long-term goal of contributing to and leading AI initiatives that require both analytical understanding and strong communication.
+          </div>
         </div>
-      </article>
-
-      <article class="branch unsupervised">
-        <div class="branch-header">
-          <h3>Unsupervised Learning</h3>
-          <p>Works with unlabeled data to discover hidden patterns, groups, or lower-dimensional structure.</p>
-        </div>
-        <div class="cards">
-          <section class="card">
-            <h4>K-Means Clustering</h4>
-            <div class="meta">
-              <span class="badge">Unsupervised</span>
-              <span class="badge">📊 Tabular Data</span>
-            </div>
-            <p class="small"><span class="label">How it works:</span> Divides data into clusters by grouping points around central means.</p>
-            <p class="small"><span class="label">Use case:</span> Customer segmentation and product grouping.</p>
-          </section>
-
-          <section class="card">
-            <h4>Hierarchical Clustering</h4>
-            <div class="meta">
-              <span class="badge">Unsupervised</span>
-              <span class="badge">📊 Tabular Data</span>
-            </div>
-            <p class="small"><span class="label">How it works:</span> Builds a tree of nested clusters by repeatedly merging or splitting data points.</p>
-            <p class="small"><span class="label">Use case:</span> Gene analysis and similarity grouping.</p>
-          </section>
-
-          <section class="card">
-            <h4>Principal Component Analysis (PCA)</h4>
-            <div class="meta">
-              <span class="badge">Unsupervised</span>
-              <span class="badge">📊 Tabular Data</span>
-              <span class="badge">🖼️ Computer Vision</span>
-            </div>
-            <p class="small"><span class="label">How it works:</span> Reduces many features into fewer components while preserving important variation.</p>
-            <p class="small"><span class="label">Use case:</span> Data visualization and preprocessing before modeling.</p>
-          </section>
-        </div>
-      </article>
-
-      <article class="branch deep">
-        <div class="branch-header">
-          <h3>Deep Learning / Modern AI</h3>
-          <p>Uses layered neural networks to learn complex representations from images, text, audio, and sequence data.</p>
-        </div>
-        <div class="cards">
-          <section class="card">
-            <h4>Convolutional Neural Network (CNN)</h4>
-            <div class="meta">
-              <span class="badge">Deep Learning</span>
-              <span class="badge">🖼️ Computer Vision</span>
-            </div>
-            <p class="small"><span class="label">How it works:</span> Learns visual patterns by scanning images for shapes, textures, and spatial features.</p>
-            <p class="small"><span class="label">Use case:</span> Face recognition, X-ray analysis, and object detection.</p>
-          </section>
-
-          <section class="card">
-            <h4>Recurrent Neural Network (RNN / LSTM)</h4>
-            <div class="meta">
-              <span class="badge">Deep Learning</span>
-              <span class="badge">💬 NLP</span>
-            </div>
-            <p class="small"><span class="label">How it works:</span> Processes sequences one step at a time while remembering earlier information.</p>
-            <p class="small"><span class="label">Use case:</span> Time-series forecasting and earlier language models.</p>
-          </section>
-
-          <section class="card">
-            <h4>Transformer</h4>
-            <div class="meta">
-              <span class="badge">Deep Learning</span>
-              <span class="badge">💬 NLP</span>
-              <span class="badge">✨ Generative AI</span>
-            </div>
-            <p class="small"><span class="label">How it works:</span> Uses attention mechanisms to understand relationships between all parts of an input.</p>
-            <p class="small"><span class="label">Use case:</span> ChatGPT, translation, summarization, and text generation.</p>
-          </section>
-        </div>
-      </article>
+      </div>
     </section>
 
-    <section class="footer-panel">
+    <section class="framework-shell">
+      <div class="framework-title">From General Categories to Specific Algorithms</div>
+
+      <div class="root-wrap">
+        <div class="root">
+          <h3>Machine Learning</h3>
+          <p>Systems that learn patterns from data in order to predict, classify, group, or generate outputs.</p>
+        </div>
+      </div>
+
+      <div class="branch-grid">
+        <article class="branch supervised">
+          <div class="branch-header">
+            <h4>Supervised Learning</h4>
+            <p>Uses labeled data to learn direct relationships between inputs and known outputs.</p>
+          </div>
+          <div class="cards">
+            <div class="card">
+              <h5>Linear Regression</h5>
+              <div class="meta">
+                <span class="badge">Supervised</span>
+                <span class="badge">📊 Tabular Data</span>
+              </div>
+              <p class="small"><span class="label">How it works:</span> Fits a line that models the relationship between input variables and a numeric outcome.</p>
+              <p class="small"><span class="label">Use case:</span> Predicting house prices or forecasting revenue.</p>
+            </div>
+
+            <div class="card">
+              <h5>Logistic Regression</h5>
+              <div class="meta">
+                <span class="badge">Supervised</span>
+                <span class="badge">📊 Tabular Data</span>
+                <span class="badge">💬 NLP</span>
+              </div>
+              <p class="small"><span class="label">How it works:</span> Estimates the probability that an input belongs to a category.</p>
+              <p class="small"><span class="label">Use case:</span> Spam detection or customer churn classification.</p>
+            </div>
+
+            <div class="card">
+              <h5>Decision Tree</h5>
+              <div class="meta">
+                <span class="badge">Supervised</span>
+                <span class="badge">📊 Tabular Data</span>
+              </div>
+              <p class="small"><span class="label">How it works:</span> Splits data into branches using sequential if-then decisions until a final class or value is reached.</p>
+              <p class="small"><span class="label">Use case:</span> Credit risk analysis or fruit classification.</p>
+            </div>
+
+            <div class="card">
+              <h5>Random Forest</h5>
+              <div class="meta">
+                <span class="badge">Supervised</span>
+                <span class="badge">📊 Tabular Data</span>
+              </div>
+              <p class="small"><span class="label">How it works:</span> Combines multiple decision trees and uses their collective vote for more stable predictions.</p>
+              <p class="small"><span class="label">Use case:</span> Fraud detection and customer behavior analysis.</p>
+            </div>
+
+            <div class="card">
+              <h5>Support Vector Machine</h5>
+              <div class="meta">
+                <span class="badge">Supervised</span>
+                <span class="badge">📊 Tabular Data</span>
+                <span class="badge">🖼️ Computer Vision</span>
+              </div>
+              <p class="small"><span class="label">How it works:</span> Finds the best boundary that separates classes with the widest margin.</p>
+              <p class="small"><span class="label">Use case:</span> Image categorization and diagnostic support.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="branch unsupervised">
+          <div class="branch-header">
+            <h4>Unsupervised Learning</h4>
+            <p>Works with unlabeled data to discover hidden patterns, natural groups, or simplified structure.</p>
+          </div>
+          <div class="cards">
+            <div class="card">
+              <h5>K-Means Clustering</h5>
+              <div class="meta">
+                <span class="badge">Unsupervised</span>
+                <span class="badge">📊 Tabular Data</span>
+              </div>
+              <p class="small"><span class="label">How it works:</span> Groups data points into clusters around central averages called centroids.</p>
+              <p class="small"><span class="label">Use case:</span> Customer segmentation and product grouping.</p>
+            </div>
+
+            <div class="card">
+              <h5>Hierarchical Clustering</h5>
+              <div class="meta">
+                <span class="badge">Unsupervised</span>
+                <span class="badge">📊 Tabular Data</span>
+              </div>
+              <p class="small"><span class="label">How it works:</span> Builds a layered tree of clusters by merging or splitting similar data points.</p>
+              <p class="small"><span class="label">Use case:</span> Similarity analysis and gene grouping.</p>
+            </div>
+
+            <div class="card">
+              <h5>Principal Component Analysis (PCA)</h5>
+              <div class="meta">
+                <span class="badge">Unsupervised</span>
+                <span class="badge">📊 Tabular Data</span>
+                <span class="badge">🖼️ Computer Vision</span>
+              </div>
+              <p class="small"><span class="label">How it works:</span> Reduces many features into a smaller set of components while preserving important variation.</p>
+              <p class="small"><span class="label">Use case:</span> Dimensionality reduction and data visualization.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="branch deep">
+          <div class="branch-header">
+            <h4>Deep Learning / Modern AI</h4>
+            <p>Uses layered neural networks to learn complex representations from unstructured and high-volume data.</p>
+          </div>
+          <div class="cards">
+            <div class="card">
+              <h5>Convolutional Neural Network (CNN)</h5>
+              <div class="meta">
+                <span class="badge">Deep Learning</span>
+                <span class="badge">🖼️ Computer Vision</span>
+              </div>
+              <p class="small"><span class="label">How it works:</span> Learns visual features by scanning images for shapes, textures, and spatial patterns.</p>
+              <p class="small"><span class="label">Use case:</span> Facial recognition, medical imaging, and object detection.</p>
+            </div>
+
+            <div class="card">
+              <h5>Recurrent Neural Network (RNN / LSTM)</h5>
+              <div class="meta">
+                <span class="badge">Deep Learning</span>
+                <span class="badge">💬 NLP</span>
+              </div>
+              <p class="small"><span class="label">How it works:</span> Processes sequence data step by step while retaining information from earlier inputs.</p>
+              <p class="small"><span class="label">Use case:</span> Time-series forecasting and earlier language modeling tasks.</p>
+            </div>
+
+            <div class="card">
+              <h5>Transformer</h5>
+              <div class="meta">
+                <span class="badge">Deep Learning</span>
+                <span class="badge">💬 NLP</span>
+                <span class="badge">✨ Generative AI</span>
+              </div>
+              <p class="small"><span class="label">How it works:</span> Uses attention mechanisms to model relationships between all parts of the input at once.</p>
+              <p class="small"><span class="label">Use case:</span> ChatGPT, summarization, translation, and text generation.</p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="footer-panel" style="margin-top: 26px;">
       <div class="footer-grid">
         <div>
-          <h3>How the Algorithms Relate</h3>
+          <h2>How the Algorithms Relate</h2>
           <ul>
-            <li><strong>Supervised algorithms</strong> learn from labeled data and are strong for prediction and classification.</li>
-            <li><strong>Unsupervised algorithms</strong> discover patterns without labels, making them useful for clustering and dimensionality reduction.</li>
-            <li><strong>Deep learning models</strong> can handle more complex inputs such as images, language, and generative tasks.</li>
-            <li><strong>Classical methods</strong> are often easier to interpret, while <strong>deep learning</strong> usually performs better on large, unstructured data.</li>
+            <li><strong>Supervised algorithms</strong> are best when labeled outcomes are available and direct prediction is required.</li>
+            <li><strong>Unsupervised algorithms</strong> help identify patterns without labels, making them valuable for segmentation and structure discovery.</li>
+            <li><strong>Deep learning models</strong> extend machine learning into complex domains such as images, language, and generative systems.</li>
+            <li><strong>Classical models</strong> are often more interpretable, while <strong>deep learning</strong> is typically stronger for unstructured data.</li>
           </ul>
         </div>
         <div>
-          <h3>Application Domains</h3>
+          <h2>Application Domains</h2>
           <div class="domain-list">
             <div class="domain">
               <strong>📊 Tabular Data</strong>
-              Used for forecasting, fraud detection, customer analytics, and structured business data.
+              Used for forecasting, fraud detection, customer analytics, and structured decision support.
             </div>
             <div class="domain">
               <strong>🖼️ Computer Vision</strong>
-              Used for image classification, object detection, facial recognition, and medical imaging.
+              Used for image classification, facial recognition, object detection, and medical image review.
             </div>
             <div class="domain">
               <strong>💬 NLP</strong>
-              Used for sentiment analysis, speech recognition, translation, and question answering.
+              Used for sentiment analysis, translation, speech recognition, and question answering.
             </div>
             <div class="domain">
               <strong>✨ Generative AI</strong>
-              Used for chatbots, text generation, image generation, and content creation tools.
+              Used for chatbots, text generation, content creation, and multimodal AI assistants.
             </div>
           </div>
         </div>
       </div>
     </section>
+
+    <section class="reflection-box" style="margin-top: 26px;">
+      <div class="footer-grid">
+        <div>
+          <h2>Reflection on Learning</h2>
+          <p>
+            Creating this artifact strengthened my understanding of how machine learning algorithms connect across different
+            problem types and data domains. Instead of viewing each model as an isolated concept, I learned to organize them
+            within a broader analytical framework that distinguishes supervised, unsupervised, and deep learning approaches.
+          </p>
+          <p>
+            This project also reinforced the importance of choosing algorithms based on both the structure of the data and
+            the intended outcome. In addition, it improved my ability to communicate technical concepts in a visually clear
+            and professionally structured format, which is a critical skill for collaboration and leadership in AI-focused roles.
+          </p>
+        </div>
+        <div>
+          <h2>Key Takeaways</h2>
+          <ul>
+            <li>Algorithm choice should match the data type and the business objective.</li>
+            <li>Supervised learning is strongest for labeled prediction tasks.</li>
+            <li>Unsupervised learning is useful for identifying hidden patterns and groups.</li>
+            <li>Deep learning expands AI capability in language, vision, and generative systems.</li>
+            <li>Clear communication of technical ideas is part of effective AI leadership.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
   </main>
+
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <div>
+        <strong>Dayo Egonu</strong><br />
+        <span style="color:#cbd5e1;">Aspiring AI Lead • Machine Learning Portfolio Artifact</span>
+      </div>
+      <div>
+        <a href="index.html">Home</a>
+        <a href="projects.html">Projects</a>
+        <a href="about.html">About</a>
+        <a href="index.html#contact">Contact</a>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>
