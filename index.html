@@ -6,44 +6,41 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>My Portfolio</title>
-	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-	<link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,900" rel="stylesheet">
     <link rel="stylesheet" href="libs/font-awesome/css/font-awesome.min.css">
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/styles.css" rel="stylesheet">
 </head>
-	
+
 <body>
     <div id="mobile-menu-open" class="shadow-large">
         <i class="fa fa-bars" aria-hidden="true"></i>
     </div>
-    <!-- End #mobile-menu-toggle -->
+
     <header>
         <div id="mobile-menu-close">
             <span>Close</span> <i class="fa fa-times" aria-hidden="true"></i>
         </div>
-       <ul id="menu" class="shadow">
-  <li>
-    <li>
-  <a href="about.html" onclick="window.location.href='about.html'; return false;">About</a>
-</li>
-<li>
-  <a href="https://www.linkedin.com/in/dayoegonu/" onclick="window.open(this.href, '_blank'); return false;">LinkedIn</a>
-  </li>
-  <li>
-  <a href="projects.html" onclick="window.location.href='projects.html'; return false;">Projects</a>
-</li>
-  <li>
-    <a href="#skills">Skills</a>
-  </li>
-  <li>
-    <a href="#contact">Contact</a>
-  </li>
-</ul>
-
+        <ul id="menu" class="shadow">
+            <li>
+                <a href="about.html" onclick="window.location.href='about.html'; return false;">About</a>
+            </li>
+            <li>
+                <a href="https://www.linkedin.com/in/dayoegonu/" onclick="window.open(this.href, '_blank'); return false;">LinkedIn</a>
+            </li>
+            <li>
+                <a href="projects.html" onclick="window.location.href='projects.html'; return false;">Projects</a>
+            </li>
+            <li>
+                <a href="#skills">Skills</a>
+            </li>
+            <li>
+                <a href="#contact">Contact</a>
+            </li>
+        </ul>
     </header>
-    <!-- End header -->
 
     <div id="lead">
         <div id="lead-content">
@@ -51,7 +48,6 @@
             <h2>Aspiring AI Lead</h2>
             <a href="about.html" class="btn-rounded-white">About Me</a>
         </div>
-        <!-- End #lead-content -->
 
         <div id="lead-overlay"></div>
 
@@ -60,164 +56,111 @@
                 <i class="fa fa-chevron-down" aria-hidden="true"></i>
             </span>
         </div>
-        <!-- End #lead-down -->
     </div>
-    <!-- End #lead -->
 
-<!-- Project Gallery -->
-<div id="projects" class="background-alt" style="padding: 40px 20px;">
-  <h2 class="heading" style="text-align: center;">🧩 Project Gallery</h2>
+    <!-- Project Gallery -->
+    <div id="projects" class="background-alt" style="padding: 40px 20px;">
+        <h2 class="heading" style="text-align: center;">🧩 Project Gallery</h2>
 
-  <div class="project-gallery" style="
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 24px;
-    max-width: 1000px;
-    margin: auto;
-  ">
-    <!-- Smart Travel by AirLytics -->
-    <a href="Smart-Travel-By-AirLytics.html" class="project-card" style="
-      width: 280px;
-      background: #fff;
-      border-radius: 12px;
-      overflow: hidden;
-      text-decoration: none;
-      color: inherit;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      transition: transform 0.2s;
-    ">
-      <img src="images/smart-travel-airlytics.jpg" alt="Smart Travel by AirLytics" style="width:100%;height:180px;object-fit:cover;">
-      <div style="padding:16px;">
-        <h3 style="margin:0;">Smart Travel by AirLytics</h3>
-        <p style="font-size:0.9em;color:#444;">AI chatbot for flight pricing fairness</p>
-      </div>
-    </a>
+        <div class="project-gallery" style="
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 24px;
+            max-width: 1000px;
+            margin: auto;
+        ">
+            <!-- Smart Travel by AirLytics -->
+            <a href="Smart-Travel-By-AirLytics.html" class="project-card" style="
+                width: 280px;
+                background: #fff;
+                border-radius: 12px;
+                overflow: hidden;
+                text-decoration: none;
+                color: inherit;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                transition: transform 0.2s;
+            ">
+                <img src="images/smart-travel-airlytics.jpg" alt="Smart Travel by AirLytics" style="width:100%;height:180px;object-fit:cover;">
+                <div style="padding:16px;">
+                    <h3 style="margin:0;">Smart Travel by AirLytics</h3>
+                    <p style="font-size:0.9em;color:#444;">AI chatbot for flight pricing fairness</p>
+                </div>
+            </a>
 
-    <!-- Security Knights -->
-    <a href="security-knights.html" class="project-card" style="
-      width: 280px;
-      background: #fff;
-      border-radius: 12px;
-      overflow: hidden;
-      text-decoration: none;
-      color: inherit;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      transition: transform 0.2s;
-    ">
-      <img src="images/security-knights.jpg" alt="Security Knights" style="width:100%;height:180px;object-fit:cover;">
-      <div style="padding:16px;">
-        <h3 style="margin:0;">Security Knights</h3>
-        <p style="font-size:0.9em;color:#444;">Gamified secure coding training</p>
-      </div>
-    </a>
+            <!-- Security Knights -->
+            <a href="security-knights.html" class="project-card" style="
+                width: 280px;
+                background: #fff;
+                border-radius: 12px;
+                overflow: hidden;
+                text-decoration: none;
+                color: inherit;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                transition: transform 0.2s;
+            ">
+                <img src="images/security-knights.jpg" alt="Security Knights" style="width:100%;height:180px;object-fit:cover;">
+                <div style="padding:16px;">
+                    <h3 style="margin:0;">Security Knights</h3>
+                    <p style="font-size:0.9em;color:#444;">Gamified secure coding training</p>
+                </div>
+            </a>
 
-    <!-- AI Shield -->
-    <a href="ai-shield.html" class="project-card" style="
-      width: 280px;
-      background: #fff;
-      border-radius: 12px;
-      overflow: hidden;
-      text-decoration: none;
-      color: inherit;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      transition: transform 0.2s;
-    ">
-      <img src="images/ai-shield.jpg" alt="AI Shield" style="width:100%;height:180px;object-fit:cover;">
-      <div style="padding:16px;">
-        <h3 style="margin:0;">AI Shield</h3>
-        <p style="font-size:0.9em;color:#444;">Cybersecurity for non-technical users</p>
-      </div>
-    </a>
+            <!-- AI Shield -->
+            <a href="ai-shield.html" class="project-card" style="
+                width: 280px;
+                background: #fff;
+                border-radius: 12px;
+                overflow: hidden;
+                text-decoration: none;
+                color: inherit;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                transition: transform 0.2s;
+            ">
+                <img src="images/ai-shield.jpg" alt="AI Shield" style="width:100%;height:180px;object-fit:cover;">
+                <div style="padding:16px;">
+                    <h3 style="margin:0;">AI Shield</h3>
+                    <p style="font-size:0.9em;color:#444;">Cybersecurity for non-technical users</p>
+                </div>
+            </a>
 
-    <!-- PromptCraft -->
-    <a href="promptcraft.html" class="project-card" style="
-      width: 280px;
-      background: #fff;
-      border-radius: 12px;
-      overflow: hidden;
-      text-decoration: none;
-      color: inherit;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      transition: transform 0.2s;
-    ">
-      <img src="images/promptcraft.jpg" alt="PromptCraft" style="width:100%;height:180px;object-fit:cover;">
-      <div style="padding:16px;">
-        <h3 style="margin:0;">PromptCraft</h3>
-        <p style="font-size:0.9em;color:#444;">AI prompt marketplace with versioning & analytics</p>
-      </div>
-    </a>
-  </div>
-</div>
+            <!-- PromptCraft -->
+            <a href="promptcraft.html" class="project-card" style="
+                width: 280px;
+                background: #fff;
+                border-radius: 12px;
+                overflow: hidden;
+                text-decoration: none;
+                color: inherit;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                transition: transform 0.2s;
+            ">
+                <img src="images/promptcraft.jpg" alt="PromptCraft" style="width:100%;height:180px;object-fit:cover;">
+                <div style="padding:16px;">
+                    <h3 style="margin:0;">PromptCraft</h3>
+                    <p style="font-size:0.9em;color:#444;">AI prompt marketplace with versioning & analytics</p>
+                </div>
+            </a>
 
-	
-  <!--
-    <div id="experience" class="background-alt">
-        <h2 class="heading">Experience</h2>
-        <div id="experience-timeline">
-            <div data-date="September 2015 – September 2016">
-                <h3>Employer Name</h3>
-                <h4>Job Title</h4>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur in iaculis ex. Etiam volutpat laoreet urna. Morbi ut tortor nec nulla commodo malesuada sit amet vel lacus. Fusce eget efficitur libero. Morbi dapibus porta quam laoreet placerat.
-                </p>
-            </div>
-
-            <div data-date="September 2015 – September 2016">
-                <h3>Employer Name</h3>
-                <h4>Job Title</h4>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur in iaculis ex. Etiam volutpat laoreet urna. Morbi ut tortor nec nulla commodo malesuada sit amet vel lacus. Fusce eget efficitur libero. Morbi dapibus porta quam laoreet placerat.
-                </p>
-            </div>
-
-            <div data-date="September 2015 – September 2016">
-                <h3>Employer Name</h3>
-                <h4>Job Title</h4>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur in iaculis ex. Etiam volutpat laoreet urna. Morbi ut tortor nec nulla commodo malesuada sit amet vel lacus. Fusce eget efficitur libero. Morbi dapibus porta quam laoreet placerat.
-                </p>
-            </div>
+            <!-- ML Algorithm Infographic -->
+            <a href="ml-algorithm-infographic.html" class="project-card" style="
+                width: 280px;
+                background: #fff;
+                border-radius: 12px;
+                overflow: hidden;
+                text-decoration: none;
+                color: inherit;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                transition: transform 0.2s;
+            ">
+                <img src="images/ai-shield.jpg" alt="Machine Learning Algorithm Framework" style="width:100%;height:180px;object-fit:cover;">
+                <div style="padding:16px;">
+                    <h3 style="margin:0;">ML Algorithm Framework</h3>
+                    <p style="font-size:0.9em;color:#444;">Visual infographic of supervised, unsupervised, and deep learning algorithms</p>
+                </div>
+            </a>
         </div>
     </div>
-    <!-- End #experience -->
-  -->
-
-	<!--
-    <div id="education">
-        <h2 class="heading">Education</h2>
-        <div class="education-block">
-            <h3>University of Ottawa</h3>
-            <span class="education-date">Sept 2016 - Sept 2017</span>
-            <h4>Bachelor of Science in Computer Science</h4>
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur in iaculis ex. Etiam volutpat laoreet urna. Morbi ut tortor nec nulla commodo malesuada sit amet vel lacus. Fusce eget efficitur libero. Morbi dapibus porta quam laoreet placerat.
-            </p>
-        </div>
-        <!-- End .education-block -->
--->
-	    <!--
-        <div class="education-block">
-            <h3>University of Ottawa</h3>
-            <span class="education-date">Sept 2016 - Sept 2017</span>
-            <h4>Bachelor of Science in Computer Science</h4>
-            <ul>
-                <li>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                </li>
-                <li>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                </li>
-                <li>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                </li>
-            </ul>
-        </div>
-        <!-- End .education-block -->
-    </div>
-    <!-- End #education -->
--->
-
 
     <div id="skills">
         <h2 class="heading">Skills</h2>
@@ -227,20 +170,7 @@
             <li>Ruby</li>
             <li>Go</li>
             <li>Node.js</li>
-            <li>AngularJs</li>
-            <li>React</li>
-            <li>Elixir</li>
-            <li>Java</li>
-            <li>C</li>
-            <li>C#</li>
-            <li>C++</li>
-            <li>Ruby on Rails</li>
-            <li>JavaScript</li>
-            <li>Python</li>
-            <li>Ruby</li>
-            <li>Go</li>
-            <li>Node.js</li>
-            <li>AngularJs</li>
+            <li>AngularJS</li>
             <li>React</li>
             <li>Elixir</li>
             <li>Java</li>
@@ -250,7 +180,6 @@
             <li>Ruby on Rails</li>
         </ul>
     </div>
-    <!-- End #skills -->
 
     <div id="contact">
         <h2>Get in Touch</h2>
@@ -262,16 +191,14 @@
                 <button type="submit">Send</button>
             </form>
         </div>
-        <!-- End #contact-form -->
     </div>
-    <!-- End #contact -->
 
     <footer>
         <div class="container">
             <div class="row">
                 <div class="col-sm-5 copyright">
                     <p>
-                        Copyright &copy; <span id="current-year">2022</span> YOUR NAME
+                        Copyright &copy; <span id="current-year">2025</span> Dayo Egonu
                     </p>
                 </div>
                 <div class="col-sm-2 top">
@@ -282,35 +209,18 @@
                 <div class="col-sm-5 social">
                     <ul>
                         <li>
-                            <a href="https://github.com/" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></a>
+                            <a href="https://github.com/didiegons" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></a>
                         </li>
                         <li>
-                            <a href="https://stackoverflow.com/" target="_blank"><i class="fa fa-stack-overflow" aria-hidden="true"></i></a>
-                        </li>
-                        <li>
-                            <a href="https://linkedin.com/" target="_blank"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
-                        </li>
-                        <li>
-                            <a href="https://www.facebook.com/" target="_blank"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                        </li>
-                        <li>
-                            <a href="https://twitter.com/" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-                        </li>
-                        <li>
-                            <a href="https://plus.google.com/" target="_blank"><i class="fa fa-google-plus" aria-hidden="true"></i></a>
+                            <a href="https://www.linkedin.com/in/dayoegonu/" target="_blank"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
     </footer>
-    <!-- End footer -->
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="js/scripts.min.js"></script>
-</body>
-
-</html>
     <script src="js/scripts.min.js"></script>
 </body>
 
