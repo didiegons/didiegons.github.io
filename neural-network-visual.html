@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neural Network Visual Framework | Dayo Egonu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="libs/font-awesome/css/font-awesome.min.css">
+  <style>
+    :root {
+      --dark: #050c1a;
+      --navy: #0a1628;
+      --panel: #0e1f3a;
+      --border: rgba(99,179,255,0.15);
+      --blue: #3b82f6;
+      --blue-bright: #60a5fa;
+      --teal: #2dd4bf;
+      --purple: #a78bfa;
+      --amber: #fbbf24;
+      --green: #34d399;
+      --red: #f87171;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --mono: 'Space Mono', monospace;
+      --sans: 'DM Sans', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--dark);
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.7;
+    }
+
+    /* Grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Nav ── */
+    .topnav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(5,12,26,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .topnav .brand { color: #fff; font-weight: 700; font-size: 17px; text-decoration: none; font-family: var(--sans); }
+    .topnav .brand span { color: #fbbf24; }
+    .topnav nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      margin-left: 20px;
+      transition: color 0.2s;
+    }
+    .topnav nav a:hover { color: var(--blue-bright); }
+
+    /* ── Page wrapper ── */
+    .page { max-width: 1200px; margin: 0 auto; padding: 0 24px 80px; position: relative; z-index: 1; }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 70px 0 50px;
+      text-align: center;
+    }
+    .eyebrow {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--blue-bright);
+      background: rgba(59,130,246,0.1);
+      border: 1px solid rgba(59,130,246,0.2);
+      padding: 6px 16px;
+      border-radius: 999px;
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      font-weight: 700;
+      line-height: 1.15;
+      color: #fff;
+      margin-bottom: 18px;
+    }
+    .hero h1 span { color: var(--blue-bright); }
+    .hero p {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 680px;
+      margin: 0 auto 32px;
+    }
+    .hero-badges {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .hero-badge {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      background: var(--panel);
+    }
+
+    /* ── Section ── */
+    .section { margin-bottom: 60px; }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .section-num {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--blue-bright);
+      background: rgba(59,130,246,0.1);
+      border: 1px solid rgba(59,130,246,0.2);
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+    .section-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 20px;
+    }
+
+    /* ── Neural Network Diagram ── */
+    .diagram-wrap {
+      background: var(--navy);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 36px 24px 28px;
+      overflow-x: auto;
+    }
+    .nn-diagram {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0;
+      min-width: 640px;
+      position: relative;
+    }
+    .nn-layer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      position: relative;
+      z-index: 2;
+    }
+    .layer-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .neuron {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      border: 2px solid;
+      position: relative;
+      transition: transform 0.2s;
+      cursor: default;
+    }
+    .neuron:hover { transform: scale(1.12); }
+    .neuron.input  { background: rgba(59,130,246,0.15); border-color: var(--blue); color: var(--blue-bright); }
+    .neuron.hidden { background: rgba(167,139,250,0.15); border-color: var(--purple); color: var(--purple); }
+    .neuron.output { background: rgba(52,211,153,0.15); border-color: var(--green); color: var(--green); }
+
+    /* Connections SVG */
+    .connections-svg {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .nn-arrow {
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      z-index: 2;
+    }
+    .nn-arrow svg { opacity: 0.4; }
+
+    .layer-caption {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 14px;
+      text-align: center;
+      max-width: 90px;
+      line-height: 1.4;
+    }
+
+    /* ── Data Flow Steps ── */
+    .flow-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 2px;
+      margin-top: 24px;
+      background: var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .flow-step {
+      background: var(--navy);
+      padding: 18px 16px;
+      text-align: center;
+    }
+    .flow-step .step-num {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--blue-bright);
+      margin-bottom: 6px;
+    }
+    .flow-step .step-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .flow-step p {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ── Component Cards Grid ── */
+    .components-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 20px;
+    }
+    .component-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 26px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .component-card:hover { border-color: rgba(99,179,255,0.35); }
+    .component-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+    .component-card.c-blue::before   { background: var(--blue); }
+    .component-card.c-purple::before { background: var(--purple); }
+    .component-card.c-teal::before   { background: var(--teal); }
+    .component-card.c-amber::before  { background: var(--amber); }
+    .component-card.c-red::before    { background: var(--red); }
+    .component-card.c-green::before  { background: var(--green); }
+
+    .comp-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+    .c-blue .comp-icon   { background: rgba(59,130,246,0.12); }
+    .c-purple .comp-icon { background: rgba(167,139,250,0.12); }
+    .c-teal .comp-icon   { background: rgba(45,212,191,0.12); }
+    .c-amber .comp-icon  { background: rgba(251,191,36,0.12); }
+    .c-red .comp-icon    { background: rgba(248,113,113,0.12); }
+    .c-green .comp-icon  { background: rgba(52,211,153,0.12); }
+
+    .comp-num {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+    .c-blue .comp-num   { color: var(--blue-bright); }
+    .c-purple .comp-num { color: var(--purple); }
+    .c-teal .comp-num   { color: var(--teal); }
+    .c-amber .comp-num  { color: var(--amber); }
+    .c-red .comp-num    { color: var(--red); }
+    .c-green .comp-num  { color: var(--green); }
+
+    .comp-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    .comp-body {
+      font-size: 14px;
+      color: #94a3b8;
+      line-height: 1.7;
+      margin-bottom: 14px;
+    }
+    .comp-example {
+      background: rgba(0,0,0,0.25);
+      border-left: 3px solid;
+      border-radius: 0 8px 8px 0;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .c-blue .comp-example   { border-color: var(--blue); }
+    .c-purple .comp-example { border-color: var(--purple); }
+    .c-teal .comp-example   { border-color: var(--teal); }
+    .c-amber .comp-example  { border-color: var(--amber); }
+    .c-red .comp-example    { border-color: var(--red); }
+    .c-green .comp-example  { border-color: var(--green); }
+
+    .comp-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-top: 12px;
+      border: 1px solid;
+    }
+    .c-blue .comp-tag   { color: var(--blue-bright); border-color: rgba(59,130,246,0.3); background: rgba(59,130,246,0.08); }
+    .c-purple .comp-tag { color: var(--purple); border-color: rgba(167,139,250,0.3); background: rgba(167,139,250,0.08); }
+    .c-teal .comp-tag   { color: var(--teal); border-color: rgba(45,212,191,0.3); background: rgba(45,212,191,0.08); }
+    .c-amber .comp-tag  { color: var(--amber); border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.08); }
+    .c-red .comp-tag    { color: var(--red); border-color: rgba(248,113,113,0.3); background: rgba(248,113,113,0.08); }
+    .c-green .comp-tag  { color: var(--green); border-color: rgba(52,211,153,0.3); background: rgba(52,211,153,0.08); }
+
+    /* ── Playground Observations ── */
+    .obs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .obs-card {
+      background: var(--navy);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .obs-card .obs-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .obs-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* ── Summary ── */
+    .summary-card {
+      background: linear-gradient(135deg, rgba(59,130,246,0.08) 0%, rgba(167,139,250,0.08) 100%);
+      border: 1px solid rgba(99,179,255,0.2);
+      border-radius: 20px;
+      padding: 40px;
+    }
+    .summary-card h2 {
+      font-size: 1.8rem;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+    .summary-card p { font-size: 15px; color: #94a3b8; line-height: 1.8; margin-bottom: 16px; }
+    .insights-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin-top: 24px;
+    }
+    .insight {
+      background: rgba(0,0,0,0.2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+    }
+    .insight .i-icon { font-size: 22px; margin-bottom: 8px; display: block; }
+    .insight .i-title { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .insight p { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+    /* ── Reflection ── */
+    .reflection-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+    }
+    .reflection-card h2 { font-size: 1.4rem; color: #fff; margin-bottom: 16px; }
+    .reflection-card p  { font-size: 15px; color: #94a3b8; line-height: 1.8; margin-bottom: 14px; }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--navy);
+      border-top: 1px solid var(--border);
+      padding: 24px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+      position: relative;
+      z-index: 1;
+    }
+    footer a { color: var(--blue-bright); text-decoration: none; margin: 0 10px; }
+
+    @media (max-width: 640px) {
+      .components-grid { grid-template-columns: 1fr; }
+      .hero { padding: 40px 0 30px; }
+      .summary-card { padding: 24px; }
+    }
+
+    /* Animated pulse on neurons */
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(59,130,246,0.3); }
+      50% { box-shadow: 0 0 0 8px rgba(59,130,246,0); }
+    }
+    .neuron.input { animation: pulse 2.8s infinite; }
+  </style>
+</head>
+<body>
+
+<!-- Nav -->
+<div class="topnav">
+  <a href="index.html" class="brand">Dayo <span>Portfolio</span></a>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="https://www.linkedin.com/in/dayoegonu/" target="_blank">LinkedIn</a>
+    <a href="projects.html">Projects</a>
+    <a href="index.html#skills">Skills</a>
+    <a href="index.html#contact">Contact</a>
+  </nav>
+</div>
+
+<div class="page">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="eyebrow">Portfolio Artifact 02 &nbsp;·&nbsp; Applied AI</div>
+    <h1>Neural Network<br><span>Visual Framework</span></h1>
+    <p>A structured visual guide to the core components of neural networks — from individual neurons and weights to activation functions, loss functions, and optimization — grounded in hands-on exploration with TensorFlow Playground.</p>
+    <div class="hero-badges">
+      <span class="hero-badge">Deep Learning</span>
+      <span class="hero-badge">TensorFlow Playground</span>
+      <span class="hero-badge">Visual Communication</span>
+      <span class="hero-badge">AI Leadership</span>
+    </div>
+  </div>
+
+  <!-- SECTION 1: Architecture Diagram -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <span class="section-title">Neural Network Architecture</span>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="card" style="margin-bottom:20px;">
+      <p style="color:#94a3b8; font-size:14px; margin-bottom:20px;">The diagram below shows how data flows through a neural network — entering at the <strong style="color:var(--blue-bright)">input layer</strong>, being transformed through <strong style="color:var(--purple)">hidden layers</strong>, and producing a result at the <strong style="color:var(--green)">output layer</strong>. Each circle is a neuron. Each connection carries a weight.</p>
+    </div>
+
+    <div class="diagram-wrap">
+      <div style="position:relative; display:flex; flex-direction:column; align-items:center;">
+
+        <!-- SVG connection lines -->
+        <svg style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;" viewBox="0 0 900 260" preserveAspectRatio="none">
+          <!-- Input → Hidden 1 (4 neurons) -->
+          <!-- x positions approx: input col at ~100, hidden1 at ~280, hidden2 at ~520, output at ~700 -->
+          <!-- Input nodes y: 50,110,170,230 → center row of 4: 80,130,180 for 3 neurons? Let me just do lines roughly -->
+          <g stroke="rgba(99,179,255,0.18)" stroke-width="1">
+            <!-- input to h1 -->
+            <line x1="130" y1="60"  x2="270" y2="50"/>
+            <line x1="130" y1="60"  x2="270" y2="110"/>
+            <line x1="130" y1="60"  x2="270" y2="170"/>
+            <line x1="130" y1="60"  x2="270" y2="230"/>
+            <line x1="130" y1="130" x2="270" y2="50"/>
+            <line x1="130" y1="130" x2="270" y2="110"/>
+            <line x1="130" y1="130" x2="270" y2="170"/>
+            <line x1="130" y1="130" x2="270" y2="230"/>
+            <line x1="130" y1="200" x2="270" y2="50"/>
+            <line x1="130" y1="200" x2="270" y2="110"/>
+            <line x1="130" y1="200" x2="270" y2="170"/>
+            <line x1="130" y1="200" x2="270" y2="230"/>
+            <!-- h1 to h2 -->
+            <line x1="330" y1="50"  x2="520" y2="90"/>
+            <line x1="330" y1="50"  x2="520" y2="180"/>
+            <line x1="330" y1="110" x2="520" y2="90"/>
+            <line x1="330" y1="110" x2="520" y2="180"/>
+            <line x1="330" y1="170" x2="520" y2="90"/>
+            <line x1="330" y1="170" x2="520" y2="180"/>
+            <line x1="330" y1="230" x2="520" y2="90"/>
+            <line x1="330" y1="230" x2="520" y2="180"/>
+            <!-- h2 to output -->
+            <line x1="580" y1="90"  x2="760" y2="140"/>
+            <line x1="580" y1="180" x2="760" y2="140"/>
+          </g>
+        </svg>
+
+        <!-- Layer columns -->
+        <div style="display:flex; gap:60px; align-items:center; justify-content:center; padding:20px 60px; position:relative; z-index:2;">
+
+          <!-- Input Layer -->
+          <div class="nn-layer">
+            <div class="layer-label" style="color:var(--blue-bright);">Input Layer</div>
+            <div class="neuron input">X</div>
+            <div class="neuron input">Y</div>
+            <div class="neuron input">X²</div>
+            <div class="layer-caption" style="color:var(--blue-bright);">Raw features fed into the network</div>
+          </div>
+
+          <!-- Arrow -->
+          <div style="color:var(--border); font-size:22px; margin-bottom:30px;">→</div>
+
+          <!-- Hidden Layer 1 -->
+          <div class="nn-layer">
+            <div class="layer-label" style="color:var(--purple);">Hidden Layer 1</div>
+            <div class="neuron hidden">h</div>
+            <div class="neuron hidden">h</div>
+            <div class="neuron hidden">h</div>
+            <div class="neuron hidden">h</div>
+            <div class="layer-caption" style="color:var(--purple);">Detects basic patterns</div>
+          </div>
+
+          <!-- Arrow -->
+          <div style="color:var(--border); font-size:22px; margin-bottom:30px;">→</div>
+
+          <!-- Hidden Layer 2 -->
+          <div class="nn-layer">
+            <div class="layer-label" style="color:var(--purple);">Hidden Layer 2</div>
+            <div class="neuron hidden">h</div>
+            <div class="neuron hidden">h</div>
+            <div class="layer-caption" style="color:var(--purple);">Combines patterns into concepts</div>
+          </div>
+
+          <!-- Arrow -->
+          <div style="color:var(--border); font-size:22px; margin-bottom:30px;">→</div>
+
+          <!-- Output Layer -->
+          <div class="nn-layer">
+            <div class="layer-label" style="color:var(--green);">Output Layer</div>
+            <div class="neuron output">✓</div>
+            <div class="layer-caption" style="color:var(--green);">Final classification or prediction</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data flow steps -->
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="step-num">STEP 01</div>
+          <div class="step-title">Input</div>
+          <p>Raw data (e.g. coordinates, pixel values) enters the network as numeric features.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">STEP 02</div>
+          <div class="step-title">Weight &times; Input</div>
+          <p>Each connection multiplies the input by a learned weight, scaling its influence.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">STEP 03</div>
+          <div class="step-title">Activation</div>
+          <p>An activation function (e.g. ReLU, Tanh) decides how strongly the neuron fires.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">STEP 04</div>
+          <div class="step-title">Forward Pass</div>
+          <p>Signals propagate layer by layer toward the output, building richer representations.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">STEP 05</div>
+          <div class="step-title">Loss</div>
+          <p>The loss function measures how far the output is from the correct answer.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">STEP 06</div>
+          <div class="step-title">Backprop</div>
+          <p>The optimizer updates weights to reduce loss, repeating until performance converges.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: Component Definitions -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <span class="section-title">Core Components Defined</span>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="components-grid">
+
+      <!-- Layers -->
+      <div class="component-card c-blue">
+        <div class="comp-icon">🧱</div>
+        <div class="comp-num">COMPONENT 01</div>
+        <div class="comp-title">Layers</div>
+        <div class="comp-body">A layer is a group of neurons that process information together at the same stage of the network. Every neural network has at least three types: an input layer (receives raw data), one or more hidden layers (extract and transform patterns), and an output layer (produces the final prediction or classification). Layers are the fundamental organizational unit of neural network architecture.</div>
+        <div class="comp-example"><strong style="color:#e2e8f0;">Playground observation:</strong> Adding more hidden layers allowed the network to solve the spiral dataset — a problem a single-layer network could not separate. Each additional layer enabled more complex decision boundaries.</div>
+        <span class="comp-tag">Structural</span>
+      </div>
+
+      <!-- Neurons -->
+      <div class="component-card c-purple">
+        <div class="comp-icon">⚡</div>
+        <div class="comp-num">COMPONENT 02</div>
+        <div class="comp-title">Neurons</div>
+        <div class="comp-body">A neuron (also called a node or unit) is the basic computational unit of a neural network. It receives one or more numeric inputs, multiplies each by its corresponding weight, sums the results together, and passes the total through an activation function to produce an output. Neurons are loosely inspired by biological neurons in the brain, which fire electrical signals when sufficiently stimulated.</div>
+        <div class="comp-example"><strong style="color:#e2e8f0;">Playground observation:</strong> Increasing the number of neurons per hidden layer from 2 to 6 dramatically improved the model's ability to fit the circle dataset, reducing training loss and producing a smoother decision boundary.</div>
+        <span class="comp-tag">Computational Unit</span>
+      </div>
+
+      <!-- Weights -->
+      <div class="component-card c-teal">
+        <div class="comp-icon">⚖️</div>
+        <div class="comp-num">COMPONENT 03</div>
+        <div class="comp-title">Weights</div>
+        <div class="comp-body">Weights are numeric parameters assigned to each connection between neurons. They control how strongly one neuron influences another — a high weight amplifies a signal, while a low or negative weight suppresses it. Weights are what the network actually "learns": during training, the optimization algorithm continuously adjusts them to minimize prediction errors. A neural network with millions of parameters is essentially storing millions of tuned weight values.</div>
+        <div class="comp-example"><strong style="color:#e2e8f0;">Playground observation:</strong> The colored lines between neurons in the Playground represent weight values — blue for positive, orange for negative. As training progressed, the weights visibly shifted, and the decision boundary reshaped in response.</div>
+        <span class="comp-tag">Learnable Parameter</span>
+      </div>
+
+      <!-- Activation Functions -->
+      <div class="component-card c-amber">
+        <div class="comp-icon">🔀</div>
+        <div class="comp-num">COMPONENT 04</div>
+        <div class="comp-title">Activation Functions</div>
+        <div class="comp-body">An activation function is a mathematical formula applied to the output of each neuron. Without it, every layer would just be a linear transformation, and stacking them would have no benefit — the whole network would behave like a single layer. Activation functions introduce non-linearity, allowing the network to learn complex, curved decision boundaries. Common choices include ReLU (Rectified Linear Unit), Tanh (hyperbolic tangent), Sigmoid, and Linear.</div>
+        <div class="comp-example"><strong style="color:#e2e8f0;">Playground observation:</strong> Switching from Linear to Tanh activation on the circle dataset caused the model to converge much faster and achieve a cleaner circular boundary — linear activation failed to separate the classes at all.</div>
+        <span class="comp-tag">Non-linearity</span>
+      </div>
+
+      <!-- Loss Functions -->
+      <div class="component-card c-red">
+        <div class="comp-icon">📉</div>
+        <div class="comp-num">COMPONENT 05</div>
+        <div class="comp-title">Loss Functions</div>
+        <div class="comp-body">A loss function (also called a cost function) measures the difference between the network's predictions and the true correct answers. It produces a single number — the "loss" — that summarizes how wrong the model is. The goal of training is to minimize this number. For classification tasks, Cross-Entropy Loss is standard. For regression tasks, Mean Squared Error (MSE) is most common. The loss function is the signal that guides the entire learning process.</div>
+        <div class="comp-example"><strong style="color:#e2e8f0;">Playground observation:</strong> The test loss score displayed in the Playground dropped steadily as training progressed. When noise was increased to 50, the gap between training loss and test loss widened — a classic sign of overfitting.</div>
+        <span class="comp-tag">Error Measurement</span>
+      </div>
+
+      <!-- Optimization Algorithms -->
+      <div class="component-card c-green">
+        <div class="comp-icon">🎯</div>
+        <div class="comp-num">COMPONENT 06</div>
+        <div class="comp-title">Optimization Algorithms</div>
+        <div class="comp-body">An optimization algorithm uses the loss function's output to update the network's weights in the direction that reduces error. The most fundamental optimizer is Gradient Descent, which calculates the slope of the loss and nudges weights downhill. Modern variants like Stochastic Gradient Descent (SGD) and Adam (Adaptive Moment Estimation) improve on this by adjusting learning rates automatically and processing data in mini-batches for efficiency. The learning rate controls how big each update step is.</div>
+        <div class="comp-example"><strong style="color:#e2e8f0;">Playground observation:</strong> Adjusting the learning rate from 0.001 to 0.1 caused the model to train much faster — but setting it too high (1.0) caused the loss to spike and the model to become unstable, overshooting the optimal weights.</div>
+        <span class="comp-tag">Weight Updater</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECTION 3: Playground Observations -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <span class="section-title">TensorFlow Playground Observations</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="card" style="margin-bottom:20px;">
+      <p style="color:#94a3b8; font-size:14px;">Hands-on experimentation with the Neural Network Playground revealed how design choices interact. The following are key findings from training across multiple dataset types and configurations.</p>
+    </div>
+    <div class="obs-grid">
+      <div class="obs-card">
+        <div class="obs-title"><span style="color:var(--blue-bright);">📊</span> Dataset: Circle</div>
+        <p>Required at least 1 hidden layer with 4+ neurons and Tanh activation to achieve a clean circular boundary. Linear activation completely failed to separate the classes.</p>
+      </div>
+      <div class="obs-card">
+        <div class="obs-title"><span style="color:var(--purple);">🌀</span> Dataset: Spiral</div>
+        <p>The hardest dataset. Required 2–3 hidden layers with 6+ neurons each. The spiral pattern is highly non-linear and exposed how shallow networks plateau in performance.</p>
+      </div>
+      <div class="obs-card">
+        <div class="obs-title"><span style="color:var(--amber);">📡</span> Effect of Noise</div>
+        <p>At noise level 0, models achieved near-perfect boundaries. At noise 50, even complex networks showed high test loss — demonstrating the overfitting problem in real data.</p>
+      </div>
+      <div class="obs-card">
+        <div class="obs-title"><span style="color:var(--teal);">⚡</span> Learning Rate Impact</div>
+        <p>A learning rate of 0.03 provided stable, reliable convergence across datasets. Too low (0.001) made training painfully slow; too high (1.0) destabilized the loss entirely.</p>
+      </div>
+      <div class="obs-card">
+        <div class="obs-title"><span style="color:var(--green);">🔢</span> Feature Engineering</div>
+        <p>Adding X², Y², and X·Y as input features dramatically helped the XOR and circle datasets — the network could express polynomial relationships without needing more layers.</p>
+      </div>
+      <div class="obs-card">
+        <div class="obs-title"><span style="color:var(--red);">⏱️</span> Training Time vs. Complexity</div>
+        <p>Deeper networks with more neurons took longer to converge but achieved better test loss on complex data. Simpler networks were faster but bottlenecked on non-linear patterns.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: Summary -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <span class="section-title">Summary</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="summary-card">
+      <div class="eyebrow" style="margin-bottom:16px;">Key Insights</div>
+      <h2>Why Visualizing Neural Networks Matters</h2>
+      <p>Neural networks are often described as "black boxes" — systems that produce outputs without clear explanations. Visualizing their internal components breaks open that box. When you can see how weights shift, how activation functions shape decision boundaries, and how loss drops over time, the network stops being mysterious and starts being understandable.</p>
+      <p>This exercise reinforced that the six core components — layers, neurons, weights, activation functions, loss functions, and optimization algorithms — do not operate in isolation. They form an interdependent system where every design choice ripples through the whole. Choosing the wrong activation function can make layers useless. Setting the wrong learning rate can destabilize optimization entirely. Architecture decisions cascade.</p>
+      <div class="insights-grid">
+        <div class="insight">
+          <span class="i-icon">🏗️</span>
+          <div class="i-title">Architecture matters</div>
+          <p>Depth and width of the network must match the complexity of the problem — more is not always better.</p>
+        </div>
+        <div class="insight">
+          <span class="i-icon">🔀</span>
+          <div class="i-title">Non-linearity is essential</div>
+          <p>Without activation functions, stacked layers collapse into a single linear transformation — losing all their power.</p>
+        </div>
+        <div class="insight">
+          <span class="i-icon">📉</span>
+          <div class="i-title">Loss guides learning</div>
+          <p>The loss function is the compass. Without an accurate signal, the optimizer has no direction to improve.</p>
+        </div>
+        <div class="insight">
+          <span class="i-icon">⚖️</span>
+          <div class="i-title">Balance is key</div>
+          <p>Learning rate, batch size, and regularization must be balanced — no single setting is universally optimal.</p>
+        </div>
+        <div class="insight">
+          <span class="i-icon">🎯</span>
+          <div class="i-title">Visualization builds intuition</div>
+          <p>Seeing decision boundaries change in real time builds the intuition that equations alone cannot provide.</p>
+        </div>
+        <div class="insight">
+          <span class="i-icon">🌊</span>
+          <div class="i-title">Data quality limits models</div>
+          <p>High noise showed that even well-architected networks cannot overcome fundamentally noisy or insufficient data.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: Reflection -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <span class="section-title">Reflection on Learning</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="reflection-card">
+      <h2>From Theory to Intuition</h2>
+      <p>Before working with the TensorFlow Playground, I understood neural networks conceptually — layers, neurons, weights, and the general idea of training. But there is a significant gap between knowing a definition and having genuine intuition for how these systems behave. This exercise closed that gap in a way that reading alone never could.</p>
+      <p>Watching the decision boundary evolve in real time as the network trained gave me a visceral sense of what "learning" actually looks like. Seeing a tangled, unresolved boundary gradually sharpen into a clean separation made abstract concepts like gradient descent and weight updates feel concrete and observable. The moment a spiral dataset finally converged — after adding a third hidden layer — was genuinely satisfying.</p>
+      <p>Creating this visual artifact also deepened my appreciation for technical communication. Translating these observations into a structured, visually clear format required me to think carefully about what mattered most and how to explain it to someone who may have no prior exposure to neural networks. That process — distilling complexity into clarity — is exactly the kind of skill I want to carry forward into AI leadership roles.</p>
+      <p style="color:#60a5fa; font-weight:600; margin-top:6px;">The most important takeaway: neural networks are not magic. They are precisely engineered systems of interacting mathematical decisions — and those decisions can be understood, visualized, and deliberately designed.</p>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>
+    Dayo Egonu &nbsp;·&nbsp; Neural Network Visual Framework &nbsp;·&nbsp; Portfolio Artifact 02
+    &nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="index.html">Home</a>
+    <a href="projects.html">Projects</a>
+    <a href="about.html">About</a>
+  </p>
+</footer>
+
+</body>
+</html>
