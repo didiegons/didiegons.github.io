@@ -482,7 +482,7 @@
   <div class="hero">
     <div class="eyebrow">Portfolio Artifact 02 &nbsp;·&nbsp; Applied AI</div>
     <h1>Neural Network<br><span>Visual Framework</span></h1>
-    <p>A structured visual guide to the core components of neural networks — from individual neurons and weights to activation functions, loss functions, and optimization — grounded in hands-on exploration with TensorFlow Playground.</p>
+    <p>A structured visual guide to the core components of neural networks from individual neurons and weights to activation functions, loss functions, and optimization — grounded in hands-on exploration with TensorFlow Playground.</p>
     <div class="hero-badges">
       <span class="hero-badge">Deep Learning</span>
       <span class="hero-badge">TensorFlow Playground</span>
@@ -640,7 +640,7 @@
         <div class="comp-num">COMPONENT 01</div>
         <div class="comp-title">Layers</div>
         <div class="comp-body">A layer is a group of neurons that process information together at the same stage of the network. Every neural network has at least three types: an input layer (receives raw data), one or more hidden layers (extract and transform patterns), and an output layer (produces the final prediction or classification). Layers are the fundamental organizational unit of neural network architecture.</div>
-        <div class="comp-example"><strong style="color:#e2e8f0;">Playground observation:</strong> Adding more hidden layers allowed the network to solve the spiral dataset — a problem a single-layer network could not separate. Each additional layer enabled more complex decision boundaries.</div>
+        <div class="comp-example"><strong style="color:#e2e8f0;">Playground observation:</strong> Adding more hidden layers allowed the network to solve the spiral dataset, a problem a single-layer network could not separate. Each additional layer enabled more complex decision boundaries.</div>
         <span class="comp-tag">Structural</span>
       </div>
 
@@ -659,8 +659,8 @@
         <div class="comp-icon">⚖️</div>
         <div class="comp-num">COMPONENT 03</div>
         <div class="comp-title">Weights</div>
-        <div class="comp-body">Weights are numeric parameters assigned to each connection between neurons. They control how strongly one neuron influences another — a high weight amplifies a signal, while a low or negative weight suppresses it. Weights are what the network actually "learns": during training, the optimization algorithm continuously adjusts them to minimize prediction errors. A neural network with millions of parameters is essentially storing millions of tuned weight values.</div>
-        <div class="comp-example"><strong style="color:#e2e8f0;">Playground observation:</strong> The colored lines between neurons in the Playground represent weight values — blue for positive, orange for negative. As training progressed, the weights visibly shifted, and the decision boundary reshaped in response.</div>
+        <div class="comp-body">Weights are numeric parameters assigned to each connection between neurons. They control how strongly one neuron influences another, a high weight amplifies a signal, while a low or negative weight suppresses it. Weights are what the network actually "learns": during training, the optimization algorithm continuously adjusts them to minimize prediction errors. A neural network with millions of parameters is essentially storing millions of tuned weight values.</div>
+        <div class="comp-example"><strong style="color:#e2e8f0;">Playground observation:</strong> The colored lines between neurons in the Playground represent weight values, blue for positive, orange for negative. As training progressed, the weights visibly shifted, and the decision boundary reshaped in response.</div>
         <span class="comp-tag">Learnable Parameter</span>
       </div>
 
@@ -669,8 +669,8 @@
         <div class="comp-icon">🔀</div>
         <div class="comp-num">COMPONENT 04</div>
         <div class="comp-title">Activation Functions</div>
-        <div class="comp-body">An activation function is a mathematical formula applied to the output of each neuron. Without it, every layer would just be a linear transformation, and stacking them would have no benefit — the whole network would behave like a single layer. Activation functions introduce non-linearity, allowing the network to learn complex, curved decision boundaries. Common choices include ReLU (Rectified Linear Unit), Tanh (hyperbolic tangent), Sigmoid, and Linear.</div>
-        <div class="comp-example"><strong style="color:#e2e8f0;">Playground observation:</strong> Switching from Linear to Tanh activation on the circle dataset caused the model to converge much faster and achieve a cleaner circular boundary — linear activation failed to separate the classes at all.</div>
+        <div class="comp-body">An activation function is a mathematical formula applied to the output of each neuron. Without it, every layer would just be a linear transformation, and stacking them would have no benefit the whole network would behave like a single layer. Activation functions introduce non-linearity, allowing the network to learn complex, curved decision boundaries. Common choices include ReLU (Rectified Linear Unit), Tanh (hyperbolic tangent), Sigmoid, and Linear.</div>
+        <div class="comp-example"><strong style="color:#e2e8f0;">Playground observation:</strong> Switching from Linear to Tanh activation on the circle dataset caused the model to converge much faster and achieve a cleaner circular boundary linear activation failed to separate the classes at all.</div>
         <span class="comp-tag">Non-linearity</span>
       </div>
 
@@ -679,8 +679,8 @@
         <div class="comp-icon">📉</div>
         <div class="comp-num">COMPONENT 05</div>
         <div class="comp-title">Loss Functions</div>
-        <div class="comp-body">A loss function (also called a cost function) measures the difference between the network's predictions and the true correct answers. It produces a single number — the "loss" — that summarizes how wrong the model is. The goal of training is to minimize this number. For classification tasks, Cross-Entropy Loss is standard. For regression tasks, Mean Squared Error (MSE) is most common. The loss function is the signal that guides the entire learning process.</div>
-        <div class="comp-example"><strong style="color:#e2e8f0;">Playground observation:</strong> The test loss score displayed in the Playground dropped steadily as training progressed. When noise was increased to 50, the gap between training loss and test loss widened — a classic sign of overfitting.</div>
+        <div class="comp-body">A loss function (also called a cost function) measures the difference between the network's predictions and the true correct answers. It produces a single number, the "loss" that summarizes how wrong the model is. The goal of training is to minimize this number. For classification tasks, Cross-Entropy Loss is standard. For regression tasks, Mean Squared Error (MSE) is most common. The loss function is the signal that guides the entire learning process.</div>
+        <div class="comp-example"><strong style="color:#e2e8f0;">Playground observation:</strong> The test loss score displayed in the Playground dropped steadily as training progressed. When noise was increased to 50, the gap between training loss and test loss widened a classic sign of overfitting.</div>
         <span class="comp-tag">Error Measurement</span>
       </div>
 
@@ -690,7 +690,7 @@
         <div class="comp-num">COMPONENT 06</div>
         <div class="comp-title">Optimization Algorithms</div>
         <div class="comp-body">An optimization algorithm uses the loss function's output to update the network's weights in the direction that reduces error. The most fundamental optimizer is Gradient Descent, which calculates the slope of the loss and nudges weights downhill. Modern variants like Stochastic Gradient Descent (SGD) and Adam (Adaptive Moment Estimation) improve on this by adjusting learning rates automatically and processing data in mini-batches for efficiency. The learning rate controls how big each update step is.</div>
-        <div class="comp-example"><strong style="color:#e2e8f0;">Playground observation:</strong> Adjusting the learning rate from 0.001 to 0.1 caused the model to train much faster — but setting it too high (1.0) caused the loss to spike and the model to become unstable, overshooting the optimal weights.</div>
+        <div class="comp-example"><strong style="color:#e2e8f0;">Playground observation:</strong> Adjusting the learning rate from 0.001 to 0.1 caused the model to train much faster, but setting it too high (1.0) caused the loss to spike and the model to become unstable, overshooting the optimal weights.</div>
         <span class="comp-tag">Weight Updater</span>
       </div>
 
@@ -718,7 +718,7 @@
       </div>
       <div class="obs-card">
         <div class="obs-title"><span style="color:var(--amber);">📡</span> Effect of Noise</div>
-        <p>At noise level 0, models achieved near-perfect boundaries. At noise 50, even complex networks showed high test loss — demonstrating the overfitting problem in real data.</p>
+        <p>At noise level 0, models achieved near-perfect boundaries. At noise 50, even complex networks showed high test loss demonstrating the overfitting problem in real data.</p>
       </div>
       <div class="obs-card">
         <div class="obs-title"><span style="color:var(--teal);">⚡</span> Learning Rate Impact</div>
