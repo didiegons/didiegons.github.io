@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How Generative AI LLMs Are Trained — Dayo Adedigbo</title>
+<title>LLM Training Pipeline | Dayo Egonu</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -395,9 +395,155 @@
 
   /* divider line */
   .rule { height:1px; background: linear-gradient(90deg, transparent, var(--border), transparent); margin: 0; }
+
+  /* ── PORTFOLIO NAV (matches didiegons.github.io) ── */
+  .portfolio-nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(7,8,15,0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0;
+  }
+  .nav-inner {
+    max-width: 1100px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2rem; height: 58px;
+  }
+  .nav-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem; font-weight: 700;
+    color: var(--amber);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+    flex-shrink: 0;
+  }
+  .nav-brand:hover { color: var(--amber2); }
+  .nav-links {
+    display: flex; align-items: center; gap: 0.2rem;
+    list-style: none;
+  }
+  .nav-links a {
+    display: flex; align-items: center; gap: 0.35rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.83rem; font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    transition: color 0.2s, background 0.2s;
+    letter-spacing: 0.01em;
+  }
+  .nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+  .nav-links a.active { color: var(--amber); }
+  .nav-links .nav-li-icon { font-size: 0.75rem; opacity: 0.7; }
+
+  /* LinkedIn special */
+  .nav-links a.linkedin-link {
+    color: #60A5FA;
+    border: 1px solid rgba(96,165,250,0.2);
+    border-radius: 6px;
+  }
+  .nav-links a.linkedin-link:hover {
+    background: rgba(96,165,250,0.08);
+    border-color: rgba(96,165,250,0.4);
+    color: #93C5FD;
+  }
+
+  /* artifact badge under nav */
+  .artifact-badge {
+    background: rgba(245,158,11,0.06);
+    border-bottom: 1px solid var(--border);
+    padding: 0.5rem 0;
+  }
+  .artifact-badge-inner {
+    max-width: 1100px; margin: 0 auto;
+    padding: 0 2rem;
+    display: flex; align-items: center; gap: 1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .artifact-badge-inner span.sep { color: var(--border); }
+  .artifact-badge-inner span.hi  { color: var(--amber); }
+
+  /* ── PORTFOLIO FOOTER ── */
+  .portfolio-footer {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    padding: 1.6rem 0;
+    margin-top: 0;
+  }
+  .portfolio-footer-inner {
+    max-width: 1100px; margin: 0 auto;
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  .portfolio-footer p {
+    font-size: 0.75rem; color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+  }
+  .portfolio-footer-links {
+    display: flex; gap: 0.3rem; list-style: none;
+  }
+  .portfolio-footer-links a {
+    font-size: 0.78rem; font-weight: 500;
+    color: var(--muted); text-decoration: none;
+    padding: 0.3rem 0.65rem;
+    border-radius: 5px;
+    transition: color 0.2s, background 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .portfolio-footer-links a:hover { color: var(--amber); background: rgba(245,158,11,0.06); }
+
+  @media(max-width: 640px) {
+    .nav-links a span.nav-label { display: none; }
+    .nav-links a { padding: 0.4rem 0.55rem; }
+  }
 </style>
 </head>
 <body>
+
+<!-- ══ PORTFOLIO NAV ═══════════════════════════════════════════════════════ -->
+<nav class="portfolio-nav" role="navigation" aria-label="Portfolio navigation">
+  <div class="nav-inner">
+    <a href="https://didiegons.github.io/index.html" class="nav-brand">Dayo Portfolio</a>
+    <ul class="nav-links">
+      <li><a href="https://didiegons.github.io/index.html">
+        <span class="nav-li-icon">🏠</span><span class="nav-label">Home</span>
+      </a></li>
+      <li><a href="https://didiegons.github.io/projects.html">
+        <span class="nav-li-icon">🗂</span><span class="nav-label">Projects</span>
+      </a></li>
+      <li><a href="https://didiegons.github.io/index.html#skills">
+        <span class="nav-li-icon">⚡</span><span class="nav-label">Skills</span>
+      </a></li>
+      <li><a href="https://didiegons.github.io/index.html#contact">
+        <span class="nav-li-icon">✉️</span><span class="nav-label">Contact</span>
+      </a></li>
+      <li><a href="https://www.linkedin.com/in/dayoegonu/" class="linkedin-link" target="_blank" rel="noopener">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+        <span class="nav-label">LinkedIn</span>
+      </a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Artifact badge -->
+<div class="artifact-badge">
+  <div class="artifact-badge-inner">
+    <span class="hi">Portfolio Artifact 03</span>
+    <span class="sep">·</span>
+    <span>Applied AI</span>
+    <span class="sep">·</span>
+    <span>LLM Training Pipeline</span>
+    <span class="sep">·</span>
+    <span>Dayo Egonu</span>
+  </div>
+</div>
 
 <!-- ══ HERO ════════════════════════════════════════════════════════════════ -->
 <div class="hero">
@@ -408,7 +554,7 @@
     <div class="hero-meta fade-up d4">
       <span><span class="dot"></span>Data Collection → Deployment</span>
       <span><span class="dot"></span>GPT-4 · Claude · LLaMA · Gemini</span>
-      <span><span class="dot"></span>Dayo Adedigbo · Applied AI</span>
+      <span><span class="dot"></span>Dayo Egonu · Applied AI</span>
     </div>
   </div>
 </div>
@@ -769,18 +915,21 @@
   </div>
 </section>
 
-<!-- ══ FOOTER ══════════════════════════════════════════════════════════════ -->
-<footer>
-  <div class="wrap footer">
+<!-- ══ PORTFOLIO FOOTER ═══════════════════════════════════════════════════ -->
+<footer class="portfolio-footer">
+  <div class="portfolio-footer-inner">
     <div>
-      <div class="footer-brand">Dayo Adedigbo</div>
-      <p>Applied AI Coursework · Professional Portfolio · 2025</p>
-      <p style="margin-top:0.3rem;">Sources: Brown et al. 2020 (GPT-3) · Touvron et al. 2023 (LLaMA 2) · Epoch AI Training Cost Database · OpenAI Technical Reports · Anthropic Model Cards</p>
+      <p style="font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;color:var(--amber);margin-bottom:0.25rem;">Dayo Egonu</p>
+      <p>LLM Training Pipeline · Portfolio Artifact 03 · 2025</p>
+      <p style="margin-top:0.25rem;">Sources: Brown et al. 2020 · Hoffmann et al. 2022 · OpenAI Technical Reports · Epoch AI · Anthropic Model Cards</p>
     </div>
-    <div style="text-align:right;">
-      <p>didiegons.github.io</p>
-      <p style="margin-top:0.3rem;font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--muted);">Visual Artifact · LLM Training Pipeline</p>
-    </div>
+    <ul class="portfolio-footer-links">
+      <li><a href="https://didiegons.github.io/index.html">Home</a></li>
+      <li><a href="https://didiegons.github.io/projects.html">Projects</a></li>
+      <li><a href="https://didiegons.github.io/about.html">About</a></li>
+      <li><a href="https://didiegons.github.io/index.html#contact">Contact</a></li>
+      <li><a href="https://www.linkedin.com/in/dayoegonu/" target="_blank" rel="noopener" style="color:#60A5FA;">LinkedIn</a></li>
+    </ul>
   </div>
 </footer>
 
