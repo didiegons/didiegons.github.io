@@ -541,9 +541,125 @@
   }
 
   section { margin-bottom: 52px; }
+
+  /* ── NAV ── */
+  .site-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #0a0f1e;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 32px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-brand {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--accent4);
+    text-decoration: none;
+    letter-spacing: -0.3px;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+    border-radius: 6px;
+    transition: color 0.2s, background 0.2s;
+  }
+
+  .nav-links a:hover {
+    color: var(--text);
+    background: var(--surface);
+  }
+
+  .nav-links .nav-icon { font-size: 14px; }
+
+  .nav-links .nav-linkedin {
+    background: #0a66c2;
+    color: #fff;
+    border-radius: 6px;
+    padding: 7px 14px;
+  }
+
+  .nav-links .nav-linkedin:hover {
+    background: #0856a8;
+    color: #fff;
+  }
+
+  .nav-breadcrumb {
+    background: #0d1220;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-breadcrumb-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 32px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+  }
+
+  .bc-item { color: var(--accent); font-weight: 500; }
+  .bc-sep { color: var(--border); }
+  .bc-plain { color: var(--muted); }
 </style>
 </head>
 <body>
+
+<!-- SITE NAV -->
+<nav class="site-nav">
+  <div class="nav-main">
+    <a href="index.html" class="nav-brand">Dayo Portfolio</a>
+    <ul class="nav-links">
+      <li><a href="index.html"><span class="nav-icon">🏠</span> Home</a></li>
+      <li><a href="index.html#projects"><span class="nav-icon">📁</span> Projects</a></li>
+      <li><a href="index.html#skills"><span class="nav-icon">⚡</span> Skills</a></li>
+      <li><a href="index.html#contact"><span class="nav-icon">💬</span> Contact</a></li>
+      <li><a href="https://linkedin.com/in/dayoegonu/" target="_blank" class="nav-linkedin"><span class="nav-icon">in</span> LinkedIn</a></li>
+    </ul>
+  </div>
+  <div class="nav-breadcrumb">
+    <div class="nav-breadcrumb-inner">
+      <span class="bc-item">PORTFOLIO ARTIFACT 04</span>
+      <span class="bc-sep">·</span>
+      <span class="bc-plain">APPLIED AI</span>
+      <span class="bc-sep">·</span>
+      <span class="bc-plain">EXPLAINABLE AI</span>
+      <span class="bc-sep">·</span>
+      <span class="bc-plain">DAYO EGONU</span>
+    </div>
+  </div>
+</nav>
+
 <div class="page">
 
   <!-- HEADER -->
