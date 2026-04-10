@@ -3,306 +3,523 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>PromptCraft — AI Prompt Marketplace</title>
+<title>PromptCraft — Turn Your Idea Into a Perfect AI Prompt</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --bg:#07090F;--bg2:#0D1117;--bg3:#161B22;
-  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
-  --amber:#F0A500;--amber2:#FFD166;--cyan:#00D4FF;
-  --violet:#7C3AED;--green:#10B981;--rose:#F43F5E;
-  --text:#E6EDF3;--muted:#7D8590;--heading:#FFFFFF;
+  --bg:#07090F;
+  --bg2:#0D1117;
+  --bg3:#161B27;
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.13);
+  --amber:#F0A500;
+  --amber2:#FFD166;
+  --cyan:#00C4CC;
+  --violet:#8B5CF6;
+  --green:#10B981;
+  --rose:#F43F5E;
+  --text:#E8ECF4;
+  --muted:#7A8499;
+  --mono:'IBM Plex Mono',monospace;
+  --sans:'IBM Plex Sans',sans-serif;
+  --display:'Syne',sans-serif;
 }
-body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;min-height:100vh;font-size:14px}
-body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.02) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0}
-.site-nav{position:sticky;top:0;z-index:200;background:rgba(7,9,15,0.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
-.nav-inner{max-width:1280px;margin:0 auto;padding:0 2rem;height:58px;display:flex;align-items:center;justify-content:space-between}
-.nav-brand{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--amber);text-decoration:none}
-.nav-brand small{color:var(--muted);font-weight:400;font-size:0.75rem;margin-left:0.4rem}
-.nav-links{display:flex;align-items:center;gap:0.2rem;list-style:none}
-.nav-links a{font-size:0.82rem;font-weight:500;color:var(--muted);text-decoration:none;padding:0.38rem 0.72rem;border-radius:6px;transition:color .2s,background .2s}
-.nav-links a:hover{color:var(--text);background:rgba(255,255,255,0.05)}
-.nav-links a.active{color:var(--amber)}
-.nav-links .li-btn{background:#0a66c2;color:#fff !important;border-radius:6px}
-.nav-links .li-btn:hover{background:#0856a8}
-.api-banner{background:linear-gradient(135deg,#0d1a0d,#0a1205);border-bottom:1px solid rgba(16,185,129,0.2);padding:0.6rem 2rem;position:relative;z-index:1}
-.api-banner-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:0.8rem;flex-wrap:wrap}
-.api-status{display:flex;align-items:center;gap:0.4rem;font-family:'IBM Plex Mono',monospace;font-size:0.68rem;letter-spacing:0.06em;white-space:nowrap}
-.api-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0;transition:background .3s}
-.api-dot.connected{background:var(--green);box-shadow:0 0 6px var(--green)}
-.api-dot.error{background:var(--rose)}
-.api-input-wrap{display:flex;gap:0.5rem;align-items:center;flex:1;max-width:440px}
-.api-input{flex:1;background:rgba(255,255,255,0.05);border:1px solid var(--border2);border-radius:6px;padding:0.35rem 0.7rem;font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:var(--text);outline:none;transition:border-color .2s}
-.api-input:focus{border-color:rgba(16,185,129,0.5)}
-.api-input::placeholder{color:var(--muted)}
-.api-btn{background:var(--green);color:#fff;border:none;border-radius:6px;padding:0.38rem 0.85rem;font-size:0.75rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .2s;font-family:'IBM Plex Sans',sans-serif}
-.api-btn:hover{background:#0da271}
-.api-btn.clear{background:rgba(244,63,94,0.12);color:var(--rose);border:1px solid rgba(244,63,94,0.2)}
-.api-btn.clear:hover{background:rgba(244,63,94,0.22)}
-.api-note{font-size:0.67rem;color:var(--muted)}
-.hero{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:3rem 2rem 2rem;border-bottom:1px solid var(--border)}
-.hero-eye{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--amber);margin-bottom:0.8rem;display:flex;align-items:center;gap:0.6rem}
-.hero-eye::after{content:'';width:40px;height:1px;background:rgba(240,165,0,0.3)}
-.hero h1{font-family:'Syne',sans-serif;font-size:clamp(1.9rem,4vw,2.9rem);font-weight:800;color:var(--heading);line-height:1.1;margin-bottom:0.7rem}
-.hero h1 em{font-style:italic;color:var(--amber)}
-.hero p{font-size:0.9rem;color:var(--muted);max-width:540px;line-height:1.7;margin-bottom:1.4rem}
-.hero-stats{display:flex;gap:2rem;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;font-size:0.7rem}
-.hero-stat strong{color:var(--amber);font-size:1.05rem;display:block}
-.hero-stat span{color:var(--muted)}
-.controls{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:1.2rem 2rem;display:flex;align-items:center;gap:0.8rem;flex-wrap:wrap;border-bottom:1px solid var(--border)}
-.search-wrap{position:relative;flex:1;min-width:180px;max-width:280px}
-.search-wrap svg{position:absolute;left:0.65rem;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
-.search-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.48rem 0.8rem 0.48rem 2.1rem;font-size:0.82rem;color:var(--text);outline:none;font-family:'IBM Plex Sans',sans-serif;transition:border-color .2s}
-.search-input:focus{border-color:var(--amber)}
-.search-input::placeholder{color:var(--muted)}
-.filter-btns{display:flex;gap:0.4rem;flex-wrap:wrap}
-.filt{font-family:'IBM Plex Mono',monospace;font-size:0.67rem;letter-spacing:0.05em;padding:0.33rem 0.8rem;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .2s;white-space:nowrap}
-.filt:hover{color:var(--text);border-color:var(--border2)}
-.filt.active{background:var(--amber);color:#07090F;border-color:var(--amber);font-weight:600}
-.filt[data-cat="Cybersecurity"].active{background:var(--rose);border-color:var(--rose);color:#fff}
-.filt[data-cat="Marketing"].active{background:var(--cyan);border-color:var(--cyan);color:#07090F}
-.filt[data-cat="Business"].active{background:var(--violet);border-color:var(--violet);color:#fff}
-.filt[data-cat="AI & ML"].active{background:var(--green);border-color:var(--green);color:#07090F}
-.filt[data-cat="Productivity"].active{background:var(--amber2);border-color:var(--amber2);color:#07090F}
-.rcount{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:0.68rem;color:var(--muted)}
-.rcount strong{color:var(--amber)}
-.prompt-grid{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:1.5rem 2rem 4rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:1rem}
-.pcard{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;transition:border-color .25s,transform .22s,box-shadow .22s;position:relative}
-.pcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--cc,var(--amber))}
-.pcard:hover{border-color:var(--border2);transform:translateY(-3px);box-shadow:0 16px 48px rgba(0,0,0,0.4)}
-.pcard.hidden{display:none}
-.card-top{padding:1.2rem 1.2rem 0.7rem;flex:1}
-.card-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.7rem}
-.card-cat{font-family:'IBM Plex Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.18rem 0.5rem;border-radius:3px}
-.card-models{display:flex;gap:0.3rem}
-.card-model{font-family:'IBM Plex Mono',monospace;font-size:0.57rem;color:var(--muted);padding:0.14rem 0.38rem;border-radius:3px;background:rgba(255,255,255,0.05);border:1px solid var(--border)}
-.card-title{font-family:'Syne',sans-serif;font-size:0.93rem;font-weight:700;color:var(--heading);margin-bottom:0.35rem;line-height:1.3}
-.card-desc{font-size:0.79rem;color:var(--muted);line-height:1.6;margin-bottom:0.7rem}
-.card-preview{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:0.6rem 0.75rem;font-family:'IBM Plex Mono',monospace;font-size:0.68rem;color:var(--muted);line-height:1.5;white-space:pre-wrap;max-height:68px;overflow:hidden;mask-image:linear-gradient(to bottom,black 55%,transparent 100%)}
-.card-foot{padding:0.7rem 1.2rem;border-top:1px solid var(--border);display:flex;gap:0.5rem;align-items:center}
-.btn-run{flex:1;background:var(--amber);color:#07090F;border:none;border-radius:7px;padding:0.48rem 1rem;font-size:0.78rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.4rem;transition:background .2s,transform .1s;font-family:'IBM Plex Sans',sans-serif}
-.btn-run:hover{background:var(--amber2)}
-.btn-run:active{transform:scale(0.98)}
-.btn-copy{background:var(--bg3);color:var(--muted);border:1px solid var(--border);border-radius:7px;padding:0.48rem 0.7rem;font-size:0.75rem;cursor:pointer;transition:all .2s;font-family:'IBM Plex Sans',sans-serif}
-.btn-copy:hover{color:var(--text);border-color:var(--border2)}
-.btn-copy.done{color:var(--green);border-color:rgba(16,185,129,0.3)}
-.modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:1.5rem}
-.modal-overlay.open{display:flex}
-.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;width:100%;max-width:760px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;animation:slideUp .3s cubic-bezier(.34,1.56,.64,1)}
-@keyframes slideUp{from{opacity:0;transform:translateY(30px) scale(.97)}to{opacity:1;transform:none}}
-.modal-hdr{padding:1.2rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}
-.modal-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--heading)}
-.modal-sub{font-size:0.7rem;color:var(--muted);margin-top:0.2rem}
-.modal-x{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.2rem;line-height:1;padding:0.2rem;border-radius:4px;transition:color .2s,background .2s}
-.modal-x:hover{color:var(--text);background:rgba(255,255,255,0.07)}
-.modal-body{flex:1;overflow-y:auto;padding:1.2rem 1.5rem;display:flex;flex-direction:column;gap:1rem}
-.mlabel{font-family:'IBM Plex Mono',monospace;font-size:0.64rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem;display:flex;align-items:center;gap:0.5rem}
-.mlabel::after{content:'';flex:1;height:1px;background:var(--border)}
-.prompt-full{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.85rem 1rem;font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:var(--text);line-height:1.6;white-space:pre-wrap}
-.modal-body textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.75rem 1rem;font-family:'IBM Plex Sans',sans-serif;font-size:0.82rem;color:var(--text);resize:vertical;min-height:78px;outline:none;line-height:1.6;transition:border-color .2s}
-.modal-body textarea:focus{border-color:var(--amber)}
-.modal-body textarea::placeholder{color:var(--muted)}
-.no-api-warn{background:rgba(240,165,0,0.07);border:1px solid rgba(240,165,0,0.2);border-radius:8px;padding:0.7rem 1rem;font-size:0.79rem;color:var(--amber);display:none}
-.no-api-warn.show{display:block}
-.response-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:1rem;min-height:90px;font-size:0.82rem;line-height:1.75;color:var(--text);white-space:pre-wrap;position:relative}
-.response-box.loading::after{content:'▋';animation:blink .8s infinite;color:var(--amber)}
-.response-box.err{color:var(--rose);border-color:rgba(244,63,94,0.3)}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-.res-actions{display:flex;gap:0.5rem;margin-top:0.5rem;justify-content:flex-end}
-.res-actions button{background:var(--bg3);border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:0.28rem 0.65rem;font-size:0.71rem;cursor:pointer;transition:all .2s;font-family:'IBM Plex Sans',sans-serif}
-.res-actions button:hover{color:var(--text);border-color:var(--border2)}
-.modal-ftr{padding:0.9rem 1.5rem;border-top:1px solid var(--border);display:flex;gap:0.7rem;align-items:center}
-.btn-run-m{background:var(--amber);color:#07090F;border:none;border-radius:8px;padding:0.55rem 1.3rem;font-size:0.82rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:0.5rem;transition:background .2s;font-family:'IBM Plex Sans',sans-serif}
-.btn-run-m:hover{background:var(--amber2)}
-.btn-run-m:disabled{opacity:.5;cursor:not-allowed}
-.btn-cancel-m{background:none;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:0.55rem 1rem;font-size:0.82rem;cursor:pointer;transition:all .2s;font-family:'IBM Plex Sans',sans-serif}
-.btn-cancel-m:hover{color:var(--text);border-color:var(--border2)}
-.tok-info{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:0.67rem;color:var(--muted)}
-.empty-state{grid-column:1/-1;text-align:center;padding:4rem 2rem;color:var(--muted);display:none}
-.empty-state.show{display:block}
-.empty-state h3{font-family:'Syne',sans-serif;font-size:1.05rem;margin-bottom:0.4rem;color:var(--text)}
-.site-footer{display:block;border-top:1px solid var(--border);background:var(--bg2);padding:1.3rem 2rem;position:relative;z-index:1}
-.footer-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.8rem}
-.footer-inner p{font-size:0.73rem;color:var(--muted)}
-.footer-links{display:flex;gap:0.2rem;list-style:none}
-.footer-links a{font-size:0.73rem;color:var(--muted);text-decoration:none;padding:0.24rem 0.52rem;border-radius:4px;transition:color .2s}
-.footer-links a:hover{color:var(--amber)}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-.pcard{animation:fadeUp .4s ease both}
-@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
-@media(max-width:600px){.prompt-grid{grid-template-columns:1fr;padding:1rem}.hero h1{font-size:1.65rem}}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.6;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,196,204,0.015) 1px,transparent 1px),linear-gradient(90deg,rgba(0,196,204,0.015) 1px,transparent 1px);background-size:52px 52px;pointer-events:none;z-index:0;}
+
+/* ── NAV ── */
+.site-nav{position:sticky;top:0;z-index:200;background:rgba(7,9,15,0.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);}
+.nav-inner{max-width:1100px;margin:0 auto;padding:0 2rem;height:56px;display:flex;align-items:center;justify-content:space-between;}
+.nav-brand{font-family:var(--display);font-size:1.1rem;font-weight:800;color:var(--amber);text-decoration:none;}
+.nav-brand span{color:var(--text);font-weight:400;}
+.nav-links{display:flex;align-items:center;gap:.15rem;list-style:none;}
+.nav-links a,.nav-links button{display:flex;align-items:center;gap:5px;padding:6px 12px;font-family:var(--sans);font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;border-radius:6px;transition:color .2s,background .2s;background:transparent;border:none;cursor:pointer;}
+.nav-links a:hover,.nav-links button:hover{color:var(--text);background:rgba(255,255,255,0.05);}
+.nav-links .li-blue{background:#0a66c2;color:#fff;}
+.nav-links .li-blue:hover{background:#0856a8;color:#fff;}
+.api-indicator{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);}
+.api-dot{width:7px;height:7px;border-radius:50%;background:#ef4444;flex-shrink:0;transition:background .3s;}
+.api-dot.on{background:var(--green);}
+
+/* ── HERO ── */
+.hero{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:3rem 2rem 0;}
+.hero-eyebrow{font-family:var(--mono);font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:.9rem;}
+.hero h1{font-family:var(--display);font-size:clamp(2rem,5vw,3rem);font-weight:800;line-height:1.08;color:var(--text);margin-bottom:.7rem;}
+.hero h1 em{font-style:italic;color:var(--amber);}
+.hero p{font-size:15px;color:var(--muted);max-width:540px;line-height:1.75;margin-bottom:2rem;}
+
+/* Before / After pill */
+.compare-pill{display:inline-flex;align-items:stretch;background:var(--bg2);border:1px solid var(--border2);border-radius:12px;overflow:hidden;margin-bottom:2.5rem;max-width:700px;width:100%;}
+.cp-side{padding:1rem 1.2rem;flex:1;}
+.cp-side.bad{border-right:1px solid var(--border);}
+.cp-label{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.5rem;}
+.cp-label.bad{color:var(--rose);}
+.cp-label.good{color:var(--green);}
+.cp-text{font-size:.82rem;line-height:1.6;}
+.cp-text.bad{color:var(--muted);text-decoration:line-through;text-decoration-color:rgba(244,63,94,0.4);}
+.cp-text.good{color:var(--text);}
+.cp-arrow{display:flex;align-items:center;padding:0 .8rem;color:var(--amber);font-size:1.2rem;flex-shrink:0;}
+
+/* ── MAIN APP CARD ── */
+.app-card{position:relative;z-index:1;max-width:1100px;margin:0 auto 2rem;padding:0 2rem;}
+
+/* API Banner */
+.api-banner{background:rgba(240,165,0,0.06);border:1px solid rgba(240,165,0,0.2);border-radius:10px;padding:.9rem 1.2rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+.api-banner.connected{background:rgba(16,185,129,0.06);border-color:rgba(16,185,129,0.2);}
+.api-banner-left{display:flex;align-items:center;gap:.7rem;font-size:.82rem;}
+.api-banner-left strong{color:var(--text);}
+.api-banner-left span{color:var(--muted);}
+.api-input-row{display:flex;gap:.5rem;flex:1;max-width:420px;}
+.api-input{flex:1;background:var(--bg2);border:1px solid var(--border2);border-radius:7px;padding:.5rem .9rem;font-family:var(--mono);font-size:.78rem;color:var(--text);outline:none;transition:border-color .2s;}
+.api-input:focus{border-color:rgba(240,165,0,0.5);}
+.api-save-btn{padding:.5rem 1rem;background:var(--amber);color:#07090F;font-family:var(--display);font-size:.8rem;font-weight:700;border:none;border-radius:7px;cursor:pointer;white-space:nowrap;transition:background .2s;}
+.api-save-btn:hover{background:var(--amber2);}
+.api-clear-btn{padding:.5rem .9rem;background:transparent;color:var(--rose);font-size:.8rem;border:1px solid rgba(244,63,94,0.3);border-radius:7px;cursor:pointer;transition:all .2s;}
+.api-clear-btn:hover{background:rgba(244,63,94,0.08);}
+
+/* ── STEP 1: Raw Input ── */
+.step-block{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.6rem;margin-bottom:1.2rem;}
+.step-header{display:flex;align-items:center;gap:.7rem;margin-bottom:1.1rem;}
+.step-num{font-family:var(--display);font-size:1.5rem;font-weight:800;color:rgba(240,165,0,0.25);line-height:1;}
+.step-title{font-family:var(--display);font-size:.95rem;font-weight:700;color:var(--text);}
+.step-sub{font-size:.78rem;color:var(--muted);margin-top:.1rem;}
+
+.raw-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem;font-family:var(--sans);font-size:.9rem;color:var(--text);line-height:1.7;resize:vertical;min-height:90px;outline:none;transition:border-color .2s;}
+.raw-input:focus{border-color:rgba(240,165,0,0.4);}
+.raw-input::placeholder{color:var(--muted);}
+
+.input-row{display:flex;align-items:center;gap:.8rem;margin-top:.9rem;flex-wrap:wrap;}
+.context-select{background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:.5rem .9rem;font-family:var(--sans);font-size:.8rem;color:var(--text);outline:none;cursor:pointer;}
+.context-select option{background:var(--bg2);}
+
+.optimize-btn{padding:.65rem 1.4rem;background:var(--amber);color:#07090F;font-family:var(--display);font-size:.88rem;font-weight:700;border:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:.5rem;transition:all .2s;}
+.optimize-btn:hover{background:var(--amber2);}
+.optimize-btn:disabled{background:rgba(240,165,0,0.25);color:rgba(0,0,0,0.3);cursor:not-allowed;}
+.optimize-btn .spin{width:13px;height:13px;border:2px solid rgba(0,0,0,0.15);border-top-color:#07090F;border-radius:50%;animation:spin .6s linear infinite;display:none;}
+.optimize-btn.loading .spin{display:block;}
+.optimize-btn.loading .btn-label{display:none;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── STEP 2: Optimized Prompt ── */
+.result-block{background:var(--bg2);border:1px solid rgba(240,165,0,0.2);border-radius:14px;padding:1.6rem;margin-bottom:1.2rem;display:none;}
+.result-block.visible{display:block;}
+
+/* Breakdown cards */
+.breakdown-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem;margin-bottom:1.2rem;}
+@media(max-width:700px){.breakdown-grid{grid-template-columns:1fr 1fr;}}
+.bk-card{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:.8rem .9rem;}
+.bk-label{font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.3rem;}
+.bk-value{font-size:.8rem;color:var(--text);line-height:1.55;}
+.bk-card.role  .bk-label{color:var(--amber);}
+.bk-card.ctx   .bk-label{color:var(--cyan);}
+.bk-card.const .bk-label{color:var(--violet);}
+.bk-card.out   .bk-label{color:var(--green);}
+
+/* Score bar */
+.score-row{display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem;padding:.8rem 1rem;background:var(--bg3);border-radius:9px;border:1px solid var(--border);}
+.score-label{font-family:var(--mono);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);flex-shrink:0;}
+.score-track{flex:1;height:8px;background:rgba(255,255,255,0.06);border-radius:99px;overflow:hidden;}
+.score-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--amber),var(--green));transition:width 1s cubic-bezier(.23,1,.32,1);}
+.score-num{font-family:var(--display);font-size:1.1rem;font-weight:800;color:var(--green);flex-shrink:0;width:44px;text-align:right;}
+
+/* Optimized prompt editor */
+.opt-label{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem;display:flex;align-items:center;justify-content:space-between;}
+.opt-textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:.9rem 1.1rem;font-family:var(--mono);font-size:.8rem;color:var(--text);line-height:1.7;resize:vertical;min-height:160px;outline:none;transition:border-color .2s;}
+.opt-textarea:focus{border-color:rgba(240,165,0,0.35);}
+
+.result-actions{display:flex;gap:.6rem;margin-top:.9rem;flex-wrap:wrap;}
+.act-btn{padding:.55rem 1.1rem;font-family:var(--sans);font-size:.8rem;font-weight:600;border-radius:7px;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--text);transition:all .2s;display:flex;align-items:center;gap:.4rem;}
+.act-btn:hover{background:rgba(255,255,255,0.06);}
+.act-btn.primary{background:var(--amber);border-color:var(--amber);color:#07090F;}
+.act-btn.primary:hover{background:var(--amber2);}
+.act-btn.primary:disabled{background:rgba(240,165,0,0.25);color:rgba(0,0,0,0.3);cursor:not-allowed;border-color:transparent;}
+
+/* Improvement callout */
+.improvement-tag{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--mono);font-size:.65rem;padding:.3rem .7rem;border-radius:20px;background:rgba(16,185,129,0.1);color:var(--green);border:1px solid rgba(16,185,129,0.2);margin-bottom:.9rem;}
+
+/* ── STEP 3: Live Response ── */
+.response-block{background:var(--bg2);border:1px solid rgba(16,185,129,0.2);border-radius:14px;padding:1.6rem;display:none;}
+.response-block.visible{display:block;}
+.response-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem;}
+.response-title{font-family:var(--display);font-size:.9rem;font-weight:700;color:var(--text);display:flex;align-items:center;gap:.5rem;}
+.response-meta{font-family:var(--mono);font-size:.65rem;color:var(--muted);display:flex;gap:1rem;}
+.response-box{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:1.1rem;font-size:.85rem;color:var(--text);line-height:1.8;white-space:pre-wrap;word-break:break-word;max-height:420px;overflow-y:auto;}
+.response-box.err{color:var(--rose);border-color:rgba(244,63,94,0.2);}
+
+/* ── TIPS SECTION ── */
+.tips-section{position:relative;z-index:1;max-width:1100px;margin:0 auto 3rem;padding:0 2rem;}
+.tips-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.8rem;}
+.tip-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem;cursor:pointer;transition:border-color .2s,transform .2s;}
+.tip-card:hover{border-color:rgba(240,165,0,0.3);transform:translateY(-2px);}
+.tip-icon{font-size:1.3rem;margin-bottom:.4rem;}
+.tip-title{font-family:var(--display);font-size:.8rem;font-weight:700;color:var(--text);margin-bottom:.25rem;}
+.tip-desc{font-size:.72rem;color:var(--muted);line-height:1.55;}
+.tip-example{font-family:var(--mono);font-size:.68rem;color:var(--muted);margin-top:.5rem;padding:.4rem .6rem;background:var(--bg3);border-radius:5px;border:1px solid var(--border);}
+
+/* ── EXPLANATION ACCORDION ── */
+.explain-wrap{position:relative;z-index:1;max-width:1100px;margin:0 auto 2rem;padding:0 2rem;}
+.explain-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;padding:1rem 1.4rem;background:var(--bg2);border:1px solid var(--border);border-radius:12px;cursor:pointer;color:var(--text);font-family:var(--display);font-size:.88rem;font-weight:700;transition:all .2s;}
+.explain-toggle:hover{border-color:rgba(240,165,0,0.3);}
+.explain-toggle[aria-expanded="true"]{border-bottom-left-radius:0;border-bottom-right-radius:0;border-color:rgba(240,165,0,0.35);}
+.explain-chevron{font-size:.7rem;color:var(--muted);transition:transform .3s;}
+.explain-toggle[aria-expanded="true"] .explain-chevron{transform:rotate(180deg);}
+.explain-body{background:var(--bg2);border:1px solid rgba(240,165,0,0.18);border-top:none;border-radius:0 0 12px 12px;padding:2rem;display:none;}
+.ex-grid{display:flex;flex-direction:column;gap:2rem;}
+.ex-label{font-family:var(--mono);font-size:.63rem;letter-spacing:.18em;text-transform:uppercase;color:var(--amber);margin-bottom:.9rem;padding-bottom:.5rem;border-bottom:1px solid rgba(255,255,255,0.05);}
+.ex-two{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+@media(max-width:600px){.ex-two{grid-template-columns:1fr;}}
+.ex-box{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:8px;padding:1rem 1.1rem;}
+.ex-box-ttl{font-family:var(--display);font-size:.82rem;font-weight:700;color:var(--text);margin-bottom:.4rem;}
+.ex-box p{font-size:.79rem;color:var(--muted);line-height:1.7;}
+.ex-box strong{color:var(--text);}
+.ex-steps{display:flex;flex-direction:column;gap:.65rem;}
+.ex-step{display:flex;gap:.9rem;padding:.85rem 1rem;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:8px;}
+.ex-sn{font-family:var(--display);font-size:1.3rem;font-weight:800;color:rgba(240,165,0,0.25);line-height:1;flex-shrink:0;width:32px;}
+.ex-step strong{font-size:.83rem;color:var(--text);display:block;margin-bottom:.15rem;}
+.ex-step p{font-size:.76rem;color:var(--muted);line-height:1.6;margin:0;}
+.ex-stack{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;}
+@media(max-width:600px){.ex-stack{grid-template-columns:1fr 1fr;}}
+.ex-stack-card{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:8px;padding:.85rem;}
+.ex-stack-card strong{font-size:.8rem;color:var(--text);display:block;margin-bottom:.2rem;}
+.ex-stack-card span{font-size:.72rem;color:var(--muted);}
+.ex-list{list-style:none;margin-top:.5rem;}
+.ex-list li{font-size:.78rem;color:var(--muted);padding:.2rem 0 .2rem 1.1rem;position:relative;}
+.ex-list li::before{content:'→';position:absolute;left:0;color:var(--amber);font-size:.65rem;}
+.ex-four{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem;}
+@media(max-width:700px){.ex-four{grid-template-columns:1fr 1fr;}}
+.ex-vp{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:8px;padding:.85rem;}
+.ex-vp-icon{font-size:1.2rem;margin-bottom:.3rem;}
+.ex-vp-ttl{font-family:var(--display);font-size:.78rem;font-weight:700;color:var(--text);margin-bottom:.25rem;}
+.ex-vp p{font-size:.72rem;color:var(--muted);line-height:1.55;}
+
+/* ── SIDE-BY-SIDE COMPARISON ── */
+.compare-block{display:none;}
+.compare-block.visible{display:block;}
+.compare-cols{display:grid;grid-template-columns:1fr auto 1fr;gap:1rem;align-items:start;}
+@media(max-width:700px){.compare-cols{grid-template-columns:1fr;}.compare-divider{flex-direction:row;padding:.5rem 0;}.divider-line{flex:1;height:1px;width:auto !important;}.divider-vs{padding:0 1rem;}}
+.compare-col{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:1.1rem;display:flex;flex-direction:column;gap:.7rem;}
+.col-raw{border-color:rgba(244,63,94,0.2);}
+.col-opt{border-color:rgba(16,185,129,0.2);}
+.col-header{display:flex;align-items:center;justify-content:space-between;gap:.5rem;}
+.col-badge{font-family:var(--mono);font-size:.65rem;font-weight:600;letter-spacing:.08em;padding:.25rem .65rem;border-radius:20px;}
+.col-badge.bad{background:rgba(244,63,94,0.1);color:var(--rose);border:1px solid rgba(244,63,94,0.25);}
+.col-badge.good{background:rgba(16,185,129,0.1);color:var(--green);border:1px solid rgba(16,185,129,0.25);}
+.col-meta{font-family:var(--mono);font-size:.6rem;color:var(--muted);}
+.col-prompt-preview{font-family:var(--mono);font-size:.68rem;color:var(--muted);padding:.55rem .7rem;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:6px;line-height:1.6;max-height:72px;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;}
+.col-raw .col-prompt-preview{color:rgba(244,63,94,0.6);text-decoration:line-through;text-decoration-color:rgba(244,63,94,0.25);}
+.col-opt .col-prompt-preview{color:rgba(16,185,129,0.8);}
+.col-response{font-size:.82rem;color:var(--text);line-height:1.8;white-space:pre-wrap;word-break:break-word;min-height:120px;max-height:380px;overflow-y:auto;flex:1;}
+.col-response.err{color:var(--rose);}
+.col-loading{display:flex;align-items:center;gap:.6rem;color:var(--muted);font-size:.78rem;padding:.5rem 0;}
+.loading-dots{display:flex;gap:4px;}
+.loading-dots span{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:dot-pulse 1.2s ease-in-out infinite;}
+.loading-dots span:nth-child(2){animation-delay:.2s;}
+.loading-dots span:nth-child(3){animation-delay:.4s;}
+@keyframes dot-pulse{0%,80%,100%{transform:scale(0.7);opacity:.4;}40%{transform:scale(1);opacity:1;}}
+.col-copy-btn{align-self:flex-start;font-size:.72rem;padding:.3rem .7rem;}
+.col-copy-btn.good-btn{color:var(--green);border-color:rgba(16,185,129,0.25);}
+.col-copy-btn.good-btn:hover{background:rgba(16,185,129,0.08);}
+.compare-divider{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;padding:0 .3rem;}
+.divider-line{width:1px;height:80px;background:var(--border);}
+.divider-vs{font-family:var(--display);font-size:.75rem;font-weight:800;color:var(--muted);background:var(--bg2);padding:.3rem .45rem;border-radius:5px;border:1px solid var(--border);}
+
+/* ── FOOTER ── */
+.site-footer{position:relative;z-index:1;border-top:1px solid var(--border);background:var(--bg2);padding:1.4rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem;}
+.site-footer p{font-size:.73rem;color:var(--muted);}
+.footer-links{display:flex;gap:.2rem;list-style:none;}
+.footer-links a{font-size:.73rem;color:var(--muted);text-decoration:none;padding:.22rem .55rem;border-radius:4px;transition:color .2s;}
+.footer-links a:hover{color:var(--amber);}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
 </style>
 </head>
 <body>
 
+<!-- NAV -->
 <nav class="site-nav">
   <div class="nav-inner">
-    <a href="index.html" class="nav-brand">Dayo Portfolio <small>/ PromptCraft</small></a>
+    <a href="index.html" class="nav-brand">Prompt<span>Craft</span></a>
     <ul class="nav-links">
       <li><a href="index.html">🏠 Home</a></li>
-      <li><a href="projects.html" class="active">📁 Projects</a></li>
+      <li><a href="projects.html">📁 Projects</a></li>
       <li><a href="index.html#skills">⚡ Skills</a></li>
-      <li><a href="index.html#contact">✉️ Contact</a></li>
-      <li><a href="https://www.linkedin.com/in/dayoegonu/" target="_blank" class="li-btn">in LinkedIn</a></li>
+      <li><a href="index.html#contact">💬 Contact</a></li>
+      <li><a href="https://www.linkedin.com/in/dayoegonu/" target="_blank" class="li-blue">in LinkedIn</a></li>
+      <li>
+        <div class="api-indicator">
+          <span class="api-dot" id="apiDot"></span>
+          <span id="apiTxt">No API key</span>
+        </div>
+      </li>
     </ul>
   </div>
 </nav>
 
-<div class="api-banner">
-  <div class="api-banner-inner">
-    <div class="api-status">
-      <div class="api-dot" id="apiDot"></div>
-      <span id="apiTxt">No API key — enter yours to run prompts live</span>
-    </div>
-    <div class="api-input-wrap" id="apiWrap">
-      <input class="api-input" type="password" id="apiIn" placeholder="sk-ant-api03-…" autocomplete="off"/>
-      <button class="api-btn" onclick="saveKey()">Connect</button>
-    </div>
-    <button class="api-btn clear" id="clearBtn" onclick="clearKey()" style="display:none">Disconnect</button>
-    <span class="api-note">🔒 Key stays in your browser session only — never stored on any server</span>
-  </div>
-</div>
-
+<!-- HERO -->
 <div class="hero">
-  <div class="hero-eye">Live AI Prompt Marketplace · Powered by Claude</div>
-  <h1>PromptCraft — <em>Test Prompts Live</em></h1>
-  <p>Browse 15 curated, production-ready prompts across Cybersecurity, Marketing, Business, AI & ML, and Productivity. Connect your Anthropic API key and run any prompt instantly.</p>
-  <div class="hero-stats">
-    <div class="hero-stat"><strong>15</strong><span>Prompts</span></div>
-    <div class="hero-stat"><strong>5</strong><span>Categories</span></div>
-    <div class="hero-stat"><strong>3</strong><span>Models Supported</span></div>
-    <div class="hero-stat"><strong>Live</strong><span>Claude API</span></div>
-  </div>
-</div>
+  <div class="hero-eyebrow">Portfolio Artifact 05 · Applied AI · Prompt Engineering Tool</div>
+  <h1>Turn your rough idea into a<br><em>perfect AI prompt</em></h1>
+  <p>Most people type vague requests and get vague answers. PromptCraft takes your messy idea and engineers it into a structured, optimized prompt — then runs it live against Claude so you can see the difference instantly.</p>
 
-<div class="controls">
-  <div class="search-wrap">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    <input class="search-input" type="text" id="searchIn" placeholder="Search prompts…" oninput="filterPrompts()"/>
-  </div>
-  <div class="filter-btns">
-    <button class="filt active" data-cat="All" onclick="setFilter(this)">All</button>
-    <button class="filt" data-cat="Cybersecurity" onclick="setFilter(this)">🔐 Cybersecurity</button>
-    <button class="filt" data-cat="Marketing" onclick="setFilter(this)">📣 Marketing</button>
-    <button class="filt" data-cat="Business" onclick="setFilter(this)">💼 Business</button>
-    <button class="filt" data-cat="AI & ML" onclick="setFilter(this)">🤖 AI & ML</button>
-    <button class="filt" data-cat="Productivity" onclick="setFilter(this)">⚡ Productivity</button>
-  </div>
-  <div class="rcount">Showing <strong id="vcnt">15</strong> prompts</div>
-</div>
-
-<div class="prompt-grid" id="grid">
-  <div class="empty-state" id="empty"><h3>No prompts found</h3><p>Try a different search or category.</p></div>
-</div>
-
-<div class="modal-overlay" id="overlay" onclick="bgClose(event)">
-  <div class="modal">
-    <div class="modal-hdr">
-      <div><div class="modal-title" id="mTitle"></div><div class="modal-sub" id="mSub"></div></div>
-      <button class="modal-x" onclick="closeModal()">✕</button>
+  <div class="compare-pill">
+    <div class="cp-side bad">
+      <div class="cp-label bad">❌ Before PromptCraft</div>
+      <div class="cp-text bad">"Give me a business idea"</div>
     </div>
-    <div class="modal-body" id="mBody">
-      <div><div class="mlabel">System Prompt</div><div class="prompt-full" id="mPrompt"></div></div>
-      <div><div class="mlabel">Your Input <span style="color:var(--muted);font-size:0.6rem;margin-left:.3rem;">(adds context — optional)</span></div><textarea id="uInput" placeholder="Add specific details or your question here…"></textarea></div>
-      <div class="no-api-warn" id="noApiW">⚠️ No API key connected. Enter your Anthropic API key in the banner above to run prompts live.</div>
-      <div id="respSec" style="display:none">
-        <div class="mlabel">Claude's Response</div>
-        <div class="response-box" id="respBox"></div>
-        <div class="res-actions" id="resActs" style="display:none">
-          <button onclick="copyResp()">Copy Response</button>
-          <button onclick="clearResp()">Clear</button>
-        </div>
+    <div class="cp-arrow">→</div>
+    <div class="cp-side good">
+      <div class="cp-label good">✅ After PromptCraft</div>
+      <div class="cp-text good">"Act as a startup advisor. Generate 3 future-focused business ideas under $10K startup cost, scalable in the U.S., with revenue model and risks for each."</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div class="app-card">
+
+  <!-- API Banner -->
+  <div class="api-banner" id="apiBanner">
+    <div class="api-banner-left">
+      <span class="api-dot" id="apiBannerDot"></span>
+      <div><strong id="apiBannerTxt">Connect your Anthropic API key to run prompts live</strong><br><span>Your key stays in this browser session only — never stored anywhere.</span></div>
+    </div>
+    <div class="api-input-row" id="apiInputRow">
+      <input class="api-input" type="password" id="apiKeyIn" placeholder="sk-ant-api03-..." />
+      <button class="api-save-btn" onclick="saveKey()">Connect</button>
+    </div>
+    <button class="api-clear-btn" id="clearBtn" style="display:none;" onclick="clearKey()">Disconnect</button>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="step-block">
+    <div class="step-header">
+      <div class="step-num">01</div>
+      <div>
+        <div class="step-title">Type your rough idea or messy prompt</div>
+        <div class="step-sub">Don't worry about structure — just say what you want. PromptCraft will engineer it.</div>
       </div>
     </div>
-    <div class="modal-ftr">
-      <button class="btn-run-m" id="runBtn" onclick="runPrompt()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-        Run with Claude
+    <textarea class="raw-input" id="rawInput" placeholder="Examples:&#10;• Give me a business idea&#10;• Write me an email to my boss&#10;• Help me with a security report&#10;• Summarize this meeting&#10;• I need to post something on LinkedIn about AI"></textarea>
+    <div class="input-row">
+      <select class="context-select" id="useCase">
+        <option value="">🎯 Select your goal (optional)</option>
+        <option value="business">💼 Business / Strategy</option>
+        <option value="marketing">📣 Marketing / Content</option>
+        <option value="cybersecurity">🔐 Cybersecurity / Tech</option>
+        <option value="email">✉️ Email / Communication</option>
+        <option value="analysis">📊 Analysis / Research</option>
+        <option value="creative">✨ Creative Writing</option>
+        <option value="coding">💻 Coding / Development</option>
+        <option value="education">🎓 Learning / Education</option>
+      </select>
+      <button class="optimize-btn" id="optimizeBtn" onclick="optimizePrompt()">
+        <div class="spin"></div>
+        <span class="btn-label">⚡ Optimize My Prompt</span>
       </button>
-      <button class="btn-cancel-m" onclick="closeModal()">Cancel</button>
-      <div class="tok-info" id="tokInfo"></div>
+    </div>
+  </div>
+
+  <!-- STEP 2: Result -->
+  <div class="step-block result-block" id="resultBlock">
+    <div class="step-header">
+      <div class="step-num">02</div>
+      <div>
+        <div class="step-title">Your optimized prompt</div>
+        <div class="step-sub">Structured with Role · Context · Constraints · Output format. Edit if needed, then run it.</div>
+      </div>
+    </div>
+
+    <div class="improvement-tag" id="improvementTag">✨ Prompt quality improved</div>
+
+    <!-- Score -->
+    <div class="score-row">
+      <span class="score-label">Prompt Score</span>
+      <div class="score-track"><div class="score-fill" id="scoreFill" style="width:0%"></div></div>
+      <span class="score-num" id="scoreNum">—</span>
+    </div>
+
+    <!-- Breakdown -->
+    <div class="breakdown-grid" id="breakdown">
+      <div class="bk-card role"><div class="bk-label">🎭 Role</div><div class="bk-value" id="bkRole">—</div></div>
+      <div class="bk-card ctx"><div class="bk-label">📌 Context</div><div class="bk-value" id="bkCtx">—</div></div>
+      <div class="bk-card const"><div class="bk-label">⚙️ Constraints</div><div class="bk-value" id="bkConst">—</div></div>
+      <div class="bk-card out"><div class="bk-label">📋 Output Format</div><div class="bk-value" id="bkOut">—</div></div>
+    </div>
+
+    <!-- Editable optimized prompt -->
+    <div class="opt-label">
+      Optimized Prompt (editable)
+      <button class="act-btn" onclick="copyOptimized()" style="font-size:.68rem;padding:.2rem .6rem;">📋 Copy</button>
+    </div>
+    <textarea class="opt-textarea" id="optimizedPrompt"></textarea>
+
+    <div class="result-actions">
+      <button class="act-btn primary" id="runBtn" onclick="runOptimized()">
+        <span id="runBtnSpinner" style="display:none;width:12px;height:12px;border:2px solid rgba(0,0,0,0.15);border-top-color:#07090F;border-radius:50%;animation:spin .6s linear infinite;"></span>
+        <span id="runBtnLabel">▶ Run Comparison</span>
+      </button>
+      <button class="act-btn" onclick="resetAll()">↩ Start Over</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: Side-by-side comparison -->
+  <div class="step-block compare-block" id="compareBlock">
+    <div class="step-header">
+      <div class="step-num">03</div>
+      <div>
+        <div class="step-title">See the difference — live</div>
+        <div class="step-sub">Both prompts run simultaneously against Claude. Same AI, same model — only the prompt changes.</div>
+      </div>
+    </div>
+
+    <div class="compare-cols">
+      <!-- RAW side -->
+      <div class="compare-col col-raw">
+        <div class="col-header">
+          <span class="col-badge bad">❌ Raw Prompt</span>
+          <span class="col-meta" id="rawMeta"></span>
+        </div>
+        <div class="col-prompt-preview" id="rawPreview"></div>
+        <div class="col-response" id="rawResponse">
+          <div class="col-loading" id="rawLoading"><div class="loading-dots"><span></span><span></span><span></span></div> Running raw prompt…</div>
+        </div>
+        <button class="act-btn col-copy-btn" onclick="copyCol('rawResponse')">📋 Copy</button>
+      </div>
+
+      <!-- divider -->
+      <div class="compare-divider">
+        <div class="divider-line"></div>
+        <div class="divider-vs">VS</div>
+        <div class="divider-line"></div>
+      </div>
+
+      <!-- OPTIMIZED side -->
+      <div class="compare-col col-opt">
+        <div class="col-header">
+          <span class="col-badge good">✅ Optimized Prompt</span>
+          <span class="col-meta" id="optMeta"></span>
+        </div>
+        <div class="col-prompt-preview" id="optPreview"></div>
+        <div class="col-response" id="optResponse">
+          <div class="col-loading" id="optLoading"><div class="loading-dots"><span></span><span></span><span></span></div> Running optimized prompt…</div>
+        </div>
+        <button class="act-btn col-copy-btn good-btn" onclick="copyCol('optResponse')">📋 Copy</button>
+      </div>
+    </div>
+
+    <div class="result-actions" style="margin-top:1.2rem;">
+      <button class="act-btn" onclick="resetAll()">↩ Start Over</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- QUICK EXAMPLES -->
+<div class="tips-section">
+  <p style="font-family:var(--mono);font-size:.63rem;letter-spacing:.18em;text-transform:uppercase;color:var(--amber);margin-bottom:1rem;">Try these examples — click to load</p>
+  <div class="tips-grid">
+    <div class="tip-card" onclick="loadExample(this)">
+      <div class="tip-icon">💼</div>
+      <div class="tip-title">Business Idea</div>
+      <div class="tip-desc">Turn a vague ask into a structured startup ideation prompt</div>
+      <div class="tip-example" data-text="Give me a business idea">Give me a business idea</div>
+    </div>
+    <div class="tip-card" onclick="loadExample(this)">
+      <div class="tip-icon">🔐</div>
+      <div class="tip-title">Security Report</div>
+      <div class="tip-desc">Transform a rough request into a professional threat analysis prompt</div>
+      <div class="tip-example" data-text="Write a security report for my company">Write a security report for my company</div>
+    </div>
+    <div class="tip-card" onclick="loadExample(this)">
+      <div class="tip-icon">✉️</div>
+      <div class="tip-title">Professional Email</div>
+      <div class="tip-desc">Engineer a prompt that produces clear, effective business emails</div>
+      <div class="tip-example" data-text="Write an email to my boss asking for a raise">Write an email to my boss asking for a raise</div>
+    </div>
+    <div class="tip-card" onclick="loadExample(this)">
+      <div class="tip-icon">📣</div>
+      <div class="tip-title">LinkedIn Post</div>
+      <div class="tip-desc">Go from a topic to a viral-ready LinkedIn content prompt</div>
+      <div class="tip-example" data-text="Help me write a LinkedIn post about AI">Help me write a LinkedIn post about AI</div>
+    </div>
+    <div class="tip-card" onclick="loadExample(this)">
+      <div class="tip-icon">📊</div>
+      <div class="tip-title">Market Analysis</div>
+      <div class="tip-desc">Structure a research and analysis prompt for any industry</div>
+      <div class="tip-example" data-text="Analyze the market for AI tools">Analyze the market for AI tools</div>
+    </div>
+    <div class="tip-card" onclick="loadExample(this)">
+      <div class="tip-icon">🎓</div>
+      <div class="tip-title">Study Plan</div>
+      <div class="tip-desc">Build a structured learning prompt for any subject or skill</div>
+      <div class="tip-example" data-text="Help me learn machine learning">Help me learn machine learning</div>
     </div>
   </div>
 </div>
 
-<!-- ── EXPLANATION ACCORDION ─────────────────────────────────────────── -->
+<!-- EXPLANATION ACCORDION -->
 <div class="explain-wrap">
-  <button class="explain-toggle" onclick="toggleExplain(this)" aria-expanded="false">
-    <span class="explain-toggle-left">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-      📋 Project Explanation &amp; Case Study
-    </span>
+  <button class="explain-toggle" id="explainBtn" aria-expanded="false" onclick="toggleExplain()">
+    <span style="display:flex;align-items:center;gap:.6rem;">📋 Project Explanation & Case Study</span>
     <span class="explain-chevron">▼</span>
   </button>
+  <div class="explain-body" id="explainBody">
+    <div class="ex-grid">
 
-  <div class="explain-body" id="explainBody" style="display:none;">
-    <div class="explain-grid">
-
-      <!-- Objective -->
-      <div class="ex-section">
+      <div>
         <div class="ex-label">Objective</div>
-        <p class="ex-text">Design a platform that helps users <strong>discover</strong> high-quality prompts, <strong>optimize</strong> them per model, and <strong>manage</strong> their lifecycle with versioning, analytics, and collaboration.</p>
-        <div class="ex-two-col">
-          <div class="ex-box">
-            <div class="ex-box-title">🔴 Problem</div>
-            <p>Prompt quality varies widely, is hard to measure, and even harder to maintain across models and teams. Existing marketplaces lack robust version control, performance visibility, and team workflows.</p>
-          </div>
-          <div class="ex-box">
-            <div class="ex-box-title">🟢 Solution</div>
-            <p>PromptCraft introduces <strong>live AI testing</strong>, <strong>prompt versioning</strong>, and <strong>shared workspaces</strong> so individuals and organizations can ship reliable AI workflows faster.</p>
-          </div>
+        <p style="font-size:.83rem;color:var(--text);line-height:1.75;margin-bottom:1rem;">Design a platform that helps users <strong style="color:var(--amber)">create</strong> high-quality AI prompts from raw ideas, <strong style="color:var(--amber)">optimize</strong> them with structured frameworks, and <strong style="color:var(--amber)">test</strong> them live against real AI models.</p>
+        <div class="ex-two">
+          <div class="ex-box"><div class="ex-box-ttl">🔴 Problem</div><p>Most people type vague one-liners and get inconsistent AI responses. There's no tool that coaches you through building a structured, reusable prompt from scratch.</p></div>
+          <div class="ex-box"><div class="ex-box-ttl">🟢 Solution</div><p>PromptCraft takes your rough idea, applies Role + Context + Constraints + Output engineering, scores it, and lets you test the result live — turning guessing into a predictable system.</p></div>
         </div>
       </div>
 
-      <!-- Value Proposition -->
-      <div class="ex-section">
+      <div>
         <div class="ex-label">Value Proposition</div>
-        <div class="ex-four-col">
-          <div class="ex-vp"><div class="ex-vp-icon">👤</div><div class="ex-vp-title">Everyday Users</div><p>Ready-to-use, rated prompts for common tasks across models. Save favorites and remix confidently.</p></div>
-          <div class="ex-vp"><div class="ex-vp-icon">👩‍💻</div><div class="ex-vp-title">Developers & Teams</div><p>Analytics, testing sandboxes, and collaborative reviews to improve quality and reduce drift.</p></div>
-          <div class="ex-vp"><div class="ex-vp-icon">🏢</div><div class="ex-vp-title">Enterprises</div><p>Private libraries, role-based access, audit trails, and governance to meet compliance needs.</p></div>
-          <div class="ex-vp"><div class="ex-vp-icon">🌐</div><div class="ex-vp-title">Community</div><p>Share, rate, and iterate prompts together; foster learning with templates and best practices.</p></div>
+        <div class="ex-four">
+          <div class="ex-vp"><div class="ex-vp-icon">👤</div><div class="ex-vp-ttl">Everyday Users</div><p>Type anything — get a structured, professional-grade prompt in seconds.</p></div>
+          <div class="ex-vp"><div class="ex-vp-icon">💼</div><div class="ex-vp-ttl">Professionals</div><p>Build reliable AI workflows for business, security, and analysis tasks.</p></div>
+          <div class="ex-vp"><div class="ex-vp-icon">👩‍💻</div><div class="ex-vp-ttl">Developers</div><p>Use engineered prompts as starting points for LLM integrations and pipelines.</p></div>
+          <div class="ex-vp"><div class="ex-vp-icon">🏢</div><div class="ex-vp-ttl">Teams</div><p>Standardize how your team communicates with AI — consistent outputs, every time.</p></div>
         </div>
       </div>
 
-      <!-- Process -->
-      <div class="ex-section">
+      <div>
         <div class="ex-label">Design Process</div>
         <div class="ex-steps">
-          <div class="ex-step"><span class="ex-step-num">01</span><div><strong>Ideation & Research</strong><p>Mapped competitor gaps: weak versioning, limited analytics, minimal collaboration.</p></div></div>
-          <div class="ex-step"><span class="ex-step-num">02</span><div><strong>Feature Blueprint</strong><p>Defined MVP around Versioning, Analytics, Workspaces, and Subscriptions.</p></div></div>
-          <div class="ex-step"><span class="ex-step-num">03</span><div><strong>Prototyping</strong><p>Wireframes for marketplace, prompt editor with live preview, and analytics dashboard.</p></div></div>
-          <div class="ex-step"><span class="ex-step-num">04</span><div><strong>User Testing</strong><p>Feedback loops with students, developers, and analysts to validate usability and discoverability.</p></div></div>
-          <div class="ex-step"><span class="ex-step-num">05</span><div><strong>Iteration</strong><p>Added scoring rubric, model-compatibility badges, and guardrail templates based on feedback.</p></div></div>
-          <div class="ex-step"><span class="ex-step-num">06</span><div><strong>Rollout</strong><p>Planned tiers: Free, Pro, Enterprise. Private org workspaces with SSO integration.</p></div></div>
+          <div class="ex-step"><span class="ex-sn">01</span><div><strong>Research</strong><p>Identified that 80%+ of AI users write single-sentence prompts, leading to inconsistent outputs. Competitors focus on libraries, not engineering.</p></div></div>
+          <div class="ex-step"><span class="ex-sn">02</span><div><strong>Framework Design</strong><p>Built the Role + Context + Constraints + Output (RCCO) prompt engineering framework as the core product mechanic.</p></div></div>
+          <div class="ex-step"><span class="ex-sn">03</span><div><strong>Live API Integration</strong><p>Connected Claude API to allow instant real-world testing of optimized prompts — showing the before/after difference in real outputs.</p></div></div>
+          <div class="ex-step"><span class="ex-sn">04</span><div><strong>Scoring System</strong><p>Designed a prompt quality score that evaluates specificity, structure, and completeness to give users measurable feedback.</p></div></div>
+          <div class="ex-step"><span class="ex-sn">05</span><div><strong>UX Iteration</strong><p>Tested with non-technical users. Key insight: people needed examples to understand what "rough idea" meant — added 6 quick-load examples.</p></div></div>
         </div>
       </div>
 
-      <!-- Stack -->
-      <div class="ex-section">
+      <div>
         <div class="ex-label">Tools & Stack</div>
-        <div class="ex-stack-grid">
-          <div class="ex-stack-item"><span class="ex-stack-icon">⚛️</span><strong>Frontend</strong><span>React + TailwindCSS · shadcn/ui · lucide icons</span></div>
-          <div class="ex-stack-item"><span class="ex-stack-icon">🖥️</span><strong>Backend</strong><span>Node.js + Express · REST APIs for prompts & analytics</span></div>
-          <div class="ex-stack-item"><span class="ex-stack-icon">🗄️</span><strong>Database</strong><span>MongoDB for prompt docs, version history, usage metrics</span></div>
-          <div class="ex-stack-item"><span class="ex-stack-icon">🤖</span><strong>AI Integration</strong><span>Anthropic Claude API · OpenAI SDK adapters</span></div>
-          <div class="ex-stack-item"><span class="ex-stack-icon">📊</span><strong>Analytics</strong><span>Custom scoring, A/B tests, Recharts dashboards</span></div>
-          <div class="ex-stack-item"><span class="ex-stack-icon">🚀</span><strong>Hosting & Auth</strong><span>GitHub Pages · Vercel preview · OAuth/OIDC SSO</span></div>
+        <div class="ex-stack">
+          <div class="ex-stack-card"><strong>Frontend</strong><span>Vanilla HTML/CSS/JS · IBM Plex + Syne fonts</span></div>
+          <div class="ex-stack-card"><strong>AI Engine</strong><span>Anthropic Claude API · claude-sonnet-4-20250514</span></div>
+          <div class="ex-stack-card"><strong>Prompt Framework</strong><span>RCCO: Role · Context · Constraints · Output</span></div>
+          <div class="ex-stack-card"><strong>Hosting</strong><span>GitHub Pages · Zero backend required</span></div>
+          <div class="ex-stack-card"><strong>Security</strong><span>Session-only key storage · No server logging</span></div>
+          <div class="ex-stack-card"><strong>UX Pattern</strong><span>3-step wizard · Before/After comparison</span></div>
         </div>
       </div>
 
-      <!-- Roadmap -->
-      <div class="ex-section">
+      <div>
         <div class="ex-label">Roadmap</div>
-        <div class="ex-two-col">
+        <div class="ex-two">
           <div class="ex-box">
-            <div class="ex-box-title">🟡 Near-term</div>
-            <ul class="ex-list"><li>Prompt scoring rubric & benchmark suites</li><li>Model adapters for ChatGPT, Claude, Gemini</li><li>Collections & team workspaces</li></ul>
+            <div class="ex-box-ttl">🟡 Near-term</div>
+            <ul class="ex-list"><li>Save & version your prompt history</li><li>A/B test two versions of the same prompt</li><li>Export to PDF or Notion</li></ul>
           </div>
           <div class="ex-box">
-            <div class="ex-box-title">🔵 Next</div>
-            <ul class="ex-list"><li>Private enterprise libraries & SSO</li><li>Compliance guardrails & audit logs</li><li>Revenue share for prompt creators</li></ul>
+            <div class="ex-box-ttl">🔵 Future</div>
+            <ul class="ex-list"><li>Team workspaces with shared prompt libraries</li><li>Multi-model comparison (Claude vs GPT vs Gemini)</li><li>Enterprise compliance guardrails</li></ul>
           </div>
         </div>
       </div>
@@ -311,252 +528,301 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
   </div>
 </div>
 
-<style>
-.explain-wrap{max-width:1200px;margin:0 auto 2rem;padding:0 2rem;position:relative;z-index:1;}
-.explain-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;padding:1rem 1.4rem;background:var(--bg2,#0D1117);border:1px solid rgba(255,255,255,0.09);border-radius:12px;cursor:pointer;color:var(--text,#E8ECF4);font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;transition:background .2s,border-color .2s;}
-.explain-toggle:hover{background:var(--bg3,#161B27);border-color:rgba(240,165,0,0.3);}
-.explain-toggle[aria-expanded="true"]{border-bottom-left-radius:0;border-bottom-right-radius:0;border-color:rgba(240,165,0,0.4);}
-.explain-toggle-left{display:flex;align-items:center;gap:.6rem;}
-.explain-chevron{font-size:.75rem;color:var(--muted,#7A8499);transition:transform .3s;}
-.explain-toggle[aria-expanded="true"] .explain-chevron{transform:rotate(180deg);}
-.explain-body{background:var(--bg2,#0D1117);border:1px solid rgba(240,165,0,0.2);border-top:none;border-radius:0 0 12px 12px;padding:2rem;}
-.explain-grid{display:flex;flex-direction:column;gap:2rem;}
-.ex-section{}
-.ex-label{font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:var(--amber,#F0A500);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid rgba(255,255,255,0.06);}
-.ex-text{font-size:.85rem;color:var(--text,#E8ECF4);line-height:1.75;margin-bottom:1rem;}
-.ex-text strong{color:var(--amber,#F0A500);}
-.ex-two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
-@media(max-width:640px){.ex-two-col,.ex-four-col{grid-template-columns:1fr;}}
-.ex-box{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:1rem 1.2rem;}
-.ex-box-title{font-family:'Syne',sans-serif;font-size:.82rem;font-weight:700;color:var(--text,#E8ECF4);margin-bottom:.5rem;}
-.ex-box p{font-size:.8rem;color:var(--muted,#7A8499);line-height:1.7;}
-.ex-box strong{color:var(--text,#E8ECF4);}
-.ex-four-col{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;}
-@media(max-width:800px){.ex-four-col{grid-template-columns:repeat(2,1fr);}}
-.ex-vp{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:.9rem;}
-.ex-vp-icon{font-size:1.3rem;margin-bottom:.4rem;}
-.ex-vp-title{font-family:'Syne',sans-serif;font-size:.8rem;font-weight:700;color:var(--text,#E8ECF4);margin-bottom:.3rem;}
-.ex-vp p{font-size:.75rem;color:var(--muted,#7A8499);line-height:1.6;}
-.ex-steps{display:flex;flex-direction:column;gap:.7rem;}
-.ex-step{display:flex;align-items:flex-start;gap:1rem;padding:.9rem 1rem;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:8px;}
-.ex-step-num{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:rgba(240,165,0,0.3);line-height:1;flex-shrink:0;width:36px;}
-.ex-step strong{font-size:.85rem;color:var(--text,#E8ECF4);display:block;margin-bottom:.2rem;}
-.ex-step p{font-size:.78rem;color:var(--muted,#7A8499);line-height:1.6;margin:0;}
-.ex-stack-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;}
-@media(max-width:700px){.ex-stack-grid{grid-template-columns:1fr 1fr;}}
-.ex-stack-item{display:flex;flex-direction:column;gap:.2rem;padding:.9rem 1rem;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:8px;}
-.ex-stack-icon{font-size:1.2rem;}
-.ex-stack-item strong{font-size:.8rem;color:var(--text,#E8ECF4);}
-.ex-stack-item span{font-size:.73rem;color:var(--muted,#7A8499);line-height:1.5;}
-.ex-list{list-style:none;display:flex;flex-direction:column;gap:.4rem;margin-top:.4rem;}
-.ex-list li{font-size:.78rem;color:var(--muted,#7A8499);padding-left:1rem;position:relative;}
-.ex-list li::before{content:'→';position:absolute;left:0;color:var(--amber,#F0A500);font-size:.7rem;}
-</style>
+<!-- FOOTER -->
+<footer class="site-footer">
+  <p>© 2025 Dayo Egonu · PromptCraft · Powered by Anthropic Claude API</p>
+  <ul class="footer-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="projects.html">Projects</a></li>
+    <li><a href="https://www.linkedin.com/in/dayoegonu/" target="_blank">LinkedIn</a></li>
+  </ul>
+</footer>
 
 <script>
-function toggleExplain(btn){
-  const body=document.getElementById("explainBody");
-  const open=btn.getAttribute("aria-expanded")==="true";
-  btn.setAttribute("aria-expanded",String(!open));
-  body.style.display=open?"none":"block";
-}
-</script>
+// ── STATE ──────────────────────────────────────────────────────────────────
+let apiKey = sessionStorage.getItem('pc_key') || '';
+let lastOptimized = '';
 
-<div class="site-footer">
-  <div class="footer-inner">
-    <p>© 2025 Dayo Egonu · PromptCraft · Powered by Anthropic Claude API</p>
-    <ul class="footer-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="projects.html">Projects</a></li>
-      <li><a href="https://www.linkedin.com/in/dayoegonu/" target="_blank">LinkedIn</a></li>
-    </ul>
-  </div>
-</div>
+// ── INIT ──────────────────────────────────────────────────────────────────
+updateApiUI();
 
-<script>
-const PROMPTS=[
-{id:1,cat:"Cybersecurity",title:"Threat Model Analyzer",desc:"Analyzes a system and generates a structured STRIDE threat model with mitigations.",models:["Claude","GPT-4"],prompt:`You are a senior cybersecurity architect. When given a system description, produce a structured threat model using the STRIDE framework (Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege).\n\nFor each threat category:\n- Identify specific threats relevant to the system\n- Assign a risk level (Critical / High / Medium / Low)\n- Recommend a concrete mitigation\n\nFormat your output with clear headers for each STRIDE category. Be specific and technical.`,example:"A web application that allows users to upload files, processes them server-side, and stores results in a PostgreSQL database behind a REST API."},
-{id:2,cat:"Cybersecurity",title:"Phishing Email Detector",desc:"Analyzes email content to identify phishing indicators and social engineering tactics.",models:["Claude","GPT-4","Gemini"],prompt:`You are a cybersecurity analyst specializing in phishing detection. Analyze the provided email and identify:\n\n1. Phishing indicators (urgency language, suspicious links, spoofed sender)\n2. Social engineering tactics used\n3. Technical red flags (header anomalies, domain mismatches)\n4. Overall threat assessment (Likely Phishing / Suspicious / Likely Legitimate)\n5. Recommended user action\n\nBe concise — your output will be read by non-technical users.`,example:"From: security@paypa1.com\nSubject: URGENT: Your account has been compromised!\n\nDear valued customer, we detected unusual activity. Click here immediately: http://paypal-secure-login.xyz"},
-{id:3,cat:"Cybersecurity",title:"Security Policy Writer",desc:"Generates professional, compliance-ready security policies for any organization.",models:["Claude","GPT-4"],prompt:`You are a cybersecurity compliance expert. Write a professional security policy for the specified topic. Include: Purpose, Scope, Policy Statement, Roles & Responsibilities, Procedures, Enforcement, and Review Date.\n\nFollow industry standards (ISO 27001, NIST, or SOC 2 as appropriate). Use clear language suitable for employees and auditors. Be specific and actionable.`,example:"Password Management Policy for a 50-person fintech startup handling customer financial data."},
-{id:4,cat:"Marketing",title:"LinkedIn Post Generator",desc:"Creates engaging, algorithm-friendly LinkedIn posts that drive thought leadership.",models:["Claude","GPT-4","Gemini"],prompt:`You are a LinkedIn content strategist for tech and AI professionals. Create a high-performing LinkedIn post that:\n\n- Opens with a scroll-stopping hook (no "I'm excited to share…")\n- Uses short paragraphs (1-2 sentences) for mobile readability\n- Includes a personal insight or contrarian take\n- Ends with a question to drive comments\n- Uses 3-5 relevant hashtags\n- Stays under 1,300 characters\n\nTone: Professional but conversational. No corporate jargon.`,example:"Topic: How AI is changing the way small businesses handle customer service. Audience: Business owners and tech professionals."},
-{id:5,cat:"Marketing",title:"Cold Email Sequence",desc:"Writes a 3-email B2B cold outreach sequence with personalization and clear CTAs.",models:["Claude","GPT-4"],prompt:`You are a B2B sales copywriter. Write a 3-email outreach sequence:\n\nEmail 1 (Day 1): Introduction — value first, soft CTA.\nEmail 2 (Day 4): Follow-up — new angle, social proof, stronger CTA.\nEmail 3 (Day 9): Breakup email — brief, low-pressure.\n\nRules: Subject lines under 50 chars. Emails under 150 words each. No "I hope this email finds you well." One CTA per email.\n\nFormat: Subject Line, Preview Text, Body for each email.`,example:"Selling an AI-powered inventory management SaaS to e-commerce store owners doing $500K-$5M in annual revenue."},
-{id:6,cat:"Marketing",title:"Product Description Writer",desc:"Crafts compelling product descriptions optimized for conversions and SEO.",models:["Claude","GPT-4","Gemini"],prompt:`You are a conversion copywriter. Write a compelling product description using the Problem → Solution → Outcome structure.\n\nInclude:\n- Benefit-led opening (not feature-led)\n- Sensory and emotional language\n- Bullet points for key features/benefits (5-7 items)\n- Natural SEO keyword integration\n- Action-oriented CTA\n\nMain description under 200 words.`,example:"Product: Ergonomic standing desk converter. Platform: Amazon listing. Target: Remote workers with back pain."},
-{id:7,cat:"Business",title:"Executive Summary Writer",desc:"Transforms complex reports into crisp, investor-ready executive summaries.",models:["Claude","GPT-4"],prompt:`You are a business writing expert for C-suite executives and investors. Transform the provided content into a polished executive summary using: Situation → Key Findings → Recommendations → Next Steps.\n\nUse data and specifics. Avoid jargon and passive voice. Scannable with clear headers. Under 400 words. Write for a decision-maker with 3 minutes to read.`,example:"Q3 analysis: user retention down 18% MoM due to onboarding friction. 67% of churned users never completed setup. Competitor time-to-value: 5 min vs our 35 min."},
-{id:8,cat:"Business",title:"Meeting Agenda Builder",desc:"Creates structured, time-boxed agendas that keep meetings focused and productive.",models:["Claude","GPT-4","Gemini"],prompt:`You are an organizational effectiveness consultant. Create a professional meeting agenda that includes:\n\n- Clear meeting objective (one sentence)\n- Agenda items with time allocations and owners\n- Discussion vs decision item distinction\n- Pre-read materials if needed\n- Next Steps section with owners and deadlines\n\nFormat it for copy-paste into an email or calendar invite.`,example:"60-minute quarterly product review for 8-person team. Goal: align Q4 roadmap. Topics: Q3 metrics, customer feedback, Q4 prioritization vote, resource allocation."},
-{id:9,cat:"Business",title:"Job Description Optimizer",desc:"Rewrites job descriptions to attract diverse candidates and reduce unconscious bias.",models:["Claude","GPT-4"],prompt:`You are an HR specialist and inclusive hiring expert. Rewrite the job description to:\n\n- Lead with impact and opportunity, not requirements\n- Remove exclusionary language (unnecessary degree/years requirements)\n- Use gender-neutral language\n- Clearly separate must-have vs nice-to-have\n- Highlight culture and growth\n- Include a D&I statement\n\nUnder 500 words. Make it exciting — top candidates have options.`,example:"We need a rockstar ninja developer with 7+ years experience. Must have CS degree. Responsibilities: code stuff, fix bugs, attend meetings."},
-{id:10,cat:"AI & ML",title:"ML Model Explainer",desc:"Explains complex ML concepts in plain language for non-technical stakeholders.",models:["Claude","GPT-4","Gemini"],prompt:`You are an AI/ML educator for business audiences. Explain the specified ML concept or result using:\n\n1. A simple real-world analogy first\n2. Plain-language explanation (no math)\n3. Concrete business implications\n4. Limitations and when NOT to use this\n5. 2-3 questions stakeholders should ask before deployment\n\nAssume audience: business leaders, PMs, students without ML background.`,example:"Explain how Random Forest works, why it outperformed our baseline logistic regression (AUC 0.89 vs 0.72) on customer churn prediction, and what the feature importance results mean for our product team."},
-{id:11,cat:"AI & ML",title:"Prompt Engineer",desc:"Analyzes your existing prompt and rewrites it for maximum clarity and output quality.",models:["Claude","GPT-4"],prompt:`You are a prompt engineering expert. Analyze the provided prompt and:\n\n1. Identify weaknesses (vague instructions, missing context, no output format, no examples)\n2. Explain the problems each weakness causes\n3. Rewrite with: clear role, specific instructions, output format, examples, edge case handling\n\nShow original vs improved side by side. Briefly explain each improvement.`,example:"Original prompt: 'Write me a summary of this article and make it good.'"},
-{id:12,cat:"AI & ML",title:"AI Use Case Evaluator",desc:"Evaluates whether a business problem is a good fit for AI and recommends the right approach.",models:["Claude","GPT-4"],prompt:`You are an AI strategy consultant. Evaluate the described problem for AI/ML suitability:\n\n1. Problem Fit Score (1-10) with reasoning\n2. Data Requirements\n3. Recommended Approach: rule-based / ML / deep learning / LLM\n4. Complexity: Low / Medium / High\n5. Key Risks: technical, ethical, regulatory\n6. Non-AI alternatives\n7. Recommended first step\n\nBe honest — if AI isn't the right fit, say so clearly.`,example:"We want AI to predict which support tickets need senior agent escalation. We have 2 years of data (500K tickets) with resolution time, category, and outcome labels."},
-{id:13,cat:"Productivity",title:"Weekly Planning Assistant",desc:"Turns your task list into a realistic, prioritized weekly plan with time blocks.",models:["Claude","GPT-4","Gemini"],prompt:`You are a productivity coach and time management expert. Create a structured weekly plan from the provided tasks and goals.\n\nApply:\n- Time-block important work in peak energy hours (morning)\n- Batch similar tasks\n- Build 20% buffer time\n- Identify 3 Most Important Tasks (MITs)\n- Flag tasks to delegate or eliminate\n\nOutput: Day-by-day plan (Mon-Fri) with time blocks, MITs highlighted, and brief prioritization rationale.`,example:"Tasks: Write Q4 strategy doc (4hrs), 3 client calls (1hr each), code review (2hrs), 4x team 1:1s (30min), 45 emails, board presentation (6hrs), gym daily (1hr). Priority: board presentation this week."},
-{id:14,cat:"Productivity",title:"Decision Framework Builder",desc:"Creates a structured framework for complex decisions with multiple stakeholders.",models:["Claude","GPT-4"],prompt:`You are a decision-making strategist. Structure the described decision:\n\n1. Clarify the decision precisely\n2. List all viable options (including "do nothing")\n3. Define weighted evaluation criteria\n4. Build a scoring matrix\n5. Identify assumptions and risks for top 2 options\n6. Flag reversible vs irreversible elements\n7. Recommend a decision or decision process\n\nOutput a document shareable with stakeholders.`,example:"Decide: build customer analytics in-house, buy SaaS, or hire consultancy. Budget: $200K. Timeline: 6 months. Team: 2 engineers available."},
-{id:15,cat:"Productivity",title:"Email Rewriter",desc:"Rewrites emails to be clearer, more professional, and more likely to get a response.",models:["Claude","GPT-4","Gemini"],prompt:`You are an expert business communicator. Rewrite the email to:\n\n- State the purpose clearly in the first 2 sentences\n- Use active voice and direct language\n- Remove filler ("I hope this email finds you well", "Please don't hesitate…")\n- Make the subject line specific and action-oriented\n- Include exactly ONE clear CTA\n- Cut length by 30%+ while keeping all key info\n\nOutput: Revised Subject Line, then Revised Email.`,example:"Subject: Follow up\n\nHi John, I hope you're doing well! I just wanted to follow up on my previous email about the proposal. I was wondering if you had a chance to look it over. Please let me know if you need anything. Thanks!\n\nBest, Dayo"}
-];
-
-const CAT={
-  "Cybersecurity":{color:"#F43F5E",bg:"rgba(244,63,94,0.1)",bdr:"rgba(244,63,94,0.2)",cc:"#F43F5E"},
-  "Marketing":{color:"#00D4FF",bg:"rgba(0,212,255,0.1)",bdr:"rgba(0,212,255,0.2)",cc:"#00D4FF"},
-  "Business":{color:"#7C3AED",bg:"rgba(124,58,237,0.1)",bdr:"rgba(124,58,237,0.2)",cc:"#7C3AED"},
-  "AI & ML":{color:"#10B981",bg:"rgba(16,185,129,0.1)",bdr:"rgba(16,185,129,0.2)",cc:"#10B981"},
-  "Productivity":{color:"#F0A500",bg:"rgba(240,165,0,0.1)",bdr:"rgba(240,165,0,0.2)",cc:"#F0A500"},
-};
-
-let activeFilter="All", currentP=null, apiKey=sessionStorage.getItem("pc_key")||"";
-
-function init(){renderCards(PROMPTS);updateApiUI();}
-
-function renderCards(list){
-  const grid=document.getElementById("grid");
-  const empty=document.getElementById("empty");
-  grid.querySelectorAll(".pcard").forEach(c=>c.remove());
-  list.forEach((p,i)=>{
-    const s=CAT[p.cat]||CAT["Productivity"];
-    const c=document.createElement("div");
-    c.className="pcard";
-    c.style.cssText=`--cc:${s.cc};animation-delay:${i*0.045}s`;
-    c.dataset.cat=p.cat;
-    c.innerHTML=`
-      <div class="card-top">
-        <div class="card-meta">
-          <span class="card-cat" style="color:${s.color};background:${s.bg};border:1px solid ${s.bdr}">${p.cat}</span>
-          <div class="card-models">${p.models.map(m=>`<span class="card-model">${m}</span>`).join("")}</div>
-        </div>
-        <div class="card-title">${p.title}</div>
-        <div class="card-desc">${p.desc}</div>
-        <div class="card-preview">${p.prompt.trim()}</div>
-      </div>
-      <div class="card-foot">
-        <button class="btn-run" onclick="openModal(${p.id})">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Test Live
-        </button>
-        <button class="btn-copy" onclick="doCopy(event,${p.id})">Copy</button>
-      </div>`;
-    grid.insertBefore(c,empty);
-  });
-  document.getElementById("vcnt").textContent=list.length;
-  empty.classList.toggle("show",list.length===0);
+// ── API KEY ────────────────────────────────────────────────────────────────
+function saveKey() {
+  const v = document.getElementById('apiKeyIn').value.trim();
+  if (!v) { alert('Please paste your Anthropic API key.'); return; }
+  apiKey = v;
+  sessionStorage.setItem('pc_key', apiKey);
+  document.getElementById('apiKeyIn').value = '';
+  updateApiUI();
 }
 
-function setFilter(btn){
-  document.querySelectorAll(".filt").forEach(b=>b.classList.remove("active"));
-  btn.classList.add("active");
-  activeFilter=btn.dataset.cat;
-  filterPrompts();
+function clearKey() {
+  apiKey = '';
+  sessionStorage.removeItem('pc_key');
+  updateApiUI();
 }
 
-function filterPrompts(){
-  const q=document.getElementById("searchIn").value.toLowerCase();
-  const filtered=PROMPTS.filter(p=>{
-    const mc=activeFilter==="All"||p.cat===activeFilter;
-    const mq=!q||p.title.toLowerCase().includes(q)||p.desc.toLowerCase().includes(q)||p.cat.toLowerCase().includes(q);
-    return mc&&mq;
-  });
-  renderCards(filtered);
-}
+function updateApiUI() {
+  const dot1 = document.getElementById('apiDot');
+  const dot2 = document.getElementById('apiBannerDot');
+  const txt = document.getElementById('apiTxt');
+  const bannerTxt = document.getElementById('apiBannerTxt');
+  const inputRow = document.getElementById('apiInputRow');
+  const clearBtn = document.getElementById('clearBtn');
+  const banner = document.getElementById('apiBanner');
 
-function doCopy(e,id){
-  const p=PROMPTS.find(x=>x.id===id);
-  if(!p)return;
-  navigator.clipboard.writeText(p.prompt).then(()=>{
-    const b=e.target;b.textContent="Copied!";b.classList.add("done");
-    setTimeout(()=>{b.textContent="Copy";b.classList.remove("done");},2000);
-  });
-}
-
-function openModal(id){
-  const p=PROMPTS.find(x=>x.id===id);
-  if(!p)return;
-  currentP=p;
-  document.getElementById("mTitle").textContent=p.title;
-  document.getElementById("mSub").textContent=p.cat+" · "+p.models.join(", ");
-  document.getElementById("mPrompt").textContent=p.prompt.trim();
-  document.getElementById("uInput").value=p.example||"";
-  document.getElementById("respSec").style.display="none";
-  document.getElementById("resActs").style.display="none";
-  document.getElementById("respBox").textContent="";
-  document.getElementById("respBox").className="response-box";
-  document.getElementById("tokInfo").textContent="";
-  document.getElementById("noApiW").classList.toggle("show",!apiKey);
-  document.getElementById("runBtn").disabled=!apiKey;
-  document.getElementById("overlay").classList.add("open");
-  document.body.style.overflow="hidden";
-}
-
-function closeModal(){
-  document.getElementById("overlay").classList.remove("open");
-  document.body.style.overflow="";
-  currentP=null;
-}
-
-function bgClose(e){if(e.target===document.getElementById("overlay"))closeModal();}
-
-async function runPrompt(){
-  if(!apiKey||!currentP)return;
-  const userInput=document.getElementById("uInput").value.trim();
-  const runBtn=document.getElementById("runBtn");
-  const respSec=document.getElementById("respSec");
-  const respBox=document.getElementById("respBox");
-  const resActs=document.getElementById("resActs");
-  const tokInfo=document.getElementById("tokInfo");
-  runBtn.disabled=true;
-  runBtn.innerHTML=`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0"/></svg> Running…`;
-  respSec.style.display="block";resActs.style.display="none";
-  respBox.className="response-box loading";respBox.textContent="";tokInfo.textContent="";
-  try{
-    const res=await fetch("https://api.anthropic.com/v1/messages",{
-      method:"POST",
-      headers:{"Content-Type":"application/json","x-api-key":apiKey,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
-      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1024,system:currentP.prompt,messages:[{role:"user",content:userInput||"Please run this task with your full capabilities."}]})
-    });
-    if(!res.ok){const e=await res.json();throw new Error(e.error?.message||`API error ${res.status}`);}
-    const data=await res.json();
-    const text=data.content?.[0]?.text||"";
-    respBox.className="response-box";respBox.textContent=text;resActs.style.display="flex";
-    if(data.usage)tokInfo.textContent=`↑${data.usage.input_tokens} ↓${data.usage.output_tokens} tokens`;
-  }catch(err){
-    respBox.className="response-box err";
-    respBox.textContent=`Error: ${err.message}\n\nCheck your API key and ensure it has sufficient credits.`;
-  }finally{
-    runBtn.disabled=false;
-    runBtn.innerHTML=`<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> Run with Claude`;
+  if (apiKey) {
+    dot1.className = 'api-dot on';
+    dot2.className = 'api-dot on';
+    txt.textContent = 'API connected';
+    bannerTxt.textContent = '✓ API key connected — prompts will run live against Claude';
+    inputRow.style.display = 'none';
+    clearBtn.style.display = 'inline-flex';
+    banner.className = 'api-banner connected';
+  } else {
+    dot1.className = 'api-dot';
+    dot2.className = 'api-dot';
+    txt.textContent = 'No API key';
+    bannerTxt.textContent = 'Connect your Anthropic API key to run prompts live';
+    inputRow.style.display = 'flex';
+    clearBtn.style.display = 'none';
+    banner.className = 'api-banner';
   }
 }
 
-function copyResp(){
-  const t=document.getElementById("respBox").textContent;
-  navigator.clipboard.writeText(t).then(()=>{
-    const b=document.querySelector(".res-actions button");b.textContent="Copied!";
-    setTimeout(()=>b.textContent="Copy Response",2000);
+// ── EXAMPLES ──────────────────────────────────────────────────────────────
+function loadExample(card) {
+  const text = card.querySelector('.tip-example').dataset.text;
+  document.getElementById('rawInput').value = text;
+  document.getElementById('rawInput').focus();
+  window.scrollTo({ top: document.querySelector('.app-card').offsetTop - 80, behavior: 'smooth' });
+}
+
+// ── OPTIMIZE ──────────────────────────────────────────────────────────────
+async function optimizePrompt() {
+  const raw = document.getElementById('rawInput').value.trim();
+  if (!raw) { alert('Please type your rough idea first.'); return; }
+  if (!apiKey) { alert('Please connect your API key first.'); return; }
+
+  const btn = document.getElementById('optimizeBtn');
+  btn.classList.add('loading');
+  btn.disabled = true;
+
+  const useCase = document.getElementById('useCase').value;
+  const useCaseHint = useCase ? `The user is working on: ${useCase}.` : '';
+
+  const systemPrompt = `You are PromptCraft, an expert prompt engineer. Your job is to transform a user's rough, vague idea into a perfectly structured AI prompt.
+
+Apply the RCCO framework:
+- Role: Who should the AI act as?
+- Context: What background/constraints does the AI need?
+- Constraints: What rules, limits, or requirements apply?
+- Output: What format should the response take?
+
+${useCaseHint}
+
+CRITICAL: Respond ONLY with a valid JSON object. No markdown, no explanation outside JSON. Use this exact structure:
+{
+  "role": "One sentence describing the AI's role/persona",
+  "context": "The background context and situation",
+  "constraints": "Key rules, limits, or requirements",
+  "output_format": "How the response should be structured",
+  "optimized_prompt": "The full, complete optimized prompt ready to use",
+  "score": 87,
+  "improvement": "Short phrase describing the key improvement made"
+}
+
+The score should be 70-98 based on specificity, structure, and clarity.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1024,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: `Transform this rough idea into an optimized prompt: "${raw}"` }]
+      })
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error?.message || `API Error ${res.status}`);
+
+    const text = data.content[0]?.text || '';
+    const clean = text.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+
+    // Show result
+    document.getElementById('bkRole').textContent = parsed.role || '—';
+    document.getElementById('bkCtx').textContent = parsed.context || '—';
+    document.getElementById('bkConst').textContent = parsed.constraints || '—';
+    document.getElementById('bkOut').textContent = parsed.output_format || '—';
+    document.getElementById('optimizedPrompt').value = parsed.optimized_prompt || '';
+    document.getElementById('improvementTag').textContent = `✨ ${parsed.improvement || 'Prompt quality improved'}`;
+
+    const score = Math.min(98, Math.max(70, parsed.score || 85));
+    document.getElementById('scoreNum').textContent = score + '/100';
+    setTimeout(() => {
+      document.getElementById('scoreFill').style.width = score + '%';
+    }, 100);
+
+    lastOptimized = parsed.optimized_prompt || '';
+
+    const resultBlock = document.getElementById('resultBlock');
+    resultBlock.classList.add('visible');
+    resultBlock.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // Hide response if re-optimizing
+    document.getElementById('responseBlock').classList.remove('visible');
+
+  } catch (err) {
+    if (err.message.includes('401') || err.message.includes('authentication')) {
+      alert('Invalid API key. Please check your key and try again.');
+    } else if (err instanceof SyntaxError) {
+      alert('Could not parse the optimization response. Please try again.');
+    } else {
+      alert(`Error: ${err.message}`);
+    }
+  } finally {
+    btn.classList.remove('loading');
+    btn.disabled = false;
+  }
+}
+
+// ── RUN COMPARISON (both prompts in parallel) ──────────────────────────────
+async function runOptimized() {
+  const optimized = document.getElementById('optimizedPrompt').value.trim();
+  const raw = document.getElementById('rawInput').value.trim();
+  if (!optimized) { alert('No optimized prompt to run.'); return; }
+  if (!apiKey) { alert('Please connect your API key first.'); return; }
+
+  // Show compare block
+  const compareBlock = document.getElementById('compareBlock');
+  compareBlock.classList.add('visible');
+  compareBlock.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // Set prompt previews
+  document.getElementById('rawPreview').textContent = raw;
+  document.getElementById('optPreview').textContent = optimized;
+
+  // Reset responses to loading state
+  document.getElementById('rawResponse').innerHTML =
+    '<div class="col-loading"><div class="loading-dots"><span></span><span></span><span></span></div> Running raw prompt…</div>';
+  document.getElementById('optResponse').innerHTML =
+    '<div class="col-loading"><div class="loading-dots"><span></span><span></span><span></span></div> Running optimized prompt…</div>';
+  document.getElementById('rawMeta').textContent = '';
+  document.getElementById('optMeta').textContent = '';
+
+  // Disable run button
+  const runBtn = document.getElementById('runBtn');
+  const spinner = document.getElementById('runBtnSpinner');
+  const label = document.getElementById('runBtnLabel');
+  runBtn.disabled = true;
+  spinner.style.display = 'inline-block';
+  label.textContent = 'Running both…';
+
+  // Helper — single API call
+  async function callClaude(prompt) {
+    const start = Date.now();
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 800,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error?.message || `API Error ${res.status}`);
+    const elapsed = ((Date.now() - start) / 1000).toFixed(1);
+    return {
+      text: data.content[0]?.text || '',
+      time: elapsed,
+      tokens: data.usage?.output_tokens || '—'
+    };
+  }
+
+  // Fire both in parallel
+  const [rawResult, optResult] = await Promise.allSettled([
+    callClaude(raw),
+    callClaude(optimized)
+  ]);
+
+  // Render raw result
+  const rawBox = document.getElementById('rawResponse');
+  if (rawResult.status === 'fulfilled') {
+    rawBox.className = 'col-response';
+    rawBox.textContent = rawResult.value.text;
+    document.getElementById('rawMeta').textContent =
+      `⏱ ${rawResult.value.time}s · ${rawResult.value.tokens} tokens`;
+  } else {
+    rawBox.className = 'col-response err';
+    rawBox.textContent = `Error: ${rawResult.reason?.message}`;
+  }
+
+  // Render optimized result
+  const optBox = document.getElementById('optResponse');
+  if (optResult.status === 'fulfilled') {
+    optBox.className = 'col-response';
+    optBox.textContent = optResult.value.text;
+    document.getElementById('optMeta').textContent =
+      `⏱ ${optResult.value.time}s · ${optResult.value.tokens} tokens`;
+  } else {
+    optBox.className = 'col-response err';
+    optBox.textContent = `Error: ${optResult.reason?.message}`;
+  }
+
+  runBtn.disabled = false;
+  spinner.style.display = 'none';
+  label.textContent = '▶ Run Comparison';
+}
+
+// ── UTILS ──────────────────────────────────────────────────────────────────
+function copyOptimized() {
+  const t = document.getElementById('optimizedPrompt').value;
+  if (!t) return;
+  navigator.clipboard.writeText(t).then(() => {
+    const btn = event.target;
+    btn.textContent = '✓ Copied';
+    setTimeout(() => btn.textContent = '📋 Copy', 1500);
   });
 }
 
-function clearResp(){
-  document.getElementById("respSec").style.display="none";
-  document.getElementById("respBox").textContent="";
+function copyCol(colId) {
+  const text = document.getElementById(colId).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    event.target.textContent = '✓ Copied';
+    setTimeout(() => { event.target.textContent = '📋 Copy'; }, 1500);
+  });
 }
 
-function saveKey(){
-  const v=document.getElementById("apiIn").value.trim();
-  if(!v.startsWith("sk-")){alert("That doesn't look like a valid Anthropic API key (should start with sk-)");return;}
-  apiKey=v;sessionStorage.setItem("pc_key",apiKey);updateApiUI();document.getElementById("apiIn").value="";
+function resetAll() {
+  document.getElementById('rawInput').value = '';
+  document.getElementById('resultBlock').classList.remove('visible');
+  document.getElementById('compareBlock').classList.remove('visible');
+  document.getElementById('scoreFill').style.width = '0%';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function clearKey(){apiKey="";sessionStorage.removeItem("pc_key");updateApiUI();}
-
-function updateApiUI(){
-  const dot=document.getElementById("apiDot");
-  const txt=document.getElementById("apiTxt");
-  const wrap=document.getElementById("apiWrap");
-  const cb=document.getElementById("clearBtn");
-  if(apiKey){dot.className="api-dot connected";txt.textContent="API key connected — prompts are live ✓";wrap.style.display="none";cb.style.display="inline-flex";}
-  else{dot.className="api-dot";txt.textContent="No API key — enter yours to run prompts live";wrap.style.display="flex";cb.style.display="none";}
+function toggleExplain() {
+  const btn = document.getElementById('explainBtn');
+  const body = document.getElementById('explainBody');
+  const open = btn.getAttribute('aria-expanded') === 'true';
+  btn.setAttribute('aria-expanded', String(!open));
+  body.style.display = open ? 'none' : 'block';
 }
-
-document.addEventListener("keydown",e=>{
-  if(e.key==="Escape")closeModal();
-  if((e.ctrlKey||e.metaKey)&&e.key==="Enter"&&document.getElementById("overlay").classList.contains("open"))runPrompt();
-});
-
-init();
 </script>
 </body>
 </html>
