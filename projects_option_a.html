@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects — Dayo Egonu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,700;0,900;1,300;1,700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #F7F4EE;
+      --ink:     #1A1814;
+      --ink2:    #4A4540;
+      --amber:   #C8873A;
+      --amber2:  #E8A855;
+      --cream:   #EDE8DF;
+      --border:  #D8D0C4;
+      --white:   #FFFFFF;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Instrument Sans', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--ink);
+      padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 56px;
+    }
+    .nav-brand {
+      font-family: 'Fraunces', serif;
+      font-size: 1.1rem; font-weight: 700;
+      color: var(--amber); text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 0.2rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.8rem; font-weight: 500;
+      color: rgba(255,255,255,0.6); text-decoration: none;
+      padding: 0.35rem 0.7rem; border-radius: 5px;
+      transition: color 0.2s, background 0.2s;
+    }
+    .nav-links a:hover { color: #fff; background: rgba(255,255,255,0.08); }
+    .nav-links a.linkedin {
+      color: var(--amber); border: 1px solid rgba(200,135,58,0.4);
+    }
+    .nav-links a.linkedin:hover { background: rgba(200,135,58,0.1); }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      max-width: 1200px; margin: 0 auto;
+      padding: 3.5rem 2rem 2rem;
+      display: flex; align-items: flex-end; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .page-header-left {}
+    .overline {
+      font-size: 0.68rem; font-weight: 600;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--amber); margin-bottom: 0.5rem;
+    }
+    .page-header h1 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      font-weight: 900; line-height: 1.05;
+      color: var(--ink);
+    }
+    .page-header h1 em { font-style: italic; color: var(--amber); }
+    .project-count {
+      font-family: 'Fraunces', serif;
+      font-size: 4rem; font-weight: 300; line-height: 1;
+      color: var(--border);
+    }
+
+    /* ── BENTO GRID ── */
+    .bento {
+      max-width: 1200px; margin: 0 auto;
+      padding: 2.5rem 2rem 4rem;
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-auto-rows: 220px;
+      gap: 16px;
+    }
+
+    /* Card base */
+    .card {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1),
+                  box-shadow 0.28s ease;
+      cursor: pointer;
+    }
+    .card:hover {
+      transform: translateY(-4px) scale(1.01);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.18);
+    }
+
+    /* Card grid placements — bento layout */
+    .card-1 { grid-column: span 7; grid-row: span 2; } /* Featured large */
+    .card-2 { grid-column: span 5; grid-row: span 1; }
+    .card-3 { grid-column: span 5; grid-row: span 1; }
+    .card-4 { grid-column: span 4; grid-row: span 2; }
+    .card-5 { grid-column: span 4; grid-row: span 1; }
+    .card-6 { grid-column: span 4; grid-row: span 1; }
+    .card-7 { grid-column: span 6; grid-row: span 1; }
+    .card-8 { grid-column: span 6; grid-row: span 1; }
+
+    @media (max-width: 900px) {
+      .bento { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 200px; }
+      .card-1,.card-2,.card-3,.card-4,.card-5,.card-6,.card-7,.card-8 {
+        grid-column: span 2; grid-row: span 1;
+      }
+      .card-1 { grid-row: span 2; }
+    }
+    @media (max-width: 540px) {
+      .bento { grid-template-columns: 1fr; }
+      .card-1,.card-2,.card-3,.card-4,.card-5,.card-6,.card-7,.card-8 {
+        grid-column: span 1; grid-row: span 1;
+      }
+    }
+
+    /* Card image */
+    .card-img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .card:hover .card-img { transform: scale(1.06); }
+
+    /* Overlay gradient */
+    .card-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(10,8,5,0.88) 0%,
+        rgba(10,8,5,0.35) 50%,
+        rgba(10,8,5,0.05) 100%
+      );
+      transition: background 0.3s;
+    }
+    .card:hover .card-overlay {
+      background: linear-gradient(
+        to top,
+        rgba(10,8,5,0.92) 0%,
+        rgba(10,8,5,0.45) 55%,
+        rgba(10,8,5,0.08) 100%
+      );
+    }
+
+    /* Card body (text layer) */
+    .card-body {
+      position: relative; z-index: 2;
+      padding: 1.2rem 1.4rem;
+    }
+    .card-tag {
+      display: inline-block;
+      font-size: 0.6rem; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 0.2rem 0.55rem; border-radius: 3px;
+      margin-bottom: 0.5rem;
+      background: rgba(200,135,58,0.25);
+      color: var(--amber2);
+      border: 1px solid rgba(200,135,58,0.3);
+    }
+    .card h3 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.05rem; font-weight: 700;
+      color: #fff; line-height: 1.2;
+      margin-bottom: 0.3rem;
+    }
+    .card-1 h3 { font-size: 1.6rem; }
+    .card p {
+      font-size: 0.78rem; color: rgba(255,255,255,0.65);
+      line-height: 1.55;
+      display: none;
+    }
+    .card-1 p, .card-4 p { display: block; }
+    .card-arrow {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      margin-top: 0.6rem;
+      font-size: 0.75rem; font-weight: 600;
+      color: var(--amber2);
+      opacity: 0;
+      transform: translateX(-6px);
+      transition: opacity 0.25s, transform 0.25s;
+    }
+    .card:hover .card-arrow { opacity: 1; transform: translateX(0); }
+
+    /* NEW badge */
+    .badge-new {
+      position: absolute; top: 1rem; right: 1rem; z-index: 3;
+      font-size: 0.58rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.22rem 0.6rem; border-radius: 20px;
+      background: var(--amber); color: var(--ink);
+    }
+
+    /* Solid-colour fallback for cards without images */
+    .card-fallback { background: var(--cream); }
+    .card-fallback .card-overlay { background: none; }
+    .card-fallback h3 { color: var(--ink); }
+    .card-fallback p  { color: var(--ink2); }
+    .card-fallback .card-tag { background: rgba(200,135,58,0.15); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--ink);
+      padding: 1.4rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 0.8rem;
+    }
+    footer p { font-size: 0.75rem; color: rgba(255,255,255,0.4); }
+    .footer-links { display: flex; gap: 0.2rem; list-style: none; }
+    .footer-links a {
+      font-size: 0.75rem; color: rgba(255,255,255,0.45);
+      text-decoration: none; padding: 0.25rem 0.55rem; border-radius: 4px;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--amber); }
+
+    /* Stagger animation */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: none; }
+    }
+    .card { animation: fadeUp 0.55s ease both; }
+    .card:nth-child(1) { animation-delay: 0.05s }
+    .card:nth-child(2) { animation-delay: 0.10s }
+    .card:nth-child(3) { animation-delay: 0.15s }
+    .card:nth-child(4) { animation-delay: 0.20s }
+    .card:nth-child(5) { animation-delay: 0.25s }
+    .card:nth-child(6) { animation-delay: 0.30s }
+    .card:nth-child(7) { animation-delay: 0.35s }
+    .card:nth-child(8) { animation-delay: 0.40s }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-brand">Dayo Portfolio</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="projects.html">Projects</a></li>
+    <li><a href="index.html#skills">Skills</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+    <li><a href="https://www.linkedin.com/in/dayoegonu/" target="_blank" class="linkedin">LinkedIn</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <div class="page-header-left">
+    <div class="overline">Applied AI · Portfolio</div>
+    <h1>Project <em>Artifacts</em></h1>
+  </div>
+  <div class="project-count">08</div>
+</div>
+
+<main class="bento">
+
+  <!-- 1 — Featured large -->
+  <a href="explainable_ai.html" class="card card-1">
+    <img class="card-img" src="images/explainable-ai.png" alt="Explainable AI">
+    <div class="card-overlay"></div>
+    <span class="badge-new">New</span>
+    <div class="card-body">
+      <span class="card-tag">LLMs · XAI</span>
+      <h3>Explainable AI (XAI)</h3>
+      <p>Transparency, trust, and accountability in large language models — covering techniques, validation metrics, and how GPT-4, Claude, Gemini, and LLaMA approach explainability.</p>
+      <span class="card-arrow">View Project →</span>
+    </div>
+  </a>
+
+  <!-- 2 -->
+  <a href="llm_training_infographic.html" class="card card-2">
+    <img class="card-img" src="images/llm-training-infographic.jpg" alt="LLM Training">
+    <div class="card-overlay"></div>
+    <div class="card-body">
+      <span class="card-tag">Generative AI</span>
+      <h3>How Generative AI LLMs Are Trained</h3>
+      <span class="card-arrow">View Project →</span>
+    </div>
+  </a>
+
+  <!-- 3 -->
+  <a href="neural-network-visual.html" class="card card-3">
+    <img class="card-img" src="images/neural-network-visual.jpg" alt="Neural Network">
+    <div class="card-overlay"></div>
+    <div class="card-body">
+      <span class="card-tag">Deep Learning</span>
+      <h3>Neural Network Visual Framework</h3>
+      <span class="card-arrow">View Project →</span>
+    </div>
+  </a>
+
+  <!-- 4 — tall -->
+  <a href="ml-algorithm-infographic.html" class="card card-4">
+    <img class="card-img" src="images/ml-algorithm-infographic.jpg" alt="ML Algorithm">
+    <div class="card-overlay"></div>
+    <div class="card-body">
+      <span class="card-tag">Machine Learning</span>
+      <h3>ML Algorithm Framework</h3>
+      <p>Visual infographic mapping supervised, unsupervised, and deep learning algorithms with real-world use cases.</p>
+      <span class="card-arrow">View Project →</span>
+    </div>
+  </a>
+
+  <!-- 5 -->
+  <a href="promptcraft.html" class="card card-5">
+    <img class="card-img" src="images/promptcraft.jpg" alt="PromptCraft">
+    <div class="card-overlay"></div>
+    <div class="card-body">
+      <span class="card-tag">Prompt Engineering</span>
+      <h3>PromptCraft</h3>
+      <span class="card-arrow">View Project →</span>
+    </div>
+  </a>
+
+  <!-- 6 -->
+  <a href="ai-shield.html" class="card card-6">
+    <img class="card-img" src="images/ai-shield.jpg" alt="AI Shield">
+    <div class="card-overlay"></div>
+    <div class="card-body">
+      <span class="card-tag">Cybersecurity</span>
+      <h3>AI Shield</h3>
+      <span class="card-arrow">View Project →</span>
+    </div>
+  </a>
+
+  <!-- 7 -->
+  <a href="security-knights.html" class="card card-7">
+    <img class="card-img" src="images/security-knights.jpg" alt="Security Knights">
+    <div class="card-overlay"></div>
+    <div class="card-body">
+      <span class="card-tag">Cybersecurity · Gamification</span>
+      <h3>Security Knights</h3>
+      <span class="card-arrow">View Project →</span>
+    </div>
+  </a>
+
+  <!-- 8 -->
+  <a href="Smart-Travel-By-AirLytics.html" class="card card-8">
+    <img class="card-img" src="images/smart-travel-airlytics.jpg" alt="Smart Travel">
+    <div class="card-overlay"></div>
+    <div class="card-body">
+      <span class="card-tag">Generative AI</span>
+      <h3>Smart Travel by AirLytics</h3>
+      <span class="card-arrow">View Project →</span>
+    </div>
+  </a>
+
+</main>
+
+<footer>
+  <p>© 2025 Dayo Egonu. All rights reserved.</p>
+  <ul class="footer-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="https://www.linkedin.com/in/dayoegonu/" target="_blank">LinkedIn</a></li>
+  </ul>
+</footer>
+
+</body>
+</html>
