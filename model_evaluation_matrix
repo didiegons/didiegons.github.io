@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre-Trained Model Evaluation Matrix | Dayo Egbon</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080C14;
+    --surface: #0D1421;
+    --surface2: #111927;
+    --border: #1E2D42;
+    --border2: #243348;
+    --text: #E2ECF5;
+    --muted: #5A7A96;
+    --accent: #00D4FF;
+    --accent2: #0096CC;
+    --green: #00E5A0;
+    --amber: #FFB340;
+    --red: #FF5A5A;
+    --purple: #9B7FFF;
+    --nlp-color: #00D4FF;
+    --vision-color: #00E5A0;
+    --tabular-color: #FFB340;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* Background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Glow orbs */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.12;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .orb-1 { width: 600px; height: 600px; background: var(--accent); top: -200px; right: -100px; }
+  .orb-2 { width: 400px; height: 400px; background: var(--green); bottom: 10%; left: -100px; }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 80px 0 60px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(0,212,255,0.08);
+    border: 1px solid rgba(0,212,255,0.2);
+    padding: 6px 14px;
+    border-radius: 100px;
+    margin-bottom: 28px;
+  }
+
+  .hero-tag::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  .hero h1 {
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+
+  .hero h1 span {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--muted);
+    max-width: 680px;
+    margin-bottom: 36px;
+    font-weight: 400;
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .meta-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+
+  .meta-value {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  /* ── DOMAIN BADGES ── */
+  .domain-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .badge-nlp { background: rgba(0,212,255,0.12); color: var(--nlp-color); border: 1px solid rgba(0,212,255,0.25); }
+  .badge-vision { background: rgba(0,229,160,0.12); color: var(--vision-color); border: 1px solid rgba(0,229,160,0.25); }
+  .badge-tabular { background: rgba(255,179,64,0.12); color: var(--tabular-color); border: 1px solid rgba(255,179,64,0.25); }
+
+  /* ── SECTIONS ── */
+  section {
+    padding: 64px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  h2 {
+    font-size: 1.9rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 16px;
+  }
+
+  .section-intro {
+    color: var(--muted);
+    max-width: 720px;
+    margin-bottom: 40px;
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  /* ── MODEL CARDS ── */
+  .model-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+    margin-top: 32px;
+  }
+
+  .model-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .model-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+
+  .model-card.nlp::before { background: linear-gradient(90deg, var(--nlp-color), transparent); }
+  .model-card.vision::before { background: linear-gradient(90deg, var(--vision-color), transparent); }
+  .model-card.tabular::before { background: linear-gradient(90deg, var(--tabular-color), transparent); }
+
+  .model-card:hover {
+    border-color: var(--border2);
+    transform: translateY(-2px);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+
+  .model-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .model-org {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 2px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  .model-desc {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .stat-row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+  }
+
+  .stat-bar-wrap {
+    flex: 1;
+    margin: 0 12px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+
+  .stat-bar {
+    height: 100%;
+    border-radius: 100px;
+    transition: width 1s ease;
+  }
+
+  .stat-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    min-width: 60px;
+    text-align: right;
+  }
+
+  /* ── DECISION MATRIX ── */
+  .matrix-wrap {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    min-width: 800px;
+  }
+
+  thead th {
+    background: var(--surface2);
+    padding: 14px 16px;
+    text-align: left;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  thead th:first-child {
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+  td {
+    padding: 14px 16px;
+    vertical-align: middle;
+  }
+
+  .model-cell {
+    min-width: 140px;
+  }
+
+  .model-cell .name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+  }
+
+  .pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: 'Space Mono', monospace;
+  }
+
+  .pill-high { background: rgba(0,229,160,0.15); color: var(--green); }
+  .pill-med { background: rgba(255,179,64,0.15); color: var(--amber); }
+  .pill-low { background: rgba(255,90,90,0.15); color: var(--red); }
+  .pill-na { background: rgba(90,122,150,0.15); color: var(--muted); }
+
+  .score-cell {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+  }
+
+  .score-value {
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+
+  .score-sub {
+    font-size: 10px;
+    color: var(--muted);
+  }
+
+  /* ── RADAR / VISUAL COMPARISON ── */
+  .bar-compare {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .compare-group {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+
+  .compare-group h3 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-family: 'Space Mono', monospace;
+    margin-bottom: 18px;
+  }
+
+  .bar-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .bar-item:last-child { margin-bottom: 0; }
+
+  .bar-model {
+    width: 120px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .bar-track {
+    flex: 1;
+    height: 20px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 8px;
+    font-size: 11px;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    color: var(--bg);
+    transition: width 1.2s ease;
+  }
+
+  /* ── RECOMMENDATIONS ── */
+  .rec-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .rec-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+
+  .rec-icon {
+    font-size: 2rem;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .rec-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .rec-card p {
+    font-size: 0.875rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .rec-card ul {
+    list-style: none;
+    margin-top: 10px;
+  }
+
+  .rec-card ul li {
+    font-size: 0.875rem;
+    color: var(--muted);
+    padding: 4px 0;
+    padding-left: 16px;
+    position: relative;
+  }
+
+  .rec-card ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+
+  /* ── FOOTER / CONCLUSION ── */
+  .conclusion {
+    padding: 64px 0 80px;
+  }
+
+  .takeaway-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 32px;
+  }
+
+  .takeaway {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .takeaway-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--border2);
+    margin-bottom: 8px;
+    line-height: 1;
+  }
+
+  .takeaway p {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-top: 48px;
+    padding: 10px 20px;
+    border: 1px solid rgba(0,212,255,0.3);
+    border-radius: 8px;
+    transition: all 0.2s;
+  }
+
+  .back-link:hover {
+    background: rgba(0,212,255,0.08);
+    border-color: var(--accent);
+  }
+
+  /* ── ANIMATIONS ── */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Matrix rating circles */
+  .rating {
+    display: flex;
+    gap: 3px;
+  }
+
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+  }
+
+  .dot.filled-accent { background: var(--accent); }
+  .dot.filled-green { background: var(--green); }
+  .dot.filled-amber { background: var(--amber); }
+  .dot.filled-red { background: var(--red); }
+
+  @media (max-width: 600px) {
+    .hero { padding: 48px 0 40px; }
+    h2 { font-size: 1.5rem; }
+    section { padding: 48px 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<!-- ─────────── HERO ─────────── -->
+<header class="hero">
+  <div class="container">
+    <div class="hero-tag">Applied AI · Model Evaluation</div>
+    <h1>Pre-Trained Model<br><span>Trade-Off Matrix</span></h1>
+    <p class="hero-sub">
+      A comparative analysis of six leading pre-trained models across NLP/Generative AI,
+      Computer Vision, and Tabular Data domains — evaluating size, accuracy, speed, and
+      explainability to guide deployment decisions.
+    </p>
+    <div class="hero-meta">
+      <div class="meta-item">
+        <span class="meta-label">Author</span>
+        <span class="meta-value">Dayo Egbon</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Program</span>
+        <span class="meta-value">Applied Artificial Intelligence — IWU</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Models Evaluated</span>
+        <span class="meta-value">6 Models · 3 Domains</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ─────────── INTRODUCTION ─────────── -->
+<section id="introduction">
+  <div class="container fade-in">
+    <div class="section-label">01 — Introduction</div>
+    <h2>Why Trade-Offs Matter</h2>
+    <p class="section-intro">
+      Selecting a pre-trained model is rarely straightforward. Practitioners must weigh competing
+      pressures — raw accuracy vs. inference latency, model size vs. deployment cost, and
+      prediction power vs. explainability. This is especially critical across domains where
+      constraints differ dramatically: a large language model serving millions of chat queries
+      faces entirely different engineering challenges than a lightweight classifier running on
+      a mobile device or an ensemble model powering fraud detection in a bank.
+    </p>
+    <p class="section-intro" style="margin-top:-16px;">
+      Explainability adds a further dimension: regulated industries (finance, healthcare) require
+      models whose decisions can be audited. This report synthesizes benchmark data, deployment
+      considerations, and ethical trade-offs to produce actionable recommendations for each domain.
+    </p>
+
+    <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:24px;">
+      <span class="domain-badge badge-nlp">⬡ NLP / Generative AI</span>
+      <span class="domain-badge badge-vision">⬡ Computer Vision</span>
+      <span class="domain-badge badge-tabular">⬡ Tabular Data</span>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── METHODOLOGY ─────────── -->
+<section id="methodology">
+  <div class="container fade-in">
+    <div class="section-label">02 — Methodology</div>
+    <h2>Model Selection &amp; Data Sources</h2>
+    <p class="section-intro">
+      Six models were selected to span three domains, prioritizing widespread deployment,
+      published benchmarks, and domain diversity. Data was collected from official model cards
+      (Hugging Face), published papers, MLPerf benchmarks, and platform documentation.
+    </p>
+
+    <div class="model-grid">
+
+      <!-- GPT-4 -->
+      <div class="model-card nlp fade-in">
+        <div class="card-header">
+          <div>
+            <div class="model-name">GPT-4</div>
+            <div class="model-org">OpenAI · 2023</div>
+          </div>
+          <span class="domain-badge badge-nlp">NLP</span>
+        </div>
+        <p class="model-desc">
+          Frontier large language model using a Mixture-of-Experts architecture (~1.8T parameters).
+          Excels at complex reasoning, code generation, and multi-modal inputs.
+        </p>
+        <div class="stat-row">
+          <div class="stat-item">
+            <span class="stat-label">SIZE</span>
+            <div class="stat-bar-wrap"><div class="stat-bar" style="width:100%;background:var(--nlp-color)"></div></div>
+            <span class="stat-val" style="color:var(--nlp-color)">~1.8T params</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">ACCURACY</span>
+            <div class="stat-bar-wrap"><div class="stat-bar" style="width:92%;background:var(--green)"></div></div>
+            <span class="stat-val" style="color:var(--green)">MMLU 86.4%</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">SPEED</span>
+            <div class="stat-bar-wrap"><div class="stat-bar" style="width:28%;background:var(--red)"></div></div>
+            <span class="stat-val" style="color:var(--red)">~60ms/tok</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- BERT-base -->
+      <div class="model-card nlp fade-in">
+        <div class="card-header">
+          <div>
+            <div class="model-name">BERT-base</div>
+            <div class="model-org">Google · 2018</div>
+          </div>
+          <span class="domain-badge badge-nlp">NLP</span>
+        </div>
+        <p class="model-desc">
+          Bidirectional encoder-only transformer (110M parameters) pre-trained via masked language
+          modeling. The industry standard for classification, NER, and Q&amp;A fine-tuning.
+        </p>
+        <div class="stat-row">
+          <div class="stat-item">
+            <span class="stat-label">SIZE</span>
+            <div class="stat-bar-wrap"><div class="stat-bar" style="width:18%;background:var(--nlp-color)"></div></div>
+            <span class="stat-val" style="color:var(--nlp-color)">110M params</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">ACCURACY</span>
+            <div class="stat-bar-wrap"><div class="stat-bar" style="width:64%;background:var(--green)"></div></div>
+            <span class="stat-val" style="color:var(--green)">GLUE 79.6</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">SPEED</span>
+            <div class="stat-bar-wrap"><div class="stat-bar" style="width:80%;background:var(--amber)"></div></div>
+            <span class="stat-val" style="color:var(--amber)">~5ms/seq</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- EfficientNet-B4 -->
+      <div class="model-card vision fade-in">
+        <div class="card-header">
+          <div>
+            <div class="model-name">EfficientNet-B4</div>
+            <div class="model-org">Google Brain · 2019</div>
+          </div>
+          <span class="domain-badge badge-vision">Vision</span>
+        </div>
+        <p class="model-desc">
+          Compound-scaled CNN (19M parameters) that jointly scales depth, width, and resolution.
+          Strong accuracy-per-parameter ratio; widely adopted for production image classifiers.
+        </p>
+        <div class="stat-row">
+          <div class="stat-item">
+            <span class="stat-label">SIZE</span>
+            <div class="stat-bar-wrap"><div class="stat-bar" style="width:22%;background:var(--vision-color)"></div></div>
+            <span class="stat-val" style="color:var(--vision-color)">19M params</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">ACCURACY</span>
+            <div class="stat-bar-wrap"><div class="stat-bar" style="width:83%;background:var(--green)"></div></div>
+            <span class="stat-val" style="color:var(--green)">Top-1 82.9%</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">SPEED</span>
+            <div class="stat-bar-wrap"><div class="stat-bar" style="width:52%;background:var(--amber)"></div></div>
+            <span class="stat-val" style="color:var(--amber)">~380ms/img</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MobileNetV3 -->
+      <div class="model-card vision fade-in">
+        <div class="card-header">
+          <div>
+            <div class="model-name">MobileNetV3</div>
+            <div class="model-org">Google · 2019</div>
+          </div>
+          <span class="domain-badge badge-vision">Vision</span>
+        </div>
+        <p class="model-desc">
+          Ultra-lightweight depthwise separable CNN (5.4M parameters) architected for mobile
+          and edge devices. Uses Neural Architecture Search to maximize efficiency.
+        </p>
+        <div class="stat-row">
+          <div class="stat-item">
+            <span class="stat-label">SIZE</span>
+            <div class="stat-bar-wrap"><div class="stat-bar" style="width:8%;background:var(--vision-color)"></div></div>
+            <span class="stat-val" style="color:var(--vision-color)">5.4M params</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">ACCURACY</span>
+            <div class="stat-bar-wrap"><div class="stat-bar" style="width:75%;background:var(--amber)"></div></div>
+            <span class="stat-val" style="color:var(--amber)">Top-1 75.2%</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">SPEED</span>
+            <div class="stat-bar-wrap"><div class="stat-bar" style="width:95%;background:var(--green)"></div></div>
+            <span class="stat-val" style="color:var(--green)">~19ms/img</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- XGBoost -->
+      <div class="model-card tabular fade-in">
+        <div class="card-header">
+          <div>
+            <div class="model-name">XGBoost</div>
+            <div class="model-org">DMLC · 2016</div>
+          </div>
+          <span class="domain-badge badge-tabular">Tabular</span>
+        </div>
+        <p class="model-desc">
+          Gradient-boosted decision tree ensemble. Long-running Kaggle benchmark champion for
+          structured data. Supports SHAP explanations for feature-level interpretability.
+        </p>
+        <div class="stat-row">
+          <div class="stat-item">
+            <span class="stat-label">SIZE</span>
+            <div class="stat-bar-wrap"><div class="stat-bar" style="width:12%;background:var(--tabular-color)"></div></div>
+            <span class="stat-val" style="color:var(--tabular-color)">Variable</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">ACCURACY</span>
+            <div class="stat-bar-wrap"><div class="stat-bar" style="width:88%;background:var(--green)"></div></div>
+            <span class="stat-val" style="color:var(--green)">AUC ≈ 0.97+</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">SPEED</span>
+            <div class="stat-bar-wrap"><div class="stat-bar" style="width:70%;background:var(--amber)"></div></div>
+            <span class="stat-val" style="color:var(--amber)">&lt;1ms/row</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- LightGBM -->
+      <div class="model-card tabular fade-in">
+        <div class="card-header">
+          <div>
+            <div class="model-name">LightGBM</div>
+            <div class="model-org">Microsoft · 2017</div>
+          </div>
+          <span class="domain-badge badge-tabular">Tabular</span>
+        </div>
+        <p class="model-desc">
+          Histogram-based GBDT using leaf-wise tree growth. Trains 10–20× faster than XGBoost
+          on large datasets while maintaining comparable accuracy. Excellent for low-latency serving.
+        </p>
+        <div class="stat-row">
+          <div class="stat-item">
+            <span class="stat-label">SIZE</span>
+            <div class="stat-bar-wrap"><div class="stat-bar" style="width:10%;background:var(--tabular-color)"></div></div>
+            <span class="stat-val" style="color:var(--tabular-color)">Variable</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">ACCURACY</span>
+            <div class="stat-bar-wrap"><div class="stat-bar" style="width:86%;background:var(--green)"></div></div>
+            <span class="stat-val" style="color:var(--green)">AUC ≈ 0.96+</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">SPEED</span>
+            <div class="stat-bar-wrap"><div class="stat-bar" style="width:92%;background:var(--green)"></div></div>
+            <span class="stat-val" style="color:var(--green)">&lt;0.5ms/row</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── DECISION MATRIX ─────────── -->
+<section id="matrix">
+  <div class="container fade-in">
+    <div class="section-label">03 — Decision Matrix</div>
+    <h2>Model Comparison Table</h2>
+    <p class="section-intro">
+      Each model is scored across seven criteria on a five-point scale. Color coding indicates
+      performance tier: <span style="color:var(--green);font-weight:600;">High</span> ·
+      <span style="color:var(--amber);font-weight:600;">Medium</span> ·
+      <span style="color:var(--red);font-weight:600;">Low</span>
+    </p>
+
+    <div class="matrix-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>Domain</th>
+            <th>Model Size</th>
+            <th>Accuracy</th>
+            <th>Inference Speed</th>
+            <th>Explainability</th>
+            <th>Energy Cost</th>
+            <th>Ease of Integration</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr>
+            <td class="model-cell">
+              <div class="name">GPT-4</div>
+              <div style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;">OpenAI</div>
+            </td>
+            <td><span class="domain-badge badge-nlp">NLP / Gen AI</span></td>
+            <td>
+              <div class="score-value">~1.8T params</div>
+              <span class="pill pill-low">Very Large</span>
+            </td>
+            <td>
+              <div class="score-value">MMLU 86.4%</div>
+              <span class="pill pill-high">⬤ Highest</span>
+            </td>
+            <td>
+              <div class="score-value">~60 ms/tok</div>
+              <span class="pill pill-low">Slow (API)</span>
+            </td>
+            <td><span class="pill pill-low">Low (black box)</span></td>
+            <td><span class="pill pill-low">Very High</span></td>
+            <td><span class="pill pill-high">Easy (API)</span></td>
+          </tr>
+
+          <tr>
+            <td class="model-cell">
+              <div class="name">BERT-base</div>
+              <div style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;">Google</div>
+            </td>
+            <td><span class="domain-badge badge-nlp">NLP</span></td>
+            <td>
+              <div class="score-value">110M params</div>
+              <span class="pill pill-med">Medium</span>
+            </td>
+            <td>
+              <div class="score-value">GLUE 79.6</div>
+              <span class="pill pill-med">⬤ Moderate</span>
+            </td>
+            <td>
+              <div class="score-value">~5 ms/seq</div>
+              <span class="pill pill-high">Fast</span>
+            </td>
+            <td><span class="pill pill-med">Partial (attn. viz)</span></td>
+            <td><span class="pill pill-med">Moderate</span></td>
+            <td><span class="pill pill-high">Easy (HuggingFace)</span></td>
+          </tr>
+
+          <tr>
+            <td class="model-cell">
+              <div class="name">EfficientNet-B4</div>
+              <div style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;">Google Brain</div>
+            </td>
+            <td><span class="domain-badge badge-vision">Vision</span></td>
+            <td>
+              <div class="score-value">19M params</div>
+              <span class="pill pill-med">Medium</span>
+            </td>
+            <td>
+              <div class="score-value">Top-1 82.9%</div>
+              <span class="pill pill-high">⬤ High</span>
+            </td>
+            <td>
+              <div class="score-value">~380 ms/img</div>
+              <span class="pill pill-med">Moderate</span>
+            </td>
+            <td><span class="pill pill-med">Grad-CAM support</span></td>
+            <td><span class="pill pill-med">Low-Moderate</span></td>
+            <td><span class="pill pill-high">Good (TF/PyTorch)</span></td>
+          </tr>
+
+          <tr>
+            <td class="model-cell">
+              <div class="name">MobileNetV3</div>
+              <div style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;">Google</div>
+            </td>
+            <td><span class="domain-badge badge-vision">Vision</span></td>
+            <td>
+              <div class="score-value">5.4M params</div>
+              <span class="pill pill-high">Very Small</span>
+            </td>
+            <td>
+              <div class="score-value">Top-1 75.2%</div>
+              <span class="pill pill-med">⬤ Moderate</span>
+            </td>
+            <td>
+              <div class="score-value">~19 ms/img</div>
+              <span class="pill pill-high">Very Fast</span>
+            </td>
+            <td><span class="pill pill-med">Grad-CAM support</span></td>
+            <td><span class="pill pill-high">Very Low</span></td>
+            <td><span class="pill pill-high">Excellent (TF Lite)</span></td>
+          </tr>
+
+          <tr>
+            <td class="model-cell">
+              <div class="name">XGBoost</div>
+              <div style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;">DMLC</div>
+            </td>
+            <td><span class="domain-badge badge-tabular">Tabular</span></td>
+            <td>
+              <div class="score-value">Config-defined</div>
+              <span class="pill pill-high">Flexible</span>
+            </td>
+            <td>
+              <div class="score-value">AUC ≈ 0.97+</div>
+              <span class="pill pill-high">⬤ High</span>
+            </td>
+            <td>
+              <div class="score-value">&lt;1 ms/row</div>
+              <span class="pill pill-high">Fast</span>
+            </td>
+            <td><span class="pill pill-high">Native SHAP</span></td>
+            <td><span class="pill pill-high">Very Low</span></td>
+            <td><span class="pill pill-high">Excellent (pip)</span></td>
+          </tr>
+
+          <tr>
+            <td class="model-cell">
+              <div class="name">LightGBM</div>
+              <div style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;">Microsoft</div>
+            </td>
+            <td><span class="domain-badge badge-tabular">Tabular</span></td>
+            <td>
+              <div class="score-value">Config-defined</div>
+              <span class="pill pill-high">Flexible</span>
+            </td>
+            <td>
+              <div class="score-value">AUC ≈ 0.96+</div>
+              <span class="pill pill-high">⬤ High</span>
+            </td>
+            <td>
+              <div class="score-value">&lt;0.5 ms/row</div>
+              <span class="pill pill-high">Fastest</span>
+            </td>
+            <td><span class="pill pill-high">SHAP compatible</span></td>
+            <td><span class="pill pill-high">Very Low</span></td>
+            <td><span class="pill pill-high">Excellent (pip)</span></td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── VISUAL COMPARISON ─────────── -->
+<section id="visual">
+  <div class="container fade-in">
+    <div class="section-label">04 — Visual Comparison</div>
+    <h2>Benchmark Breakdown</h2>
+    <p class="section-intro">
+      Normalized scores (0–100) across accuracy and speed, grouped by domain for direct
+      within-domain comparison. Note: cross-domain comparison is illustrative only — benchmarks
+      differ by task.
+    </p>
+
+    <div class="bar-compare">
+
+      <div class="compare-group">
+        <h3>⬡ NLP / Generative AI — Accuracy Score (normalized)</h3>
+        <div class="bar-item">
+          <div class="bar-model">GPT-4</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:96%;background:linear-gradient(90deg,#0096CC,#00D4FF)">96</div>
+          </div>
+        </div>
+        <div class="bar-item">
+          <div class="bar-model">BERT-base</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:72%;background:linear-gradient(90deg,#0096CC,#00D4FF)">72</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="compare-group">
+        <h3>⬡ Computer Vision — ImageNet Top-1 Accuracy</h3>
+        <div class="bar-item">
+          <div class="bar-model">EfficientNet-B4</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:83%;background:linear-gradient(90deg,#00A070,#00E5A0)">82.9%</div>
+          </div>
+        </div>
+        <div class="bar-item">
+          <div class="bar-model">MobileNetV3</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:75%;background:linear-gradient(90deg,#00A070,#00E5A0)">75.2%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="compare-group">
+        <h3>⬡ Tabular Data — Inference Speed (lower ms = better, inversely scaled)</h3>
+        <div class="bar-item">
+          <div class="bar-model">LightGBM</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:98%;background:linear-gradient(90deg,#CC8A00,#FFB340)">98 / 100</div>
+          </div>
+        </div>
+        <div class="bar-item">
+          <div class="bar-model">XGBoost</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:90%;background:linear-gradient(90deg,#CC8A00,#FFB340)">90 / 100</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── ANALYSIS ─────────── -->
+<section id="analysis">
+  <div class="container fade-in">
+    <div class="section-label">05 — Analysis &amp; Recommendations</div>
+    <h2>Strengths, Weaknesses &amp; Use Cases</h2>
+    <p class="section-intro">
+      Each model occupies a distinct niche. The right choice depends on the application's
+      constraints — not just peak accuracy.
+    </p>
+
+    <div class="rec-grid">
+
+      <div class="rec-card">
+        <span class="rec-icon">🧠</span>
+        <h3>GPT-4</h3>
+        <p><strong style="color:var(--green)">Best for:</strong> Complex content generation, reasoning-heavy tasks, and multi-modal AI applications.</p>
+        <ul>
+          <li>Use when accuracy is non-negotiable and cost is secondary</li>
+          <li>Ideal for enterprise chatbots, legal/medical Q&amp;A</li>
+          <li>Avoid for real-time, on-device, or budget-constrained deployments</li>
+        </ul>
+      </div>
+
+      <div class="rec-card">
+        <span class="rec-icon">📖</span>
+        <h3>BERT-base</h3>
+        <p><strong style="color:var(--green)">Best for:</strong> Text classification, named-entity recognition, and semantic search on a tight compute budget.</p>
+        <ul>
+          <li>Fine-tune on domain-specific labeled data for strong results</li>
+          <li>Ideal for on-premise NLP in regulated sectors</li>
+          <li>Not suitable for open-ended generation tasks</li>
+        </ul>
+      </div>
+
+      <div class="rec-card">
+        <span class="rec-icon">🖼️</span>
+        <h3>EfficientNet-B4</h3>
+        <p><strong style="color:var(--green)">Best for:</strong> High-accuracy image classification on cloud or GPU-equipped servers.</p>
+        <ul>
+          <li>Medical imaging, quality control, satellite analysis</li>
+          <li>Grad-CAM visualization aids clinical explainability</li>
+          <li>Not suitable for real-time mobile inference (&gt;380ms)</li>
+        </ul>
+      </div>
+
+      <div class="rec-card">
+        <span class="rec-icon">📱</span>
+        <h3>MobileNetV3</h3>
+        <p><strong style="color:var(--green)">Best for:</strong> Real-time inference on mobile and edge devices with power constraints.</p>
+        <ul>
+          <li>Retail apps, AR overlays, IoT cameras</li>
+          <li>Quantizable to INT8 for further efficiency</li>
+          <li>Trade-off: ~7.7% accuracy gap vs. EfficientNet-B4</li>
+        </ul>
+      </div>
+
+      <div class="rec-card">
+        <span class="rec-icon">📊</span>
+        <h3>XGBoost</h3>
+        <p><strong style="color:var(--green)">Best for:</strong> Structured data prediction in regulated industries needing full explainability.</p>
+        <ul>
+          <li>Credit scoring, fraud detection, insurance pricing</li>
+          <li>Native SHAP values satisfy regulatory requirements</li>
+          <li>Slower training than LightGBM on very large datasets</li>
+        </ul>
+      </div>
+
+      <div class="rec-card">
+        <span class="rec-icon">⚡</span>
+        <h3>LightGBM</h3>
+        <p><strong style="color:var(--green)">Best for:</strong> High-throughput tabular prediction where training time and speed are critical.</p>
+        <ul>
+          <li>Real-time bidding, recommendation engines, telemetry</li>
+          <li>10–20× faster training than XGBoost at scale</li>
+          <li>Marginally less stable than XGBoost on very small datasets</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── CONCLUSION ─────────── -->
+<section class="conclusion">
+  <div class="container fade-in">
+    <div class="section-label">06 — Conclusion</div>
+    <h2>Key Takeaways</h2>
+    <p class="section-intro">
+      No single model wins across all dimensions. Effective AI deployment requires matching the
+      model's strengths to the application's constraints — speed, accuracy, explainability, and
+      cost must all be weighed against one another.
+    </p>
+
+    <div class="takeaway-grid">
+      <div class="takeaway">
+        <div class="takeaway-num">01</div>
+        <p>Accuracy and speed are inversely correlated at scale — GPT-4 leads accuracy but trails all models in speed.</p>
+      </div>
+      <div class="takeaway">
+        <div class="takeaway-num">02</div>
+        <p>Tabular models (XGBoost, LightGBM) offer the best explainability-to-performance ratio for regulated industries.</p>
+      </div>
+      <div class="takeaway">
+        <div class="takeaway-num">03</div>
+        <p>Within Computer Vision, choosing EfficientNet vs. MobileNet depends almost entirely on deployment context — cloud vs. edge.</p>
+      </div>
+      <div class="takeaway">
+        <div class="takeaway-num">04</div>
+        <p>BERT-base remains the most practical NLP fine-tuning baseline for organizations avoiding proprietary API dependency.</p>
+      </div>
+      <div class="takeaway">
+        <div class="takeaway-num">05</div>
+        <p>Energy consumption scales with model size — ethical AI deployments must account for the carbon cost of large model inference.</p>
+      </div>
+      <div class="takeaway">
+        <div class="takeaway-num">06</div>
+        <p>Hybrid architectures (e.g., BERT for NLP + LightGBM for decision-making) often outperform single-model approaches in production.</p>
+      </div>
+    </div>
+
+    <a href="index.html" class="back-link">← Return to Portfolio</a>
+  </div>
+</section>
+
+<script>
+  // Intersection Observer for fade-in animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
