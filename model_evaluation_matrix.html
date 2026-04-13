@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pre-Trained Model Evaluation Matrix | Dayo Egbon</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800&family=Fraunces:wght@700;900&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #080C14;
@@ -591,9 +591,112 @@
     h2 { font-size: 1.5rem; }
     section { padding: 48px 0; }
   }
+
+  /* ── SITE NAV ── */
+  .site-nav {
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    background: rgba(11,13,17,0.96);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+  }
+  .nav-brand {
+    font-family: 'Fraunces', serif;
+    font-size: 1.15rem;
+    font-weight: 900;
+    color: #F0A500;
+    text-decoration: none;
+    letter-spacing: -0.01em;
+  }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.15rem;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: #7A8499;
+    text-decoration: none;
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    transition: color 0.2s, background 0.2s;
+    white-space: nowrap;
+  }
+  .nav-links a:hover {
+    color: #E8ECF4;
+    background: rgba(255,255,255,0.06);
+  }
+  .nav-links a.nav-linkedin {
+    background: #0a66c2;
+    color: #fff;
+    border-radius: 6px;
+    padding: 0.35rem 0.85rem;
+  }
+  .nav-links a.nav-linkedin:hover { background: #0856a8; }
+  /* ── BREADCRUMB ── */
+  .breadcrumb-bar {
+    background: rgba(8,12,20,0.99);
+    border-bottom: 1px solid rgba(0,212,255,0.10);
+    padding: 0 2rem;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 56px;
+    z-index: 199;
+    overflow-x: auto;
+  }
+  .breadcrumb-bar span {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .bc-highlight { color: #00D4FF; font-weight: 700; }
+  .bc-sep { color: #243348; margin: 0 10px; }
+  .bc-dim { color: #3A5570; }
+  @media (max-width: 640px) {
+    .site-nav { padding: 0 1rem; }
+    .nav-links a { padding: 0.3rem 0.5rem; font-size: 0.75rem; }
+    .breadcrumb-bar { padding: 0 1rem; }
+  }
 </style>
 </head>
 <body>
+
+<!-- ── SITE NAVIGATION ── -->
+<nav class="site-nav">
+  <a href="index.html" class="nav-brand">Dayo Portfolio</a>
+  <ul class="nav-links">
+    <li><a href="index.html">🏠 Home</a></li>
+    <li><a href="projects.html">📁 Projects</a></li>
+    <li><a href="index.html#skills">⚡ Skills</a></li>
+    <li><a href="index.html#contact">💬 Contact</a></li>
+    <li><a href="https://www.linkedin.com/in/dayoegonu/" target="_blank" class="nav-linkedin">in&nbsp;LinkedIn</a></li>
+  </ul>
+</nav>
+
+<!-- ── BREADCRUMB ── -->
+<div class="breadcrumb-bar">
+  <span class="bc-highlight">Portfolio Artifact 05</span>
+  <span class="bc-sep">&middot;</span>
+  <span class="bc-dim">Applied AI</span>
+  <span class="bc-sep">&middot;</span>
+  <span class="bc-dim">Model Evaluation</span>
+  <span class="bc-sep">&middot;</span>
+  <span class="bc-dim">Dayo Egonu</span>
+</div>
 
 <div class="orb orb-1"></div>
 <div class="orb orb-2"></div>
