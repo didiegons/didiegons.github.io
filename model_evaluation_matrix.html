@@ -7,18 +7,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800&family=Fraunces:wght@700;900&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #080C14;
-    --surface: #0D1421;
-    --surface2: #111927;
-    --border: #1E2D42;
-    --border2: #243348;
-    --text: #E2ECF5;
-    --muted: #5A7A96;
-    --accent: #00D4FF;
+    --bg: #0E1522;
+    --surface: #141D2E;
+    --surface2: #192333;
+    --border: #253749;
+    --border2: #2E4260;
+    --text: #F0F6FF;
+    --muted: #7A9BB8;
+    --accent: #18DDFF;
     --accent2: #0096CC;
-    --green: #00E5A0;
-    --amber: #FFB340;
-    --red: #FF5A5A;
+    --green: #10EDA8;
+    --amber: #FFC158;
+    --red: #FF6B6B;
     --purple: #9B7FFF;
     --nlp-color: #00D4FF;
     --vision-color: #00E5A0;
@@ -42,8 +42,8 @@
     position: fixed;
     inset: 0;
     background-image:
-      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+      linear-gradient(rgba(0,212,255,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.05) 1px, transparent 1px);
     background-size: 40px 40px;
     pointer-events: none;
     z-index: 0;
@@ -54,7 +54,7 @@
     position: fixed;
     border-radius: 50%;
     filter: blur(120px);
-    opacity: 0.12;
+    opacity: 0.18;
     pointer-events: none;
     z-index: 0;
   }
@@ -193,7 +193,7 @@
   }
 
   .section-intro {
-    color: var(--muted);
+    color: #8AAEC8;
     max-width: 720px;
     margin-bottom: 40px;
     font-size: 1rem;
@@ -230,7 +230,7 @@
   .model-card.tabular::before { background: linear-gradient(90deg, var(--tabular-color), transparent); }
 
   .model-card:hover {
-    border-color: var(--border2);
+    border-color: #3A5A7A;
     transform: translateY(-2px);
   }
 
@@ -447,7 +447,7 @@
     font-size: 11px;
     font-family: 'Space Mono', monospace;
     font-weight: 700;
-    color: var(--bg);
+    color: #060D18;
     transition: width 1.2s ease;
   }
 
@@ -526,7 +526,7 @@
     font-family: 'Space Mono', monospace;
     font-size: 2rem;
     font-weight: 700;
-    color: var(--border2);
+    color: #3A5A7A;
     margin-bottom: 8px;
     line-height: 1;
   }
@@ -597,7 +597,7 @@
     position: sticky;
     top: 0;
     z-index: 200;
-    background: rgba(11,13,17,0.96);
+    background: rgba(16,21,34,0.96);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid rgba(255,255,255,0.07);
@@ -645,7 +645,7 @@
   .nav-links a.nav-linkedin:hover { background: #0856a8; }
   /* ── BREADCRUMB ── */
   .breadcrumb-bar {
-    background: rgba(8,12,20,0.99);
+    background: rgba(12,18,30,0.99);
     border-bottom: 1px solid rgba(0,212,255,0.10);
     padding: 0 2rem;
     height: 36px;
@@ -708,7 +708,7 @@
     <h1>Pre-Trained Model<br><span>Trade-Off Matrix</span></h1>
     <p class="hero-sub">
       A comparative analysis of six leading pre-trained models across NLP/Generative AI,
-      Computer Vision, and Tabular Data domains, evaluating size, accuracy, speed, and
+      Computer Vision, and Tabular Data domains — evaluating size, accuracy, speed, and
       explainability to guide deployment decisions.
     </p>
     <div class="hero-meta">
@@ -735,7 +735,7 @@
     <h2>Why Trade-Offs Matter</h2>
     <p class="section-intro">
       Selecting a pre-trained model is rarely straightforward. Practitioners must weigh competing
-      pressures raw accuracy vs. inference latency, model size vs. deployment cost, and
+      pressures — raw accuracy vs. inference latency, model size vs. deployment cost, and
       prediction power vs. explainability. This is especially critical across domains where
       constraints differ dramatically: a large language model serving millions of chat queries
       faces entirely different engineering challenges than a lightweight classifier running on
@@ -1143,7 +1143,7 @@
     <h2>Benchmark Breakdown</h2>
     <p class="section-intro">
       Normalized scores (0–100) across accuracy and speed, grouped by domain for direct
-      within-domain comparison. Note: cross-domain comparison is illustrative only benchmarks
+      within-domain comparison. Note: cross-domain comparison is illustrative only — benchmarks
       differ by task.
     </p>
 
@@ -1290,14 +1290,14 @@
     <h2>Key Takeaways</h2>
     <p class="section-intro">
       No single model wins across all dimensions. Effective AI deployment requires matching the
-      model's strengths to the application's constraints speed, accuracy, explainability, and
+      model's strengths to the application's constraints — speed, accuracy, explainability, and
       cost must all be weighed against one another.
     </p>
 
     <div class="takeaway-grid">
       <div class="takeaway">
         <div class="takeaway-num">01</div>
-        <p>Accuracy and speed are inversely correlated at scale GPT-4 leads accuracy but trails all models in speed.</p>
+        <p>Accuracy and speed are inversely correlated at scale — GPT-4 leads accuracy but trails all models in speed.</p>
       </div>
       <div class="takeaway">
         <div class="takeaway-num">02</div>
@@ -1305,7 +1305,7 @@
       </div>
       <div class="takeaway">
         <div class="takeaway-num">03</div>
-        <p>Within Computer Vision, choosing EfficientNet vs. MobileNet depends almost entirely on deployment context cloud vs. edge.</p>
+        <p>Within Computer Vision, choosing EfficientNet vs. MobileNet depends almost entirely on deployment context — cloud vs. edge.</p>
       </div>
       <div class="takeaway">
         <div class="takeaway-num">04</div>
@@ -1313,7 +1313,7 @@
       </div>
       <div class="takeaway">
         <div class="takeaway-num">05</div>
-        <p>Energy consumption scales with model size ethical AI deployments must account for the carbon cost of large model inference.</p>
+        <p>Energy consumption scales with model size — ethical AI deployments must account for the carbon cost of large model inference.</p>
       </div>
       <div class="takeaway">
         <div class="takeaway-num">06</div>
@@ -1339,5 +1339,7 @@
   document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 </script>
 
+</body>
+</html>
 </body>
 </html>
