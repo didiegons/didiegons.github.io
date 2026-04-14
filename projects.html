@@ -9,15 +9,15 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:      #0B0D11;
-      --bg2:     #13161D;
+      --bg:      #10131A;
+      --bg2:     #181C26;
       --ink:     #0B0D11;
-      --ink2:    #7A8499;
-      --amber:   #F0A500;
-      --amber2:  #FFD166;
+      --ink2:    #96A3BA;
+      --amber:   #F5B020;
+      --amber2:  #FFD97A;
       --cream:   #13161D;
-      --border:  rgba(255,255,255,0.07);
-      --white:   #E8ECF4;
+      --border:  rgba(255,255,255,0.10);
+      --white:   #F2F6FF;
     }
 
     body {
@@ -30,7 +30,7 @@
     /* ── NAV ── */
     nav {
       position: sticky; top: 0; z-index: 100;
-      background: rgba(11,13,17,0.94);
+      background: rgba(14,17,24,0.96);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
@@ -79,7 +79,7 @@
     .project-count {
       font-family: 'Fraunces', serif;
       font-size: 4rem; font-weight: 300; line-height: 1;
-      color: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.12);
     }
 
     /* ── BENTO GRID ── */
@@ -154,8 +154,8 @@
       position: absolute; inset: 0;
       background: linear-gradient(
         to top,
-        rgba(10,8,5,0.88) 0%,
-        rgba(10,8,5,0.35) 50%,
+        rgba(10,8,5,0.78) 0%,
+        rgba(10,8,5,0.25) 50%,
         rgba(10,8,5,0.05) 100%
       );
       transition: background 0.3s;
@@ -163,8 +163,8 @@
     .card:hover .card-overlay {
       background: linear-gradient(
         to top,
-        rgba(10,8,5,0.92) 0%,
-        rgba(10,8,5,0.45) 55%,
+        rgba(10,8,5,0.82) 0%,
+        rgba(10,8,5,0.35) 55%,
         rgba(10,8,5,0.08) 100%
       );
     }
@@ -192,7 +192,7 @@
     }
     .card-1 h3 { font-size: 1.6rem; }
     .card p {
-      font-size: 0.78rem; color: rgba(255,255,255,0.65);
+      font-size: 0.78rem; color: rgba(255,255,255,0.80);
       line-height: 1.55;
       display: none;
     }
@@ -218,7 +218,7 @@
     }
 
     /* Solid-colour fallback */
-    .card-fallback { background: var(--bg2); }
+    .card-fallback { background: #1C2030; }
     .card-fallback .card-overlay { background: none; }
     .card-fallback h3 { color: var(--white); }
     .card-fallback p  { color: var(--ink2); }
@@ -226,7 +226,7 @@
 
     /* ── FOOTER ── */
     footer {
-      background: var(--bg2);
+      background: #1C2030;
       border-top: 1px solid var(--border);
       padding: 1.4rem 2rem;
       display: flex; align-items: center; justify-content: space-between;
