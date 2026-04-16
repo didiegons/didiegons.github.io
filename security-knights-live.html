@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Security Knights — Gamified Secure Coding | Dayo Egonu</title>
+<link href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   SECURITY KNIGHTS — DESIGN TOKENS
+═══════════════════════════════════════════════ */
+:root {
+  --bg:        #090C18;
+  --bg2:       #0D1025;
+  --surface:   #111528;
+  --surface2:  #172038;
+  --border:    #1E2D50;
+  --border-g:  #7B5C1A;   /* gold border */
+  --text:      #E8DEBA;   /* parchment */
+  --muted:     #7A8BAA;
+  --gold:      #E8A820;
+  --gold-dim:  #C48A10;
+  --gold-bg:   rgba(232,168,32,0.08);
+  --gold-glow: rgba(232,168,32,0.15);
+  --emerald:   #2ECC8A;
+  --emerald-bg:rgba(46,204,138,0.08);
+  --crimson:   #E84040;
+  --crimson-bg:rgba(232,64,64,0.08);
+  --cyan:      #4FC3F7;
+  --paige-c:   #7BA7D4;   /* steel blue */
+  --squire-c:  #C0976A;   /* bronze */
+  --knight-c:  #E8A820;   /* gold */
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+
+body {
+  font-family: 'Lato', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+  position: relative;
+}
+
+/* parchment grain overlay */
+body::before {
+  content:'';
+  position:fixed;inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:9999;opacity:0.6;
+}
+
+/* stone pattern bg */
+body::after {
+  content:'';
+  position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(232,168,32,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232,168,32,0.03) 1px, transparent 1px);
+  background-size:60px 60px;
+  pointer-events:none;z-index:0;
+}
+
+/* ═══ LAYOUT ════════════════════════════════════ */
+.app {
+  display:grid;
+  grid-template-columns: 280px 1fr 300px;
+  grid-template-rows: 60px 1fr;
+  height:100vh;
+  position:relative;z-index:1;
+}
+
+/* ═══ TOP BAR ═══════════════════════════════════ */
+.topbar {
+  grid-column:1/-1;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;
+  background:rgba(9,12,24,0.97);
+  border-bottom:1px solid var(--border-g);
+  position:relative;
+}
+.topbar::after {
+  content:'';
+  position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  opacity:0.4;
+}
+
+.logo {
+  display:flex;align-items:center;gap:10px;
+}
+.logo-text {
+  font-family:'Uncial Antiqua',serif;
+  font-size:1.3rem;
+  color:var(--gold);
+  letter-spacing:.05em;
+  text-shadow:0 0 20px rgba(232,168,32,0.4);
+}
+.logo-sub {
+  font-size:10px;
+  color:var(--muted);
+  font-family:'JetBrains Mono',monospace;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  margin-top:-2px;
+}
+
+.topbar-right {display:flex;align-items:center;gap:10px;}
+.nav-a {
+  font-size:12px;color:var(--muted);text-decoration:none;
+  padding:5px 10px;border-radius:4px;
+  border:1px solid transparent;
+  transition:color .2s,border-color .2s;
+}
+.nav-a:hover{color:var(--text);border-color:var(--border);}
+
+/* ═══ PLAYER BAR (inside topbar) ═══════════════ */
+.player-bar {
+  display:flex;align-items:center;gap:14px;
+  padding:0 16px;
+  border-left:1px solid var(--border);
+  border-right:1px solid var(--border);
+}
+.rank-badge {
+  display:flex;align-items:center;gap:6px;
+  padding:4px 10px;
+  border-radius:4px;
+  font-family:'Cinzel',serif;
+  font-size:12px;font-weight:600;
+  border:1px solid;
+}
+.rank-paige  {color:var(--paige-c);border-color:rgba(123,167,212,.3);background:rgba(123,167,212,.08);}
+.rank-squire {color:var(--squire-c);border-color:rgba(192,151,106,.3);background:rgba(192,151,106,.08);}
+.rank-knight {color:var(--knight-c);border-color:rgba(232,168,32,.3);background:var(--gold-bg);}
+
+.xp-wrap {display:flex;flex-direction:column;gap:3px;}
+.xp-label {
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:var(--muted);
+  display:flex;justify-content:space-between;
+}
+.xp-bar {
+  width:140px;height:6px;
+  background:var(--surface2);
+  border-radius:100px;overflow:hidden;
+  border:1px solid var(--border);
+}
+.xp-fill {
+  height:100%;
+  background:linear-gradient(90deg,var(--gold-dim),var(--gold));
+  border-radius:100px;
+  transition:width .6s ease;
+}
+
+/* ═══ LEFT PANEL — QUESTS ══════════════════════ */
+.panel-left {
+  background:var(--bg2);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  overflow-y:auto;
+}
+.panel-left::-webkit-scrollbar{width:3px;}
+.panel-left::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+.panel-section {
+  padding:14px 16px;
+  border-bottom:1px solid var(--border);
+}
+.panel-title {
+  font-family:'Cinzel',serif;
+  font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.15em;
+  color:var(--gold);
+  margin-bottom:12px;
+  display:flex;align-items:center;gap:6px;
+}
+
+/* Rank sections */
+.rank-header {
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:8px;
+}
+.rank-title {
+  font-family:'Cinzel',serif;
+  font-size:13px;font-weight:600;
+  display:flex;align-items:center;gap:6px;
+}
+.rank-count {font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;}
+
+.quest-list {display:flex;flex-direction:column;gap:4px;}
+.quest-item {
+  padding:8px 10px;
+  border-radius:6px;
+  border:1px solid transparent;
+  cursor:pointer;
+  transition:all .2s;
+  position:relative;
+}
+.quest-item:hover {background:var(--surface);border-color:var(--border);}
+.quest-item.active {background:var(--gold-bg);border-color:rgba(232,168,32,.3);}
+.quest-item.completed {opacity:.6;}
+.quest-item.locked {opacity:.35;cursor:not-allowed;pointer-events:none;}
+
+.quest-name {font-size:12px;font-weight:600;margin-bottom:2px;}
+.quest-meta {font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;display:flex;align-items:center;gap:6px;}
+.xp-chip {
+  background:var(--gold-bg);
+  border:1px solid rgba(232,168,32,.2);
+  color:var(--gold);
+  padding:1px 5px;border-radius:3px;
+  font-size:9px;font-weight:700;
+}
+.status-icon {position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:12px;}
+
+/* ═══ MAIN — CHALLENGE ARENA ══════════════════ */
+.arena {
+  background:var(--bg);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+
+.arena-content {
+  flex:1;overflow-y:auto;
+  padding:28px 32px;
+}
+.arena-content::-webkit-scrollbar{width:3px;}
+.arena-content::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+/* Welcome screen */
+.welcome-screen {
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;text-align:center;
+  height:100%;padding:40px 20px;
+}
+.welcome-crest {
+  font-size:5rem;margin-bottom:20px;
+  animation:float 4s ease-in-out infinite;
+  filter:drop-shadow(0 0 20px rgba(232,168,32,0.5));
+}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+.welcome-screen h2 {
+  font-family:'Uncial Antiqua',serif;
+  font-size:2.2rem;color:var(--gold);
+  text-shadow:0 0 30px rgba(232,168,32,0.4);
+  margin-bottom:12px;
+}
+.welcome-screen p {color:var(--muted);max-width:480px;line-height:1.7;margin-bottom:28px;}
+.begin-btn {
+  padding:12px 32px;
+  background:linear-gradient(135deg,var(--gold-dim),var(--gold));
+  border:none;border-radius:8px;
+  font-family:'Cinzel',serif;font-size:.95rem;font-weight:700;
+  color:#000;cursor:pointer;
+  box-shadow:0 0 24px rgba(232,168,32,0.3);
+  transition:box-shadow .2s,transform .1s;
+}
+.begin-btn:hover{box-shadow:0 0 36px rgba(232,168,32,0.5);transform:scale(1.02);}
+
+/* Challenge card */
+.challenge-card {animation:fadeUp .4s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.challenge-header {
+  display:flex;align-items:flex-start;justify-content:space-between;
+  margin-bottom:20px;
+}
+.challenge-rank-tag {
+  font-family:'Cinzel',serif;
+  font-size:11px;font-weight:600;
+  padding:3px 10px;border-radius:4px;
+  border:1px solid;
+  letter-spacing:.05em;
+}
+.challenge-topic {
+  font-size:11px;color:var(--muted);
+  font-family:'JetBrains Mono',monospace;
+  margin-top:4px;
+}
+
+.challenge-xp {
+  font-family:'JetBrains Mono',monospace;
+  font-size:13px;font-weight:700;
+  color:var(--gold);
+  background:var(--gold-bg);
+  border:1px solid rgba(232,168,32,.2);
+  padding:4px 12px;border-radius:4px;
+}
+
+.challenge-title {
+  font-family:'Cinzel',serif;
+  font-size:1.3rem;font-weight:700;
+  margin-bottom:16px;line-height:1.3;
+}
+
+.challenge-body {
+  font-size:.93rem;color:#B8CCDC;
+  line-height:1.7;margin-bottom:20px;
+}
+
+/* Code block */
+.code-block {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:16px 18px;
+  margin:16px 0;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.82rem;
+  line-height:1.7;
+  overflow-x:auto;
+  position:relative;
+}
+.code-block::before {
+  content:'CODE';
+  position:absolute;top:8px;right:10px;
+  font-size:9px;letter-spacing:.15em;
+  color:var(--muted);
+}
+.code-bad  {color:#E88080;}
+.code-good {color:#80E8A8;}
+.code-muted{color:var(--muted);}
+.code-warn {color:var(--gold);}
+
+/* MCQ options */
+.options-grid {
+  display:flex;flex-direction:column;gap:8px;
+  margin-top:20px;
+}
+.option-btn {
+  width:100%;text-align:left;
+  padding:12px 16px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:8px;
+  color:var(--text);
+  font-size:.9rem;
+  cursor:pointer;
+  transition:all .2s;
+  display:flex;align-items:center;gap:12px;
+}
+.option-btn:hover:not(:disabled){border-color:var(--gold);background:var(--gold-bg);}
+.option-btn.correct {border-color:var(--emerald);background:var(--emerald-bg);color:var(--emerald);}
+.option-btn.wrong   {border-color:var(--crimson);background:var(--crimson-bg);color:var(--crimson);}
+.option-btn:disabled{cursor:not-allowed;}
+.option-letter {
+  width:24px;height:24px;
+  border-radius:50%;
+  background:var(--bg2);
+  border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;font-weight:700;
+  flex-shrink:0;
+}
+
+/* Explanation box */
+.explanation {
+  margin-top:16px;
+  padding:14px 16px;
+  border-radius:8px;
+  font-size:.875rem;
+  line-height:1.65;
+  display:none;
+}
+.explanation.show{display:block;animation:fadeUp .3s ease;}
+.explanation.correct-exp{background:var(--emerald-bg);border:1px solid rgba(46,204,138,.25);color:#A0DFC0;}
+.explanation.wrong-exp  {background:var(--crimson-bg);border:1px solid rgba(232,64,64,.25);color:#DFA0A0;}
+
+.next-btn {
+  margin-top:20px;
+  padding:10px 24px;
+  background:linear-gradient(135deg,var(--gold-dim),var(--gold));
+  border:none;border-radius:7px;
+  font-family:'Cinzel',serif;font-size:.875rem;font-weight:700;
+  color:#000;cursor:pointer;
+  display:none;
+  transition:box-shadow .2s;
+}
+.next-btn.show{display:inline-block;}
+.next-btn:hover{box-shadow:0 0 20px rgba(232,168,32,.4);}
+
+/* ═══ RIGHT PANEL — WIZARD CHAT ════════════════ */
+.panel-right {
+  background:var(--bg2);
+  border-left:1px solid var(--border);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+
+.wizard-header {
+  padding:14px 16px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;
+  flex-shrink:0;
+}
+.wizard-avatar {
+  width:36px;height:36px;
+  background:var(--gold-bg);
+  border:1px solid rgba(232,168,32,.3);
+  border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;
+}
+.wizard-name {
+  font-family:'Cinzel',serif;
+  font-size:.875rem;font-weight:700;color:var(--gold);
+}
+.wizard-sub {font-size:10px;color:var(--muted);}
+
+.wizard-messages {
+  flex:1;overflow-y:auto;
+  padding:14px;
+  display:flex;flex-direction:column;gap:10px;
+}
+.wizard-messages::-webkit-scrollbar{width:3px;}
+.wizard-messages::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+.wiz-msg {
+  font-size:.82rem;line-height:1.6;
+  padding:10px 12px;
+  border-radius:8px;
+  animation:fadeUp .3s ease;
+}
+.wiz-msg.wizard {
+  background:var(--surface);
+  border:1px solid var(--border);
+  color:var(--text);
+  border-bottom-left-radius:3px;
+}
+.wiz-msg.user {
+  background:var(--gold-bg);
+  border:1px solid rgba(232,168,32,.2);
+  color:var(--text);
+  align-self:flex-end;
+  border-bottom-right-radius:3px;
+}
+.wiz-msg.wizard strong{color:var(--gold);}
+
+.wiz-typing {
+  display:flex;align-items:center;gap:4px;
+  padding:10px 12px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:8px;border-bottom-left-radius:3px;
+  width:fit-content;
+}
+.wiz-typing span {
+  width:5px;height:5px;border-radius:50%;
+  background:var(--muted);
+  animation:typDot 1.2s ease-in-out infinite;
+}
+.wiz-typing span:nth-child(2){animation-delay:.2s;}
+.wiz-typing span:nth-child(3){animation-delay:.4s;}
+@keyframes typDot{0%,60%,100%{opacity:.3;transform:scale(1)}30%{opacity:1;transform:scale(1.3)}}
+
+.wizard-input-wrap {
+  padding:10px;
+  border-top:1px solid var(--border);
+  flex-shrink:0;
+}
+.wizard-input-row {
+  display:flex;gap:6px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:6px 8px;
+  transition:border-color .2s;
+}
+.wizard-input-row:focus-within{border-color:var(--gold);}
+.wizard-input {
+  flex:1;background:none;border:none;outline:none;
+  color:var(--text);font-size:.82rem;
+  font-family:'Lato',sans-serif;
+}
+.wizard-input::placeholder{color:var(--muted);}
+.wizard-send {
+  background:none;border:none;cursor:pointer;
+  color:var(--gold);font-size:14px;
+  padding:2px 6px;
+  opacity:.7;transition:opacity .2s;
+}
+.wizard-send:hover{opacity:1;}
+
+.hint-btns {
+  display:flex;flex-wrap:wrap;gap:4px;
+  padding:0 10px 8px;
+}
+.hint-btn {
+  font-size:10px;
+  padding:3px 8px;
+  background:none;
+  border:1px solid var(--border);
+  border-radius:4px;
+  color:var(--muted);cursor:pointer;
+  transition:color .2s,border-color .2s;
+}
+.hint-btn:hover{color:var(--gold);border-color:rgba(232,168,32,.3);}
+
+/* ═══ KEY MODAL ════════════════════════════════ */
+.modal-overlay {
+  position:fixed;inset:0;
+  background:rgba(9,12,24,0.94);
+  backdrop-filter:blur(10px);
+  z-index:500;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+}
+.modal-overlay.hidden{display:none;}
+.modal {
+  background:var(--surface);
+  border:1px solid var(--border-g);
+  border-radius:16px;
+  padding:36px;
+  max-width:460px;width:100%;
+  box-shadow:0 0 60px rgba(232,168,32,.15);
+  position:relative;
+}
+.modal::before {
+  content:'⚔️';
+  position:absolute;top:-20px;left:50%;transform:translateX(-50%);
+  font-size:2rem;
+  filter:drop-shadow(0 0 10px rgba(232,168,32,.5));
+}
+.modal h2 {
+  font-family:'Uncial Antiqua',serif;
+  font-size:1.5rem;color:var(--gold);
+  text-align:center;margin-bottom:10px;
+}
+.modal p {color:var(--muted);font-size:.875rem;line-height:1.6;margin-bottom:20px;text-align:center;}
+.modal-input {
+  width:100%;
+  padding:10px 14px;
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:8px;
+  color:var(--text);
+  font-family:'JetBrains Mono',monospace;
+  font-size:13px;outline:none;
+  margin-bottom:8px;
+  transition:border-color .2s;
+}
+.modal-input:focus{border-color:var(--gold);}
+.modal-note{font-size:10px;color:var(--muted);text-align:center;margin-bottom:18px;font-family:'JetBrains Mono',monospace;}
+.modal-actions{display:flex;gap:10px;}
+.btn-gold {
+  flex:1;padding:11px;
+  background:linear-gradient(135deg,var(--gold-dim),var(--gold));
+  border:none;border-radius:8px;
+  font-family:'Cinzel',serif;font-size:.875rem;font-weight:700;
+  color:#000;cursor:pointer;transition:box-shadow .2s;
+}
+.btn-gold:hover{box-shadow:0 0 20px rgba(232,168,32,.4);}
+.btn-ghost {
+  padding:11px 16px;
+  background:none;border:1px solid var(--border);border-radius:8px;
+  color:var(--muted);font-size:.875rem;cursor:pointer;
+  transition:border-color .2s,color .2s;
+}
+.btn-ghost:hover{border-color:var(--text);color:var(--text);}
+
+/* ═══ BADGE MODAL ══════════════════════════════ */
+.badge-modal {
+  position:fixed;inset:0;
+  background:rgba(9,12,24,.9);
+  backdrop-filter:blur(12px);
+  z-index:600;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+}
+.badge-modal.hidden{display:none;}
+.badge-card {
+  background:var(--surface);
+  border:2px solid var(--gold);
+  border-radius:20px;
+  padding:40px;
+  max-width:360px;width:100%;
+  text-align:center;
+  box-shadow:0 0 80px rgba(232,168,32,.3);
+  animation:badgePop .5s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes badgePop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+.badge-emoji {font-size:5rem;display:block;margin-bottom:16px;animation:float 3s ease-in-out infinite;}
+.badge-card h2 {font-family:'Uncial Antiqua',serif;font-size:1.8rem;color:var(--gold);margin-bottom:8px;}
+.badge-card p {color:var(--muted);font-size:.9rem;margin-bottom:24px;}
+.badge-close {
+  padding:10px 28px;
+  background:linear-gradient(135deg,var(--gold-dim),var(--gold));
+  border:none;border-radius:8px;
+  font-family:'Cinzel',serif;font-size:.875rem;font-weight:700;
+  color:#000;cursor:pointer;
+}
+
+/* ═══ BADGES PANEL ════════════════════════════ */
+.badges-row {
+  display:flex;gap:8px;align-items:center;
+}
+.badge-icon {
+  width:32px;height:32px;
+  border-radius:6px;
+  border:1px solid var(--border);
+  background:var(--bg2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;
+  opacity:.3;
+  transition:opacity .3s,border-color .3s,box-shadow .3s;
+  title:attr(data-title);
+}
+.badge-icon.earned {
+  opacity:1;
+  border-color:var(--gold);
+  box-shadow:0 0 12px rgba(232,168,32,.3);
+}
+
+/* ═══ SCROLLBAR ════════════════════════════════ */
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+/* ═══ RESPONSIVE ═══════════════════════════════ */
+@media(max-width:900px){
+  .app{grid-template-columns:1fr;grid-template-rows:60px 1fr;}
+  .panel-left,.panel-right{display:none;}
+  body{overflow:auto;}
+  .app{height:auto;min-height:100vh;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ API KEY MODAL ══════════════════════════ -->
+<div class="modal-overlay" id="keyModal">
+  <div class="modal">
+    <h2>The Wizard Awaits</h2>
+    <p>Unlock Merlin the Security Wizard by entering your Anthropic API key. Your key never leaves your browser.</p>
+    <input type="password" class="modal-input" id="modalKey" placeholder="sk-ant-api03-..." autocomplete="off"/>
+    <p class="modal-note">🔒 Stored in sessionStorage only — clears when tab closes</p>
+    <div class="modal-actions">
+      <button class="btn-gold" id="modalSave">Enter the Castle</button>
+      <button class="btn-ghost" id="modalDemo">Train Without Wizard</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ BADGE MODAL ════════════════════════════ -->
+<div class="badge-modal hidden" id="badgeModal">
+  <div class="badge-card">
+    <span class="badge-emoji" id="badgeEmoji">🏅</span>
+    <h2 id="badgeTitle">Badge Earned!</h2>
+    <p id="badgeDesc">You have proven your worth.</p>
+    <button class="badge-close" onclick="closeBadge()">Continue Quest</button>
+  </div>
+</div>
+
+<!-- ══ APP ════════════════════════════════════ -->
+<div class="app">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="logo">
+      <div>
+        <div class="logo-text">⚔️ Security Knights</div>
+        <div class="logo-sub">Secure Coding Training</div>
+      </div>
+    </div>
+
+    <div class="player-bar">
+      <div class="rank-badge rank-paige" id="rankBadge">🛡️ Paige</div>
+      <div class="xp-wrap">
+        <div class="xp-label">
+          <span>XP</span>
+          <span id="xpLabel">0 / 200</span>
+        </div>
+        <div class="xp-bar"><div class="xp-fill" id="xpFill" style="width:0%"></div></div>
+      </div>
+      <div class="badges-row">
+        <div class="badge-icon" id="b-paige"  title="Paige Badge">🛡️</div>
+        <div class="badge-icon" id="b-squire" title="Squire Badge">⚔️</div>
+        <div class="badge-icon" id="b-knight" title="Knight Badge">👑</div>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <a href="security-knights.html" class="nav-a">📜 About</a>
+      <a href="index.html"   class="nav-a">🏠 Home</a>
+      <a href="projects.html" class="nav-a">📁 Projects</a>
+    </div>
+  </header>
+
+  <!-- LEFT: QUEST LIST -->
+  <aside class="panel-left">
+
+    <div class="panel-section">
+      <div class="panel-title">⚔️ Quest Board</div>
+
+      <!-- PAIGE -->
+      <div style="margin-bottom:16px;">
+        <div class="rank-header">
+          <div class="rank-title" style="color:var(--paige-c)">🛡️ Paige</div>
+          <span class="rank-count" id="paige-count">0/5</span>
+        </div>
+        <div class="quest-list" id="paige-quests"></div>
+      </div>
+
+      <!-- SQUIRE -->
+      <div style="margin-bottom:16px;">
+        <div class="rank-header">
+          <div class="rank-title" style="color:var(--squire-c)">⚔️ Squire</div>
+          <span class="rank-count" id="squire-count">0/5</span>
+        </div>
+        <div class="quest-list" id="squire-quests"></div>
+      </div>
+
+      <!-- KNIGHT -->
+      <div>
+        <div class="rank-header">
+          <div class="rank-title" style="color:var(--knight-c)">👑 Knight</div>
+          <span class="rank-count" id="knight-count">0/5</span>
+        </div>
+        <div class="quest-list" id="knight-quests"></div>
+      </div>
+    </div>
+
+    <!-- Reset -->
+    <div style="padding:12px 16px;margin-top:auto;">
+      <button onclick="resetProgress()" style="width:100%;padding:7px;background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:11px;cursor:pointer;transition:border-color .2s,color .2s;" onmouseover="this.style.borderColor='var(--crimson)';this.style.color='var(--crimson)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">
+        ↺ Reset Progress
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN: ARENA -->
+  <main class="arena">
+    <div class="arena-content" id="arenaContent">
+
+      <!-- Welcome -->
+      <div class="welcome-screen" id="welcomeScreen">
+        <div class="welcome-crest">⚔️</div>
+        <h2>Enter the Arena</h2>
+        <p>Train your secure coding skills through medieval-themed challenges. Defeat vulnerabilities, earn ranks, and prove your worth as a Security Knight.</p>
+        <button class="begin-btn" onclick="startFirstQuest()">Begin Training</button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- RIGHT: WIZARD -->
+  <aside class="panel-right">
+    <div class="wizard-header">
+      <div class="wizard-avatar">🧙</div>
+      <div>
+        <div class="wizard-name">Merlin the Wizard</div>
+        <div class="wizard-sub" id="wizardStatus">Ask me anything about security</div>
+      </div>
+    </div>
+
+    <div class="wizard-messages" id="wizardMessages">
+      <div class="wiz-msg wizard">
+        <strong>Greetings, young squire!</strong> I am Merlin, your guide through the realm of secure coding. Ask me for hints, explanations, or anything about cybersecurity magic! 🧙‍♂️
+      </div>
+    </div>
+
+    <div class="hint-btns" id="hintBtns">
+      <button class="hint-btn" onclick="askHint('hint')">💡 Hint</button>
+      <button class="hint-btn" onclick="askHint('explain')">📖 Explain more</button>
+      <button class="hint-btn" onclick="askHint('realworld')">🌍 Real example</button>
+      <button class="hint-btn" onclick="askHint('prevent')">🛡️ How to prevent?</button>
+    </div>
+
+    <div class="wizard-input-wrap">
+      <div class="wizard-input-row">
+        <input type="text" class="wizard-input" id="wizardInput" placeholder="Ask the wizard…" autocomplete="off"/>
+        <button class="wizard-send" id="wizardSend" onclick="sendWizard()">➤</button>
+      </div>
+    </div>
+  </aside>
+
+</div><!-- /app -->
+
+<script>
+/* ═════════════════════════════════════════════════
+   SECURITY KNIGHTS — GAME ENGINE
+═════════════════════════════════════════════════ */
+
+// ── Challenges Database ──────────────────────────
+const CHALLENGES = [
+  // ── PAIGE (Beginner) ──
+  {
+    id:1, rank:'paige', xp:10, type:'mcq',
+    topic:'SQL Injection',
+    title:'The Poisoned Scroll',
+    body:'A kingdom\'s library allows visitors to search scrolls by name. The search uses this code. What is the vulnerability?',
+    code:`// The royal scribe\'s search spell
+const query = "SELECT * FROM scrolls WHERE title = \'" + userInput + "\'";
+db.execute(query);`,
+    options:[
+      'Missing input validation on the scroll title',
+      'SQL Injection — user input goes directly into the query',
+      'The database connection is not encrypted',
+      'The query selects too many columns'
+    ],
+    correct:1,
+    explanation:'This is a classic SQL Injection. An attacker could input: \' OR 1=1-- to return all scrolls, or even DROP TABLE scrolls to destroy the database. Always use parameterized queries!'
+  },
+  {
+    id:2, rank:'paige', xp:10, type:'mcq',
+    topic:'XSS',
+    title:'The Enchanted Message Board',
+    body:'The village message board renders messages like this. What dark magic lurks here?',
+    code:`// Displaying the knight\'s message
+messageDiv.innerHTML = userMessage;  // userMessage from form input`,
+    options:[
+      'The code uses innerHTML instead of textContent',
+      'Missing authentication check',
+      'The variable name is too short',
+      'The message board loads too slowly'
+    ],
+    correct:0,
+    explanation:'Using innerHTML with user input enables Cross-Site Scripting (XSS). An attacker can inject <script>steal(document.cookie)</script> and run evil spells in every visitor\'s browser. Use textContent or sanitize input first!'
+  },
+  {
+    id:3, rank:'paige', xp:10, type:'mcq',
+    topic:'Passwords',
+    title:'The Vault of Secrets',
+    body:'The castle stores knight passwords. Which storage method is most dangerous?',
+    code:'',
+    options:[
+      'Hashed with bcrypt (cost factor 12)',
+      'Hashed with SHA-256',
+      'Stored as plain text in the database',
+      'Hashed with Argon2id'
+    ],
+    correct:2,
+    explanation:'Storing passwords as plain text means a database breach instantly exposes every knight\'s password. Always use slow hashing algorithms like bcrypt or Argon2id — never plain text, and avoid fast hashes like MD5/SHA-256 for passwords!'
+  },
+  {
+    id:4, rank:'paige', xp:15, type:'mcq',
+    topic:'HTTPS',
+    title:'The Secret Messenger',
+    body:'A knight sends his credentials over the castle network. Which path is safe?',
+    code:'',
+    options:[
+      'HTTP — the message travels as readable parchment',
+      'HTTPS — the message is encrypted in a sealed chest',
+      'FTP — the fastest courier in the realm',
+      'Sending credentials is always safe on local networks'
+    ],
+    correct:1,
+    explanation:'HTTP transmits data in plain text — any spy on the network can read it. HTTPS encrypts the connection using TLS, so intercepted messages are unreadable. Never send credentials over HTTP!'
+  },
+  {
+    id:5, rank:'paige', xp:15, type:'mcq',
+    topic:'Authentication',
+    title:'The Open Gate',
+    body:'The castle gate checks identity. Spot the flaw in the guard\'s logic:',
+    code:`if (username == "admin" && password == "password123") {
+  grantAccess();
+}`,
+    options:[
+      'The condition uses == instead of ===',
+      'Hardcoded credentials — the password is exposed in source code',
+      'The function name grantAccess() is misleading',
+      'Missing a return statement after grantAccess()'
+    ],
+    correct:1,
+    explanation:'Hardcoded credentials are catastrophic. Anyone who views the source code, a git history, or a leaked file instantly gains admin access. Credentials belong in environment variables or a secrets manager — never in code!'
+  },
+
+  // ── SQUIRE (Intermediate) ──
+  {
+    id:6, rank:'squire', xp:20, type:'mcq',
+    topic:'CSRF',
+    title:'The Forged Royal Decree',
+    body:'A knight is tricked into visiting an evil page that silently submits this form on their behalf. What attack is this?',
+    code:`<!-- On the evil sorcerer\'s website -->
+<img src="https://royalbank.com/transfer?to=sorcerer&amount=1000"
+     onload="profit()" />`,
+    options:[
+      'SQL Injection targeting the bank',
+      'Cross-Site Request Forgery (CSRF)',
+      'Cross-Site Scripting (XSS)',
+      'Man-in-the-Middle Attack'
+    ],
+    correct:1,
+    explanation:'This is CSRF — the browser automatically sends session cookies, making the bank think the request came from the knight. Prevention: use CSRF tokens (unique, secret values validated server-side) or SameSite cookie attributes!'
+  },
+  {
+    id:7, rank:'squire', xp:20, type:'mcq',
+    topic:'Access Control',
+    title:'The Stolen Key',
+    body:'Knight Alice requests another knight\'s private documents. What principle does this violate?',
+    code:`// Document retrieval spell
+GET /api/documents/12345
+Authorization: Bearer alice_token
+// Returns Bob\'s private documents! ❌`,
+    options:[
+      'Rate limiting — too many requests',
+      'Insecure Direct Object Reference (IDOR) — missing authorization check',
+      'SQL Injection in the document ID',
+      'Missing HTTPS encryption'
+    ],
+    correct:1,
+    explanation:'IDOR is a broken access control flaw. The server validates who you are (authentication) but not whether you\'re ALLOWED to access that specific resource (authorization). Always check: "Is this user permitted to access THIS specific object?"'
+  },
+  {
+    id:8, rank:'squire', xp:25, type:'mcq',
+    topic:'Cryptography',
+    title:'The Weak Cipher',
+    body:'Which password hashing choice would cause the castle\'s security council to faint?',
+    code:'',
+    options:[
+      'bcrypt with cost factor 12',
+      'Argon2id with memory 64MB',
+      'MD5 — fast and widely supported!',
+      'scrypt with N=32768'
+    ],
+    correct:2,
+    explanation:'MD5 is a fast hashing algorithm — attackers can compute billions of MD5 hashes per second using GPUs. A modern GPU cracks MD5 password hashes at ~200 billion/second. Password hashing requires SLOW algorithms (bcrypt, Argon2, scrypt) that are deliberately expensive to compute!'
+  },
+  {
+    id:9, rank:'squire', xp:20, type:'mcq',
+    topic:'Input Validation',
+    title:'The Trojan Scroll',
+    body:'A file upload spell accepts any file. An attacker uploads a file named evil.php. What spell should protect the castle?',
+    code:`// File upload handler
+app.post(\'/upload\', (req, res) => {
+  const filename = req.file.originalname;  // "evil.php"
+  fs.writeFileSync(\`./uploads/\${filename}\`, req.file.buffer);
+  res.send(\`Uploaded: \${filename}\`);
+});`,
+    options:[
+      'Only check the file extension in the filename',
+      'Validate the MIME type only',
+      'Validate file type by content (magic bytes), restrict extensions, store outside web root, rename files',
+      'Limit file size to under 10MB'
+    ],
+    correct:2,
+    explanation:'Checking only the extension is trivially bypassed (rename evil.php to evil.jpg). Proper file upload security: validate content type via magic bytes, whitelist safe extensions, store uploads outside the web root so they can\'t be executed, and rename files to random names!'
+  },
+  {
+    id:10, rank:'squire', xp:25, type:'mcq',
+    topic:'Security Headers',
+    title:'The Missing Shield',
+    body:'Which HTTP response header acts as a shield against XSS by controlling which scripts can execute on a page?',
+    code:'',
+    options:[
+      'X-Frame-Options',
+      'Strict-Transport-Security (HSTS)',
+      'Content-Security-Policy (CSP)',
+      'X-Content-Type-Options'
+    ],
+    correct:2,
+    explanation:'Content-Security-Policy (CSP) tells the browser which sources of scripts, styles, and other resources are trusted. A strong CSP like default-src \'self\' blocks inline scripts and third-party injections, drastically reducing XSS impact even if a vulnerability exists!'
+  },
+
+  // ── KNIGHT (Advanced) ──
+  {
+    id:11, rank:'knight', xp:30, type:'mcq',
+    topic:'JWT Security',
+    title:'The Forged Sigil',
+    body:'A sorcerer modifies a JWT and changes the algorithm to "none". What catastrophe occurs?',
+    code:`// Original JWT header (decoded)
+{ "alg": "HS256", "typ": "JWT" }
+
+// Sorcerer\'s modified JWT
+{ "alg": "none", "typ": "JWT" }
+// Payload: { "role": "admin" }  ← self-granted!`,
+    options:[
+      'The server rejects the token because it\'s unsigned',
+      'The token expires faster',
+      'A vulnerable server accepts the token with no signature — granting admin access',
+      'The JWT becomes larger and slower'
+    ],
+    correct:2,
+    explanation:'The "alg:none" attack exploits libraries that accept unsigned JWTs when alg is none. The signature is skipped, so an attacker can craft any payload they want. Fix: explicitly reject alg:none, pin the expected algorithm server-side, and never trust algorithm choice from the token itself!'
+  },
+  {
+    id:12, rank:'knight', xp:30, type:'mcq',
+    topic:'Race Conditions',
+    title:'The Twin Swords',
+    body:'Two knights simultaneously request the last 100 gold from the treasury. The code runs a check-then-act pattern. What dark magic occurs?',
+    code:`async function withdraw(amount) {
+  const balance = await getBalance();  // Both read: 100
+  if (balance >= amount) {
+    await deductBalance(amount);       // Both deduct 100!
+    return "Success";                  // Treasury: -100 💀
+  }
+}`,
+    options:[
+      'SQL Injection in the deductBalance call',
+      'A race condition — both requests pass the check before either deducts',
+      'Missing authentication on the withdrawal endpoint',
+      'The async/await pattern is inherently broken'
+    ],
+    correct:1,
+    explanation:'This is a classic TOCTOU (Time-of-Check-Time-of-Use) race condition. Both requests read balance=100, both pass the check, both deduct 100, leaving -100. Fix: use database transactions with row-level locking (SELECT FOR UPDATE) or optimistic locking with version numbers!'
+  },
+  {
+    id:13, rank:'knight', xp:35, type:'mcq',
+    topic:'XXE',
+    title:'The Ancient Scroll Parser',
+    body:'The castle\'s XML parser processes this document. What sorcery could an attacker unleash?',
+    code:`<?xml version="1.0"?>
+<!DOCTYPE curse [
+  <!ENTITY secret SYSTEM "file:///etc/passwd">
+]>
+<request>
+  <message>&secret;</message>
+</request>`,
+    options:[
+      'XSS — the XML is rendered in the browser',
+      'XXE (XML External Entity) — reads arbitrary files from the server',
+      'CSRF — forges requests using XML',
+      'SQL Injection embedded in the XML'
+    ],
+    correct:1,
+    explanation:'XML External Entity (XXE) attacks abuse XML parsers that process external entity references. This example reads /etc/passwd. Attackers can also use XXE for SSRF (accessing internal services). Fix: disable external entity processing in your XML parser (documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true))!'
+  },
+  {
+    id:14, rank:'knight', xp:30, type:'mcq',
+    topic:'Dependency Security',
+    title:'The Cursed Artifact',
+    body:'The castle imports a third-party spell library last updated 4 years ago with 3 known critical CVEs. What is the greatest risk?',
+    code:'// package.json\n"dependencies": {\n  "ancient-spell-lib": "^1.0.0",  // CVE-2019-XXXX\n  "medieval-crypto": "0.0.1"       // Last updated 2020\n}',
+    options:[
+      'The library name is not descriptive enough',
+      'Using a caret (^) in the version allows minor updates',
+      'Known CVEs in transitive dependencies can be exploited directly in your application',
+      'The library may have breaking changes'
+    ],
+    correct:2,
+    explanation:'Using components with known vulnerabilities is #6 in the OWASP Top 10. A CVE in a dependency can be exploited through your application even if your own code is perfect. Tools like npm audit, Snyk, or Dependabot continuously monitor for vulnerable dependencies. Always patch promptly!'
+  },
+  {
+    id:15, rank:'knight', xp:35, type:'mcq',
+    topic:'Logging & Monitoring',
+    title:'The Silent Watchtower',
+    body:'A castle suffers an attack. The incident response team finds no logs of unusual activity. Which OWASP category did the castle fail at?',
+    code:'// The castle\'s event log:\n// [2024-01-15 03:42] Login failed x500 - (no alert triggered)\n// [2024-01-15 03:43] Admin account accessed\n// [2024-01-15 03:44] 50,000 records exported\n// (No alerts. No monitoring. 72 hours later...)',
+    options:[
+      'Broken Access Control',
+      'Security Misconfiguration',
+      'Insufficient Logging & Monitoring',
+      'Cryptographic Failures'
+    ],
+    correct:2,
+    explanation:'OWASP A09: Security Logging and Monitoring Failures. Without alerts on 500 failed logins, no one noticed the brute force attack before it succeeded. Best practices: log all authentication events, alert on anomalies (velocity, geography), retain logs for 90+ days, and regularly test your detection capability!'
+  }
+];
+
+// ── State ────────────────────────────────────────
+let state = JSON.parse(localStorage.getItem('sk_state') || 'null') || {
+  xp: 0,
+  rank: 'paige',
+  completed: [],
+  badges: []
+};
+let currentChallenge = null;
+let answered = false;
+let apiKey = sessionStorage.getItem('sk_key') || '';
+let wizardLoading = false;
+let demoMode = false;
+
+const XP_THRESHOLDS = { paige:0, squire:200, knight:500 };
+const RANK_ORDER = ['paige','squire','knight'];
+
+// ── DOM ──────────────────────────────────────────
+const keyModal      = document.getElementById('keyModal');
+const modalKey      = document.getElementById('modalKey');
+const wizMessages   = document.getElementById('wizardMessages');
+const wizInput      = document.getElementById('wizardInput');
+const arenaContent  = document.getElementById('arenaContent');
+
+// ── Init ─────────────────────────────────────────
+if (apiKey) { demoMode = false; hideModal(); }
+else { keyModal.classList.remove('hidden'); }
+
+document.getElementById('modalSave').onclick = () => {
+  const k = modalKey.value.trim();
+  if (!k.startsWith('sk-ant')) {
+    modalKey.style.borderColor='var(--crimson)';
+    setTimeout(()=>modalKey.style.borderColor='',1500);
+    return;
+  }
+  apiKey = k;
+  sessionStorage.setItem('sk_key', k);
+  hideModal();
+};
+document.getElementById('modalDemo').onclick = () => {
+  demoMode = true;
+  hideModal();
+};
+function hideModal(){
+  keyModal.classList.add('hidden');
+  renderAll();
+}
+
+wizInput.addEventListener('keydown', e => {
+  if(e.key==='Enter') sendWizard();
+});
+
+// ── Render everything ────────────────────────────
+function renderAll() {
+  renderQuestList();
+  updatePlayerBar();
+  // Show welcome if nothing selected
+  if (!currentChallenge) showWelcome();
+}
+
+function renderQuestList() {
+  ['paige','squire','knight'].forEach(rank => {
+    const container = document.getElementById(`${rank}-quests`);
+    const quests = CHALLENGES.filter(c => c.rank === rank);
+    const done = quests.filter(c => state.completed.includes(c.id)).length;
+    document.getElementById(`${rank}-count`).textContent = `${done}/${quests.length}`;
+
+    const rankIdx = RANK_ORDER.indexOf(rank);
+    const currentIdx = RANK_ORDER.indexOf(state.rank);
+    const locked = rankIdx > currentIdx;
+
+    container.innerHTML = '';
+    quests.forEach(q => {
+      const isCompleted = state.completed.includes(q.id);
+      const isActive = currentChallenge?.id === q.id;
+      const div = document.createElement('div');
+      div.className = `quest-item ${isCompleted?'completed':''} ${isActive?'active':''} ${locked?'locked':''}`;
+      div.innerHTML = `
+        <div class="quest-name">${q.title}</div>
+        <div class="quest-meta">
+          <span class="xp-chip">+${q.xp} XP</span>
+          ${q.topic}
+        </div>
+        <span class="status-icon">${isCompleted?'✅':locked?'🔒':'⚔️'}</span>
+      `;
+      if (!locked) div.onclick = () => loadChallenge(q.id);
+      container.appendChild(div);
+    });
+  });
+}
+
+function updatePlayerBar() {
+  const rank = state.rank;
+  const xp   = state.xp;
+  const nextRankIdx = RANK_ORDER.indexOf(rank) + 1;
+  const nextThresh  = nextRankIdx < RANK_ORDER.length
+    ? XP_THRESHOLDS[RANK_ORDER[nextRankIdx]]
+    : XP_THRESHOLDS[rank] + 300;
+  const prevThresh  = XP_THRESHOLDS[rank];
+  const pct = Math.min(100, ((xp - prevThresh) / (nextThresh - prevThresh)) * 100);
+
+  document.getElementById('xpFill').style.width = pct + '%';
+  document.getElementById('xpLabel').textContent = `${xp} / ${nextThresh}`;
+
+  const rankEl = document.getElementById('rankBadge');
+  const icons  = {paige:'🛡️',squire:'⚔️',knight:'👑'};
+  const labels = {paige:'Paige',squire:'Squire',knight:'Knight'};
+  rankEl.textContent = `${icons[rank]} ${labels[rank]}`;
+  rankEl.className = `rank-badge rank-${rank}`;
+
+  // Badges
+  ['paige','squire','knight'].forEach(r => {
+    const el = document.getElementById(`b-${r}`);
+    if (state.badges.includes(r)) el.classList.add('earned');
+  });
+}
+
+function showWelcome() {
+  arenaContent.innerHTML = `
+    <div class="welcome-screen">
+      <div class="welcome-crest">⚔️</div>
+      <h2>Enter the Arena</h2>
+      <p>Train your secure coding skills through medieval-themed challenges. Defeat vulnerabilities, earn ranks, and prove your worth as a Security Knight.</p>
+      <button class="begin-btn" onclick="startFirstQuest()">Begin Training</button>
+    </div>`;
+}
+
+function startFirstQuest() {
+  const first = CHALLENGES.find(c => c.rank === 'paige' && !state.completed.includes(c.id));
+  if (first) loadChallenge(first.id);
+}
+
+// ── Load & render a challenge ────────────────────
+function loadChallenge(id) {
+  const c = CHALLENGES.find(x => x.id === id);
+  if (!c) return;
+  currentChallenge = c;
+  answered = false;
+  renderQuestList();
+
+  const rankColors = {paige:'var(--paige-c)',squire:'var(--squire-c)',knight:'var(--knight-c)'};
+  const rankLabels = {paige:'🛡️ Paige',squire:'⚔️ Squire',knight:'👑 Knight'};
+
+  let codeBlock = '';
+  if (c.code) {
+    codeBlock = `<div class="code-block"><pre>${escHtml(c.code)}</pre></div>`;
+  }
+
+  const letters = ['A','B','C','D'];
+  const optionsHtml = c.options.map((o,i) => `
+    <button class="option-btn" onclick="selectOption(${i})" id="opt-${i}">
+      <span class="option-letter">${letters[i]}</span>
+      ${escHtml(o)}
+    </button>`).join('');
+
+  arenaContent.innerHTML = `
+    <div class="challenge-card">
+      <div class="challenge-header">
+        <div>
+          <div class="challenge-rank-tag" style="color:${rankColors[c.rank]};border-color:${rankColors[c.rank]}40">
+            ${rankLabels[c.rank]} · ${c.topic}
+          </div>
+          <div class="challenge-topic">OWASP Challenge #${c.id}</div>
+        </div>
+        <div class="challenge-xp">+${c.xp} XP</div>
+      </div>
+
+      <h2 class="challenge-title">${c.title}</h2>
+      <div class="challenge-body">${c.body}</div>
+      ${codeBlock}
+
+      <div class="options-grid">${optionsHtml}</div>
+
+      <div class="explanation" id="explanation"></div>
+      <button class="next-btn" id="nextBtn" onclick="nextChallenge()">Next Quest →</button>
+    </div>`;
+
+  // Wizard context
+  addWizMessage('wizard', `⚔️ New challenge: <strong>${c.title}</strong><br>Topic: ${c.topic}. Ask me for hints if you need guidance!`);
+  scrollArena();
+}
+
+function selectOption(idx) {
+  if (answered) return;
+  answered = true;
+
+  const c = currentChallenge;
+  const correct = idx === c.correct;
+
+  // Style buttons
+  c.options.forEach((_, i) => {
+    const btn = document.getElementById(`opt-${i}`);
+    btn.disabled = true;
+    if (i === c.correct) btn.classList.add('correct');
+    else if (i === idx && !correct) btn.classList.add('wrong');
+  });
+
+  // Show explanation
+  const expEl = document.getElementById('explanation');
+  expEl.textContent = c.explanation;
+  expEl.className = `explanation show ${correct?'correct-exp':'wrong-exp'}`;
+
+  // Show next button
+  document.getElementById('nextBtn').classList.add('show');
+
+  if (correct) {
+    // Award XP
+    const prevXP   = state.xp;
+    state.xp += c.xp;
+    state.completed.push(c.id);
+    checkRankUp(prevXP);
+    saveState();
+    updatePlayerBar();
+    renderQuestList();
+
+    // Wizard congrats
+    addWizMessage('wizard', `🎉 <strong>Well done, ${rankLabel()}!</strong> You defeated the ${c.topic} challenge and earned <strong>+${c.xp} XP</strong>!`);
+  } else {
+    addWizMessage('wizard', `⚠️ Not quite, brave one. The correct answer was <strong>${c.options[c.correct]}</strong>. ${c.explanation.slice(0,100)}… Ask me to explain more!`);
+  }
+}
+
+function nextChallenge() {
+  const allRankChallenges = CHALLENGES.filter(c => c.rank === state.rank);
+  const next = allRankChallenges.find(c => !state.completed.includes(c.id));
+  if (next) {
+    loadChallenge(next.id);
+  } else {
+    // Try next rank
+    const nextRankIdx = RANK_ORDER.indexOf(state.rank) + 1;
+    if (nextRankIdx < RANK_ORDER.length) {
+      const nextRank = RANK_ORDER[nextRankIdx];
+      const nextChall = CHALLENGES.find(c => c.rank === nextRank);
+      if (nextChall) loadChallenge(nextChall.id);
+    } else {
+      // All done!
+      arenaContent.innerHTML = `
+        <div class="welcome-screen">
+          <div class="welcome-crest">👑</div>
+          <h2>Quest Complete!</h2>
+          <p>You have mastered all challenges and earned the rank of <strong style="color:var(--gold)">Security Knight</strong>! Your XP: ${state.xp}. You are now a guardian of the realm.</p>
+          <button class="begin-btn" onclick="resetProgress()">Train Again</button>
+        </div>`;
+    }
+  }
+}
+
+function checkRankUp(prevXP) {
+  RANK_ORDER.forEach((rank, i) => {
+    if (i === 0) return;
+    const thresh = XP_THRESHOLDS[rank];
+    if (prevXP < thresh && state.xp >= thresh) {
+      state.rank = rank;
+      state.badges.push(RANK_ORDER[i-1]); // award previous rank badge
+      if (!state.badges.includes(rank) && rank === 'knight') state.badges.push('knight');
+      saveState();
+      showBadge(RANK_ORDER[i-1]);
+    }
+  });
+  // Paige badge on first completion
+  if (!state.badges.includes('paige') && state.completed.length === 1) {
+    state.badges.push('paige');
+    saveState();
+    showBadge('paige');
+  }
+  // Knight badge if all done
+  if (state.completed.length === CHALLENGES.length && !state.badges.includes('knight')) {
+    state.badges.push('knight');
+    saveState();
+    showBadge('knight');
+  }
+}
+
+function showBadge(rank) {
+  const data = {
+    paige:  { emoji:'🛡️', title:'Paige Badge Earned!', desc:'You have completed your first trials and earned the rank of Paige.' },
+    squire: { emoji:'⚔️', title:'Squire Badge Earned!', desc:'You have proven your worth and risen to the rank of Squire!' },
+    knight: { emoji:'👑', title:'Knight Badge Earned!', desc:'You are a true Security Knight! The realm is safer with you.' }
+  };
+  const d = data[rank];
+  document.getElementById('badgeEmoji').textContent = d.emoji;
+  document.getElementById('badgeTitle').textContent = d.title;
+  document.getElementById('badgeDesc').textContent  = d.desc;
+  document.getElementById('badgeModal').classList.remove('hidden');
+}
+
+function closeBadge() {
+  document.getElementById('badgeModal').classList.add('hidden');
+  updatePlayerBar();
+}
+
+// ── Wizard AI ────────────────────────────────────
+const WIZARD_SYSTEM = `You are Merlin the Security Wizard, a wise and encouraging mentor in the Security Knights gamified secure coding training program. 
+
+Your personality:
+- Speak with a gentle medieval flair — wise, warm, and encouraging
+- Never condescending — every question is worthy of a real answer  
+- Use medieval metaphors occasionally: "dark sorcery" for vulnerabilities, "shields" for defenses, "realm" for the codebase
+- Explain security concepts clearly and practically
+- Reference OWASP Top 10 when relevant
+- Keep responses focused and scannable — use short paragraphs or bullet points
+
+You help developers understand:
+- OWASP Top 10 vulnerabilities (SQL Injection, XSS, CSRF, XXE, IDOR, Insecure Deserialization, etc.)
+- Secure coding best practices
+- How attacks work in the real world
+- How to prevent and mitigate vulnerabilities
+- Code review techniques
+
+When asked for a hint about the current challenge, give a nudge without giving away the answer directly.
+Keep responses under 150 words unless a detailed explanation is truly needed.`;
+
+async function sendWizard() {
+  const text = wizInput.value.trim();
+  if (!text || wizardLoading) return;
+  wizInput.value = '';
+  addWizMessage('user', escHtml(text));
+  await callWizard(text);
+}
+
+async function askHint(type) {
+  if (!currentChallenge || wizardLoading) return;
+  const prompts = {
+    hint:      `Give me a hint for the current challenge "${currentChallenge.title}" about ${currentChallenge.topic} without giving away the answer.`,
+    explain:   `Explain ${currentChallenge.topic} in more depth — how does the attack work and what are real-world examples?`,
+    realworld: `Give me a real-world example of a ${currentChallenge.topic} attack that actually happened.`,
+    prevent:   `How do I prevent ${currentChallenge.topic} vulnerabilities in my code? Give me concrete code examples.`
+  };
+  addWizMessage('user', escHtml(prompts[type].replace(/.*challenge.*about |without.*answer\./g,'')));
+  await callWizard(prompts[type]);
+}
+
+async function callWizard(userText) {
+  wizardLoading = true;
+  const typing = addTyping();
+
+  try {
+    let reply;
+    if (demoMode || !apiKey) {
+      await sleep(1000 + Math.random()*600);
+      reply = getDemoWizardReply(userText);
+    } else {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version':'2023-06-01',
+          'anthropic-dangerous-direct-browser-access':'true'
+        },
+        body: JSON.stringify({
+          model:'claude-sonnet-4-20250514',
+          max_tokens:400,
+          system: WIZARD_SYSTEM,
+          messages:[{role:'user',content: userText + (currentChallenge ? ` (Current challenge: ${currentChallenge.title} — ${currentChallenge.topic})` : '')}]
+        })
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      reply = data.content[0].text;
+    }
+    typing.remove();
+    addWizMessage('wizard', mdToHtml(reply));
+  } catch (err) {
+    typing.remove();
+    addWizMessage('wizard', `⚠️ The crystal ball is cloudy… ${err.message}. Check your API key in the sidebar.`);
+  }
+  wizardLoading = false;
+}
+
+function getDemoWizardReply(text) {
+  const t = text.toLowerCase();
+  if (t.includes('hint')) return `💡 <strong>A gentle nudge, young squire:</strong> Look carefully at how user input flows into the operation. Ask yourself: "Is the code treating user data as data, or as instructions?" That distinction is often the key!`;
+  if (t.includes('sql')) return `⚔️ <strong>SQL Injection</strong> occurs when user input is concatenated directly into SQL queries. The dark sorcery lets attackers manipulate the query structure itself.<br><br>The shield: <strong>parameterized queries</strong> (prepared statements) treat input as data, never as SQL code.`;
+  if (t.includes('xss')) return `🧙 <strong>XSS (Cross-Site Scripting)</strong> allows attackers to inject malicious scripts into pages viewed by others.<br><br>Three varieties: Stored (in database), Reflected (in URL), DOM-based (in JavaScript).<br><br>Shield: encode output, use Content-Security-Policy, textContent over innerHTML.`;
+  if (t.includes('csrf')) return `⚔️ <strong>CSRF (Cross-Site Request Forgery)</strong> tricks authenticated users into making unintended requests.<br><br>Shield: CSRF tokens — a secret random value included in every state-changing form, validated server-side. Also: SameSite=Strict cookies.`;
+  if (t.includes('password')) return `🔐 <strong>Password storage:</strong> Never store plain text. Avoid MD5/SHA-1/SHA-256 for passwords — they're too fast!<br><br>Use: <strong>bcrypt</strong> (cost 12+), <strong>Argon2id</strong> (recommended by OWASP), or <strong>scrypt</strong>. These are deliberately slow, making brute-force attacks impractical.`;
+  return `🧙 <strong>Greetings!</strong> I am Merlin, your security guide. Add your Anthropic API key to unlock my full wisdom — or ask me about SQL Injection, XSS, CSRF, passwords, authentication, or any OWASP Top 10 topic! In demo mode I have limited scrolls available.`;
+}
+
+// ── Helpers ──────────────────────────────────────
+function addWizMessage(role, html) {
+  const div = document.createElement('div');
+  div.className = `wiz-msg ${role}`;
+  div.innerHTML = html;
+  wizMessages.appendChild(div);
+  wizMessages.scrollTo({top:wizMessages.scrollHeight,behavior:'smooth'});
+  return div;
+}
+
+function addTyping() {
+  const div = document.createElement('div');
+  div.className = 'wiz-msg wizard';
+  div.innerHTML = '<div class="wiz-typing"><span></span><span></span><span></span></div>';
+  wizMessages.appendChild(div);
+  wizMessages.scrollTo({top:wizMessages.scrollHeight,behavior:'smooth'});
+  return div;
+}
+
+function mdToHtml(md) {
+  return md
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g,'<em>$1</em>')
+    .replace(/`([^`]+)`/g,'<code style="font-family:JetBrains Mono,monospace;font-size:.78rem;background:rgba(255,255,255,.07);padding:1px 4px;border-radius:3px;">$1</code>')
+    .replace(/^#{1,3} (.+)$/gm,'<strong style="color:var(--gold)">$1</strong>')
+    .replace(/^[-*] (.+)$/gm,'• $1')
+    .replace(/\n/g,'<br>');
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function scrollArena() {
+  arenaContent.scrollTo({top:0,behavior:'smooth'});
+}
+
+function rankLabel() {
+  const l={paige:'brave Paige',squire:'noble Squire',knight:'great Knight'};
+  return l[state.rank]||'knight';
+}
+
+function saveState() {
+  localStorage.setItem('sk_state', JSON.stringify(state));
+}
+
+function resetProgress() {
+  localStorage.removeItem('sk_state');
+  location.reload();
+}
+
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+</script>
+</body>
+</html>
