@@ -9,176 +9,294 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Fonts + Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
     body { font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; }
+
+    .live-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #00ff88;
+      animation: livepulse 2s ease-in-out infinite;
+      flex-shrink: 0;
+      display: inline-block;
+    }
+    @keyframes livepulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50%      { opacity:.35; transform:scale(.8); }
+    }
+
+    .shield-icon { transition: transform .4s ease; display:inline-block; }
+    .launch-card:hover .shield-icon { transform: rotate(10deg) scale(1.08); }
+
+    details > summary .arrow { transition: transform .25s; display:inline-block; }
+    details[open] > summary .arrow { transform: rotate(180deg); }
   </style>
 </head>
 <body class="bg-[#0b1020] text-slate-100">
 
-  <!-- Sticky mini nav -->
+  <!-- ── Sticky Nav ─────────────────────────────────── -->
   <nav class="sticky top-0 z-50 bg-[#0b1020]/80 backdrop-blur border-b border-white/10">
-    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-end gap-3 text-sm">
-      <a href="index.html" class="px-3 py-1.5 rounded-md border border-white/15 bg-white/5 hover:bg-white/10">🏠 Home</a>
-      <a href="projects.html" class="px-3 py-1.5 rounded-md border border-white/15 bg-white/5 hover:bg-white/10">📁 Projects</a>
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-3 text-sm">
+      <span class="font-bold text-slate-300 hidden sm:block font-mono text-xs tracking-widest uppercase text-indigo-300/70">Artifact 3</span>
+      <div class="flex items-center gap-2 ml-auto">
+        <a href="index.html"    class="px-3 py-1.5 rounded-md border border-white/15 bg-white/5 hover:bg-white/10 transition">🏠 Home</a>
+        <a href="projects.html" class="px-3 py-1.5 rounded-md border border-white/15 bg-white/5 hover:bg-white/10 transition">📁 Projects</a>
+        <a href="ai-shield-live.html"
+           class="px-3 py-1.5 rounded-md border border-emerald-500/40 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 transition flex items-center gap-1.5 font-semibold">
+          <span class="live-dot"></span> Launch App
+        </a>
+      </div>
     </div>
   </nav>
 
-  <!-- Hero -->
+  <!-- ── Hero ───────────────────────────────────────── -->
   <header class="relative border-b border-white/10">
-    <div class="absolute inset-0">
-      <div class="h-full w-full bg-gradient-to-b from-[#111832] via-[#0c1328] to-[#0b1020] opacity-90"></div>
-    </div>
+    <div class="absolute inset-0 bg-gradient-to-b from-[#111832] via-[#0c1328] to-[#0b1020] opacity-90"></div>
     <div class="relative max-w-5xl mx-auto px-4 py-12">
-      <span class="inline-block text-xs font-semibold tracking-wide text-indigo-300 bg-indigo-400/10 border border-indigo-300/30 rounded-full px-2.5 py-1">Artifact 3</span>
-      <h1 class="text-4xl md:text-5xl font-extrabold mt-3">AI Shield</h1>
+
+      <div class="flex items-center gap-3 mb-4 flex-wrap">
+        <span class="text-xs font-semibold tracking-wide text-indigo-300 bg-indigo-400/10 border border-indigo-300/30 rounded-full px-2.5 py-1">
+          Artifact 3
+        </span>
+        <span class="flex items-center gap-1.5 text-xs font-semibold text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 rounded-full px-2.5 py-1">
+          <span class="live-dot"></span> Live AI App Available
+        </span>
+      </div>
+
+      <h1 class="text-4xl md:text-5xl font-extrabold mt-1">AI Shield</h1>
       <p class="mt-3 text-slate-200/90 text-lg max-w-3xl">
-        A friendly AI-powered cybersecurity assistant for small business owners—clear, calm, and actionable guidance without jargon.
+        A friendly AI-powered cybersecurity assistant for small business owners — clear, calm,
+        and actionable guidance without jargon.
       </p>
+
+      <!-- Shield illustration banner -->
       <div class="mt-6 overflow-hidden rounded-2xl border border-white/10 shadow">
-        <img src="images/ai-shield.jpg" alt="AI Shield Banner" class="w-full h-64 md:h-80 object-cover">
+        <div class="w-full h-48 md:h-64 bg-gradient-to-br from-[#0d1f35] via-[#0b2a20] to-[#0b1020] flex items-center justify-center">
+          <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M80 8L16 36v44c0 38 27.8 73.4 64 80 36.2-6.6 64-42 64-80V36L80 8z"
+                  fill="rgba(0,255,136,0.08)" stroke="#00ff88" stroke-width="3"/>
+            <path d="M52 80l20 20 36-36" stroke="#00ff88" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="80" cy="80" r="68" stroke="rgba(0,255,136,0.1)" stroke-width="1" stroke-dasharray="6 6"/>
+          </svg>
+        </div>
       </div>
     </div>
   </header>
 
-  <main class="max-w-5xl mx-auto px-4 py-10 space-y-10">
+  <main class="max-w-5xl mx-auto px-4 py-10 space-y-8">
 
-    <!-- Intro -->
+    <!-- ── LAUNCH CARD ───────────────────────────────── -->
+    <section class="launch-card group relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-950/60 via-[#0b1a14] to-[#0b1020] p-6 md:p-8">
+      <div class="pointer-events-none absolute -top-16 -right-16 w-64 h-64 rounded-full bg-emerald-500/10 blur-3xl"></div>
+
+      <div class="flex flex-col md:flex-row md:items-center gap-6 relative">
+        <div class="flex-1">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="live-dot"></span>
+            <span class="text-xs font-bold tracking-widest uppercase text-emerald-400 font-mono">Now Live</span>
+          </div>
+          <h2 class="text-2xl font-extrabold text-white mb-2">
+            <span class="shield-icon">🛡️</span> Try AI Shield in Action
+          </h2>
+          <p class="text-slate-300/90 text-sm leading-relaxed max-w-xl">
+            The concept is now a fully functional AI assistant powered by Claude. Ask it about phishing,
+            ransomware, passwords, 2FA, data breaches — in plain English. Real answers, real protection.
+            Bring your own Anthropic API key or explore in demo mode.
+          </p>
+          <div class="flex flex-wrap gap-2 mt-4 text-xs font-mono text-slate-400">
+            <span class="bg-white/5 border border-white/10 rounded px-2 py-1">Claude API</span>
+            <span class="bg-white/5 border border-white/10 rounded px-2 py-1">Live Chat</span>
+            <span class="bg-white/5 border border-white/10 rounded px-2 py-1">Threat Dashboard</span>
+            <span class="bg-white/5 border border-white/10 rounded px-2 py-1">Plain English Guidance</span>
+          </div>
+        </div>
+        <div class="flex-shrink-0 text-center">
+          <a href="ai-shield-live.html"
+             class="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-sm transition shadow-lg shadow-emerald-900/40">
+            Launch AI Shield
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </a>
+          <p class="text-xs text-slate-500 mt-2 font-mono">No signup · Key stays in browser</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Overview ─────────────────────────────────── -->
     <section class="bg-white/5 border border-white/10 rounded-2xl p-6">
       <h2 class="text-xl font-bold">Overview</h2>
       <p class="mt-2 text-slate-200/90">
-        AI Shield is built for non-technical users. Think of it as a friendly security coach that explains risks in plain English and guides quick, confident fixes.
+        AI Shield is built for non-technical users. Think of it as a friendly security coach that
+        explains risks in plain English and guides quick, confident fixes — without shaming anyone
+        for not knowing the jargon.
       </p>
     </section>
 
-    <!-- Details (accordion via <details>) -->
+    <!-- ── Accordions ────────────────────────────────── -->
     <section class="space-y-3">
 
       <details class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden">
-        <summary class="cursor-pointer list-none px-4 py-3 flex items-center justify-between">
-          <span class="font-semibold"><i class="fas fa-rocket mr-2"></i>Introduction</span>
-          <span class="transition-transform group-open:rotate-180">▾</span>
+        <summary class="cursor-pointer list-none px-4 py-3 flex items-center justify-between hover:bg-white/5 transition">
+          <span class="font-semibold"><i class="fas fa-rocket mr-2 text-indigo-300"></i>Introduction</span>
+          <span class="arrow text-slate-400">▾</span>
         </summary>
-        <div class="px-4 pb-4 text-slate-200/90">
-          AI Shield is an AI-powered cybersecurity assistant built specifically for small business owners and non-technical users. It monitors your digital environment,
-          explains potential risks in plain English, and guides you through resolving them—no jargon required.
+        <div class="px-4 pb-4 text-slate-200/90 leading-relaxed">
+          AI Shield is an AI-powered cybersecurity assistant built specifically for small business
+          owners and non-technical users. It monitors your digital environment, explains potential
+          risks in plain English, and guides you through resolving them — no jargon required.
+          The live version uses Claude to provide real, context-aware security guidance.
         </div>
       </details>
 
       <details class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden">
-        <summary class="cursor-pointer list-none px-4 py-3 flex items-center justify-between">
-          <span class="font-semibold"><i class="fas fa-thumbtack mr-2"></i>Description</span>
-          <span class="transition-transform group-open:rotate-180">▾</span>
+        <summary class="cursor-pointer list-none px-4 py-3 flex items-center justify-between hover:bg-white/5 transition">
+          <span class="font-semibold"><i class="fas fa-thumbtack mr-2 text-indigo-300"></i>Description</span>
+          <span class="arrow text-slate-400">▾</span>
         </summary>
-        <div class="px-4 pb-4 text-slate-200/90">
-          A prioritized dashboard surfaces what matters: risky permissions, suspicious behavior, weak passwords, and simple, guided remediations.
-          A built-in knowledge base explains concepts like 2FA, malware, or ransomware in approachable language.
+        <div class="px-4 pb-4 text-slate-200/90 leading-relaxed">
+          A prioritized threat dashboard surfaces what matters: risky permissions, suspicious behavior,
+          weak passwords, and simple guided remediations. A live AI chat — powered by Claude — answers
+          any security question in conversational, plain-English terms. The built-in knowledge base
+          (accessible via quick-topic buttons) covers 2FA, malware, ransomware, phishing, backups,
+          cloud security, and more.
         </div>
       </details>
 
       <details class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden">
-        <summary class="cursor-pointer list-none px-4 py-3 flex items-center justify-between">
-          <span class="font-semibold"><i class="fas fa-bullseye mr-2"></i>Objective</span>
-          <span class="transition-transform group-open:rotate-180">▾</span>
+        <summary class="cursor-pointer list-none px-4 py-3 flex items-center justify-between hover:bg-white/5 transition">
+          <span class="font-semibold"><i class="fas fa-bullseye mr-2 text-indigo-300"></i>Objective</span>
+          <span class="arrow text-slate-400">▾</span>
         </summary>
-        <div class="px-4 pb-4 text-slate-200/90">
-          Empower small businesses with smart, easy-to-understand tools that reduce risk without requiring technical expertise.
+        <div class="px-4 pb-4 text-slate-200/90 leading-relaxed">
+          Empower small businesses with smart, easy-to-understand tools that reduce risk without
+          requiring technical expertise. The goal is to make cybersecurity feel approachable —
+          not intimidating — so that real protective action actually gets taken.
         </div>
       </details>
 
       <details class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden">
-        <summary class="cursor-pointer list-none px-4 py-3 flex items-center justify-between">
-          <span class="font-semibold"><i class="fas fa-cogs mr-2"></i>Process</span>
-          <span class="transition-transform group-open:rotate-180">▾</span>
+        <summary class="cursor-pointer list-none px-4 py-3 flex items-center justify-between hover:bg-white/5 transition">
+          <span class="font-semibold"><i class="fas fa-cogs mr-2 text-indigo-300"></i>Process</span>
+          <span class="arrow text-slate-400">▾</span>
         </summary>
-        <div class="px-4 pb-4 text-slate-200/90">
-          User research with 25+ small business owners → low-fi prototypes focused on clarity and empathy → usability testing →
-          high-fi mockups in Figma → front-end prototype with placeholder AI → scenario testing with GPT prompts. Key insight:
-          security is emotional—people want to feel safe, not shamed.
+        <div class="px-4 pb-4 text-slate-200/90 leading-relaxed">
+          User research with 25+ small business owners → low-fi prototypes focused on clarity and empathy →
+          usability testing → high-fi mockups in Figma → front-end prototype with placeholder AI →
+          scenario testing with GPT prompts → live Claude API integration with a custom security-focused
+          system prompt. Key insight: <strong class="text-white">security is emotional</strong> — people
+          want to feel safe, not shamed.
         </div>
       </details>
 
       <details class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden">
-        <summary class="cursor-pointer list-none px-4 py-3 flex items-center justify-between">
-          <span class="font-semibold"><i class="fas fa-code mr-2"></i>Tools and Technologies Used</span>
-          <span class="transition-transform group-open:rotate-180">▾</span>
+        <summary class="cursor-pointer list-none px-4 py-3 flex items-center justify-between hover:bg-white/5 transition">
+          <span class="font-semibold"><i class="fas fa-code mr-2 text-indigo-300"></i>Tools and Technologies Used</span>
+          <span class="arrow text-slate-400">▾</span>
         </summary>
         <div class="px-4 pb-4">
-          <ul class="list-disc pl-5 text-slate-200/90 space-y-1">
-            <li><strong>HTML & CSS</strong> – Clean, responsive UI for desktop and mobile.</li>
-            <li><strong>GitHub Pages</strong> – Live prototype hosting for quick feedback.</li>
-            <li><strong>Figma</strong> – Wireframes & high-fi designs with accessibility focus.</li>
-            <li><strong>ChatGPT</strong> – Simulated guidance & user scenarios.</li>
-            <li><strong>JavaScript (Planned)</strong> – Behavior monitoring & dynamic content.</li>
+          <ul class="list-disc pl-5 text-slate-200/90 space-y-1.5">
+            <li><strong>HTML, CSS &amp; JavaScript</strong> – Clean, responsive UI for desktop and mobile.</li>
+            <li><strong>Anthropic Claude API</strong> – Powers the live AI assistant with a custom cybersecurity system prompt.</li>
+            <li><strong>GitHub Pages</strong> – Live prototype hosting — zero build step, fully static.</li>
+            <li><strong>Figma</strong> – Wireframes &amp; high-fi designs with accessibility focus.</li>
+            <li><strong>JetBrains Mono / Syne</strong> – Typography chosen for a tactical, technical aesthetic.</li>
+            <li><strong>Demo Mode</strong> – Pre-written curated responses for the most common scenarios (no key needed).</li>
           </ul>
         </div>
       </details>
 
       <details class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden">
-        <summary class="cursor-pointer list-none px-4 py-3 flex items-center justify-between">
-          <span class="font-semibold"><i class="fas fa-chart-line mr-2"></i>Value Proposition</span>
-          <span class="transition-transform group-open:rotate-180">▾</span>
+        <summary class="cursor-pointer list-none px-4 py-3 flex items-center justify-between hover:bg-white/5 transition">
+          <span class="font-semibold"><i class="fas fa-chart-line mr-2 text-indigo-300"></i>Value Proposition</span>
+          <span class="arrow text-slate-400">▾</span>
         </summary>
-        <div class="px-4 pb-4 text-slate-200/90">
-          Expert-level protection in an approachable interface. It focuses on: What’s the risk? Why does it matter? What should I do now?
+        <div class="px-4 pb-4 text-slate-200/90 leading-relaxed">
+          Expert-level protection in an approachable interface. It focuses on three questions:
+          <em>What's the risk? Why does it matter? What should I do now?</em>
           Even a solo founder can protect their business in minutes a week.
+          The dynamic threat score and color-coded alert panel help prioritize what to address first.
         </div>
       </details>
 
       <details class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden">
-        <summary class="cursor-pointer list-none px-4 py-3 flex items-center justify-between">
-          <span class="font-semibold"><i class="fas fa-star mr-2"></i>Unique Value</span>
-          <span class="transition-transform group-open:rotate-180">▾</span>
+        <summary class="cursor-pointer list-none px-4 py-3 flex items-center justify-between hover:bg-white/5 transition">
+          <span class="font-semibold"><i class="fas fa-star mr-2 text-indigo-300"></i>Unique Value</span>
+          <span class="arrow text-slate-400">▾</span>
         </summary>
-        <div class="px-4 pb-4 text-slate-200/90">
-          A supportive tone and coaching mindset. Real-world analogies, adaptive language, and bite-sized tutorials with each alert
-          help users learn while staying protected.
+        <div class="px-4 pb-4 text-slate-200/90 leading-relaxed">
+          A supportive tone and coaching mindset. Real-world analogies, adaptive language, and
+          bite-sized guidance with each alert help users learn while staying protected.
+          The live AI understands context — ask a follow-up and it remembers what you said earlier
+          in the conversation.
         </div>
       </details>
 
       <details class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden">
-        <summary class="cursor-pointer list-none px-4 py-3 flex items-center justify-between">
-          <span class="font-semibold"><i class="fas fa-lightbulb mr-2"></i>Relevance</span>
-          <span class="transition-transform group-open:rotate-180">▾</span>
+        <summary class="cursor-pointer list-none px-4 py-3 flex items-center justify-between hover:bg-white/5 transition">
+          <span class="font-semibold"><i class="fas fa-lightbulb mr-2 text-indigo-300"></i>Relevance</span>
+          <span class="arrow text-slate-400">▾</span>
         </summary>
-        <div class="px-4 pb-4 text-slate-200/90">
-          With remote work and SaaS sprawl, small businesses face growing threats without enterprise budgets. AI Shield bridges that gap.
+        <div class="px-4 pb-4 text-slate-200/90 leading-relaxed">
+          With remote work and SaaS sprawl, small businesses face growing threats without enterprise
+          budgets. 43% of cyberattacks target small businesses, yet most lack even basic security
+          practices. AI Shield bridges that gap — bringing the knowledge of a security expert into
+          a friendly, affordable, always-available assistant.
         </div>
       </details>
 
       <details class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden">
-        <summary class="cursor-pointer list-none px-4 py-3 flex items-center justify-between">
-          <span class="font-semibold"><i class="fas fa-book mr-2"></i>References</span>
-          <span class="transition-transform group-open:rotate-180">▾</span>
+        <summary class="cursor-pointer list-none px-4 py-3 flex items-center justify-between hover:bg-white/5 transition">
+          <span class="font-semibold"><i class="fas fa-book mr-2 text-indigo-300"></i>References</span>
+          <span class="arrow text-slate-400">▾</span>
         </summary>
-        <div class="px-4 pb-4 text-slate-200/90">
-          AI Shield demo site:
-          <a class="underline text-indigo-300 hover:text-indigo-200" href="https://didiegons.github.io/ai-shield/" target="_blank" rel="noopener">
-            https://didiegons.github.io/ai-shield/
-          </a>
+        <div class="px-4 pb-4 text-slate-200/90 space-y-2">
+          <p>
+            Portfolio page:
+            <a class="underline text-indigo-300 hover:text-indigo-200 transition" href="https://didiegons.github.io/ai-shield.html" target="_blank" rel="noopener">
+              https://didiegons.github.io/ai-shield.html
+            </a>
+          </p>
+          <p>
+            Live AI Shield app:
+            <a class="underline text-emerald-300 hover:text-emerald-200 transition" href="https://didiegons.github.io/ai-shield-live.html" target="_blank" rel="noopener">
+              https://didiegons.github.io/ai-shield-live.html
+            </a>
+          </p>
+          <p>
+            Portfolio landing page:
+            <a class="underline text-indigo-300 hover:text-indigo-200 transition" href="https://didiegons.github.io" target="_blank" rel="noopener">
+              https://didiegons.github.io
+            </a>
+          </p>
         </div>
       </details>
 
     </section>
 
-    <!-- Back links -->
-    <section class="pt-2">
-      <div class="flex flex-wrap gap-3">
-        <a href="projects.html" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-white/15 bg-white/5 hover:bg-white/10">← Back to Projects</a>
-      </div>
+    <!-- ── Back / Launch links ───────────────────────── -->
+    <section class="pt-2 flex flex-wrap gap-3">
+      <a href="projects.html"
+         class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-white/15 bg-white/5 hover:bg-white/10 transition">
+        ← Back to Projects
+      </a>
+      <a href="ai-shield-live.html"
+         class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 transition font-semibold">
+        <span class="live-dot"></span> Launch AI Shield
+      </a>
     </section>
 
   </main>
 
-  <footer class="border-t border-white/10">
-    <div class="max-w-5xl mx-auto px-4 py-6 text-sm text-slate-300/80">
-      © <span id="y"></span> Dayo Egonu • AI Shield
+  <footer class="border-t border-white/10 mt-8">
+    <div class="max-w-5xl mx-auto px-4 py-6 text-sm text-slate-300/80 flex items-center justify-between flex-wrap gap-2">
+      <span>© <span id="y"></span> Dayo Egonu · AI Shield</span>
+      <span class="text-slate-500 font-mono text-xs">AIML 501 · Indiana Wesleyan University</span>
     </div>
   </footer>
 
   <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
 </body>
 </html>
-
