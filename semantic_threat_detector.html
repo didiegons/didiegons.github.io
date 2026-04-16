@@ -8,396 +8,165 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --bg:#07080A;
-  --bg2:#0D0F13;
-  --bg3:#12151A;
-  --surface:#181B22;
-  --border:#232730;
-  --border2:#2E3340;
-  --accent:#00D97E;
-  --accent2:#00A85F;
-  --accent-dim:rgba(0,217,126,0.12);
-  --accent-glow:rgba(0,217,126,0.06);
-  --warn:#F5A623;
-  --warn-dim:rgba(245,166,35,0.12);
-  --danger:#E24B4A;
-  --danger-dim:rgba(226,75,74,0.12);
-  --info:#378ADD;
-  --info-dim:rgba(55,138,221,0.12);
-  --text:#E8EBF0;
-  --text2:#8B92A5;
-  --text3:#555E72;
-  --mono:'IBM Plex Mono',monospace;
-  --sans:'Syne',sans-serif;
+  --bg:#07080A;--bg2:#0D0F13;--bg3:#12151A;--surface:#181B22;
+  --border:#232730;--border2:#2E3340;
+  --accent:#00D97E;--accent2:#00A85F;--accent-dim:rgba(0,217,126,0.12);
+  --warn:#F5A623;--warn-dim:rgba(245,166,35,0.12);
+  --danger:#E24B4A;--danger-dim:rgba(226,75,74,0.12);
+  --info:#378ADD;--info-dim:rgba(55,138,221,0.12);
+  --text:#E8EBF0;--text2:#8B92A5;--text3:#555E72;
+  --mono:'IBM Plex Mono',monospace;--sans:'Syne',sans-serif;
 }
-
 html{scroll-behavior:smooth;}
-
-body{
-  font-family:var(--sans);
-  background:var(--bg);
-  color:var(--text);
-  min-height:100vh;
-  font-size:15px;
-  line-height:1.6;
-}
-
-/* ── LAYOUT ───────────────────────── */
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6;}
 .shell{max-width:900px;margin:0 auto;padding:0 1.5rem;}
 
-/* ── NAV ───────────────────────────── */
-nav{
-  border-bottom:1px solid var(--border);
-  padding:1rem 0;
-  position:sticky;top:0;
-  background:rgba(7,8,10,0.92);
-  backdrop-filter:blur(12px);
-  z-index:100;
-}
-.nav-inner{
-  max-width:900px;margin:0 auto;padding:0 1.5rem;
-  display:flex;align-items:center;justify-content:space-between;
-}
-.nav-brand{
-  font-family:var(--mono);
-  font-size:13px;
-  color:var(--accent);
-  letter-spacing:0.05em;
-}
-.nav-links{display:flex;gap:1.5rem;}
-.nav-links a{
-  font-size:13px;color:var(--text2);text-decoration:none;
-  transition:color 0.15s;
-}
+/* NAV */
+nav{border-bottom:1px solid var(--border);padding:1rem 0;position:sticky;top:0;background:rgba(7,8,10,0.92);backdrop-filter:blur(12px);z-index:100;}
+.nav-inner{max-width:900px;margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;}
+.nav-brand{font-family:var(--mono);font-size:13px;color:var(--accent);letter-spacing:0.05em;text-decoration:none;}
+.nav-links{display:flex;align-items:center;gap:1.25rem;}
+.nav-links a{font-size:13px;color:var(--text2);text-decoration:none;transition:color 0.15s;}
 .nav-links a:hover{color:var(--text);}
-.badge-live{
-  font-family:var(--mono);font-size:10px;
-  background:var(--accent-dim);color:var(--accent);
-  border:1px solid rgba(0,217,126,0.25);
-  padding:2px 8px;border-radius:20px;letter-spacing:0.08em;
-  animation:pulse 2s infinite;
-}
+.badge-live{font-family:var(--mono);font-size:10px;background:var(--accent-dim);color:var(--accent);border:1px solid rgba(0,217,126,0.25);padding:2px 8px;border-radius:20px;letter-spacing:0.08em;animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.6;}}
 
-/* ── HERO ───────────────────────────── */
-.hero{
-  padding:5rem 0 4rem;
-  border-bottom:1px solid var(--border);
-}
-.hero-tag{
-  font-family:var(--mono);font-size:11px;
-  color:var(--accent);letter-spacing:0.15em;
-  text-transform:uppercase;margin-bottom:1.25rem;
-  display:flex;align-items:center;gap:8px;
-}
-.hero-tag::before{
-  content:'';display:inline-block;
-  width:20px;height:1px;background:var(--accent);
-}
-.hero-title{
-  font-size:clamp(2.2rem,5vw,3.5rem);
-  font-weight:800;line-height:1.1;
-  color:var(--text);
-  margin-bottom:1rem;
-}
-.hero-title em{
-  font-style:normal;color:var(--accent);
-}
-.hero-sub{
-  font-size:16px;color:var(--text2);
-  max-width:560px;line-height:1.75;
-  margin-bottom:2rem;
-}
-.hero-meta{
-  display:flex;flex-wrap:wrap;gap:10px;
-  margin-bottom:2.5rem;
-}
-.meta-chip{
-  font-family:var(--mono);font-size:11px;
-  border:1px solid var(--border2);
-  color:var(--text3);
-  padding:4px 12px;border-radius:4px;
-  letter-spacing:0.04em;
-}
+/* HERO */
+.hero{padding:5rem 0 4rem;border-bottom:1px solid var(--border);}
+.hero-tag{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:1.25rem;display:flex;align-items:center;gap:8px;}
+.hero-tag::before{content:'';display:inline-block;width:20px;height:1px;background:var(--accent);}
+.hero-title{font-size:clamp(2.2rem,5vw,3.5rem);font-weight:800;line-height:1.1;color:var(--text);margin-bottom:1rem;}
+.hero-title em{font-style:normal;color:var(--accent);}
+.hero-sub{font-size:16px;color:var(--text2);max-width:560px;line-height:1.75;margin-bottom:2rem;}
+.hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:2.5rem;}
+.meta-chip{font-family:var(--mono);font-size:11px;border:1px solid var(--border2);color:var(--text3);padding:4px 12px;border-radius:4px;letter-spacing:0.04em;}
 .hero-actions{display:flex;gap:10px;flex-wrap:wrap;}
-.btn{
-  font-family:var(--sans);font-size:13px;font-weight:600;
-  padding:10px 22px;border-radius:6px;
-  border:none;cursor:pointer;
-  text-decoration:none;display:inline-flex;align-items:center;gap:6px;
-  transition:all 0.15s;letter-spacing:0.02em;
-}
+.btn{font-family:var(--sans);font-size:13px;font-weight:600;padding:10px 22px;border-radius:6px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:all 0.15s;letter-spacing:0.02em;}
 .btn-primary{background:var(--accent);color:#07080A;}
 .btn-primary:hover{background:#00f28c;transform:translateY(-1px);}
 .btn-outline{background:transparent;color:var(--text);border:1px solid var(--border2);}
 .btn-outline:hover{border-color:var(--text3);background:var(--surface);}
 
-/* ── SECTION ────────────────────────── */
+/* SECTIONS */
 .section{padding:3.5rem 0;border-bottom:1px solid var(--border);}
-.section-label{
-  font-family:var(--mono);font-size:11px;
-  color:var(--accent);letter-spacing:0.15em;text-transform:uppercase;
-  margin-bottom:1.5rem;display:flex;align-items:center;gap:8px;
-}
+.section-label{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:1.5rem;display:flex;align-items:center;gap:8px;}
 .section-label::before{content:'//';color:var(--text3);}
-.section-title{
-  font-size:1.5rem;font-weight:700;
-  color:var(--text);margin-bottom:0.5rem;
-}
-.section-sub{
-  font-size:14px;color:var(--text2);
-  max-width:560px;line-height:1.75;
-  margin-bottom:2rem;
-}
+.section-title{font-size:1.5rem;font-weight:700;color:var(--text);margin-bottom:0.5rem;}
+.section-sub{font-size:14px;color:var(--text2);max-width:560px;line-height:1.75;margin-bottom:2rem;}
 
-/* ── ARCHITECTURE ───────────────────── */
-.arch-grid{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-  gap:12px;margin-bottom:1.5rem;
-}
-.arch-card{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:8px;padding:1.25rem;
-  transition:border-color 0.15s;
-}
+/* ARCH */
+.arch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:1.5rem;}
+.arch-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem;transition:border-color 0.15s;}
 .arch-card:hover{border-color:var(--border2);}
-.arch-step{
-  font-family:var(--mono);font-size:10px;
-  color:var(--accent);letter-spacing:0.1em;
-  margin-bottom:8px;
-}
+.arch-step{font-family:var(--mono);font-size:10px;color:var(--accent);letter-spacing:0.1em;margin-bottom:8px;}
 .arch-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px;}
 .arch-desc{font-size:12px;color:var(--text2);line-height:1.6;}
-.arch-arrow{
-  display:flex;align-items:center;justify-content:center;
-  color:var(--text3);font-size:18px;
-}
 
-/* ── DEMO ────────────────────────────── */
-.demo-shell{
-  background:var(--bg2);
-  border:1px solid var(--border);
-  border-radius:12px;
-  overflow:hidden;
-}
-.demo-topbar{
-  background:var(--surface);
-  border-bottom:1px solid var(--border);
-  padding:0.75rem 1.25rem;
-  display:flex;align-items:center;justify-content:space-between;
-}
-.demo-title{
-  font-family:var(--mono);font-size:12px;
-  color:var(--text2);letter-spacing:0.04em;
-}
-.demo-status{
-  font-family:var(--mono);font-size:11px;
-  color:var(--accent);display:flex;align-items:center;gap:6px;
-}
-.dot-live{
-  width:6px;height:6px;border-radius:50%;
-  background:var(--accent);
-  animation:pulse 1.5s infinite;
-}
-.demo-body{padding:1.5rem;}
-
-.samples-label{
-  font-family:var(--mono);font-size:11px;
-  color:var(--text3);letter-spacing:0.08em;
-  margin-bottom:8px;
-}
-.samples{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.25rem;}
-.sample-btn{
-  font-family:var(--mono);font-size:11px;
+/* API KEY BANNER */
+.api-banner{
   background:var(--surface);border:1px solid var(--border2);
-  color:var(--text2);padding:5px 12px;border-radius:4px;
-  cursor:pointer;transition:all 0.15s;
-  text-align:left;
+  border-left:3px solid var(--info);
+  border-radius:0 8px 8px 0;
+  padding:1rem 1.25rem;margin-bottom:1.25rem;
 }
+.api-banner-title{font-family:var(--mono);font-size:11px;color:var(--info);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;}
+.api-banner-desc{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px;}
+.api-banner-desc a{color:var(--info);text-decoration:none;}
+.api-banner-desc a:hover{text-decoration:underline;}
+.api-key-row{display:flex;gap:8px;align-items:center;}
+.api-key-input{
+  flex:1;background:var(--bg2);border:1px solid var(--border2);
+  border-radius:6px;padding:8px 12px;
+  font-family:var(--mono);font-size:12px;color:var(--text);
+  outline:none;transition:border-color 0.15s;
+}
+.api-key-input:focus{border-color:var(--info);}
+.api-key-input::placeholder{color:var(--text3);}
+.api-save-btn{
+  background:var(--info);color:#fff;border:none;border-radius:6px;
+  padding:8px 16px;font-family:var(--sans);font-size:12px;font-weight:600;
+  cursor:pointer;white-space:nowrap;transition:opacity 0.15s;
+}
+.api-save-btn:hover{opacity:0.85;}
+.api-status{font-family:var(--mono);font-size:11px;margin-top:6px;display:none;}
+.api-status.set{color:var(--accent);display:block;}
+
+/* DEMO */
+.demo-shell{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.demo-topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0.75rem 1.25rem;display:flex;align-items:center;justify-content:space-between;}
+.demo-title{font-family:var(--mono);font-size:12px;color:var(--text2);letter-spacing:0.04em;}
+.demo-status{font-family:var(--mono);font-size:11px;color:var(--accent);display:flex;align-items:center;gap:6px;}
+.dot-live{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 1.5s infinite;}
+.demo-body{padding:1.5rem;}
+.samples-label{font-family:var(--mono);font-size:11px;color:var(--text3);letter-spacing:0.08em;margin-bottom:8px;}
+.samples{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.25rem;}
+.sample-btn{font-family:var(--mono);font-size:11px;background:var(--surface);border:1px solid var(--border2);color:var(--text2);padding:5px 12px;border-radius:4px;cursor:pointer;transition:all 0.15s;text-align:left;}
 .sample-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
 .sample-btn.danger-sample:hover{border-color:var(--danger);color:var(--danger);background:var(--danger-dim);}
 .sample-btn.warn-sample:hover{border-color:var(--warn);color:var(--warn);background:var(--warn-dim);}
-
 .input-row{display:flex;gap:10px;margin-bottom:1.5rem;align-items:flex-start;}
-textarea.analysis-input{
-  flex:1;
-  background:var(--surface);
-  border:1px solid var(--border2);
-  border-radius:8px;
-  padding:12px 14px;
-  font-family:var(--mono);font-size:13px;
-  color:var(--text);
-  resize:vertical;min-height:90px;
-  outline:none;transition:border-color 0.15s;
-  line-height:1.6;
-}
+textarea.analysis-input{flex:1;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:12px 14px;font-family:var(--mono);font-size:13px;color:var(--text);resize:vertical;min-height:90px;outline:none;transition:border-color 0.15s;line-height:1.6;}
 textarea.analysis-input:focus{border-color:var(--accent);}
 textarea.analysis-input::placeholder{color:var(--text3);}
-.analyze-btn{
-  background:var(--accent);color:#07080A;
-  border:none;border-radius:8px;
-  padding:12px 20px;
-  font-family:var(--sans);font-weight:700;font-size:13px;
-  cursor:pointer;white-space:nowrap;
-  transition:all 0.15s;
-  min-width:100px;
-}
+.analyze-btn{background:var(--accent);color:#07080A;border:none;border-radius:8px;padding:12px 20px;font-family:var(--sans);font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;transition:all 0.15s;min-width:100px;}
 .analyze-btn:hover{background:#00f28c;}
 .analyze-btn:disabled{background:var(--border2);color:var(--text3);cursor:not-allowed;}
 
-/* ── RESULTS ─────────────────────────── */
+/* RESULTS */
 .result-panel{display:none;}
 .result-panel.show{display:block;}
-
-.threat-meter{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:8px;padding:1.25rem;
-  margin-bottom:1rem;
-}
-.meter-top{
-  display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:10px;
-}
-.meter-label{
-  font-family:var(--mono);font-size:11px;
-  color:var(--text2);letter-spacing:0.08em;
-}
-.threat-score{
-  font-family:var(--mono);font-size:28px;font-weight:500;
-}
-.meter-bar-bg{
-  height:6px;background:var(--border);
-  border-radius:3px;overflow:hidden;
-}
-.meter-bar-fill{
-  height:100%;border-radius:3px;
-  transition:width 0.8s cubic-bezier(0.4,0,0.2,1);
-}
-
-.result-grid{
-  display:grid;grid-template-columns:1fr 1fr;gap:10px;
-  margin-bottom:1rem;
-}
+.threat-meter{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem;margin-bottom:1rem;}
+.meter-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.meter-label{font-family:var(--mono);font-size:11px;color:var(--text2);letter-spacing:0.08em;}
+.threat-score{font-family:var(--mono);font-size:28px;font-weight:500;}
+.meter-bar-bg{height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.meter-bar-fill{height:100%;border-radius:3px;transition:width 0.8s cubic-bezier(0.4,0,0.2,1);}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem;}
 @media(max-width:560px){.result-grid{grid-template-columns:1fr;}}
-
-.result-card{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:8px;padding:1rem 1.25rem;
-}
-.result-card-label{
-  font-family:var(--mono);font-size:10px;
-  color:var(--text3);letter-spacing:0.1em;
-  text-transform:uppercase;margin-bottom:6px;
-}
-.result-card-value{
-  font-size:13px;color:var(--text);line-height:1.55;
-}
+.result-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem 1.25rem;}
+.result-card-label{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;}
+.result-card-value{font-size:13px;color:var(--text);line-height:1.55;}
 .result-card-value.mono{font-family:var(--mono);font-size:12px;}
-
 .signals-list{margin-bottom:1rem;}
-.signal-row{
-  display:flex;align-items:flex-start;gap:10px;
-  padding:8px 0;
-  border-bottom:1px solid var(--border);
-}
+.signal-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
 .signal-row:last-child{border-bottom:none;}
-.signal-icon{
-  width:20px;height:20px;border-radius:4px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:11px;flex-shrink:0;margin-top:1px;
-}
+.signal-icon{width:20px;height:20px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;margin-top:1px;}
 .signal-text{font-size:13px;color:var(--text2);line-height:1.5;}
 .signal-text strong{color:var(--text);font-weight:600;}
-
-.reasoning-box{
-  background:var(--surface);border:1px solid var(--border);
-  border-left:3px solid var(--accent);
-  border-radius:0 8px 8px 0;
-  padding:1rem 1.25rem;
-  margin-bottom:1rem;
-}
-.reasoning-label{
-  font-family:var(--mono);font-size:10px;
-  color:var(--accent);letter-spacing:0.1em;
-  text-transform:uppercase;margin-bottom:6px;
-}
+.reasoning-box{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:1rem 1.25rem;margin-bottom:1rem;}
+.reasoning-label{font-family:var(--mono);font-size:10px;color:var(--accent);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;}
 .reasoning-text{font-size:13px;color:var(--text2);line-height:1.7;}
-
-.loading-state{
-  display:none;text-align:center;padding:2rem;
-}
+.loading-state{display:none;text-align:center;padding:2rem;}
 .loading-state.show{display:block;}
-.loading-dots{
-  font-family:var(--mono);font-size:13px;
-  color:var(--accent);letter-spacing:0.1em;
-}
+.loading-dots{font-family:var(--mono);font-size:13px;color:var(--accent);letter-spacing:0.1em;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;vertical-align:middle;margin-right:6px;}
 
-/* ── JOBS ────────────────────────────── */
-.jobs-grid{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-  gap:12px;
-}
-.job-card{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:8px;padding:1.25rem;
-  transition:border-color 0.15s,transform 0.15s;
-}
+/* JOBS */
+.jobs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;}
+.job-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem;transition:border-color 0.15s,transform 0.15s;}
 .job-card:hover{border-color:var(--border2);transform:translateY(-2px);}
-.job-tier{
-  font-family:var(--mono);font-size:10px;
-  letter-spacing:0.1em;text-transform:uppercase;
-  padding:3px 10px;border-radius:20px;
-  display:inline-block;margin-bottom:10px;
-}
+.job-tier{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:10px;}
 .tier-entry{background:var(--info-dim);color:var(--info);}
 .tier-mid{background:var(--accent-dim);color:var(--accent);}
 .tier-senior{background:var(--warn-dim);color:var(--warn);}
 .tier-research{background:var(--danger-dim);color:var(--danger);}
-
 .job-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px;}
-.job-salary{
-  font-family:var(--mono);font-size:11px;
-  color:var(--accent);margin-bottom:8px;
-}
+.job-salary{font-family:var(--mono);font-size:11px;color:var(--accent);margin-bottom:8px;}
 .job-desc{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px;}
 .job-skills{display:flex;flex-wrap:wrap;gap:4px;}
-.skill-tag{
-  font-family:var(--mono);font-size:10px;
-  background:var(--bg3);border:1px solid var(--border);
-  color:var(--text3);padding:2px 8px;border-radius:3px;
-}
+.skill-tag{font-family:var(--mono);font-size:10px;background:var(--bg3);border:1px solid var(--border);color:var(--text3);padding:2px 8px;border-radius:3px;}
+.linkedin-btn{display:inline-flex;align-items:center;gap:6px;margin-top:1.25rem;font-family:var(--mono);font-size:11px;color:var(--info);text-decoration:none;border:1px solid var(--info-dim);background:var(--info-dim);padding:8px 16px;border-radius:6px;transition:all 0.15s;letter-spacing:0.04em;}
+.linkedin-btn:hover{background:rgba(55,138,221,0.2);border-color:var(--info);}
 
-/* ── FOOTER ──────────────────────────── */
-footer{
-  padding:2.5rem 0;
-  border-top:1px solid var(--border);
-  text-align:center;
-}
-.footer-name{
-  font-family:var(--mono);font-size:12px;
-  color:var(--text3);letter-spacing:0.06em;
-}
-.footer-link{
-  color:var(--accent);text-decoration:none;
-  transition:opacity 0.15s;
-}
+/* FOOTER */
+footer{padding:2.5rem 0;border-top:1px solid var(--border);text-align:center;}
+.footer-name{font-family:var(--mono);font-size:12px;color:var(--text3);letter-spacing:0.06em;}
+.footer-link{color:var(--accent);text-decoration:none;transition:opacity 0.15s;}
 .footer-link:hover{opacity:0.7;}
 
-/* ── ANIMATIONS ───────────────────────── */
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
 .fade-in{animation:fadeIn 0.4s ease forwards;}
-
-@keyframes spin{to{transform:rotate(360deg);}}
-.spinner{
-  display:inline-block;width:16px;height:16px;
-  border:2px solid var(--border2);
-  border-top-color:var(--accent);
-  border-radius:50%;
-  animation:spin 0.8s linear infinite;
-  vertical-align:middle;margin-right:6px;
-}
-
-/* ── SCROLLBAR ────────────────────────── */
 ::-webkit-scrollbar{width:6px;}
 ::-webkit-scrollbar-track{background:var(--bg);}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
@@ -407,9 +176,11 @@ footer{
 
 <nav>
   <div class="nav-inner">
-    <div class="nav-brand">egonu.research / semantic-threat-detector</div>
+    <a href="index.html" class="nav-brand">egonu.research / semantic-threat-detector</a>
     <div class="nav-links">
-      <a href="#about">About</a>
+      <a href="index.html">Home</a>
+      <a href="projects.html">Projects</a>
+      <a href="about.html">About</a>
       <a href="#demo">Demo</a>
       <a href="#jobs">Careers</a>
       <span class="badge-live">live demo</span>
@@ -417,14 +188,13 @@ footer{
   </div>
 </nav>
 
-<!-- HERO -->
 <div class="shell">
+
+  <!-- HERO -->
   <section class="hero" id="about">
     <div class="hero-tag">Portfolio Project — NLP Security Research</div>
     <h1 class="hero-title">Semantic<br/><em>Threat Detector</em></h1>
-    <p class="hero-sub">
-      A real-time semantic analysis engine that identifies hidden manipulation patterns, prompt injections, and adversarial intent that keyword filters miss — using vector-space clustering and AI-powered projection layers.
-    </p>
+    <p class="hero-sub">A real-time semantic analysis engine that identifies hidden manipulation patterns, prompt injections, and adversarial intent that keyword filters miss — using vector-space clustering and AI-powered projection layers.</p>
     <div class="hero-meta">
       <span class="meta-chip">NLP · Semantic Analysis</span>
       <span class="meta-chip">AI Security</span>
@@ -442,36 +212,13 @@ footer{
   <section class="section">
     <div class="section-label">System Architecture</div>
     <div class="section-title">How the detector works</div>
-    <div class="section-sub">
-      Five pipeline stages transform raw text into a semantic threat profile — detecting what words alone cannot reveal.
-    </div>
-
+    <div class="section-sub">Five pipeline stages transform raw text into a semantic threat profile — detecting what words alone cannot reveal.</div>
     <div class="arch-grid">
-      <div class="arch-card">
-        <div class="arch-step">STAGE 01</div>
-        <div class="arch-name">Input ingestion</div>
-        <div class="arch-desc">Raw text enters the pipeline. No preprocessing that could destroy semantic signal — punctuation, casing, and syntax preserved.</div>
-      </div>
-      <div class="arch-card">
-        <div class="arch-step">STAGE 02</div>
-        <div class="arch-name">Semantic embedding</div>
-        <div class="arch-desc">Text is converted to a dense vector in high-dimensional space. Words with similar intent cluster — even if surface forms differ entirely.</div>
-      </div>
-      <div class="arch-card">
-        <div class="arch-step">STAGE 03</div>
-        <div class="arch-name">Threat projection</div>
-        <div class="arch-desc">A learned projector layer rotates the embedding space so threat-relevant dimensions become separable from benign signal.</div>
-      </div>
-      <div class="arch-card">
-        <div class="arch-step">STAGE 04</div>
-        <div class="arch-name">Cluster proximity</div>
-        <div class="arch-desc">The projected vector is compared against known threat cluster centroids. Distance in semantic space becomes a probability score.</div>
-      </div>
-      <div class="arch-card">
-        <div class="arch-step">STAGE 05</div>
-        <div class="arch-name">Signal extraction</div>
-        <div class="arch-desc">Interpretable signals are extracted — attack type, intent trajectory, manipulation pattern, and confidence with human-readable reasoning.</div>
-      </div>
+      <div class="arch-card"><div class="arch-step">STAGE 01</div><div class="arch-name">Input ingestion</div><div class="arch-desc">Raw text enters the pipeline. No preprocessing that could destroy semantic signal — punctuation, casing, and syntax preserved.</div></div>
+      <div class="arch-card"><div class="arch-step">STAGE 02</div><div class="arch-name">Semantic embedding</div><div class="arch-desc">Text is converted to a dense vector in high-dimensional space. Words with similar intent cluster — even if surface forms differ entirely.</div></div>
+      <div class="arch-card"><div class="arch-step">STAGE 03</div><div class="arch-name">Threat projection</div><div class="arch-desc">A learned projector layer rotates the embedding space so threat-relevant dimensions become separable from benign signal.</div></div>
+      <div class="arch-card"><div class="arch-step">STAGE 04</div><div class="arch-name">Cluster proximity</div><div class="arch-desc">The projected vector is compared against known threat cluster centroids. Distance in semantic space becomes a probability score.</div></div>
+      <div class="arch-card"><div class="arch-step">STAGE 05</div><div class="arch-name">Signal extraction</div><div class="arch-desc">Interpretable signals are extracted — attack type, intent trajectory, manipulation pattern, and confidence with human-readable reasoning.</div></div>
     </div>
   </section>
 
@@ -479,8 +226,17 @@ footer{
   <section class="section" id="demo">
     <div class="section-label">Interactive Demo</div>
     <div class="section-title">Analyze text for semantic threats</div>
-    <div class="section-sub">
-      Submit any text. The AI engine analyzes it for hidden manipulation patterns, prompt injections, adversarial framing, and semantic drift — explaining exactly what it found and why.
+    <div class="section-sub">Submit any text. The AI engine analyzes it for hidden manipulation patterns, prompt injections, adversarial framing, and semantic drift.</div>
+
+    <!-- API KEY SETUP -->
+    <div class="api-banner">
+      <div class="api-banner-title">API Key Required</div>
+      <div class="api-banner-desc">This demo calls the Anthropic Claude API directly from your browser. Enter your free API key to activate it. Get one at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> — your key stays in your browser only and is never stored anywhere.</div>
+      <div class="api-key-row">
+        <input type="password" class="api-key-input" id="api-key-input" placeholder="sk-ant-api03-..." />
+        <button class="api-save-btn" onclick="saveKey()">Activate</button>
+      </div>
+      <div class="api-status" id="api-status">✓ API key set — demo is active</div>
     </div>
 
     <div class="demo-shell">
@@ -489,7 +245,6 @@ footer{
         <div class="demo-status"><span class="dot-live"></span>engine active</div>
       </div>
       <div class="demo-body">
-
         <div class="samples-label">TRY A SAMPLE INPUT</div>
         <div class="samples">
           <button class="sample-btn" onclick="loadSample(0)">Benign request</button>
@@ -499,56 +254,33 @@ footer{
           <button class="sample-btn warn-sample" onclick="loadSample(4)">Social engineering</button>
           <button class="sample-btn" onclick="loadSample(5)">Professional query</button>
         </div>
-
         <div class="input-row">
           <textarea class="analysis-input" id="analysis-input" placeholder="Enter any text to analyze for semantic threat patterns…" rows="4"></textarea>
           <button class="analyze-btn" id="analyze-btn" onclick="analyzeText()">Analyze</button>
         </div>
-
         <div class="loading-state" id="loading">
           <div class="loading-dots"><span class="spinner"></span>scanning semantic space…</div>
         </div>
-
         <div class="result-panel" id="result-panel">
-
           <div class="threat-meter">
             <div class="meter-top">
               <div class="meter-label">THREAT SCORE</div>
               <div class="threat-score" id="threat-score">0</div>
             </div>
-            <div class="meter-bar-bg">
-              <div class="meter-bar-fill" id="meter-fill" style="width:0%;"></div>
-            </div>
+            <div class="meter-bar-bg"><div class="meter-bar-fill" id="meter-fill" style="width:0%;"></div></div>
           </div>
-
           <div class="result-grid">
-            <div class="result-card">
-              <div class="result-card-label">Classification</div>
-              <div class="result-card-value" id="result-class">—</div>
-            </div>
-            <div class="result-card">
-              <div class="result-card-label">Attack vector</div>
-              <div class="result-card-value mono" id="result-vector">—</div>
-            </div>
-            <div class="result-card">
-              <div class="result-card-label">Semantic cluster</div>
-              <div class="result-card-value mono" id="result-cluster">—</div>
-            </div>
-            <div class="result-card">
-              <div class="result-card-label">Confidence</div>
-              <div class="result-card-value mono" id="result-confidence">—</div>
-            </div>
+            <div class="result-card"><div class="result-card-label">Classification</div><div class="result-card-value" id="result-class">—</div></div>
+            <div class="result-card"><div class="result-card-label">Attack vector</div><div class="result-card-value mono" id="result-vector">—</div></div>
+            <div class="result-card"><div class="result-card-label">Semantic cluster</div><div class="result-card-value mono" id="result-cluster">—</div></div>
+            <div class="result-card"><div class="result-card-label">Confidence</div><div class="result-card-value mono" id="result-confidence">—</div></div>
           </div>
-
           <div class="signals-list" id="signals-list"></div>
-
           <div class="reasoning-box">
             <div class="reasoning-label">Semantic analysis</div>
             <div class="reasoning-text" id="reasoning-text">—</div>
           </div>
-
         </div>
-
       </div>
     </div>
   </section>
@@ -556,10 +288,8 @@ footer{
   <!-- JOBS -->
   <section class="section" id="jobs">
     <div class="section-label">Career Intelligence</div>
-    <div class="section-title">Jobs in semantic AI & research</div>
-    <div class="section-sub">
-      This skillset sits at one of the hottest intersections in tech. Here are the roles it maps to — from entry points to frontier research.
-    </div>
+    <div class="section-title">Jobs in semantic AI &amp; research</div>
+    <div class="section-sub">This skillset sits at one of the hottest intersections in tech. Here are the roles it maps to — from entry points to frontier research.</div>
 
     <div class="jobs-grid">
       <div class="job-card">
@@ -567,112 +297,72 @@ footer{
         <div class="job-title">NLP Engineer</div>
         <div class="job-salary">$110k – $155k</div>
         <div class="job-desc">Build and maintain NLP pipelines. Work with embeddings, tokenization, and semantic search systems. High demand across every industry.</div>
-        <div class="job-skills">
-          <span class="skill-tag">Python</span>
-          <span class="skill-tag">HuggingFace</span>
-          <span class="skill-tag">SBERT</span>
-          <span class="skill-tag">spaCy</span>
-        </div>
+        <div class="job-skills"><span class="skill-tag">Python</span><span class="skill-tag">HuggingFace</span><span class="skill-tag">SBERT</span><span class="skill-tag">spaCy</span></div>
       </div>
-
       <div class="job-card">
         <span class="job-tier tier-entry">Entry level</span>
         <div class="job-title">ML Security Analyst</div>
         <div class="job-salary">$120k – $165k</div>
         <div class="job-desc">Monitor AI systems for adversarial inputs, prompt injections, and behavioral anomalies. Your cybersecurity background is a direct advantage here.</div>
-        <div class="job-skills">
-          <span class="skill-tag">LLM security</span>
-          <span class="skill-tag">OWASP LLM</span>
-          <span class="skill-tag">Python</span>
-          <span class="skill-tag">threat modeling</span>
-        </div>
+        <div class="job-skills"><span class="skill-tag">LLM security</span><span class="skill-tag">OWASP LLM</span><span class="skill-tag">Python</span><span class="skill-tag">threat modeling</span></div>
       </div>
-
       <div class="job-card">
         <span class="job-tier tier-mid">Mid level</span>
         <div class="job-title">AI Red Teamer</div>
         <div class="job-salary">$160k – $225k</div>
         <div class="job-desc">Think like the attacker. Your job is to break AI models before real adversaries do — using semantic attacks, prompt injection, and adversarial NLP.</div>
-        <div class="job-skills">
-          <span class="skill-tag">adversarial NLP</span>
-          <span class="skill-tag">TextAttack</span>
-          <span class="skill-tag">jailbreaking</span>
-          <span class="skill-tag">zero-trust mindset</span>
-        </div>
+        <div class="job-skills"><span class="skill-tag">adversarial NLP</span><span class="skill-tag">TextAttack</span><span class="skill-tag">jailbreaking</span><span class="skill-tag">zero-trust mindset</span></div>
       </div>
-
       <div class="job-card">
         <span class="job-tier tier-mid">Mid level</span>
         <div class="job-title">Semantic Search Engineer</div>
         <div class="job-salary">$140k – $195k</div>
         <div class="job-desc">Design retrieval systems that understand meaning, not just keywords. Powers enterprise search, RAG pipelines, and knowledge systems.</div>
-        <div class="job-skills">
-          <span class="skill-tag">vector DBs</span>
-          <span class="skill-tag">FAISS</span>
-          <span class="skill-tag">RAG</span>
-          <span class="skill-tag">LangChain</span>
-        </div>
+        <div class="job-skills"><span class="skill-tag">vector DBs</span><span class="skill-tag">FAISS</span><span class="skill-tag">RAG</span><span class="skill-tag">LangChain</span></div>
       </div>
-
       <div class="job-card">
         <span class="job-tier tier-senior">Senior level</span>
         <div class="job-title">AI Safety Engineer</div>
         <div class="job-salary">$180k – $260k</div>
         <div class="job-desc">Design guardrails, alignment systems, and safety evaluations for deployed AI. One of the fastest-growing roles at frontier AI labs (Anthropic, OpenAI, Google DeepMind).</div>
-        <div class="job-skills">
-          <span class="skill-tag">RLHF</span>
-          <span class="skill-tag">Constitutional AI</span>
-          <span class="skill-tag">eval design</span>
-          <span class="skill-tag">interpretability</span>
-        </div>
+        <div class="job-skills"><span class="skill-tag">RLHF</span><span class="skill-tag">Constitutional AI</span><span class="skill-tag">eval design</span><span class="skill-tag">interpretability</span></div>
       </div>
-
       <div class="job-card">
         <span class="job-tier tier-senior">Senior level</span>
         <div class="job-title">AI Governance Specialist</div>
         <div class="job-salary">$130k – $190k</div>
         <div class="job-desc">Bridge technical AI risk and policy compliance. EU AI Act, NIST AI RMF, MITRE ATLAS. Your applied AI degree maps here directly.</div>
-        <div class="job-skills">
-          <span class="skill-tag">EU AI Act</span>
-          <span class="skill-tag">risk frameworks</span>
-          <span class="skill-tag">fairness auditing</span>
-          <span class="skill-tag">GDPR</span>
-        </div>
+        <div class="job-skills"><span class="skill-tag">EU AI Act</span><span class="skill-tag">risk frameworks</span><span class="skill-tag">fairness auditing</span><span class="skill-tag">GDPR</span></div>
       </div>
-
       <div class="job-card">
         <span class="job-tier tier-research">Research</span>
         <div class="job-title">NLP Research Scientist</div>
         <div class="job-salary">$170k – $280k+</div>
         <div class="job-desc">Publish novel research on language model behavior, semantic representations, and adversarial robustness. Typically requires MS/PhD or equivalent portfolio.</div>
-        <div class="job-skills">
-          <span class="skill-tag">research design</span>
-          <span class="skill-tag">PyTorch</span>
-          <span class="skill-tag">transformers</span>
-          <span class="skill-tag">paper writing</span>
-        </div>
+        <div class="job-skills"><span class="skill-tag">research design</span><span class="skill-tag">PyTorch</span><span class="skill-tag">transformers</span><span class="skill-tag">paper writing</span></div>
       </div>
-
       <div class="job-card">
         <span class="job-tier tier-research">Research</span>
         <div class="job-title">Mechanistic Interpretability Researcher</div>
         <div class="job-salary">$200k – $350k+</div>
         <div class="job-desc">Understand what AI models actually compute internally — which circuits encode meaning, how concepts are stored, where threats hide in activations. Anthropic's frontier.</div>
-        <div class="job-skills">
-          <span class="skill-tag">circuits research</span>
-          <span class="skill-tag">activation patching</span>
-          <span class="skill-tag">probing classifiers</span>
-        </div>
+        <div class="job-skills"><span class="skill-tag">circuits research</span><span class="skill-tag">activation patching</span><span class="skill-tag">probing classifiers</span></div>
       </div>
     </div>
+
+    <!-- LinkedIn CTA -->
+    <a href="https://www.linkedin.com/in/dayoegonu/" target="_blank" rel="noopener" class="linkedin-btn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+      Connect on LinkedIn — Dayo Egonu
+    </a>
   </section>
 
-</div><!-- /shell -->
+</div>
 
 <footer>
   <div class="footer-name">
-    Built by <a class="footer-link" href="https://didiegons.github.io" target="_blank">Dayo Egonu</a> · 
-    Applied AI, Indiana Wesleyan University · 
+    Built by <a class="footer-link" href="https://didiegons.github.io" target="_blank">Dayo Egonu</a> ·
+    Applied AI, Indiana Wesleyan University ·
     <a class="footer-link" href="https://didiegons.github.io" target="_blank">didiegons.github.io</a>
   </div>
 </footer>
@@ -687,6 +377,20 @@ const SAMPLES = [
   "What are the differences between supervised and unsupervised learning in machine learning, and when would you use each approach?"
 ];
 
+let apiKey = sessionStorage.getItem('std_api_key') || '';
+if (apiKey) {
+  document.getElementById('api-key-input').value = apiKey;
+  document.getElementById('api-status').classList.add('set');
+}
+
+function saveKey() {
+  const val = document.getElementById('api-key-input').value.trim();
+  if (!val) { alert('Please enter an API key.'); return; }
+  apiKey = val;
+  sessionStorage.setItem('std_api_key', val);
+  document.getElementById('api-status').classList.add('set');
+}
+
 function loadSample(i) {
   document.getElementById('analysis-input').value = SAMPLES[i];
   document.getElementById('result-panel').classList.remove('show');
@@ -696,24 +400,24 @@ function loadSample(i) {
 function setMeterColor(score) {
   const fill = document.getElementById('meter-fill');
   const scoreEl = document.getElementById('threat-score');
-  let color, textColor;
-  if (score >= 75) { color = '#E24B4A'; textColor = '#E24B4A'; }
-  else if (score >= 45) { color = '#F5A623'; textColor = '#F5A623'; }
-  else { color = '#00D97E'; textColor = '#00D97E'; }
+  let color;
+  if (score >= 75) color = '#E24B4A';
+  else if (score >= 45) color = '#F5A623';
+  else color = '#00D97E';
   fill.style.background = color;
-  scoreEl.style.color = textColor;
+  scoreEl.style.color = color;
 }
 
 async function analyzeText() {
   const input = document.getElementById('analysis-input').value.trim();
   if (!input) return;
+  if (!apiKey) { alert('Please enter your Anthropic API key first in the box above the demo.'); return; }
 
   const btn = document.getElementById('analyze-btn');
   const loading = document.getElementById('loading');
   const panel = document.getElementById('result-panel');
 
-  btn.disabled = true;
-  btn.textContent = '…';
+  btn.disabled = true; btn.textContent = '…';
   panel.classList.remove('show');
   loading.classList.add('show');
 
@@ -724,28 +428,36 @@ Respond ONLY with a valid JSON object — no markdown, no preamble, no backticks
   "threat_score": <integer 0-100>,
   "classification": "<BENIGN | LOW_RISK | MODERATE_THREAT | HIGH_THREAT | CRITICAL>",
   "attack_vector": "<e.g. prompt_injection | social_engineering | semantic_camouflage | jailbreak | none>",
-  "semantic_cluster": "<2-4 word cluster name, e.g. 'authority_exploitation' or 'benign_technical_query'>",
+  "semantic_cluster": "<2-4 word cluster name>",
   "confidence": "<LOW | MEDIUM | HIGH>",
   "signals": [
-    {"severity": "<info|warn|danger>", "label": "<short label>", "detail": "<one sentence>"},
-    {"severity": "...", "label": "...", "detail": "..."}
+    {"severity": "<info|warn|danger>", "label": "<short label>", "detail": "<one sentence>"}
   ],
-  "reasoning": "<2-3 sentence semantic analysis explaining what patterns were detected and why, referencing specific linguistic or structural features>"
+  "reasoning": "<2-3 sentence semantic analysis>"
 }
-
-Be precise and technical. Threat score 0-20 is benign, 21-45 is low risk, 46-74 is moderate, 75-89 is high, 90-100 is critical.`;
+Threat score: 0-20 benign, 21-45 low risk, 46-74 moderate, 75-89 high, 90-100 critical.`;
 
   try {
     const resp = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-opus-4-6',
         max_tokens: 1000,
         system: systemPrompt,
         messages: [{ role: 'user', content: `Analyze this text for semantic threats:\n\n"${input}"` }]
       })
     });
+
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err.error?.message || 'API error ' + resp.status);
+    }
 
     const data = await resp.json();
     const raw = data.content?.find(b => b.type === 'text')?.text || '{}';
@@ -753,23 +465,20 @@ Be precise and technical. Threat score 0-20 is benign, 21-45 is low risk, 46-74 
     const result = JSON.parse(clean);
     renderResult(result);
   } catch(e) {
-    document.getElementById('reasoning-text').textContent = 'Analysis error — please try again.';
+    document.getElementById('reasoning-text').textContent = 'Error: ' + e.message + '. Check your API key and try again.';
     panel.classList.add('show','fade-in');
   } finally {
     loading.classList.remove('show');
-    btn.disabled = false;
-    btn.textContent = 'Analyze';
+    btn.disabled = false; btn.textContent = 'Analyze';
   }
 }
 
 function renderResult(r) {
   const panel = document.getElementById('result-panel');
-
   const score = Math.min(100, Math.max(0, r.threat_score || 0));
   document.getElementById('threat-score').textContent = score;
   document.getElementById('meter-fill').style.width = score + '%';
   setMeterColor(score);
-
   document.getElementById('result-class').textContent = (r.classification || '—').replace(/_/g,' ');
   document.getElementById('result-vector').textContent = r.attack_vector || 'none';
   document.getElementById('result-cluster').textContent = r.semantic_cluster || '—';
@@ -778,17 +487,15 @@ function renderResult(r) {
   const signalsEl = document.getElementById('signals-list');
   if (r.signals && r.signals.length) {
     signalsEl.innerHTML = r.signals.map(s => {
-      const colors = { info: '#378ADD', warn: '#F5A623', danger: '#E24B4A' };
-      const bgs    = { info: 'rgba(55,138,221,0.15)', warn: 'rgba(245,166,35,0.15)', danger: 'rgba(226,75,74,0.15)' };
-      const icon   = { info: '→', warn: '!', danger: '✕' };
+      const colors = { info:'#378ADD', warn:'#F5A623', danger:'#E24B4A' };
+      const bgs    = { info:'rgba(55,138,221,0.15)', warn:'rgba(245,166,35,0.15)', danger:'rgba(226,75,74,0.15)' };
+      const icon   = { info:'→', warn:'!', danger:'✕' };
       return `<div class="signal-row">
         <div class="signal-icon" style="background:${bgs[s.severity]||bgs.info};color:${colors[s.severity]||colors.info};">${icon[s.severity]||'→'}</div>
         <div class="signal-text"><strong>${s.label}</strong> — ${s.detail}</div>
       </div>`;
     }).join('');
-  } else {
-    signalsEl.innerHTML = '';
-  }
+  } else { signalsEl.innerHTML = ''; }
 
   document.getElementById('reasoning-text').textContent = r.reasoning || '—';
   panel.classList.add('show','fade-in');
