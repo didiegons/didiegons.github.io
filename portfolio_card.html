@@ -4,228 +4,125 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Semantic Threat Detector — Dayo Egonu</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@600;700;800&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@600;700;800&family=Lora:ital,wght@0,400;1,400&family=Fraunces:ital,wght@0,700;0,900;1,700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --bg:#07080A;
-  --surface:#12151A;
-  --border:#1E2230;
-  --border2:#2A2F3E;
-  --accent:#00D97E;
-  --accent-dim:rgba(0,217,126,0.1);
-  --warn:#F5A623;
-  --danger:#E24B4A;
-  --text:#E8EBF0;
-  --text2:#8B92A5;
-  --text3:#4A5168;
+  --bg:#07080A;--surface:#12151A;--border:#1E2230;--border2:#2A2F3E;
+  --accent:#00D97E;--accent-dim:rgba(0,217,126,0.1);
+  --amber:#F5B020;--warn:#F5A623;--danger:#E24B4A;
+  --text:#E8EBF0;--text2:#8B92A5;--text3:#4A5168;--ink2:#96A3BA;
+  --nav-border:rgba(255,255,255,0.10);
   --mono:'IBM Plex Mono',monospace;
   --sans:'Syne',sans-serif;
   --serif:'Lora',serif;
 }
 
+/* ── NAV ── */
+nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(14,17,24,0.96);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--nav-border);
+  padding:0 2rem;
+  display:flex;align-items:center;justify-content:space-between;
+  height:56px;
+}
+.nav-brand{
+  font-family:'Fraunces',serif;
+  font-size:1.1rem;font-weight:700;
+  color:var(--amber);text-decoration:none;
+}
+.nav-links{display:flex;gap:0.2rem;list-style:none;}
+.nav-links a{
+  font-family:'Instrument Sans',sans-serif;
+  font-size:0.8rem;font-weight:500;
+  color:var(--ink2);text-decoration:none;
+  padding:0.35rem 0.7rem;border-radius:5px;
+  transition:color 0.2s,background 0.2s;
+}
+.nav-links a:hover{color:var(--text);background:rgba(255,255,255,0.06);}
+.nav-links a.active{color:var(--amber);}
+.nav-links a.linkedin{background:#0a66c2;color:#fff;border-radius:6px;}
+.nav-links a.linkedin:hover{background:#0856a8;}
+
+/* ── BODY ── */
 body{
   font-family:var(--serif);
-  background:var(--bg);
-  color:var(--text);
+  background:var(--bg);color:var(--text);
   min-height:100vh;
-  padding:2rem 1rem 4rem;
+  padding:2.5rem 1rem 4rem;
 }
 
 .card{
-  max-width:680px;
-  margin:0 auto;
+  max-width:680px;margin:0 auto;
   background:var(--surface);
   border:1px solid var(--border);
-  border-radius:16px;
-  overflow:hidden;
+  border-radius:16px;overflow:hidden;
 }
-
-.card-header{
-  padding:2rem 2rem 1.5rem;
-  border-bottom:1px solid var(--border);
-  position:relative;
-}
-
+.card-header{padding:2rem 2rem 1.5rem;border-bottom:1px solid var(--border);}
 .card-eyebrow{
-  font-family:var(--mono);
-  font-size:11px;
-  color:var(--accent);
-  letter-spacing:0.12em;
-  text-transform:uppercase;
-  margin-bottom:12px;
-  display:flex;align-items:center;gap:8px;
+  font-family:var(--mono);font-size:11px;color:var(--accent);
+  letter-spacing:0.12em;text-transform:uppercase;
+  margin-bottom:12px;display:flex;align-items:center;gap:8px;
 }
-
-.live-dot{
-  width:6px;height:6px;border-radius:50%;
-  background:var(--accent);
-  animation:pulse 2s infinite;
-}
-
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
-
 .card-title{
-  font-family:var(--sans);
-  font-size:clamp(1.6rem,4vw,2.2rem);
-  font-weight:800;
-  line-height:1.1;
-  color:var(--text);
-  margin-bottom:10px;
+  font-family:var(--sans);font-size:clamp(1.6rem,4vw,2.2rem);
+  font-weight:800;line-height:1.1;color:var(--text);margin-bottom:10px;
 }
-
 .card-title span{color:var(--accent);}
-
-.card-subtitle{
-  font-size:15px;
-  color:var(--text2);
-  line-height:1.7;
-  font-style:italic;
-  max-width:500px;
-}
-
+.card-subtitle{font-size:15px;color:var(--text2);line-height:1.7;font-style:italic;max-width:500px;}
 .card-body{padding:1.75rem 2rem;}
+.summary{font-size:15px;color:var(--text2);line-height:1.8;margin-bottom:1.75rem;}
+.section-label{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;}
 
-.summary{
-  font-size:15px;
-  color:var(--text2);
-  line-height:1.8;
-  margin-bottom:1.75rem;
-}
-
-.section-label{
-  font-family:var(--mono);
-  font-size:10px;
-  color:var(--text3);
-  letter-spacing:0.12em;
-  text-transform:uppercase;
-  margin-bottom:10px;
-}
-
-.pipeline{
-  display:flex;
-  flex-direction:column;
-  gap:1px;
-  margin-bottom:1.75rem;
-  border:1px solid var(--border);
-  border-radius:10px;
-  overflow:hidden;
-}
-
-.pipe-step{
-  display:flex;align-items:center;gap:14px;
-  padding:12px 16px;
-  background:var(--bg);
-  transition:background 0.15s;
-}
-
+.pipeline{display:flex;flex-direction:column;gap:1px;margin-bottom:1.75rem;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.pipe-step{display:flex;align-items:center;gap:14px;padding:12px 16px;background:var(--bg);transition:background 0.15s;}
 .pipe-step:hover{background:rgba(0,217,126,0.04);}
+.pipe-num{font-family:var(--mono);font-size:11px;color:var(--accent);min-width:32px;}
+.pipe-name{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--text);min-width:160px;}
+.pipe-desc{font-size:12px;color:var(--text3);line-height:1.5;font-family:var(--serif);font-style:italic;}
 
-.pipe-num{
-  font-family:var(--mono);
-  font-size:11px;
-  color:var(--accent);
-  min-width:32px;
-}
-
-.pipe-name{
-  font-family:var(--sans);
-  font-size:13px;
-  font-weight:600;
-  color:var(--text);
-  min-width:160px;
-}
-
-.pipe-desc{
-  font-size:12px;
-  color:var(--text3);
-  line-height:1.5;
-  font-family:var(--serif);
-  font-style:italic;
-}
-
-.threat-demo{
-  background:var(--bg);
-  border:1px solid var(--border);
-  border-radius:10px;
-  padding:1.25rem;
-  margin-bottom:1.75rem;
-}
-
-.demo-row{
-  display:flex;align-items:center;justify-content:space-between;
-  gap:12px;
-  padding:8px 0;
-  border-bottom:1px solid var(--border);
-}
-
+.threat-demo{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:1.25rem;margin-bottom:1.75rem;}
+.demo-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);}
 .demo-row:last-child{border-bottom:none;}
-
-.demo-label{
-  font-family:var(--mono);font-size:11px;
-  color:var(--text2);flex:1;
-}
-
+.demo-label{font-family:var(--mono);font-size:11px;color:var(--text2);flex:1;}
 .demo-bar-wrap{flex:2;height:6px;background:var(--border2);border-radius:3px;overflow:hidden;}
 .demo-bar{height:100%;border-radius:3px;}
-
-.demo-score{
-  font-family:var(--mono);font-size:12px;
-  min-width:36px;text-align:right;
-}
+.demo-score{font-family:var(--mono);font-size:12px;min-width:36px;text-align:right;}
 
 .tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.75rem;}
+.tag{font-family:var(--mono);font-size:11px;border:1px solid var(--border2);color:var(--text3);padding:4px 10px;border-radius:4px;letter-spacing:0.04em;}
 
-.tag{
-  font-family:var(--mono);font-size:11px;
-  border:1px solid var(--border2);
-  color:var(--text3);
-  padding:4px 10px;border-radius:4px;
-  letter-spacing:0.04em;
-}
-
-.card-footer{
-  padding:1.25rem 2rem;
-  border-top:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;
-  flex-wrap:wrap;gap:12px;
-}
-
-.author-info{
-  display:flex;align-items:center;gap:10px;
-}
-
-.avatar{
-  width:36px;height:36px;border-radius:50%;
-  background:var(--accent-dim);
-  border:1px solid rgba(0,217,126,0.25);
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--mono);font-size:12px;color:var(--accent);
-  font-weight:500;flex-shrink:0;
-}
-
+.card-footer{padding:1.25rem 2rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.author-info{display:flex;align-items:center;gap:10px;}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--accent-dim);border:1px solid rgba(0,217,126,0.25);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;color:var(--accent);font-weight:500;flex-shrink:0;}
 .author-name{font-family:var(--sans);font-size:14px;font-weight:600;color:var(--text);}
 .author-role{font-size:12px;color:var(--text3);font-style:italic;}
-
 .footer-links{display:flex;gap:8px;}
-
-.btn-sm{
-  font-family:var(--mono);font-size:11px;
-  padding:7px 16px;border-radius:6px;
-  text-decoration:none;
-  transition:all 0.15s;letter-spacing:0.04em;
-}
-
+.btn-sm{font-family:var(--mono);font-size:11px;padding:7px 16px;border-radius:6px;text-decoration:none;transition:all 0.15s;letter-spacing:0.04em;}
 .btn-demo{background:var(--accent);color:#07080A;font-weight:500;}
 .btn-demo:hover{background:#00f28c;}
-.btn-paper{
-  background:transparent;color:var(--text2);
-  border:1px solid var(--border2);
-}
+.btn-paper{background:transparent;color:var(--text2);border:1px solid var(--border2);}
 .btn-paper:hover{border-color:var(--text3);color:var(--text);}
 </style>
 </head>
 <body>
+
+<nav>
+  <a href="index.html" class="nav-brand">Dayo Portfolio</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="projects.html" class="active">Projects</a></li>
+    <li><a href="index.html#skills">Skills</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+    <li><a href="https://www.linkedin.com/in/dayoegonu/" target="_blank" rel="noopener" class="linkedin">LinkedIn</a></li>
+  </ul>
+</nav>
 
 <div class="card">
   <div class="card-header">
@@ -235,38 +132,15 @@ body{
   </div>
 
   <div class="card-body">
-
-    <p class="summary">
-      Security filters look for dangerous <em>words</em>. This system looks for dangerous <em>meaning</em> — analyzing the geometric position of text in semantic vector space to identify threats encoded in language that looks completely innocent on the surface.
-    </p>
+    <p class="summary">Security filters look for dangerous <em>words</em>. This system looks for dangerous <em>meaning</em> — analyzing the geometric position of text in semantic vector space to identify threats encoded in language that looks completely innocent on the surface.</p>
 
     <div class="section-label">Detection pipeline</div>
     <div class="pipeline">
-      <div class="pipe-step">
-        <span class="pipe-num">01</span>
-        <span class="pipe-name">Semantic embedding</span>
-        <span class="pipe-desc">Text → dense vector where meaning = position</span>
-      </div>
-      <div class="pipe-step">
-        <span class="pipe-num">02</span>
-        <span class="pipe-name">Threat projection</span>
-        <span class="pipe-desc">Learned lens that surfaces hidden threat dimensions</span>
-      </div>
-      <div class="pipe-step">
-        <span class="pipe-num">03</span>
-        <span class="pipe-name">Cluster proximity</span>
-        <span class="pipe-desc">Distance to known threat centroids in projected space</span>
-      </div>
-      <div class="pipe-step">
-        <span class="pipe-num">04</span>
-        <span class="pipe-name">Signal extraction</span>
-        <span class="pipe-desc">Interpretable attack type, pattern, severity</span>
-      </div>
-      <div class="pipe-step">
-        <span class="pipe-num">05</span>
-        <span class="pipe-name">Trajectory analysis</span>
-        <span class="pipe-desc">Semantic drift detection across conversation turns</span>
-      </div>
+      <div class="pipe-step"><span class="pipe-num">01</span><span class="pipe-name">Semantic embedding</span><span class="pipe-desc">Text → dense vector where meaning = position</span></div>
+      <div class="pipe-step"><span class="pipe-num">02</span><span class="pipe-name">Threat projection</span><span class="pipe-desc">Learned lens that surfaces hidden threat dimensions</span></div>
+      <div class="pipe-step"><span class="pipe-num">03</span><span class="pipe-name">Cluster proximity</span><span class="pipe-desc">Distance to known threat centroids in projected space</span></div>
+      <div class="pipe-step"><span class="pipe-num">04</span><span class="pipe-name">Signal extraction</span><span class="pipe-desc">Interpretable attack type, pattern, severity</span></div>
+      <div class="pipe-step"><span class="pipe-num">05</span><span class="pipe-name">Trajectory analysis</span><span class="pipe-desc">Semantic drift detection across conversation turns</span></div>
     </div>
 
     <div class="section-label">Threat score examples</div>
@@ -300,18 +174,12 @@ body{
 
     <div class="section-label">Skills &amp; technologies</div>
     <div class="tags">
-      <span class="tag">NLP</span>
-      <span class="tag">semantic analysis</span>
-      <span class="tag">vector space models</span>
-      <span class="tag">adversarial ML</span>
-      <span class="tag">AI security</span>
-      <span class="tag">prompt injection defense</span>
-      <span class="tag">transformer architecture</span>
-      <span class="tag">Claude API</span>
-      <span class="tag">AI safety</span>
-      <span class="tag">cybersecurity</span>
+      <span class="tag">NLP</span><span class="tag">semantic analysis</span>
+      <span class="tag">vector space models</span><span class="tag">adversarial ML</span>
+      <span class="tag">AI security</span><span class="tag">prompt injection defense</span>
+      <span class="tag">transformer architecture</span><span class="tag">Claude API</span>
+      <span class="tag">AI safety</span><span class="tag">cybersecurity</span>
     </div>
-
   </div>
 
   <div class="card-footer">
