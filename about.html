@@ -1,352 +1,441 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>About Me | Dayo Egonu</title>
-  <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,900" rel="stylesheet">
-  <link rel="stylesheet" href="libs/font-awesome/css/font-awesome.min.css">
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link href="css/styles.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
   <style>
-    body {
-      background-color: #f7f9fc;
-      font-family: "Lato", sans-serif;
-      margin: 0;
-      padding: 0;
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+    :root{
+      --bg:#07080A;
+      --bg2:#0D0F13;
+      --surface:#11141A;
+      --surface2:#181C25;
+      --border:#1C2030;
+      --border2:#252C3C;
+      --accent:#00D97E;
+      --accent-dim:rgba(0,217,126,0.1);
+      --gold:#caa74a;
+      --gold-dim:rgba(202,167,74,0.1);
+      --blue:#378ADD;
+      --blue-dim:rgba(55,138,221,0.1);
+      --text:#E4E8F0;
+      --text2:#8990A8;
+      --text3:#454D65;
+      --mono:'IBM Plex Mono',monospace;
+      --sans:'Syne',sans-serif;
+      --serif:'Lora',serif;
     }
 
-    /* ── Nav ── */
-    .topnav {
-      background-color: #0f172a;
-      padding: 14px 30px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-    .topnav .brand {
-      color: #fff;
-      font-weight: 900;
-      font-size: 18px;
-      text-decoration: none;
-    }
-    .topnav .brand span { color: #caa74a; }
-    .topnav nav a {
-      color: #fff;
-      text-decoration: none;
-      font-size: 14px;
-      margin-left: 16px;
-      padding: 6px 12px;
-      border-radius: 999px;
-      transition: background 0.2s;
-    }
-    .topnav nav a:hover { background: rgba(255,255,255,0.1); }
-
-    /* ── Page ── */
-    .page {
-      max-width: 960px;
-      margin: 50px auto;
-      padding: 0 20px 60px;
+    html{scroll-behavior:smooth;}
+    body{
+      font-family:var(--serif);
+      background:var(--bg);
+      color:var(--text);
+      font-size:15px;
+      line-height:1.7;
     }
 
-    /* ── Card ── */
-    .card {
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.07);
-      padding: 40px;
-      margin-bottom: 28px;
+    ::-webkit-scrollbar{width:5px;}
+    ::-webkit-scrollbar-track{background:var(--bg);}
+    ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+
+    /* ── NAV ── */
+    nav{
+      position:sticky;top:0;z-index:200;
+      background:rgba(7,8,10,0.92);
+      backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--border);
+    }
+    .nav-inner{
+      max-width:1000px;margin:0 auto;
+      padding:0 2rem;height:60px;
+      display:flex;align-items:center;justify-content:space-between;
+    }
+    .nav-brand{
+      font-family:var(--mono);font-size:13px;font-weight:500;
+      color:var(--text);text-decoration:none;
+      display:flex;align-items:center;gap:6px;
+    }
+    .nav-brand span{color:var(--gold);}
+    .nav-links{display:flex;align-items:center;gap:4px;list-style:none;}
+    .nav-links a{
+      font-family:var(--mono);font-size:12px;
+      color:var(--text2);text-decoration:none;
+      padding:6px 12px;border-radius:6px;
+      letter-spacing:0.04em;
+      transition:color 0.15s,background 0.15s;
+    }
+    .nav-links a:hover{color:var(--text);background:var(--surface2);}
+    .nav-links a.active{color:var(--accent);}
+    .nav-links .li-link{border:1px solid var(--border2);}
+    .nav-links .li-link:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-dim);}
+
+    @media(max-width:600px){
+      .nav-links a span.lbl{display:none;}
     }
 
-    /* ── Profile layout ── */
-    .profile-layout {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 36px;
-      align-items: flex-start;
-    }
-    .profile-image {
-      flex: 0 0 220px;
-    }
-    .profile-image img {
-      width: 100%;
-      border-radius: 12px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-    }
-    .profile-text { flex: 1 1 400px; }
-
-    h1 {
-      font-size: 2.2rem;
-      color: #0f172a;
-      margin: 0 0 6px;
-    }
-    .role-badge {
-      display: inline-block;
-      background: #eff6ff;
-      color: #1d4ed8;
-      font-size: 13px;
-      font-weight: 700;
-      padding: 5px 14px;
-      border-radius: 999px;
-      margin-bottom: 20px;
-    }
-    p {
-      font-size: 1.02em;
-      line-height: 1.75;
-      color: #374151;
-      margin: 0 0 14px;
+    /* ── PAGE ── */
+    .page{
+      max-width:900px;margin:0 auto;
+      padding:4rem 1.5rem 5rem;
     }
 
-    /* ── Section headers ── */
-    .section-label {
-      font-size: 11px;
-      letter-spacing: 1.4px;
-      text-transform: uppercase;
-      color: #1d4ed8;
-      font-weight: 800;
-      margin-bottom: 10px;
+    /* ── PAGE HEADER ── */
+    .page-eyebrow{
+      font-family:var(--mono);font-size:11px;
+      color:var(--accent);letter-spacing:0.15em;
+      text-transform:uppercase;margin-bottom:10px;
+      display:flex;align-items:center;gap:8px;
     }
-    h2 {
-      font-size: 1.5rem;
-      color: #0f172a;
-      margin: 0 0 16px;
+    .page-eyebrow::before{content:'//';color:var(--text3);}
+    .page-heading{
+      font-family:var(--sans);font-size:clamp(2rem,4vw,3rem);
+      font-weight:800;color:var(--text);
+      margin-bottom:0.5rem;letter-spacing:-0.02em;
     }
-
-    /* ── Pills grid ── */
-    .pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 6px;
-    }
-    .pill {
-      background: #f1f5f9;
-      color: #334155;
-      font-size: 13px;
-      font-weight: 600;
-      padding: 6px 14px;
-      border-radius: 999px;
-      border: 1px solid #e2e8f0;
+    .page-sub{
+      font-size:15px;color:var(--text2);
+      font-style:italic;margin-bottom:3rem;
     }
 
-    /* ── Interests ── */
-    .interests-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      margin-top: 6px;
-    }
-    .interest-item {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 16px;
-      font-size: 14px;
-      color: #374151;
-      line-height: 1.5;
-    }
-    .interest-item .icon {
-      font-size: 22px;
-      margin-bottom: 8px;
-      display: block;
-    }
-    .interest-item strong {
-      display: block;
-      color: #0f172a;
-      margin-bottom: 4px;
+    /* ── CARD ── */
+    .card{
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:2.5rem;
+      margin-bottom:20px;
     }
 
-    /* ── Contact buttons ── */
-    .contact-row {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 18px;
+    .section-label{
+      font-family:var(--mono);font-size:10px;
+      color:var(--accent);letter-spacing:0.15em;
+      text-transform:uppercase;margin-bottom:10px;
     }
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: #1d4ed8;
-      color: #fff;
-      padding: 10px 20px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 700;
-      border: none;
-      cursor: pointer;
-      transition: background 0.2s;
+    h2{
+      font-family:var(--sans);font-size:1.4rem;
+      font-weight:700;color:var(--text);
+      margin-bottom:1rem;
     }
-    .btn-primary:hover { background: #1e40af; }
-    .btn-outline {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: transparent;
-      color: #1d4ed8;
-      padding: 10px 20px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 700;
-      border: 2px solid #1d4ed8;
-      cursor: pointer;
-      transition: all 0.2s;
+    p{
+      font-size:15px;color:var(--text2);
+      line-height:1.85;margin-bottom:1rem;
+      font-family:var(--serif);
     }
-    .btn-outline:hover { background: #eff6ff; }
+    p:last-of-type{margin-bottom:0;}
 
-    /* ── Footer ── */
-    .site-footer {
-      background: #0f172a;
-      color: #94a3b8;
-      text-align: center;
-      padding: 22px 20px;
-      font-size: 13px;
+    /* ── PROFILE LAYOUT ── */
+    .profile-layout{
+      display:flex;flex-wrap:wrap;
+      gap:2.5rem;align-items:flex-start;
     }
-    .site-footer a { color: #dbeafe; text-decoration: none; margin: 0 10px; }
+    .profile-image{flex:0 0 200px;}
+    .profile-image img{
+      width:100%;border-radius:12px;
+      border:1px solid var(--border2);
+      opacity:0.92;
+      transition:opacity 0.2s;
+    }
+    .profile-image img:hover{opacity:1;}
+    .profile-text{flex:1 1 360px;}
 
-    @media (max-width: 600px) {
-      .card { padding: 24px; }
-      h1 { font-size: 1.8rem; }
+    .name-heading{
+      font-family:var(--sans);
+      font-size:clamp(1.8rem,3vw,2.4rem);
+      font-weight:800;color:var(--text);
+      margin-bottom:8px;letter-spacing:-0.01em;
     }
+    .role-badge{
+      display:inline-flex;align-items:center;gap:6px;
+      background:var(--gold-dim);
+      color:var(--gold);
+      font-family:var(--mono);font-size:11px;
+      font-weight:500;padding:5px 14px;
+      border-radius:20px;
+      border:1px solid rgba(202,167,74,0.2);
+      margin-bottom:1.25rem;
+      letter-spacing:0.04em;
+    }
+
+    /* ── PILLS ── */
+    .pills{
+      display:flex;flex-wrap:wrap;gap:8px;
+      margin-top:1.25rem;
+    }
+    .pill{
+      font-family:var(--mono);font-size:11px;
+      background:var(--bg2);
+      border:1px solid var(--border2);
+      color:var(--text3);
+      padding:5px 12px;border-radius:4px;
+      letter-spacing:0.04em;
+    }
+
+    /* ── INTERESTS GRID ── */
+    .interests-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+      gap:12px;margin-top:6px;
+    }
+    .interest-item{
+      background:var(--bg2);
+      border:1px solid var(--border);
+      border-radius:12px;padding:1.25rem;
+      transition:border-color 0.15s;
+    }
+    .interest-item:hover{border-color:var(--border2);}
+    .interest-icon{
+      font-size:22px;margin-bottom:8px;
+      display:block;
+    }
+    .interest-name{
+      font-family:var(--sans);font-size:13px;
+      font-weight:700;color:var(--text);
+      margin-bottom:5px;
+    }
+    .interest-desc{
+      font-size:12px;color:var(--text2);
+      line-height:1.6;font-style:italic;
+    }
+
+    /* ── CONTACT BUTTONS ── */
+    .contact-row{
+      display:flex;gap:10px;flex-wrap:wrap;
+      margin-top:1.5rem;
+    }
+    .btn{
+      font-family:var(--sans);font-weight:700;
+      font-size:13px;letter-spacing:0.02em;
+      padding:10px 20px;border-radius:8px;
+      text-decoration:none;cursor:pointer;
+      transition:all 0.15s;border:none;
+      display:inline-flex;align-items:center;gap:7px;
+    }
+    .btn-accent{background:var(--accent);color:#07080A;}
+    .btn-accent:hover{background:#00f590;}
+    .btn-ghost{
+      background:transparent;color:var(--text2);
+      border:1px solid var(--border2);
+    }
+    .btn-ghost:hover{border-color:var(--text3);color:var(--text);background:var(--surface2);}
+
+    /* ── AVIATION TRIBUTE ── */
+    .tribute-card{
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-left:3px solid var(--gold);
+      border-radius:0 16px 16px 0;
+      padding:1.75rem 2.5rem;
+      margin-bottom:20px;
+    }
+    .tribute-text{
+      font-size:15px;color:var(--text2);
+      line-height:1.9;font-style:italic;
+    }
+    .tribute-sig{
+      margin-top:10px;
+      font-family:var(--mono);font-size:11px;
+      color:var(--gold);letter-spacing:0.06em;
+    }
+
+    /* ── FOOTER ── */
+    footer{
+      border-top:1px solid var(--border);
+      padding:2rem;text-align:center;
+    }
+    .footer-text{
+      font-family:var(--mono);font-size:11px;
+      color:var(--text3);letter-spacing:0.06em;
+    }
+    .footer-text a{color:var(--accent);text-decoration:none;}
+    .footer-text a:hover{text-decoration:underline;}
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp{
+      from{opacity:0;transform:translateY(16px);}
+      to{opacity:1;transform:none;}
+    }
+    .fade-up{opacity:0;animation:fadeUp 0.5s ease forwards;}
+    .d1{animation-delay:0.05s;}
+    .d2{animation-delay:0.15s;}
+    .d3{animation-delay:0.25s;}
+    .d4{animation-delay:0.35s;}
+    .d5{animation-delay:0.45s;}
+    .d6{animation-delay:0.55s;}
   </style>
 </head>
 <body>
 
-  <!-- Nav -->
-  <div class="topnav">
-    <a href="index.html" class="brand">Dayo <span>Portfolio</span></a>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="https://www.linkedin.com/in/dayoegonu/" target="_blank">LinkedIn</a>
-      <a href="projects.html">Projects</a>
-      <a href="index.html#skills">Skills</a>
-      <a href="index.html#contact">Contact</a>
-    </nav>
+<!-- ── NAV ── -->
+<nav role="navigation" aria-label="Portfolio navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">Dayo <span>Portfolio</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html" class="active">About</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="index.html#skills">Skills</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+      <li>
+        <a href="https://www.linkedin.com/in/dayoegonu/" target="_blank" rel="noopener" class="li-link">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+          <span class="lbl">LinkedIn</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<main class="page">
+
+  <!-- Page header -->
+  <div class="fade-up d1">
+    <div class="page-eyebrow">About me</div>
+    <div class="page-heading">The person<br/>behind the code</div>
+    <div class="page-sub">Researcher, builder, lifelong learner.</div>
   </div>
 
-  <main class="page">
-
-    <!-- Profile Card -->
-    <div class="card">
-      <div class="profile-layout">
-        <div class="profile-image">
-          <img src="images/dayo-profile.jpg" alt="Dayo Egonu">
-        </div>
-        <div class="profile-text">
-          <div class="section-label">About Me</div>
-          <h1>Dayo Egonu</h1>
-          <span class="role-badge">Aspiring AI Lead &nbsp;·&nbsp; Cybersecurity &amp; ML</span>
-          <p>
-            I'm an Information Protection Advisor and aspiring AI leader with a background spanning cybersecurity, forensic accounting, machine learning, and database systems. I thrive at the intersection of technical depth and strategic communication — translating complex concepts into tools and frameworks that are practical, accessible, and impactful.
-          </p>
-          <p>
-            My work focuses on building AI-powered applications that solve real problems — from protecting small businesses against cyber threats to making machine learning concepts understandable to non-technical audiences. I believe the best technology is the kind that anyone can use with confidence.
-          </p>
-          <p>
-            Outside of tech, you'll find me serving aces on the tennis court, locked into the strategy of a Formula 1 or MotoGP race, or following the tension of a 50-over cricket match. That same love for precision and competitive strategy drives how I approach every project I build.
-          </p>
-        </div>
+  <!-- Profile card -->
+  <div class="card fade-up d2">
+    <div class="profile-layout">
+      <div class="profile-image">
+        <img src="images/dayo-profile.jpg" alt="Dayo Egonu"/>
+      </div>
+      <div class="profile-text">
+        <div class="section-label">Profile</div>
+        <div class="name-heading">Dayo Egonu</div>
+        <div class="role-badge">Aspiring AI Lead &nbsp;·&nbsp; Cybersecurity &amp; ML</div>
+        <p>
+          I'm an Information Protection Advisor and aspiring AI leader with a background spanning cybersecurity, forensic accounting, machine learning, and database systems. I thrive at the intersection of technical depth and strategic communication — translating complex concepts into tools and frameworks that are practical, accessible, and impactful.
+        </p>
+        <p>
+          My work focuses on building AI-powered applications that solve real problems — from protecting small businesses against cyber threats to making machine learning concepts understandable to non-technical audiences. I believe the best technology is the kind that anyone can use with confidence.
+        </p>
+        <p>
+          Outside of tech, you'll find me serving aces on the tennis court, locked into the strategy of a Formula 1 or MotoGP race, or following the tension of a 50-over cricket match. That same love for precision and competitive strategy drives how I approach every project I build.
+        </p>
       </div>
     </div>
+  </div>
 
-    <!-- Background & Focus -->
-    <div class="card">
-      <div class="section-label">Background &amp; Focus</div>
-      <h2>What I Do</h2>
-      <p>
-        I work closely with developers and business owners to build more secure, intelligent software. On the cybersecurity side, I lead hands-on training sessions and secure code review workshops that help teams spot vulnerabilities early and confidently defend their applications. On the AI side, I design applied machine learning artifacts, intelligent systems, and portfolio projects that demonstrate how modern AI tools connect across domains like computer vision, NLP, and tabular data.
-      </p>
-      <p>
-        My long-term goal is to lead AI initiatives that bridge analytical rigor with strong, human-centered communication — making responsible AI accessible at every level of an organization.
-      </p>
-      <div class="pills">
-        <span class="pill">Machine Learning</span>
-        <span class="pill">Cybersecurity</span>
-        <span class="pill">AI Applications</span>
-        <span class="pill">Database Systems</span>
-        <span class="pill">Forensic Accounting</span>
-        <span class="pill">Technical Communication</span>
-        <span class="pill">Prompt Engineering</span>
-        <span class="pill">Python &amp; SQL</span>
-      </div>
-    </div>
-
-    <!-- Interests -->
-    <div class="card">
-      <div class="section-label">Beyond the Screen</div>
-      <h2>Interests &amp; Passions</h2>
-      <div class="interests-grid">
-        <div class="interest-item">
-          <span class="icon">🎾</span>
-          <strong>Tennis</strong>
-          Serving aces and staying sharp — precision on the court mirrors precision in code.
-        </div>
-        <div class="interest-item">
-          <span class="icon">🏎️</span>
-          <strong>Formula 1 &amp; MotoGP</strong>
-          The strategy, split-second decisions, and engineering behind motorsport is endlessly fascinating.
-        </div>
-        <div class="interest-item">
-          <span class="icon">🏏</span>
-          <strong>Cricket</strong>
-          20 and 50-over formats — patience, adaptability, and reading the game ahead.
-        </div>
-        <div class="interest-item">
-          <span class="icon">🤖</span>
-          <strong>AI Ethics &amp; Leadership</strong>
-          Exploring how responsible AI can be deployed fairly and transparently across industries.
-        </div>
-      </div>
-    </div>
-
-    <!-- Contact -->
-    <div class="card">
-      <div class="section-label">Get In Touch</div>
-      <h2>Let's Connect</h2>
-      <p>
-        Whether you're a business owner, developer, fellow student, or just curious about AI and cybersecurity — I'm always open to a conversation. Let's talk security, innovation, and what we can build together.
-      </p>
-      <div class="contact-row">
-        <a href="mailto:dayosepcial89@yahoo.com" class="btn-primary">
-          <i class="fa fa-envelope"></i> Email Me
-        </a>
-        <button class="btn-outline" onclick="copyEmail()">
-          <i class="fa fa-clipboard"></i> Copy Email
-        </button>
-        <a href="https://www.linkedin.com/in/dayoegonu/" target="_blank" class="btn-outline">
-          <i class="fa fa-linkedin"></i> LinkedIn
-        </a>
-        <a href="https://github.com/didiegons" target="_blank" class="btn-outline">
-          <i class="fa fa-github"></i> GitHub
-        </a>
-      </div>
-    </div>
-
-  </main>
-
-  <footer class="site-footer">
+  <!-- Background & focus -->
+  <div class="card fade-up d3">
+    <div class="section-label">Background &amp; focus</div>
+    <h2>What I do</h2>
     <p>
-      Copyright &copy; 2025 Dayo Egonu &nbsp;·&nbsp;
-      <a href="index.html">Home</a>
-      <a href="projects.html">Projects</a>
-      <a href="https://github.com/didiegons" target="_blank">GitHub</a>
-      <a href="https://www.linkedin.com/in/dayoegonu/" target="_blank">LinkedIn</a>
+      I work closely with developers and business owners to build more secure, intelligent software. On the cybersecurity side, I lead hands-on training sessions and secure code review workshops that help teams spot vulnerabilities early and confidently defend their applications.
     </p>
-  </footer>
+    <p>
+      On the AI side, I design applied machine learning artifacts, intelligent systems, and portfolio projects that demonstrate how modern AI tools connect across domains like computer vision, NLP, and tabular data.
+    </p>
+    <p>
+      My long-term goal is to lead AI initiatives that bridge analytical rigor with strong, human-centered communication — making responsible AI accessible at every level of an organization.
+    </p>
+    <div class="pills">
+      <span class="pill">Machine Learning</span>
+      <span class="pill">Cybersecurity</span>
+      <span class="pill">AI Applications</span>
+      <span class="pill">Database Systems</span>
+      <span class="pill">Forensic Accounting</span>
+      <span class="pill">Technical Communication</span>
+      <span class="pill">Prompt Engineering</span>
+      <span class="pill">Python &amp; SQL</span>
+    </div>
+  </div>
 
-  <script>
-    function copyEmail() {
-      navigator.clipboard.writeText("dayosepcial89@yahoo.com").then(function () {
-        alert("Email copied to clipboard!");
-      }, function () {
-        alert("Failed to copy email.");
-      });
-    }
-  </script>
+  <!-- Aviation tribute -->
+  <div class="tribute-card fade-up d4">
+    <div class="section-label" style="color:var(--gold);">In memory</div>
+    <div class="tribute-text">
+      My love for precision, altitude, and the courage to navigate the unknown was shaped in part by someone very dear — a pilot who showed me that the sky is not a limit, but a starting point. This portfolio carries his spirit in every project: the belief that with the right instruments, careful preparation, and faith, you can reach wherever you aim.
+    </div>
+    <div class="tribute-sig">✈ Forever in the slipstream.</div>
+  </div>
+
+  <!-- Interests -->
+  <div class="card fade-up d4">
+    <div class="section-label">Beyond the screen</div>
+    <h2>Interests &amp; passions</h2>
+    <div class="interests-grid">
+      <div class="interest-item">
+        <span class="interest-icon">🎾</span>
+        <div class="interest-name">Tennis</div>
+        <div class="interest-desc">Serving aces and staying sharp — precision on the court mirrors precision in code.</div>
+      </div>
+      <div class="interest-item">
+        <span class="interest-icon">🏎️</span>
+        <div class="interest-name">Formula 1 &amp; MotoGP</div>
+        <div class="interest-desc">The strategy, split-second decisions, and engineering behind motorsport is endlessly fascinating.</div>
+      </div>
+      <div class="interest-item">
+        <span class="interest-icon">✈️</span>
+        <div class="interest-name">Aviation</div>
+        <div class="interest-desc">A deep personal connection to flight — the instruments, the navigation, the freedom of altitude.</div>
+      </div>
+      <div class="interest-item">
+        <span class="interest-icon">🏏</span>
+        <div class="interest-name">Cricket</div>
+        <div class="interest-desc">20 and 50-over formats — patience, adaptability, and reading the game ahead.</div>
+      </div>
+      <div class="interest-item">
+        <span class="interest-icon">🤖</span>
+        <div class="interest-name">AI Ethics &amp; Leadership</div>
+        <div class="interest-desc">Exploring how responsible AI can be deployed fairly and transparently across industries.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact -->
+  <div class="card fade-up d5">
+    <div class="section-label">Get in touch</div>
+    <h2>Let's connect</h2>
+    <p>
+      Whether you're a business owner, developer, fellow student, or just curious about AI and cybersecurity — I'm always open to a conversation. Let's talk security, innovation, and what we can build together.
+    </p>
+    <div class="contact-row">
+      <a href="mailto:dayosepcial89@yahoo.com" class="btn btn-accent">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Email me
+      </a>
+      <button class="btn btn-ghost" onclick="copyEmail()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copy email
+      </button>
+      <a href="https://www.linkedin.com/in/dayoegonu/" target="_blank" rel="noopener" class="btn btn-ghost">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+        LinkedIn
+      </a>
+      <a href="https://github.com/didiegons" target="_blank" rel="noopener" class="btn btn-ghost">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-text">
+    Copyright &copy; 2025 <a href="index.html">Dayo Egonu</a> &nbsp;·&nbsp;
+    <a href="index.html">Home</a> &nbsp;·&nbsp;
+    <a href="projects.html">Projects</a> &nbsp;·&nbsp;
+    <a href="https://github.com/didiegons" target="_blank" rel="noopener">GitHub</a> &nbsp;·&nbsp;
+    <a href="https://www.linkedin.com/in/dayoegonu/" target="_blank" rel="noopener">LinkedIn</a>
+  </div>
+</footer>
+
+<script>
+  function copyEmail(){
+    navigator.clipboard.writeText("dayosepcial89@yahoo.com").then(function(){
+      alert("Email copied!");
+    },function(){
+      alert("Failed to copy email.");
+    });
+  }
+</script>
 
 </body>
 </html>
