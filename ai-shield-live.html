@@ -922,7 +922,8 @@ async function callClaude() {
     headers: {
       'Content-Type': 'application/json',
       'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01'
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
     },
     body: JSON.stringify({
       model: 'claude-sonnet-4-20250514',
@@ -934,7 +935,10 @@ async function callClaude() {
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err.error?.message || `HTTP ${res.status}`);
+    const msg = err.error?.message || `HTTP ${res.status}`;
+    if (res.status === 401) throw new Error('Invalid API key. Please re-enter your key in the sidebar.');
+    if (res.status === 429) throw new Error('Rate limit reached. Please wait a moment and try again.');
+    throw new Error(msg);
   }
 
   const data = await res.json();
