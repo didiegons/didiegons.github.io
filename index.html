@@ -1,452 +1,978 @@
 <!DOCTYPE html>
-<html class="no-js" lang="en">
-
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Dayo Egonu | Aspiring AI Lead</title>
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,900" rel="stylesheet">
-    <link rel="stylesheet" href="libs/font-awesome/css/font-awesome.min.css">
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/styles.css" rel="stylesheet">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="description" content="Dayo Egonu — Applied AI Portfolio. Graduate researcher in AI security, NLP, and machine learning at Indiana Wesleyan University."/>
+<title>Dayo Egonu · Applied AI Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 
-    <style>
-        #lead-tagline {
-            color: rgba(255, 255, 255, 0.75);
-            font-size: 16px;
-            font-weight: 300;
-            line-height: 1.7;
-            max-width: 560px;
-            margin: 16px auto 24px;
-        }
+:root{
+  --bg:#07080A;
+  --bg2:#0D0F13;
+  --surface:#11141A;
+  --surface2:#181C25;
+  --border:#1C2030;
+  --border2:#252C3C;
+  --accent:#00D97E;
+  --accent2:#00A85F;
+  --accent-dim:rgba(0,217,126,0.1);
+  --accent-glow:rgba(0,217,126,0.05);
+  --coral:#E8614A;
+  --coral-dim:rgba(232,97,74,0.1);
+  --amber:#F5A623;
+  --amber-dim:rgba(245,166,35,0.1);
+  --blue:#378ADD;
+  --blue-dim:rgba(55,138,221,0.1);
+  --text:#E4E8F0;
+  --text2:#8990A8;
+  --text3:#454D65;
+  --mono:'IBM Plex Mono',monospace;
+  --sans:'Syne',sans-serif;
+  --serif:'Lora',serif;
+}
 
-        /* ── Darkening overrides ── */
+html{scroll-behavior:smooth;}
 
-        /* Nav / header */
-        header {
-            background: #0D1117 !important;
-            border-bottom: 1px solid rgba(255,255,255,0.06) !important;
-        }
-        #menu li a {
-            color: #8B9BB4 !important;
-        }
-        #menu li a:hover {
-            color: #ffffff !important;
-            background: rgba(255,255,255,0.06) !important;
-        }
+body{
+  font-family:var(--serif);
+  background:var(--bg);
+  color:var(--text);
+  font-size:15px;
+  line-height:1.7;
+  overflow-x:hidden;
+}
 
-        /* Hero lead section — forceful override */
-        #lead,
-        div#lead,
-        body #lead {
-            background: linear-gradient(135deg, #060A10 0%, #0D1520 50%, #071020 100%) !important;
-            background-image: linear-gradient(135deg, #060A10 0%, #0D1520 50%, #071020 100%) !important;
-            background-color: #060A10 !important;
-        }
-        #lead-overlay {
-            background: rgba(0,0,0,0.15) !important;
-        }
-        #lead-content h1 {
-            color: #F0F6FF !important;
-            text-shadow: 0 2px 20px rgba(0,100,200,0.3) !important;
-        }
-        #lead-content h2 {
-            color: rgba(160,200,240,0.70) !important;
-        }
-        #lead-down span i {
-            color: rgba(160,200,240,0.6) !important;
-        }
+/* ══ SCROLLBAR ══════════════════════════════════════════ */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
 
-        /* Project gallery section */
-        #projects.background-alt {
-            background: #0A0E16 !important;
-        }
-        #projects h2.heading {
-            color: #D8E8F5 !important;
-        }
-        #projects h2.heading::after {
-            background: #1E3050 !important;
-        }
+/* ══ NAV ════════════════════════════════════════════════ */
+nav{
+  position:sticky;top:0;z-index:200;
+  background:rgba(7,8,10,0.90);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+}
+.nav-inner{
+  max-width:1100px;margin:0 auto;
+  padding:0 2rem;
+  height:60px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.nav-brand{
+  font-family:var(--mono);
+  font-size:13px;font-weight:500;
+  color:var(--accent);
+  text-decoration:none;
+  letter-spacing:0.04em;
+  display:flex;align-items:center;gap:8px;
+}
+.nav-brand::before{
+  content:'';
+  display:block;width:8px;height:8px;
+  border-radius:50%;background:var(--accent);
+  animation:breathe 3s ease-in-out infinite;
+}
+@keyframes breathe{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.8);}}
 
-        /* Project cards — slightly darker white */
-        .project-card {
-            background: #F4F7FB !important;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.25) !important;
-        }
-        .project-card:hover {
-            transform: translateY(-4px) !important;
-            box-shadow: 0 8px 28px rgba(0,0,0,0.35) !important;
-        }
-        .project-card h3 {
-            color: #1A2840 !important;
-        }
-        .project-card p {
-            color: #3A5070 !important;
-        }
+.nav-links{
+  display:flex;align-items:center;gap:4px;
+  list-style:none;
+}
+.nav-links a{
+  font-family:var(--mono);font-size:12px;
+  color:var(--text2);text-decoration:none;
+  padding:6px 12px;border-radius:6px;
+  letter-spacing:0.04em;
+  transition:color 0.15s,background 0.15s;
+  display:flex;align-items:center;gap:6px;
+}
+.nav-links a:hover{color:var(--text);background:var(--surface2);}
+.nav-links a.active{color:var(--accent);}
+.nav-links .li-link{
+  border:1px solid var(--border2);
+  padding:5px 12px;border-radius:6px;
+}
+.nav-links .li-link:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-dim);}
 
-        /* Skills section */
-        #skills {
-            background: #080C14 !important;
-        }
-        #skills h2.heading {
-            color: #D8E8F5 !important;
-        }
-        #skills h2.heading::after {
-            background: #1E3050 !important;
-        }
-        #skills ul li {
-            background: #101828 !important;
-            color: #A8C0D8 !important;
-            border: 1px solid #1E2D42 !important;
-        }
-        #skills ul li:hover {
-            background: #162238 !important;
-            color: #E0EEFF !important;
-        }
+@media(max-width:600px){
+  .nav-links a span.lbl{display:none;}
+  .nav-links{gap:2px;}
+}
 
-        /* Contact section */
-        #contact {
-            background: #0A0E18 !important;
-        }
-        #contact h2 {
-            color: #D8E8F5 !important;
-        }
-        #contact-form input,
-        #contact-form textarea {
-            background: #101828 !important;
-            border: 1px solid #1E2D42 !important;
-            color: #D0E4F5 !important;
-        }
-        #contact-form input::placeholder,
-        #contact-form textarea::placeholder {
-            color: #4A6A8A !important;
-        }
-        #contact-form button {
-            background: #1A3A5C !important;
-            color: #ffffff !important;
-        }
-        #contact-form button:hover {
-            background: #2050A0 !important;
-        }
+/* ══ HERO ═══════════════════════════════════════════════ */
+.hero{
+  min-height:92vh;
+  display:flex;align-items:center;
+  position:relative;
+  overflow:hidden;
+  border-bottom:1px solid var(--border);
+}
 
-        /* Footer */
-        footer {
-            background: #060A10 !important;
-            border-top: 1px solid #0E1825 !important;
-        }
-        footer p,
-        footer .copyright p {
-            color: #4A6A8A !important;
-        }
-        footer .social ul li a {
-            color: #4A6A8A !important;
-        }
-        footer .social ul li a:hover {
-            color: #A0C8E8 !important;
-        }
-    </style>
+.grid-bg{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(var(--border) 1px,transparent 1px),
+    linear-gradient(90deg,var(--border) 1px,transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 80% 60% at 50% 50%,black 30%,transparent 100%);
+  opacity:0.4;
+}
+
+.hero-inner{
+  max-width:1100px;margin:0 auto;
+  padding:6rem 2rem 5rem;
+  position:relative;z-index:1;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:4rem;
+  align-items:center;
+}
+
+@media(max-width:768px){
+  .hero-inner{grid-template-columns:1fr;gap:2.5rem;}
+  .hero-visual{display:none;}
+}
+
+.hero-eyebrow{
+  font-family:var(--mono);font-size:11px;
+  color:var(--accent);letter-spacing:0.2em;
+  text-transform:uppercase;
+  margin-bottom:1.25rem;
+  display:flex;align-items:center;gap:10px;
+}
+.hero-eyebrow::before{
+  content:'';display:block;
+  width:24px;height:1px;background:var(--accent);
+}
+
+h1.hero-title{
+  font-family:var(--sans);
+  font-size:clamp(2.4rem,5.5vw,4rem);
+  font-weight:800;
+  line-height:1.05;
+  color:var(--text);
+  margin-bottom:1rem;
+  letter-spacing:-0.02em;
+}
+h1.hero-title .line2{color:var(--accent);}
+
+.hero-bio{
+  font-size:16px;
+  color:var(--text2);
+  line-height:1.8;
+  margin-bottom:2rem;
+  max-width:480px;
+  font-family:var(--serif);
+}
+
+.hero-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:2.5rem;}
+.chip{
+  font-family:var(--mono);font-size:11px;
+  border:1px solid var(--border2);
+  color:var(--text3);
+  padding:4px 12px;border-radius:4px;
+  letter-spacing:0.04em;
+}
+
+.hero-cta{display:flex;gap:10px;flex-wrap:wrap;}
+.btn{
+  font-family:var(--sans);font-weight:700;
+  font-size:13px;letter-spacing:0.02em;
+  padding:11px 24px;border-radius:8px;
+  text-decoration:none;cursor:pointer;
+  transition:all 0.15s;border:none;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.btn-accent{background:var(--accent);color:#07080A;}
+.btn-accent:hover{background:#00f590;transform:translateY(-1px);}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2);}
+.btn-ghost:hover{border-color:var(--text3);color:var(--text);background:var(--surface2);}
+
+/* ── HERO VISUAL ── */
+.hero-visual{
+  display:flex;justify-content:center;
+  position:relative;
+}
+.visual-frame{
+  width:360px;height:360px;
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:var(--surface);
+  position:relative;
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.visual-frame::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 30% 30%,rgba(0,217,126,0.06) 0%,transparent 60%),
+    radial-gradient(circle at 70% 70%,rgba(55,138,221,0.04) 0%,transparent 60%);
+}
+.node-canvas{position:absolute;inset:0;}
+
+/* ══ SECTIONS ═══════════════════════════════════════════ */
+.section{
+  max-width:1100px;margin:0 auto;
+  padding:5rem 2rem;
+}
+.section-header{margin-bottom:3rem;}
+.section-eyebrow{
+  font-family:var(--mono);font-size:11px;
+  color:var(--accent);letter-spacing:0.15em;
+  text-transform:uppercase;margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;
+}
+.section-eyebrow::before{content:'//';color:var(--text3);}
+.section-title{
+  font-family:var(--sans);
+  font-size:clamp(1.6rem,3vw,2.2rem);
+  font-weight:800;color:var(--text);
+  margin-bottom:6px;
+  letter-spacing:-0.01em;
+}
+.section-sub{
+  font-size:15px;color:var(--text2);
+  max-width:540px;font-style:italic;
+}
+
+/* ══ FEATURED PROJECT ════════════════════════════════════ */
+.featured-wrap{
+  border-bottom:1px solid var(--border);
+  padding-bottom:5rem;
+  margin-bottom:0;
+}
+
+.featured-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:16px;
+  overflow:hidden;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  min-height:380px;
+  transition:border-color 0.2s;
+}
+.featured-card:hover{border-color:var(--border2);}
+
+@media(max-width:768px){.featured-card{grid-template-columns:1fr;}}
+
+.featured-meta{
+  padding:2.5rem;
+  display:flex;flex-direction:column;justify-content:space-between;
+  border-right:1px solid var(--border);
+}
+@media(max-width:768px){.featured-meta{border-right:none;border-bottom:1px solid var(--border);}}
+
+.featured-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:11px;
+  background:var(--accent-dim);
+  color:var(--accent);
+  border:1px solid rgba(0,217,126,0.2);
+  padding:4px 12px;border-radius:20px;
+  letter-spacing:0.06em;
+  margin-bottom:1.25rem;
+  width:fit-content;
+}
+.pulse-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--accent);
+  animation:breathe 2s ease-in-out infinite;
+}
+
+.featured-title{
+  font-family:var(--sans);
+  font-size:clamp(1.5rem,2.5vw,2rem);
+  font-weight:800;line-height:1.15;
+  color:var(--text);margin-bottom:0.75rem;
+}
+.featured-title span{color:var(--accent);}
+
+.featured-desc{
+  font-size:14px;color:var(--text2);
+  line-height:1.8;margin-bottom:1.5rem;
+  font-family:var(--serif);font-style:italic;
+}
+
+.featured-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:1.5rem;}
+.ftag{
+  font-family:var(--mono);font-size:10px;
+  background:var(--bg2);border:1px solid var(--border2);
+  color:var(--text3);padding:3px 9px;border-radius:3px;
+}
+
+.featured-links{display:flex;gap:8px;flex-wrap:wrap;}
+
+.featured-visual{
+  padding:2.5rem;
+  display:flex;flex-direction:column;gap:10px;
+  justify-content:center;
+}
+.score-row{
+  display:grid;
+  grid-template-columns:1fr 2fr auto;
+  align-items:center;gap:12px;
+  padding:10px 14px;
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:8px;
+}
+.score-label{font-family:var(--mono);font-size:11px;color:var(--text2);}
+.score-bar-bg{height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.score-bar-fill{height:100%;border-radius:3px;}
+.score-num{font-family:var(--mono);font-size:12px;min-width:28px;text-align:right;}
+
+/* ══ PROJECT GRID ═══════════════════════════════════════ */
+.divider{border:none;border-top:1px solid var(--border);margin:0;}
+
+.projects-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:14px;
+}
+
+.project-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+  display:flex;flex-direction:column;
+  transition:border-color 0.2s,transform 0.2s;
+  text-decoration:none;
+  color:inherit;
+}
+.project-card:hover{
+  border-color:var(--border2);
+  transform:translateY(-3px);
+}
+
+.card-img-wrap{
+  height:160px;overflow:hidden;
+  background:var(--surface2);
+  position:relative;
+}
+.card-img-wrap img{
+  width:100%;height:100%;object-fit:cover;
+  transition:transform 0.4s;
+  opacity:0.85;
+}
+.project-card:hover .card-img-wrap img{transform:scale(1.04);opacity:1;}
+
+.card-img-placeholder{
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:11px;
+  color:var(--text3);letter-spacing:0.08em;
+}
+
+.card-body{
+  padding:1.25rem;flex:1;
+  display:flex;flex-direction:column;
+}
+
+.card-tags-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;}
+.ctag{
+  font-family:var(--mono);font-size:10px;
+  padding:2px 8px;border-radius:3px;
+  letter-spacing:0.04em;
+}
+.ctag-ai{background:var(--accent-dim);color:var(--accent);}
+.ctag-sec{background:var(--coral-dim);color:var(--coral);}
+.ctag-ml{background:var(--blue-dim);color:var(--blue);}
+.ctag-db{background:var(--amber-dim);color:var(--amber);}
+.ctag-nlp{background:rgba(139,82,221,0.12);color:#9B6EE8;}
+
+.card-title{
+  font-family:var(--sans);
+  font-size:15px;font-weight:700;
+  color:var(--text);margin-bottom:6px;
+  line-height:1.3;
+}
+.card-desc{
+  font-size:13px;color:var(--text2);
+  line-height:1.65;font-style:italic;
+  flex:1;margin-bottom:12px;
+}
+.card-footer-row{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:auto;
+  padding-top:10px;
+  border-top:1px solid var(--border);
+}
+.card-link{
+  font-family:var(--mono);font-size:11px;
+  color:var(--accent);text-decoration:none;
+  letter-spacing:0.06em;
+}
+.card-link:hover{text-decoration:underline;}
+.card-date{font-family:var(--mono);font-size:10px;color:var(--text3);}
+
+/* ══ SKILLS ═════════════════════════════════════════════ */
+.skills-wrap{border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+
+.skills-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+  gap:12px;
+}
+
+.skill-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:1.25rem;
+}
+
+.skill-icon{
+  font-size:22px;margin-bottom:10px;
+  display:block;
+}
+.skill-name{
+  font-family:var(--sans);font-size:14px;font-weight:700;
+  color:var(--text);margin-bottom:6px;
+}
+.skill-items{
+  display:flex;flex-wrap:wrap;gap:4px;
+}
+.sitem{
+  font-family:var(--mono);font-size:10px;
+  background:var(--bg2);border:1px solid var(--border);
+  color:var(--text3);padding:2px 8px;border-radius:3px;
+}
+
+/* ══ CONTACT ════════════════════════════════════════════ */
+.contact-wrap{border-top:1px solid var(--border);}
+
+.contact-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:3rem;
+  align-items:start;
+}
+@media(max-width:640px){.contact-grid{grid-template-columns:1fr;}}
+
+.contact-blurb{
+  font-size:16px;color:var(--text2);
+  line-height:1.8;font-style:italic;
+  margin-bottom:1.5rem;
+}
+.contact-links{display:flex;flex-direction:column;gap:8px;}
+.contact-link{
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--mono);font-size:13px;
+  color:var(--text2);text-decoration:none;
+  padding:10px 14px;border-radius:8px;
+  border:1px solid var(--border);
+  background:var(--surface);
+  transition:all 0.15s;
+}
+.contact-link:hover{
+  border-color:var(--accent);
+  color:var(--accent);
+  background:var(--accent-dim);
+}
+.contact-link svg{flex-shrink:0;}
+
+.contact-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:2rem;
+}
+.contact-label{
+  font-family:var(--mono);font-size:10px;
+  color:var(--text3);letter-spacing:0.12em;
+  text-transform:uppercase;margin-bottom:14px;
+}
+.contact-name{
+  font-family:var(--sans);font-size:22px;
+  font-weight:800;color:var(--text);
+  margin-bottom:4px;
+}
+.contact-role{
+  font-size:14px;color:var(--text2);
+  font-style:italic;margin-bottom:1.25rem;
+}
+.contact-detail{
+  font-family:var(--mono);font-size:12px;
+  color:var(--text3);line-height:1.8;
+}
+.contact-detail span{color:var(--accent);}
+
+/* ══ FOOTER ═════════════════════════════════════════════ */
+footer{
+  border-top:1px solid var(--border);
+  padding:2rem;
+  text-align:center;
+}
+.footer-text{
+  font-family:var(--mono);font-size:11px;
+  color:var(--text3);letter-spacing:0.06em;
+}
+.footer-text a{color:var(--accent);text-decoration:none;}
+.footer-text a:hover{text-decoration:underline;}
+
+/* ══ ANIMATIONS ═════════════════════════════════════════ */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:1;transform:none;}
+}
+.fade-up{
+  opacity:0;
+  animation:fadeUp 0.6s ease forwards;
+}
+.d1{animation-delay:0.1s;}
+.d2{animation-delay:0.2s;}
+.d3{animation-delay:0.35s;}
+.d4{animation-delay:0.5s;}
+.d5{animation-delay:0.65s;}
+</style>
 </head>
-
 <body>
-    <div id="mobile-menu-open" class="shadow-large">
-        <i class="fa fa-bars" aria-hidden="true"></i>
+
+<!-- ══ NAV ══════════════════════════════════════════════ -->
+<nav role="navigation" aria-label="Portfolio navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">Dayo Portfolio</a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span class="lbl">Home</span>
+      </a></li>
+      <li><a href="about.html">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        <span class="lbl">About</span>
+      </a></li>
+      <li><a href="projects.html">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span class="lbl">Projects</span>
+      </a></li>
+      <li><a href="#skills">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <span class="lbl">Skills</span>
+      </a></li>
+      <li><a href="#contact">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <span class="lbl">Contact</span>
+      </a></li>
+      <li><a href="https://www.linkedin.com/in/dayoegonu/" target="_blank" rel="noopener" class="li-link">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+        <span class="lbl">LinkedIn</span>
+      </a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ══ HERO ══════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="grid-bg"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow fade-up d1">Applied AI Researcher · Graduate Student</div>
+      <h1 class="hero-title fade-up d2">
+        Dayo<br/>
+        <span class="line2">Egonu</span>
+      </h1>
+      <p class="hero-bio fade-up d3">
+        Building AI systems at the intersection of natural language processing, cybersecurity, and machine learning — with a commitment to both technical rigor and ethical responsibility.
+      </p>
+      <div class="hero-chips fade-up d4">
+        <span class="chip">NLP · Semantics</span>
+        <span class="chip">AI Security</span>
+        <span class="chip">Machine Learning</span>
+        <span class="chip">Forensic Accounting</span>
+        <span class="chip">Indiana Wesleyan University</span>
+      </div>
+      <div class="hero-cta fade-up d5">
+        <a href="#featured" class="btn btn-accent">View research ↓</a>
+        <a href="https://www.linkedin.com/in/dayoegonu/" target="_blank" rel="noopener" class="btn btn-ghost">LinkedIn →</a>
+      </div>
     </div>
 
-    <header>
-        <div id="mobile-menu-close">
-            <span>Close</span> <i class="fa fa-times" aria-hidden="true"></i>
-        </div>
-        <ul id="menu" class="shadow">
-            <li>
-                <a href="about.html" onclick="window.location.href='about.html'; return false;">About</a>
-            </li>
-            <li>
-                <a href="https://www.linkedin.com/in/dayoegonu/" onclick="window.open(this.href, '_blank'); return false;">LinkedIn</a>
-            </li>
-            <li>
-                <a href="projects.html" onclick="window.location.href='projects.html'; return false;">Projects</a>
-            </li>
-            <li>
-                <a href="#skills">Skills</a>
-            </li>
-            <li>
-                <a href="#contact">Contact</a>
-            </li>
-        </ul>
-    </header>
+    <div class="hero-visual fade-up d3">
+      <div class="visual-frame">
+        <canvas class="node-canvas" id="node-canvas" width="360" height="360"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <div id="lead">
-        <div id="lead-content">
-            <h1>Dayo's Portfolio</h1>
-            <h2>Aspiring AI Lead</h2>
-            <p id="lead-tagline">An aspiring AI leader passionate about bridging technical depth and strategic communication to drive meaningful innovation across industries.</p>
-            <a href="about.html" class="btn-rounded-white">About Me</a>
-        </div>
-
-        <div id="lead-overlay"></div>
-
-        <div id="lead-down">
-            <span>
-                <i class="fa fa-chevron-down" aria-hidden="true"></i>
-            </span>
-        </div>
+<!-- ══ FEATURED PROJECT ═══════════════════════════════════ -->
+<div id="featured" class="featured-wrap">
+  <div class="section">
+    <div class="section-header">
+      <div class="section-eyebrow">Featured research</div>
+      <div class="section-title">Latest project</div>
+      <div class="section-sub">The deepest dive — a full research paper, live demo, and open-source implementation.</div>
     </div>
 
-    <!-- Project Gallery -->
-    <div id="projects" class="background-alt" style="padding: 40px 20px;">
-        <h2 class="heading" style="text-align: center;">🧩 Project Gallery</h2>
-
-        <div class="project-gallery" style="
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 24px;
-            max-width: 1200px;
-            margin: auto;
-        ">
-            <!-- Smart Travel by AirLytics -->
-            <a href="Smart-Travel-By-AirLytics.html" class="project-card" style="
-                width: 280px;
-                background: #fff;
-                border-radius: 12px;
-                overflow: hidden;
-                text-decoration: none;
-                color: inherit;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-                transition: transform 0.2s;
-            ">
-                <img src="images/smart-travel-airlytics.jpg" alt="Smart Travel by AirLytics" style="width:100%;height:180px;object-fit:cover;">
-                <div style="padding:16px;">
-                    <h3 style="margin:0;">Smart Travel by AirLytics</h3>
-                    <p style="font-size:0.9em;color:#444;">AI chatbot for flight pricing fairness</p>
-                </div>
-            </a>
-
-            <!-- Security Knights -->
-            <a href="security-knights.html" class="project-card" style="
-                width: 280px;
-                background: #fff;
-                border-radius: 12px;
-                overflow: hidden;
-                text-decoration: none;
-                color: inherit;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-                transition: transform 0.2s;
-            ">
-                <img src="images/security-knights.jpg" alt="Security Knights" style="width:100%;height:180px;object-fit:cover;">
-                <div style="padding:16px;">
-                    <h3 style="margin:0;">Security Knights</h3>
-                    <p style="font-size:0.9em;color:#444;">Gamified secure coding training</p>
-                </div>
-            </a>
-
-            <!-- AI Shield -->
-            <a href="ai-shield.html" class="project-card" style="
-                width: 280px;
-                background: #fff;
-                border-radius: 12px;
-                overflow: hidden;
-                text-decoration: none;
-                color: inherit;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-                transition: transform 0.2s;
-            ">
-                <img src="images/ai-shield.jpg" alt="AI Shield" style="width:100%;height:180px;object-fit:cover;">
-                <div style="padding:16px;">
-                    <h3 style="margin:0;">AI Shield</h3>
-                    <p style="font-size:0.9em;color:#444;">Cybersecurity for non-technical users</p>
-                </div>
-            </a>
-
-            <!-- PromptCraft -->
-            <a href="promptcraft.html" class="project-card" style="
-                width: 280px;
-                background: #fff;
-                border-radius: 12px;
-                overflow: hidden;
-                text-decoration: none;
-                color: inherit;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-                transition: transform 0.2s;
-            ">
-                <img src="images/promptcraft.jpg" alt="PromptCraft" style="width:100%;height:180px;object-fit:cover;">
-                <div style="padding:16px;">
-                    <h3 style="margin:0;">PromptCraft</h3>
-                    <p style="font-size:0.9em;color:#444;">AI prompt marketplace with versioning & analytics</p>
-                </div>
-            </a>
-
-            <!-- ML Algorithm Infographic -->
-            <a href="ml-algorithm-infographic.html" class="project-card" style="
-                width: 280px;
-                background: #fff;
-                border-radius: 12px;
-                overflow: hidden;
-                text-decoration: none;
-                color: inherit;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-                transition: transform 0.2s;
-            ">
-                <img src="images/ml-algorithm-infographic.jpg" alt="Machine Learning Algorithm Framework" style="width:100%;height:180px;object-fit:cover;">
-                <div style="padding:16px;">
-                    <h3 style="margin:0;">ML Algorithm Framework</h3>
-                    <p style="font-size:0.9em;color:#444;">Visual infographic of supervised, unsupervised, and deep learning algorithms</p>
-                </div>
-            </a>
-
-            <!-- Neural Network Visual Framework -->
-            <a href="neural-network-visual.html" class="project-card" style="
-                width: 280px;
-                background: #fff;
-                border-radius: 12px;
-                overflow: hidden;
-                text-decoration: none;
-                color: inherit;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-                transition: transform 0.2s;
-            ">
-                <img src="images/neural-network-visual.jpg" alt="Neural Network Visual Framework" style="width:100%;height:180px;object-fit:cover;">
-                <div style="padding:16px;">
-                    <h3 style="margin:0;">Neural Network Visual Framework</h3>
-                    <p style="font-size:0.9em;color:#444;">Interactive guide to layers, neurons, weights, and optimization</p>
-                </div>
-            </a>
-
-            <!-- LLM Training Infographic -->
-            <a href="llm_training_infographic.html" class="project-card" style="
-                width: 280px;
-                background: #fff;
-                border-radius: 12px;
-                overflow: hidden;
-                text-decoration: none;
-                color: inherit;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-                transition: transform 0.2s;
-            ">
-                <img src="images/llm-training-infographic.jpg" alt="How Generative AI LLMs Are Trained" style="width:100%;height:180px;object-fit:cover;">
-                <div style="padding:16px;">
-                    <h3 style="margin:0;">How Generative AI LLMs Are Trained</h3>
-                    <p style="font-size:0.9em;color:#444;">Visual pipeline of LLM training — GPT-4, Claude, LLaMA & Gemini</p>
-                </div>
-            </a>
-
-            <!-- Explainable AI Infographic -->
-            <a href="explainable_ai.html" class="project-card" style="
-                width: 280px;
-                background: #fff;
-                border-radius: 12px;
-                overflow: hidden;
-                text-decoration: none;
-                color: inherit;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-                transition: transform 0.2s;
-            ">
-                <img src="images/explainable-ai.png" alt="Explainable AI Infographic" style="width:100%;height:180px;object-fit:cover;">
-                <div style="padding:16px;">
-                    <h3 style="margin:0;">Explainable AI (XAI)</h3>
-                    <p style="font-size:0.9em;color:#444;">Transparency & accountability in GPT-4, Claude, Gemini & LLaMA</p>
-                </div>
-            </a>
-
-            <!-- Pre-Trained Model Trade-Off Matrix -->
-            <a href="model_evaluation_matrix.html" class="project-card" style="
-                width: 280px;
-                background: #fff;
-                border-radius: 12px;
-                overflow: hidden;
-                text-decoration: none;
-                color: inherit;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-                transition: transform 0.2s;
-            ">
-                <img src="images/model_evaluation_thumb.png" alt="Pre-Trained Model Trade-Off Matrix" style="width:100%;height:180px;object-fit:cover;">
-                <div style="padding:16px;">
-                    <h3 style="margin:0;">Pre-Trained Model Trade-Off Matrix</h3>
-                    <p style="font-size:0.9em;color:#444;">Comparative analysis of 6 models across NLP, Vision & Tabular domains</p>
-                </div>
-            </a>
-
+    <div class="featured-card">
+      <div class="featured-meta">
+        <div>
+          <div class="featured-badge"><span class="pulse-dot"></span>Live demo available</div>
+          <div class="featured-title">Semantic<br/><span>Threat Detector</span></div>
+          <div class="featured-desc">
+            A real-time engine that identifies hidden manipulation patterns, prompt injections, and adversarial intent that keyword filters miss — by analyzing text position in semantic vector space.
+          </div>
+          <div class="featured-tags">
+            <span class="ftag">NLP</span>
+            <span class="ftag">semantic analysis</span>
+            <span class="ftag">adversarial ML</span>
+            <span class="ftag">AI security</span>
+            <span class="ftag">projector layers</span>
+            <span class="ftag">vector clustering</span>
+            <span class="ftag">Claude API</span>
+          </div>
         </div>
-    </div>
-
-    <div id="skills">
-        <h2 class="heading">Skills</h2>
-        <ul>
-            <li>Python</li>
-            <li>SQL</li>
-            <li>JavaScript</li>
-            <li>HTML & CSS</li>
-            <li>Machine Learning</li>
-            <li>AI Prompt Engineering</li>
-            <li>Database Systems</li>
-            <li>Cybersecurity</li>
-            <li>Data Analysis</li>
-            <li>Node.js</li>
-            <li>GitHub</li>
-            <li>Technical Communication</li>
-            <li>Pre-trained Model Evaluation</li>
-            <li>XGBoost / LightGBM</li>
-            <li>NLP (BERT, GPT)</li>
-            <li>Computer Vision (CNN)</li>
-        </ul>
-    </div>
-
-    <div id="contact">
-        <h2>Get in Touch</h2>
-        <div id="contact-form">
-            <form method="POST" action="https://formspree.io/dayosepcial89@yahoo.com">
-                <input type="hidden" name="_subject" value="Contact request from personal website" />
-                <input type="email" name="_replyto" placeholder="Your email" required>
-                <textarea name="message" placeholder="Your message" required></textarea>
-                <button type="submit">Send</button>
-            </form>
+        <div class="featured-links">
+          <a href="semantic_threat_detector.html" class="btn btn-accent" style="font-size:12px;padding:9px 18px;">▶ Run demo</a>
+          <a href="paper/semantic_security_paper.docx" class="btn btn-ghost" style="font-size:12px;padding:9px 18px;">Read paper</a>
+          <a href="portfolio_card.html" class="btn btn-ghost" style="font-size:12px;padding:9px 18px;">Project card</a>
         </div>
-    </div>
+      </div>
 
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-5 copyright">
-                    <p>
-                        Copyright &copy; <span id="current-year">2025</span> Dayo Egonu
-                    </p>
-                </div>
-                <div class="col-sm-2 top">
-                    <span id="to-top">
-                        <i class="fa fa-chevron-up" aria-hidden="true"></i>
-                    </span>
-                </div>
-                <div class="col-sm-5 social">
-                    <ul>
-                        <li>
-                            <a href="https://github.com/didiegons" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></a>
-                        </li>
-                        <li>
-                            <a href="https://www.linkedin.com/in/dayoegonu/" target="_blank"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+      <div class="featured-visual">
+        <div class="score-row">
+          <span class="score-label">Benign query</span>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:8%;background:#00D97E;"></div></div>
+          <span class="score-num" style="color:#00D97E;">8</span>
         </div>
-    </footer>
+        <div class="score-row">
+          <span class="score-label">Subtle drift</span>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:52%;background:#F5A623;"></div></div>
+          <span class="score-num" style="color:#F5A623;">52</span>
+        </div>
+        <div class="score-row">
+          <span class="score-label">Social engineering</span>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:71%;background:#F5A623;"></div></div>
+          <span class="score-num" style="color:#F5A623;">71</span>
+        </div>
+        <div class="score-row">
+          <span class="score-label">Semantic camouflage</span>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:84%;background:#E8614A;"></div></div>
+          <span class="score-num" style="color:#E8614A;">84</span>
+        </div>
+        <div class="score-row">
+          <span class="score-label">Prompt injection</span>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:97%;background:#E8614A;"></div></div>
+          <span class="score-num" style="color:#E8614A;">97</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-    
-    <script>
-        // Force dark hero — overrides any external stylesheet background
-        (function() {
-            var lead = document.getElementById('lead');
-            if (lead) {
-                lead.style.setProperty('background', 'linear-gradient(135deg, #060A10 0%, #0D1520 50%, #071020 100%)', 'important');
-                lead.style.setProperty('background-image', 'linear-gradient(135deg, #060A10 0%, #0D1520 50%, #071020 100%)', 'important');
-                lead.style.setProperty('background-color', '#060A10', 'important');
-            }
-        })();
-    </script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="js/scripts.min.js"></script>
+<!-- ══ ALL PROJECTS ════════════════════════════════════════ -->
+<hr class="divider"/>
+<div class="section">
+  <div class="section-header">
+    <div class="section-eyebrow">All projects</div>
+    <div class="section-title">Portfolio artifacts</div>
+    <div class="section-sub">Research, visualizations, and applied AI systems built across the AIML 501 program.</div>
+  </div>
+
+  <div class="projects-grid">
+
+    <a href="semantic_threat_detector.html" class="project-card">
+      <div class="card-img-wrap">
+        <div class="card-img-placeholder" style="background:linear-gradient(135deg,#07080A 0%,#0D1520 100%);">
+          <span style="color:#00D97E;font-size:28px;">⬡</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-tags-row">
+          <span class="ctag ctag-sec">AI Security</span>
+          <span class="ctag ctag-nlp">NLP</span>
+        </div>
+        <div class="card-title">Semantic Threat Detector</div>
+        <div class="card-desc">Real-time detection of adversarial intent using vector-space clustering and projection layers. Detects what keyword filters miss.</div>
+        <div class="card-footer-row">
+          <span class="card-link">Live demo →</span>
+          <span class="card-date">Apr 2026</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="xai_infographic.html" class="project-card">
+      <div class="card-img-wrap">
+        <div class="card-img-placeholder" style="background:linear-gradient(135deg,#0A0F1E 0%,#0D1A2E 100%);">
+          <span style="color:#378ADD;font-size:28px;">◈</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-tags-row">
+          <span class="ctag ctag-ai">XAI</span>
+          <span class="ctag ctag-ml">Visualization</span>
+        </div>
+        <div class="card-title">Explainable AI Infographic</div>
+        <div class="card-desc">A dark-themed visual explainer of XAI techniques — LIME, SHAP, attention visualization, and model interpretability frameworks.</div>
+        <div class="card-footer-row">
+          <span class="card-link">View artifact →</span>
+          <span class="card-date">2025</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="llm_training_infographic.html" class="project-card">
+      <div class="card-img-wrap">
+        <div class="card-img-placeholder" style="background:linear-gradient(135deg,#0F0A1A 0%,#1A0F2E 100%);">
+          <span style="font-size:28px;color:#9B6EE8;">⬟</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-tags-row">
+          <span class="ctag ctag-nlp">LLM</span>
+          <span class="ctag ctag-ml">Pipeline</span>
+        </div>
+        <div class="card-title">LLM Training Pipeline</div>
+        <div class="card-desc">Visual breakdown of GPT-4, Claude 3, LLaMA 3, and Gemini 1.5 — covering pre-training, RLHF, alignment, cost, and compute at scale.</div>
+        <div class="card-footer-row">
+          <span class="card-link">View artifact →</span>
+          <span class="card-date">2025</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="neural-network-visual.html" class="project-card">
+      <div class="card-img-wrap">
+        <div class="card-img-placeholder" style="background:linear-gradient(135deg,#0A100A 0%,#0D1A10 100%);">
+          <span style="font-size:28px;color:#00D97E;">◉</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-tags-row">
+          <span class="ctag ctag-ml">Neural Networks</span>
+          <span class="ctag ctag-ai">Deep Learning</span>
+        </div>
+        <div class="card-title">Neural Network Visual Framework</div>
+        <div class="card-desc">Interactive visualization of neural network architecture — layers, activations, backpropagation, and learning dynamics.</div>
+        <div class="card-footer-row">
+          <span class="card-link">View artifact →</span>
+          <span class="card-date">2025</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="projects.html" class="project-card">
+      <div class="card-img-wrap">
+        <div class="card-img-placeholder" style="background:linear-gradient(135deg,#0A0A10 0%,#15101A 100%);">
+          <span style="font-size:28px;color:#F5A623;">◇</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-tags-row">
+          <span class="ctag ctag-ai">Generative AI</span>
+          <span class="ctag ctag-db">Data</span>
+        </div>
+        <div class="card-title">Smart Travel by AirLytics</div>
+        <div class="card-desc">An AI-powered chatbot that helps travelers find fair flight ticket prices using real-time data and generative AI recommendations.</div>
+        <div class="card-footer-row">
+          <span class="card-link">View project →</span>
+          <span class="card-date">2024</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="projects.html" class="project-card">
+      <div class="card-img-wrap">
+        <div class="card-img-placeholder" style="background:linear-gradient(135deg,#100A08 0%,#1A100A 100%);">
+          <span style="font-size:28px;color:#E8614A;">◆</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-tags-row">
+          <span class="ctag ctag-sec">Cybersecurity</span>
+          <span class="ctag ctag-db">Forensics</span>
+        </div>
+        <div class="card-title">AI Forensic Accounting System</div>
+        <div class="card-desc">Machine learning applied to forensic accounting workflows — anomaly detection in financial records and fraud pattern identification.</div>
+        <div class="card-footer-row">
+          <span class="card-link">View project →</span>
+          <span class="card-date">2024</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<!-- ══ SKILLS ════════════════════════════════════════════ -->
+<div id="skills" class="skills-wrap">
+  <div class="section">
+    <div class="section-header">
+      <div class="section-eyebrow">Expertise</div>
+      <div class="section-title">Skills & domains</div>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-card">
+        <span class="skill-icon">⬡</span>
+        <div class="skill-name">NLP & Semantics</div>
+        <div class="skill-items">
+          <span class="sitem">Transformers</span><span class="sitem">SBERT</span>
+          <span class="sitem">embeddings</span><span class="sitem">clustering</span>
+          <span class="sitem">UMAP</span><span class="sitem">HuggingFace</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <span class="skill-icon">◈</span>
+        <div class="skill-name">Machine Learning</div>
+        <div class="skill-items">
+          <span class="sitem">PyTorch</span><span class="sitem">scikit-learn</span>
+          <span class="sitem">transfer learning</span><span class="sitem">fine-tuning</span>
+          <span class="sitem">RLHF</span><span class="sitem">XAI</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <span class="skill-icon">◉</span>
+        <div class="skill-name">AI Security</div>
+        <div class="skill-items">
+          <span class="sitem">prompt injection</span><span class="sitem">adversarial NLP</span>
+          <span class="sitem">AI red-teaming</span><span class="sitem">guardrails</span>
+          <span class="sitem">OWASP LLM</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <span class="skill-icon">◇</span>
+        <div class="skill-name">Data & Databases</div>
+        <div class="skill-items">
+          <span class="sitem">SQL</span><span class="sitem">NoSQL</span>
+          <span class="sitem">MongoDB</span><span class="sitem">vector DBs</span>
+          <span class="sitem">FAISS</span><span class="sitem">RAG pipelines</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <span class="skill-icon">◆</span>
+        <div class="skill-name">Cybersecurity</div>
+        <div class="skill-items">
+          <span class="sitem">forensic accounting</span><span class="sitem">threat modeling</span>
+          <span class="sitem">anomaly detection</span><span class="sitem">fraud analysis</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <span class="skill-icon">⬟</span>
+        <div class="skill-name">Engineering</div>
+        <div class="skill-items">
+          <span class="sitem">Python</span><span class="sitem">JavaScript</span>
+          <span class="sitem">Node.js</span><span class="sitem">HTML/CSS</span>
+          <span class="sitem">Claude API</span><span class="sitem">LangChain</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CONTACT ════════════════════════════════════════════ -->
+<div id="contact" class="contact-wrap">
+  <div class="section">
+    <div class="section-header">
+      <div class="section-eyebrow">Get in touch</div>
+      <div class="section-title">Contact</div>
+    </div>
+    <div class="contact-grid">
+      <div>
+        <p class="contact-blurb">
+          Open to research collaborations, AI security projects, and graduate research opportunities. Particularly interested in roles at the intersection of NLP, semantics, and AI safety.
+        </p>
+        <div class="contact-links">
+          <a href="https://www.linkedin.com/in/dayoegonu/" target="_blank" rel="noopener" class="contact-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+            linkedin.com/in/dayoegonu
+          </a>
+          <a href="https://github.com/didiegons" target="_blank" rel="noopener" class="contact-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            github.com/didiegons
+          </a>
+          <a href="mailto:dayo.egonu@indwes.edu" class="contact-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            dayo.egonu@indwes.edu
+          </a>
+        </div>
+      </div>
+      <div class="contact-card">
+        <div class="contact-label">Currently</div>
+        <div class="contact-name">Dayo Egonu</div>
+        <div class="contact-role">Graduate Student · Applied AI Program</div>
+        <div class="contact-detail">
+          Indiana Wesleyan University<br/>
+          AIML 501 — Model Development<br/>
+          <span>Specialization:</span> NLP · AI Security · Semantics<br/>
+          <span>Portfolio:</span> didiegons.github.io
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FOOTER ════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-text">
+    Built by <a href="index.html">Dayo Egonu</a> ·
+    Applied AI, Indiana Wesleyan University ·
+    <a href="https://github.com/didiegons" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="https://www.linkedin.com/in/dayoegonu/" target="_blank" rel="noopener">LinkedIn</a>
+  </div>
+</footer>
+
+<!-- ══ ANIMATED NODE CANVAS ══════════════════════════════ -->
+<script>
+(function(){
+  const canvas = document.getElementById('node-canvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = 360, H = 360;
+
+  const nodes = Array.from({length:22},(_,i)=>({
+    x: Math.random()*W,
+    y: Math.random()*H,
+    vx: (Math.random()-.5)*0.4,
+    vy: (Math.random()-.5)*0.4,
+    r: Math.random()*2+1.5,
+    color: Math.random()>.6?'#00D97E':Math.random()>.5?'#378ADD':'#555E72'
+  }));
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    // edges
+    for(let i=0;i<nodes.length;i++){
+      for(let j=i+1;j<nodes.length;j++){
+        const dx=nodes[i].x-nodes[j].x, dy=nodes[i].y-nodes[j].y;
+        const d=Math.sqrt(dx*dx+dy*dy);
+        if(d<90){
+          ctx.beginPath();
+          ctx.strokeStyle=`rgba(0,217,126,${(1-d/90)*0.18})`;
+          ctx.lineWidth=0.5;
+          ctx.moveTo(nodes[i].x,nodes[i].y);
+          ctx.lineTo(nodes[j].x,nodes[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+    // nodes
+    nodes.forEach(n=>{
+      ctx.beginPath();
+      ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
+      ctx.fillStyle=n.color+'99';
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(n.x,n.y,n.r*0.5,0,Math.PI*2);
+      ctx.fillStyle=n.color;
+      ctx.fill();
+    });
+    // update
+    nodes.forEach(n=>{
+      n.x+=n.vx; n.y+=n.vy;
+      if(n.x<0||n.x>W) n.vx*=-1;
+      if(n.y<0||n.y>H) n.vy*=-1;
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+
 </body>
-
 </html>
