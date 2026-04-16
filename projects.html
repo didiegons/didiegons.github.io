@@ -18,6 +18,8 @@
       --cream:   #13161D;
       --border:  rgba(255,255,255,0.10);
       --white:   #F2F6FF;
+      --green:   #00D97E;
+      --green2:  #00F590;
     }
 
     body {
@@ -51,6 +53,7 @@
       transition: color 0.2s, background 0.2s;
     }
     .nav-links a:hover { color: var(--white); background: rgba(255,255,255,0.06); }
+    .nav-links a.active { color: var(--amber); }
     .nav-links a.linkedin {
       background: #0a66c2; color: #fff; border-radius: 6px;
     }
@@ -92,7 +95,6 @@
       gap: 16px;
     }
 
-    /* Card base */
     .card {
       position: relative;
       border-radius: 16px;
@@ -109,25 +111,21 @@
       box-shadow: 0 24px 60px rgba(0,0,0,0.18);
     }
 
-    /* ── BENTO LAYOUT (9 cards) ──
-       Row 1-2 : card-1 (7 cols, 2 rows) | card-2 (5 cols) / card-3 (5 cols)
-       Row 3-4 : card-4 (4 cols, 2 rows) | card-5 (4 cols) / card-6 (4 cols)
-       Row 5   : card-7 (4 cols) | card-8 (4 cols) | card-9 (4 cols)
-    */
-    .card-1 { grid-column: span 7; grid-row: span 2; }
-    .card-2 { grid-column: span 5; grid-row: span 1; }
-    .card-3 { grid-column: span 5; grid-row: span 1; }
-    .card-4 { grid-column: span 4; grid-row: span 2; }
-    .card-5 { grid-column: span 4; grid-row: span 1; }
-    .card-6 { grid-column: span 4; grid-row: span 1; }
-    .card-7 { grid-column: span 4; grid-row: span 1; }
-    .card-8 { grid-column: span 4; grid-row: span 1; }
-    .card-9 { grid-column: span 4; grid-row: span 1; }
+    .card-1  { grid-column: span 7; grid-row: span 2; }
+    .card-2  { grid-column: span 5; grid-row: span 1; }
+    .card-3  { grid-column: span 5; grid-row: span 1; }
+    .card-4  { grid-column: span 4; grid-row: span 2; }
+    .card-5  { grid-column: span 4; grid-row: span 1; }
+    .card-6  { grid-column: span 4; grid-row: span 1; }
+    .card-7  { grid-column: span 4; grid-row: span 1; }
+    .card-8  { grid-column: span 4; grid-row: span 1; }
+    .card-9  { grid-column: span 4; grid-row: span 1; }
+    .card-10 { grid-column: span 12; grid-row: span 1; }
 
     @media (max-width: 900px) {
       .bento { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 200px; }
       .card-1,.card-2,.card-3,.card-4,.card-5,
-      .card-6,.card-7,.card-8,.card-9 {
+      .card-6,.card-7,.card-8,.card-9,.card-10 {
         grid-column: span 2; grid-row: span 1;
       }
       .card-1 { grid-row: span 2; }
@@ -135,12 +133,11 @@
     @media (max-width: 540px) {
       .bento { grid-template-columns: 1fr; }
       .card-1,.card-2,.card-3,.card-4,.card-5,
-      .card-6,.card-7,.card-8,.card-9 {
+      .card-6,.card-7,.card-8,.card-9,.card-10 {
         grid-column: span 1; grid-row: span 1;
       }
     }
 
-    /* Card image */
     .card-img {
       position: absolute; inset: 0;
       width: 100%; height: 100%;
@@ -149,7 +146,6 @@
     }
     .card:hover .card-img { transform: scale(1.06); }
 
-    /* Overlay gradient */
     .card-overlay {
       position: absolute; inset: 0;
       background: linear-gradient(
@@ -169,7 +165,6 @@
       );
     }
 
-    /* Card body */
     .card-body {
       position: relative; z-index: 2;
       padding: 1.2rem 1.4rem;
@@ -193,8 +188,7 @@
     .card-1 h3 { font-size: 1.6rem; }
     .card p {
       font-size: 0.78rem; color: rgba(255,255,255,0.80);
-      line-height: 1.55;
-      display: none;
+      line-height: 1.55; display: none;
     }
     .card-1 p, .card-4 p { display: block; }
     .card-arrow {
@@ -202,13 +196,11 @@
       margin-top: 0.6rem;
       font-size: 0.75rem; font-weight: 600;
       color: var(--amber2);
-      opacity: 0;
-      transform: translateX(-6px);
+      opacity: 0; transform: translateX(-6px);
       transition: opacity 0.25s, transform 0.25s;
     }
     .card:hover .card-arrow { opacity: 1; transform: translateX(0); }
 
-    /* NEW badge */
     .badge-new {
       position: absolute; top: 1rem; right: 1rem; z-index: 3;
       font-size: 0.58rem; font-weight: 700;
@@ -216,13 +208,92 @@
       padding: 0.22rem 0.6rem; border-radius: 20px;
       background: var(--amber); color: var(--ink);
     }
+    .badge-live {
+      position: absolute; top: 1rem; right: 1rem; z-index: 3;
+      font-size: 0.58rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.22rem 0.6rem; border-radius: 20px;
+      background: var(--green); color: #07080A;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .live-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: #07080A;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
 
-    /* Solid-colour fallback */
+    /* card-10 semantic threat */
+    .card-10 {
+      background: linear-gradient(135deg, #07080A 0%, #0A1218 50%, #0D0F13 100%);
+      justify-content: center;
+      border: 1px solid rgba(0,217,126,0.15);
+    }
+    .card-10:hover {
+      border-color: rgba(0,217,126,0.35);
+      box-shadow: 0 24px 60px rgba(0,217,126,0.06);
+    }
+    .card-10-inner {
+      position: relative; z-index: 2;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 2rem;
+      padding: 1.4rem 1.75rem;
+      width: 100%;
+    }
+    @media(max-width:640px){
+      .card-10-inner { grid-template-columns: 1fr; }
+      .score-col { display: none; }
+    }
+    .card-10 h3 {
+      font-size: 1.4rem;
+      margin-bottom: 0.4rem;
+    }
+    .card-10 p {
+      display: block;
+      font-size: 0.76rem;
+      color: rgba(255,255,255,0.60);
+      line-height: 1.6;
+      margin-bottom: 0.75rem;
+    }
+    .card-10-tag {
+      font-size: 0.6rem; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 0.2rem 0.55rem; border-radius: 3px;
+      margin-bottom: 0.6rem;
+      display: inline-block;
+      background: rgba(0,217,126,0.12);
+      color: var(--green2);
+      border: 1px solid rgba(0,217,126,0.25);
+    }
+    .card-10-arrow {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      font-size: 0.75rem; font-weight: 600;
+      color: var(--green2);
+      transition: gap 0.2s;
+    }
+    .card-10:hover .card-10-arrow { gap: 0.5rem; }
+    .score-col { display: flex; flex-direction: column; gap: 8px; }
+    .score-row-mini {
+      display: grid;
+      grid-template-columns: 100px 1fr 28px;
+      align-items: center; gap: 8px;
+    }
+    .score-label-mini {
+      font-size: 0.6rem; color: rgba(255,255,255,0.40);
+    }
+    .score-bar-bg {
+      height: 3px; background: rgba(255,255,255,0.07);
+      border-radius: 2px; overflow: hidden;
+    }
+    .score-bar-fill { height: 100%; border-radius: 2px; }
+    .score-num-mini {
+      font-size: 0.6rem; text-align: right;
+    }
+
     .card-fallback { background: #1C2030; }
     .card-fallback .card-overlay { background: none; }
-    .card-fallback h3 { color: var(--white); }
-    .card-fallback p  { color: var(--ink2); }
-    .card-fallback .card-tag { background: rgba(240,165,0,0.12); }
 
     /* ── FOOTER ── */
     footer {
@@ -241,21 +312,21 @@
     }
     .footer-links a:hover { color: var(--amber); }
 
-    /* Stagger animation */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(24px); }
       to   { opacity: 1; transform: none; }
     }
     .card { animation: fadeUp 0.55s ease both; }
-    .card:nth-child(1) { animation-delay: 0.05s }
-    .card:nth-child(2) { animation-delay: 0.10s }
-    .card:nth-child(3) { animation-delay: 0.15s }
-    .card:nth-child(4) { animation-delay: 0.20s }
-    .card:nth-child(5) { animation-delay: 0.25s }
-    .card:nth-child(6) { animation-delay: 0.30s }
-    .card:nth-child(7) { animation-delay: 0.35s }
-    .card:nth-child(8) { animation-delay: 0.40s }
-    .card:nth-child(9) { animation-delay: 0.45s }
+    .card:nth-child(1)  { animation-delay: 0.05s }
+    .card:nth-child(2)  { animation-delay: 0.10s }
+    .card:nth-child(3)  { animation-delay: 0.15s }
+    .card:nth-child(4)  { animation-delay: 0.20s }
+    .card:nth-child(5)  { animation-delay: 0.25s }
+    .card:nth-child(6)  { animation-delay: 0.30s }
+    .card:nth-child(7)  { animation-delay: 0.35s }
+    .card:nth-child(8)  { animation-delay: 0.40s }
+    .card:nth-child(9)  { animation-delay: 0.45s }
+    .card:nth-child(10) { animation-delay: 0.50s }
   </style>
 </head>
 <body>
@@ -264,7 +335,8 @@
   <a href="index.html" class="nav-brand">Dayo Portfolio</a>
   <ul class="nav-links">
     <li><a href="index.html">Home</a></li>
-    <li><a href="projects.html">Projects</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="projects.html" class="active">Projects</a></li>
     <li><a href="index.html#skills">Skills</a></li>
     <li><a href="index.html#contact">Contact</a></li>
     <li><a href="https://www.linkedin.com/in/dayoegonu/" target="_blank" class="linkedin">LinkedIn</a></li>
@@ -276,12 +348,12 @@
     <div class="overline">Applied AI · Portfolio</div>
     <h1>Project <em>Artifacts</em></h1>
   </div>
-  <div class="project-count">09</div>
+  <div class="project-count">10</div>
 </div>
 
 <main class="bento">
 
-  <!-- 1 — Featured (newest) -->
+  <!-- 1 — Featured -->
   <a href="model_evaluation_matrix.html" class="card card-1">
     <img class="card-img" src="images/model_evaluation_thumb.png" alt="Pre-Trained Model Trade-Off Matrix">
     <div class="card-overlay"></div>
@@ -316,7 +388,7 @@
     </div>
   </a>
 
-  <!-- 4 — tall -->
+  <!-- 4 -->
   <a href="neural-network-visual.html" class="card card-4">
     <img class="card-img" src="images/neural-network-visual.jpg" alt="Neural Network">
     <div class="card-overlay"></div>
@@ -380,6 +452,41 @@
       <span class="card-tag">Generative AI</span>
       <h3>Smart Travel by AirLytics</h3>
       <span class="card-arrow">View Project →</span>
+    </div>
+  </a>
+
+  <!-- 10 — Semantic Threat Detector (full width banner) -->
+  <a href="semantic_threat_detector.html" class="card card-10">
+    <div class="badge-live"><span class="live-dot"></span>Live Demo</div>
+    <div class="card-10-inner">
+      <div>
+        <span class="card-10-tag">AI Security · NLP Research</span>
+        <h3>Semantic Threat Detector</h3>
+        <p>Real-time detection of adversarial intent, prompt injections, and manipulation patterns that keyword filters miss — by analyzing meaning in semantic vector space.</p>
+        <span class="card-10-arrow">Run Demo →</span>
+      </div>
+      <div class="score-col">
+        <div class="score-row-mini">
+          <span class="score-label-mini">Benign query</span>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:8%;background:#00D97E;"></div></div>
+          <span class="score-num-mini" style="color:#00D97E;">8</span>
+        </div>
+        <div class="score-row-mini">
+          <span class="score-label-mini">Subtle drift</span>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:52%;background:#F5A623;"></div></div>
+          <span class="score-num-mini" style="color:#F5A623;">52</span>
+        </div>
+        <div class="score-row-mini">
+          <span class="score-label-mini">Social engineering</span>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:71%;background:#F5A623;"></div></div>
+          <span class="score-num-mini" style="color:#F5A623;">71</span>
+        </div>
+        <div class="score-row-mini">
+          <span class="score-label-mini">Prompt injection</span>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:97%;background:#E8614A;"></div></div>
+          <span class="score-num-mini" style="color:#E8614A;">97</span>
+        </div>
+      </div>
     </div>
   </a>
 
