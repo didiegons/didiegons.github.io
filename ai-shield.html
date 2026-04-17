@@ -9,7 +9,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Fonts + Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=JetBrains+Mono:wght@400;600&family=Fraunces:wght@700;900&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
@@ -32,22 +32,68 @@
 
     details > summary .arrow { transition: transform .25s; display:inline-block; }
     details[open] > summary .arrow { transform: rotate(180deg); }
+
+    /* ── Portfolio Nav ── */
+    .port-nav {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(11,16,32,0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+    }
+    .port-nav-inner {
+      max-width: 80rem; margin: 0 auto;
+      padding: 0 1.5rem;
+      height: 56px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .port-brand {
+      font-family: 'Fraunces', serif;
+      font-size: 1.1rem; font-weight: 700;
+      color: #F5B020; text-decoration: none;
+    }
+    .port-links { display: flex; align-items: center; gap: 4px; list-style: none; }
+    .port-links a {
+      font-family: 'Instrument Sans', sans-serif;
+      font-size: 0.8rem; font-weight: 500;
+      color: #96A3BA; text-decoration: none;
+      padding: 0.35rem 0.7rem; border-radius: 5px;
+      transition: color 0.2s, background 0.2s;
+      display: block;
+    }
+    .port-links a:hover { color: #F2F6FF; background: rgba(255,255,255,0.06); }
+    .port-links a.active { color: #F5B020; }
+    .port-links .li-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: #0a66c2; color: #fff !important;
+      border-radius: 6px;
+    }
+    .port-links .li-btn:hover { background: #0856a8 !important; }
+
+    @media(max-width: 600px) {
+      .port-links a .lbl { display: none; }
+    }
   </style>
 </head>
 <body class="bg-[#0b1020] text-slate-100">
 
-  <!-- ── Sticky Nav ─────────────────────────────────── -->
-  <nav class="sticky top-0 z-50 bg-[#0b1020]/80 backdrop-blur border-b border-white/10">
-    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-3 text-sm">
-      <span class="font-bold text-slate-300 hidden sm:block font-mono text-xs tracking-widest uppercase text-indigo-300/70">Artifact 3</span>
-      <div class="flex items-center gap-2 ml-auto">
-        <a href="index.html"    class="px-3 py-1.5 rounded-md border border-white/15 bg-white/5 hover:bg-white/10 transition">🏠 Home</a>
-        <a href="projects.html" class="px-3 py-1.5 rounded-md border border-white/15 bg-white/5 hover:bg-white/10 transition">📁 Projects</a>
-        <a href="ai-shield.jpg"
-           class="px-3 py-1.5 rounded-md border border-emerald-500/40 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 transition flex items-center gap-1.5 font-semibold">
-          <span class="live-dot"></span> Launch App
-        </a>
-      </div>
+  <!-- ── Portfolio Nav ───────────────────────────────── -->
+  <nav class="port-nav">
+    <div class="port-nav-inner">
+      <a href="index.html" class="port-brand">Dayo Portfolio</a>
+      <ul class="port-links">
+        <li><a href="index.html"><span class="lbl">Home</span></a></li>
+        <li><a href="about.html"><span class="lbl">About</span></a></li>
+        <li><a href="projects.html" class="active"><span class="lbl">Projects</span></a></li>
+        <li><a href="index.html#skills"><span class="lbl">Skills</span></a></li>
+        <li><a href="index.html#contact"><span class="lbl">Contact</span></a></li>
+        <li>
+          <a href="https://www.linkedin.com/in/dayoegonu/" target="_blank" rel="noopener" class="li-btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+            <span class="lbl">LinkedIn</span>
+          </a>
+        </li>
+      </ul>
     </div>
   </nav>
 
@@ -71,16 +117,11 @@
         and actionable guidance without jargon.
       </p>
 
-      <!-- Shield illustration banner -->
+      <!-- Hero banner image -->
       <div class="mt-6 overflow-hidden rounded-2xl border border-white/10 shadow">
-        <div class="w-full h-48 md:h-64 bg-gradient-to-br from-[#0d1f35] via-[#0b2a20] to-[#0b1020] flex items-center justify-center">
-          <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M80 8L16 36v44c0 38 27.8 73.4 64 80 36.2-6.6 64-42 64-80V36L80 8z"
-                  fill="rgba(0,255,136,0.08)" stroke="#00ff88" stroke-width="3"/>
-            <path d="M52 80l20 20 36-36" stroke="#00ff88" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="80" cy="80" r="68" stroke="rgba(0,255,136,0.1)" stroke-width="1" stroke-dasharray="6 6"/>
-          </svg>
-        </div>
+        <img src="images/ai-shield.jpg" alt="AI Shield — AI-powered cybersecurity assistant"
+             class="w-full object-cover"
+             style="height:280px;object-position:center;opacity:0.92;"/>
       </div>
     </div>
   </header>
