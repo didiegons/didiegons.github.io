@@ -7,38 +7,22 @@
 <link href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:       #090C18;
-  --bg2:      #0D1025;
-  --surf:     #111528;
-  --surf2:    #172038;
-  --bdr:      #1E2D50;
-  --bdg:      #7B5C1A;
-  --txt:      #E8DEBA;
-  --muted:    #7A8BAA;
-  --gold:     #E8A820;
-  --gdim:     #C48A10;
-  --gbg:      rgba(232,168,32,.08);
-  --em:       #2ECC8A;
-  --embg:     rgba(46,204,138,.08);
-  --crim:     #E84040;
-  --crimbg:   rgba(232,64,64,.08);
-  --pc:       #7BA7D4;
-  --sc:       #C0976A;
-  --kc:       #E8A820;
+  --bg:#090C18;--bg2:#0D1025;--surf:#111528;--surf2:#172038;
+  --bdr:#1E2D50;--bdg:#7B5C1A;--txt:#E8DEBA;--muted:#7A8BAA;
+  --gold:#E8A820;--gdim:#C48A10;--gbg:rgba(232,168,32,.08);
+  --em:#2ECC8A;--embg:rgba(46,204,138,.08);
+  --crim:#E84040;--crimbg:rgba(232,64,64,.08);
+  --pc:#7BA7D4;--sc:#C0976A;--kc:#E8A820;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%;overflow:hidden}
 body{font-family:'Lato',sans-serif;background:var(--bg);color:var(--txt);}
-
-/* grid bg */
 body::after{content:'';position:fixed;inset:0;
   background-image:linear-gradient(rgba(232,168,32,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(232,168,32,.03) 1px,transparent 1px);
   background-size:60px 60px;pointer-events:none;z-index:0;}
-
-/* ── LAYOUT ─────────────────────── */
 .app{display:grid;grid-template-columns:268px 1fr 288px;grid-template-rows:58px 1fr;height:100vh;position:relative;z-index:1;}
 
-/* ── TOPBAR ─────────────────────── */
+/* TOPBAR */
 .topbar{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:0 18px;
   background:rgba(9,12,24,.97);border-bottom:1px solid var(--bdg);position:relative;}
 .topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.35;}
@@ -46,6 +30,8 @@ body::after{content:'';position:fixed;inset:0;
 .logo-sub{font-size:9px;color:var(--muted);font-family:'JetBrains Mono',monospace;letter-spacing:.15em;text-transform:uppercase;}
 .nav-a{font-size:12px;color:var(--muted);text-decoration:none;padding:5px 10px;border-radius:4px;border:1px solid transparent;transition:color .2s,border-color .2s;}
 .nav-a:hover{color:var(--txt);border-color:var(--bdr);}
+.back-btn{color:var(--gold);border-color:rgba(232,168,32,.3);background:var(--gbg);font-family:'Cinzel',serif;font-weight:600;}
+.back-btn:hover{border-color:var(--gold);background:rgba(232,168,32,.15);color:var(--gold);}
 .topbar-right{display:flex;align-items:center;gap:8px;}
 
 /* player bar */
@@ -62,7 +48,7 @@ body::after{content:'';position:fixed;inset:0;
 .bicon{width:28px;height:28px;border-radius:5px;border:1px solid var(--bdr);background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:14px;opacity:.3;transition:opacity .3s,border-color .3s,box-shadow .3s;}
 .bicon.earned{opacity:1;border-color:var(--gold);box-shadow:0 0 10px rgba(232,168,32,.3);}
 
-/* ── SIDEBAR LEFT ───────────────── */
+/* SIDEBAR LEFT */
 .sleft{background:var(--bg2);border-right:1px solid var(--bdr);display:flex;flex-direction:column;overflow-y:auto;}
 .sleft::-webkit-scrollbar{width:3px;}
 .sleft::-webkit-scrollbar-thumb{background:var(--bdr);}
@@ -84,7 +70,7 @@ body::after{content:'';position:fixed;inset:0;
 .resetbtn{width:100%;padding:6px;background:none;border:1px solid var(--bdr);border-radius:5px;color:var(--muted);font-size:11px;cursor:pointer;transition:border-color .2s,color .2s;}
 .resetbtn:hover{border-color:var(--crim);color:var(--crim);}
 
-/* ── ARENA ──────────────────────── */
+/* ARENA */
 .arena{background:var(--bg);display:flex;flex-direction:column;overflow:hidden;}
 .arena-body{flex:1;overflow-y:auto;padding:26px 28px;}
 .arena-body::-webkit-scrollbar{width:3px;}
@@ -124,7 +110,7 @@ body::after{content:'';position:fixed;inset:0;
 .nxt.show{display:inline-block;}
 .nxt:hover{box-shadow:0 0 18px rgba(232,168,32,.4);}
 
-/* ── WIZARD PANEL ───────────────── */
+/* WIZARD PANEL */
 .sright{background:var(--bg2);border-left:1px solid var(--bdr);display:flex;flex-direction:column;overflow:hidden;}
 .whdr{padding:12px 14px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:9px;flex-shrink:0;}
 .wav{width:34px;height:34px;background:var(--gbg);border:1px solid rgba(232,168,32,.3);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:17px;}
@@ -153,7 +139,7 @@ body::after{content:'';position:fixed;inset:0;
 .wsend{background:none;border:none;cursor:pointer;color:var(--gold);font-size:13px;padding:2px 5px;opacity:.7;transition:opacity .2s;}
 .wsend:hover{opacity:1;}
 
-/* ── MODALS ─────────────────────── */
+/* MODALS */
 .overlay{position:fixed;inset:0;background:rgba(9,12,24,.93);backdrop-filter:blur(10px);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;}
 .overlay.hidden{display:none;}
 .mcard{background:var(--surf);border:1px solid var(--bdg);border-radius:14px;padding:32px;max-width:440px;width:100%;box-shadow:0 0 60px rgba(232,168,32,.15);position:relative;}
@@ -181,6 +167,14 @@ body::after{content:'';position:fixed;inset:0;
 ::-webkit-scrollbar{width:3px;height:3px;}
 ::-webkit-scrollbar-thumb{background:var(--bdr);}
 
+/* API key setup banner inside wizard */
+.api-setup{background:var(--surf);border:1px solid rgba(123,167,212,.3);border-radius:7px;padding:10px 12px;margin:8px 0;font-size:.78rem;color:var(--muted);}
+.api-setup a{color:var(--pc);text-decoration:underline;}
+.api-row{display:flex;gap:5px;margin-top:6px;}
+.api-input{flex:1;background:var(--bg);border:1px solid var(--bdr);border-radius:5px;padding:5px 8px;font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--txt);outline:none;}
+.api-input:focus{border-color:var(--gold);}
+.api-save{background:var(--gdim);color:#000;border:none;border-radius:5px;padding:5px 10px;font-size:.75rem;font-weight:700;cursor:pointer;}
+
 @media(max-width:880px){
   body,html{overflow:auto;}
   .app{grid-template-columns:1fr;height:auto;min-height:100vh;}
@@ -195,7 +189,7 @@ body::after{content:'';position:fixed;inset:0;
 <div class="overlay" id="keyModal">
   <div class="mcard">
     <h2>The Wizard Awaits</h2>
-    <p>Enter your Anthropic API key to unlock Merlin the Security Wizard. Your key stays in your browser only.</p>
+    <p>Enter your Anthropic API key to unlock Merlin the Security Wizard — or train without him in demo mode. Your key stays in your browser only.</p>
     <input type="password" class="minput" id="modalKey" placeholder="sk-ant-api03-..." autocomplete="off"/>
     <p class="mnote">🔒 Stored in sessionStorage — clears when tab closes</p>
     <div class="macts">
@@ -237,7 +231,7 @@ body::after{content:'';position:fixed;inset:0;
       </div>
     </div>
     <div class="topbar-right">
-      <a href="security-knights.html" class="nav-a">📜 About</a>
+      <a href="security-knights.html" class="nav-a back-btn">← Back</a>
       <a href="index.html" class="nav-a">🏠 Home</a>
       <a href="projects.html" class="nav-a">📁 Projects</a>
     </div>
@@ -303,12 +297,7 @@ body::after{content:'';position:fixed;inset:0;
 </div>
 
 <script>
-// ------------------------------------------------
-// SECURITY KNIGHTS — GAME ENGINE (FIXED)
-// ------------------------------------------------
-// All challenge code uses plain strings (no nested template literals) — fixes browser parsing
 var CHALLENGES = [
-  // -- PAIGE -- --
   { id:1, rank:'paige', xp:10, topic:'SQL Injection', title:'The Poisoned Scroll',
     body:'A kingdom\'s library lets visitors search scrolls by name. Look at the search code. What is the vulnerability?',
     code:'const query = "SELECT * FROM scrolls\n  WHERE title = \'" + userInput + "\'";\ndb.execute(query); // userInput goes straight in!',
@@ -337,14 +326,13 @@ var CHALLENGES = [
     body:'A knight sends credentials across the castle network. Which path is safe?',
     code:'',
     options:['HTTP — travels as readable parchment across the network','HTTPS — message is encrypted in a sealed chest (TLS)','FTP — the fastest courier in the realm','Credentials are always safe on local networks'],
-    correct:1, explanation:'HTTP transmits data in plain text — any spy on the network (or a coffee-shop Wi-Fi) can read it. HTTPS encrypts the connection with TLS. Never transmit credentials or session tokens over HTTP.' },
+    correct:1, explanation:'HTTP transmits data in plain text — any spy on the network can read it. HTTPS encrypts the connection with TLS. Never transmit credentials or session tokens over HTTP.' },
 
-  // -- SQUIRE -- --
   { id:6, rank:'squire', xp:20, topic:'CSRF', title:'The Forged Royal Decree',
     body:'A knight visits an evil page that silently makes a bank transfer on their behalf. What is this attack?',
     code:'<!-- On the sorcerer\'s website -->\n<img src="https://royalbank.com/transfer?to=evil&amount=1000"\n     style="display:none" />',
     options:['SQL Injection targeting the bank','Cross-Site Request Forgery (CSRF)','Cross-Site Scripting (XSS)','Man-in-the-Middle Attack'],
-    correct:1, explanation:'CSRF tricks the browser into sending authenticated requests the user never intended. The browser automatically includes session cookies, so the bank thinks it\'s legitimate. Fix: CSRF tokens (secret random values validated server-side) and SameSite cookie attributes.' },
+    correct:1, explanation:'CSRF tricks the browser into sending authenticated requests the user never intended. Fix: CSRF tokens (secret random values validated server-side) and SameSite cookie attributes.' },
 
   { id:7, rank:'squire', xp:20, topic:'IDOR / Access Control', title:'The Stolen Key',
     body:'Knight Alice requests another knight\'s private documents. What flaw is this?',
@@ -356,50 +344,49 @@ var CHALLENGES = [
     body:'Which password hashing choice would horrify the castle\'s security council?',
     code:'',
     options:['bcrypt with cost factor 12','Argon2id with memory 64MB','MD5 — fast and widely supported','scrypt with N=32768'],
-    correct:2, explanation:'MD5 is a fast hashing algorithm. Modern GPUs crack MD5 password hashes at ~200 billion per second. Password hashing needs SLOW algorithms (bcrypt, Argon2, scrypt) that are deliberately expensive — making brute-force attacks take years instead of seconds.' },
+    correct:2, explanation:'MD5 is a fast hashing algorithm. Modern GPUs crack MD5 hashes at ~200 billion per second. Password hashing needs SLOW algorithms (bcrypt, Argon2, scrypt) — making brute-force take years instead of seconds.' },
 
   { id:9, rank:'squire', xp:20, topic:'File Upload', title:'The Trojan Scroll',
     body:'An attacker uploads a file named "evil.php". What is the correct defense?',
     code:'app.post("/upload", (req, res) => {\n  const name = req.file.originalname; // "evil.php"\n  fs.writeFileSync("./uploads/" + name, req.file.buffer);\n  res.send("Uploaded: " + name); // Can now be executed!\n});',
     options:['Only check the file extension in the filename','Validate MIME type from the Content-Type header only','Validate content by magic bytes, restrict extensions, store outside web root, rename files','Limit file size to under 10MB'],
-    correct:2, explanation:'Checking only extensions is trivially bypassed (rename evil.php to evil.jpg). Proper defenses: validate content type via magic bytes, whitelist safe extensions, store uploads outside the web root so they cannot be executed, and rename files to random UUIDs.' },
+    correct:2, explanation:'Checking only extensions is trivially bypassed. Proper defenses: validate content type via magic bytes, whitelist safe extensions, store uploads outside the web root, and rename files to random UUIDs.' },
 
   { id:10, rank:'squire', xp:25, topic:'Security Headers', title:'The Missing Shield',
     body:'Which HTTP response header controls which scripts can execute on your page — blocking most XSS attacks?',
     code:'',
     options:['X-Frame-Options','Strict-Transport-Security (HSTS)','Content-Security-Policy (CSP)','X-Content-Type-Options'],
-    correct:2, explanation:'Content-Security-Policy (CSP) tells the browser which sources of scripts and styles are trusted. A strong CSP like default-src \'self\' blocks inline scripts and third-party injections, drastically reducing XSS impact even if a vulnerability exists.' },
+    correct:2, explanation:'Content-Security-Policy (CSP) tells the browser which sources of scripts and styles are trusted. A strong CSP like default-src \'self\' blocks inline scripts and third-party injections, drastically reducing XSS impact.' },
 
-  // -- KNIGHT -- --
   { id:11, rank:'knight', xp:30, topic:'JWT Security', title:'The Forged Sigil',
     body:'A sorcerer modifies a JWT and changes the algorithm to "none". What catastrophe occurs?',
     code:'// Original JWT header:\n{ "alg": "HS256", "typ": "JWT" }\n\n// Attacker\'s modified JWT:\n{ "alg": "none", "typ": "JWT" }\n// Payload: { "role": "admin" } — no signature needed!',
     options:['The server rejects the unsigned token','The token expires faster','A vulnerable server accepts it with no signature — granting admin access','The JWT becomes larger'],
-    correct:2, explanation:'The alg:none attack exploits libraries that skip signature verification when alg is "none". The attacker crafts any payload they want. Fix: explicitly reject alg:none server-side, pin the expected algorithm, and never trust the algorithm field from the token itself.' },
+    correct:2, explanation:'The alg:none attack exploits libraries that skip signature verification when alg is "none". Fix: explicitly reject alg:none server-side, pin the expected algorithm, and never trust the algorithm field from the token itself.' },
 
   { id:12, rank:'knight', xp:30, topic:'Race Conditions', title:'The Twin Swords',
     body:'Two knights simultaneously request the last 100 gold. Both pass the balance check. What dark magic occurs?',
     code:'async function withdraw(amount) {\n  const balance = await getBalance(); // Both read: 100\n  if (balance >= amount) {\n    await deductBalance(amount);       // Both deduct 100!\n    return "Success";                  // Treasury: -100\n  }\n}',
     options:['SQL Injection in deductBalance','A race condition — both pass the check before either deducts','Missing authentication on the endpoint','The async/await pattern is broken'],
-    correct:1, explanation:'This is a TOCTOU (Time-of-Check-Time-of-Use) race condition. Both requests read balance=100, both pass the check, both deduct 100, resulting in -100. Fix: use database transactions with row-level locking (SELECT FOR UPDATE) or optimistic locking with version numbers.' },
+    correct:1, explanation:'This is a TOCTOU race condition. Both requests read balance=100, both pass the check, both deduct 100 — resulting in -100. Fix: database transactions with row-level locking (SELECT FOR UPDATE) or optimistic locking.' },
 
   { id:13, rank:'knight', xp:35, topic:'XXE', title:'The Ancient Scroll Parser',
     body:'The castle\'s XML parser processes this document. What can an attacker read?',
     code:'<?xml version="1.0"?>\n<!DOCTYPE data [\n  <!ENTITY secret SYSTEM "file:///etc/passwd">\n]>\n<request>\n  <data>&secret;</data>\n</request>',
     options:['XSS — XML rendered in the browser','XXE — reads arbitrary files from the server','CSRF — forges requests via XML','SQL Injection in the XML'],
-    correct:1, explanation:'XML External Entity (XXE) attacks abuse XML parsers that process external entity references. This reads /etc/passwd. Attackers can also use XXE for SSRF (hitting internal services). Fix: disable external entity processing in your XML parser — most modern parsers have a FEATURE_SECURE_PROCESSING flag.' },
+    correct:1, explanation:'XML External Entity (XXE) attacks abuse XML parsers that process external entity references. This reads /etc/passwd. Fix: disable external entity processing in your XML parser — most parsers have a FEATURE_SECURE_PROCESSING flag.' },
 
   { id:14, rank:'knight', xp:30, topic:'Dependencies', title:'The Cursed Artifact',
     body:'The castle imports a spell library last updated 4 years ago with 3 critical CVEs. What is the primary risk?',
     code:'// package.json\n"dependencies": {\n  "ancient-spell-lib": "^1.0.0",  // CVE-2019-XXXX critical\n  "medieval-crypto": "0.0.1"       // Unmaintained since 2020\n}',
     options:['The library name is not descriptive','Using ^ allows minor version updates','Known CVEs in dependencies can be exploited through your application','The library may have breaking changes'],
-    correct:2, explanation:'Using components with known vulnerabilities is OWASP A06. A CVE in a dependency can be exploited through your application even if your own code is perfect. Tools like npm audit, Snyk, or Dependabot continuously monitor for vulnerable packages. Always patch promptly.' },
+    correct:2, explanation:'Using components with known vulnerabilities is OWASP A06. A CVE in a dependency can be exploited through your application even if your own code is perfect. Use npm audit, Snyk, or Dependabot — always patch promptly.' },
 
   { id:15, rank:'knight', xp:35, topic:'Logging & Monitoring', title:'The Silent Watchtower',
     body:'An attack went undetected for 72 hours. The logs show what happened — but nobody was alerted. Which OWASP category failed?',
     code:'// The castle\'s event log:\n[03:42] Login failed x 500  <- no alert triggered\n[03:43] Admin account accessed\n[03:44] 50,000 records exported\n[03:45] ...\n// First alert: 72 hours later',
     options:['Broken Access Control','Security Misconfiguration','Security Logging and Monitoring Failures','Cryptographic Failures'],
-    correct:2, explanation:'OWASP A09: Security Logging and Monitoring Failures. 500 failed logins should trigger an immediate alert. Best practices: log all authentication events, alert on anomalies (velocity, unusual geography), retain logs 90+ days, and regularly test your detection capability.' }
+    correct:2, explanation:'OWASP A09: Security Logging and Monitoring Failures. 500 failed logins should trigger an immediate alert. Best practices: log all auth events, alert on anomalies, retain logs 90+ days, and regularly test your detection capability.' }
 ];
 
 var RANK_ORDER = ['paige','squire','knight'];
@@ -408,7 +395,6 @@ var RANK_ICONS = { paige:'🛡️', squire:'⚔️', knight:'👑' };
 var RANK_LABELS= { paige:'Paige', squire:'Squire', knight:'Knight' };
 var RANK_CSS   = { paige:'rp', squire:'rs', knight:'rk' };
 
-// State
 var state = JSON.parse(localStorage.getItem('sk2_state') || 'null') || { xp:0, rank:'paige', completed:[], badges:[] };
 var current = null;
 var answered = false;
@@ -418,9 +404,7 @@ var wizBusy = false;
 
 var WIZARD_SYSTEM = 'You are Merlin, a wise medieval security wizard mentor. You help developers understand OWASP Top 10, secure coding, and vulnerability prevention. Speak with a gentle, warm, encouraging medieval tone. Keep responses under 130 words. Use bullet points for steps. Reference the current challenge topic if relevant.';
 
-// -- WAIT FOR DOM ---------------------------------- --
 document.addEventListener('DOMContentLoaded', function() {
-  // Wire up modal buttons
   document.getElementById('btnSave').addEventListener('click', onSaveKey);
   document.getElementById('btnDemo').addEventListener('click', onDemo);
   document.getElementById('beginBtn').addEventListener('click', beginTraining);
@@ -428,19 +412,13 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('wsend').addEventListener('click', sendWizard);
   document.getElementById('winput').addEventListener('keydown', function(e){ if(e.key==='Enter') sendWizard(); });
   document.getElementById('bdgClose').addEventListener('click', closeBadge);
-
-  // Hint buttons
   document.querySelectorAll('.hbtn').forEach(function(btn){
     btn.addEventListener('click', function(){ askHint(btn.getAttribute('data-hint')); });
   });
-
-  // Show modal or start
   if (apiKey) {
     demoMode = false;
     document.getElementById('keyModal').classList.add('hidden');
     init();
-  } else {
-    // Modal is already visible (no hidden class)
   }
 });
 
@@ -463,17 +441,13 @@ function onDemo() {
   init();
 }
 
-function init() {
-  renderQuestList();
-  updateTopBar();
-}
+function init() { renderQuestList(); updateTopBar(); }
 
 function beginTraining() {
   var first = CHALLENGES.find(function(c){ return c.rank==='paige' && !state.completed.includes(c.id); });
   if (first) loadChallenge(first.id);
 }
 
-// -- RENDER QUEST LIST ----------------------------- --
 function renderQuestList() {
   var curIdx = RANK_ORDER.indexOf(state.rank);
   RANK_ORDER.forEach(function(rank, ri) {
@@ -501,7 +475,6 @@ function renderQuestList() {
   });
 }
 
-// -- UPDATE TOP BAR -------------------------------- --
 function updateTopBar() {
   var rank = state.rank;
   var xp   = state.xp;
@@ -520,52 +493,39 @@ function updateTopBar() {
   });
 }
 
-// -- LOAD CHALLENGE -------------------------------- --
 function loadChallenge(id) {
   current = CHALLENGES.find(function(c){ return c.id===id; });
   if (!current) return;
   answered = false;
   renderQuestList();
-
   var rc = { paige:{ color:'var(--pc)', label:'🛡️ Paige' }, squire:{ color:'var(--sc)', label:'⚔️ Squire' }, knight:{ color:'var(--kc)', label:'👑 Knight' } };
   var r = rc[current.rank];
-
-  var codeHtml = current.code
-    ? '<div class="codebox">' + esc(current.code) + '</div>'
-    : '';
-
+  var codeHtml = current.code ? '<div class="codebox">' + esc(current.code) + '</div>' : '';
   var letters = ['A','B','C','D'];
   var optsHtml = current.options.map(function(o, i){
     return '<button class="opt" id="opt' + i + '" onclick="pickOpt(' + i + ')">' +
       '<span class="oltr">' + letters[i] + '</span>' + esc(o) + '</button>';
   }).join('');
-
   document.getElementById('arena').innerHTML =
     '<div class="ch-card">' +
-    '  <div class="ch-hdr">' +
-    '    <div>' +
-    '      <div class="ch-rtag" style="color:' + r.color + ';border-color:' + r.color + '44">' + r.label + ' · ' + current.topic + '</div>' +
-    '      <div class="ch-top">OWASP Challenge #' + current.id + '</div>' +
-    '    </div>' +
-    '    <div class="ch-xp">+' + current.xp + ' XP</div>' +
-    '  </div>' +
-    '  <div class="ch-title">' + esc(current.title) + '</div>' +
-    '  <div class="ch-body">' + esc(current.body) + '</div>' +
+    '<div class="ch-hdr"><div>' +
+    '<div class="ch-rtag" style="color:' + r.color + ';border-color:' + r.color + '44">' + r.label + ' · ' + current.topic + '</div>' +
+    '<div class="ch-top">OWASP Challenge #' + current.id + '</div>' +
+    '</div><div class="ch-xp">+' + current.xp + ' XP</div></div>' +
+    '<div class="ch-title">' + esc(current.title) + '</div>' +
+    '<div class="ch-body">' + esc(current.body) + '</div>' +
     codeHtml +
-    '  <div class="opts">' + optsHtml + '</div>' +
-    '  <div class="expl" id="expl"></div>' +
-    '  <button class="nxt" id="nxtBtn" onclick="nextChallenge()">Next Quest →</button>' +
+    '<div class="opts">' + optsHtml + '</div>' +
+    '<div class="expl" id="expl"></div>' +
+    '<button class="nxt" id="nxtBtn" onclick="nextChallenge()">Next Quest →</button>' +
     '</div>';
-
   addWizMsg('wiz', '⚔️ New challenge: <strong>' + esc(current.title) + '</strong><br>Topic: ' + current.topic + '. Ask me for hints!');
 }
 
-// -- PICK OPTION ----------------------------------- --
 function pickOpt(idx) {
   if (answered || !current) return;
   answered = true;
   var correct = idx === current.correct;
-
   current.options.forEach(function(_, i){
     var btn = document.getElementById('opt' + i);
     if (btn) {
@@ -574,30 +534,22 @@ function pickOpt(idx) {
       else if (i === idx && !correct) btn.classList.add('wrong');
     }
   });
-
   var expl = document.getElementById('expl');
-  if (expl) {
-    expl.textContent = current.explanation;
-    expl.className = 'expl show ' + (correct ? 'ck' : 'wk');
-  }
+  if (expl) { expl.textContent = current.explanation; expl.className = 'expl show ' + (correct ? 'ck' : 'wk'); }
   var nxt = document.getElementById('nxtBtn');
   if (nxt) nxt.className = 'nxt show';
-
   if (correct) {
     var prevXP = state.xp;
     state.xp += current.xp;
     state.completed.push(current.id);
     checkRankUp(prevXP);
-    saveState();
-    updateTopBar();
-    renderQuestList();
+    saveState(); updateTopBar(); renderQuestList();
     addWizMsg('wiz', '🎉 <strong>Well done!</strong> You defeated the ' + current.topic + ' challenge and earned <strong>+' + current.xp + ' XP</strong>!');
   } else {
     addWizMsg('wiz', '⚠️ Not quite! The correct answer: <strong>' + esc(current.options[current.correct]) + '</strong>. Ask me to explain more!');
   }
 }
 
-// -- NEXT CHALLENGE -------------------------------- --
 function nextChallenge() {
   var rankChallenges = CHALLENGES.filter(function(c){ return c.rank===state.rank; });
   var next = rankChallenges.find(function(c){ return !state.completed.includes(c.id); });
@@ -609,15 +561,11 @@ function nextChallenge() {
     if (nextQ) { loadChallenge(nextQ.id); return; }
   }
   document.getElementById('arena').innerHTML =
-    '<div class="welcome">' +
-    '  <div class="wc">👑</div>' +
-    '  <h2>Quest Complete!</h2>' +
-    '  <p>You have mastered all challenges and earned the rank of <strong style="color:var(--gold)">Security Knight</strong>! Total XP: ' + state.xp + '</p>' +
-    '  <button class="begin-btn" onclick="resetAll()">Train Again</button>' +
-    '</div>';
+    '<div class="welcome"><div class="wc">👑</div><h2>Quest Complete!</h2>' +
+    '<p>You have mastered all challenges and earned the rank of <strong style="color:var(--gold)">Security Knight</strong>! Total XP: ' + state.xp + '</p>' +
+    '<button class="begin-btn" onclick="resetAll()">Train Again</button></div>';
 }
 
-// -- RANK UP --------------------------------------- --
 function checkRankUp(prevXP) {
   RANK_ORDER.forEach(function(rank, i){
     if (i === 0) return;
@@ -648,12 +596,8 @@ function showBadge(rank) {
   document.getElementById('bdgModal').classList.remove('hidden');
 }
 
-function closeBadge() {
-  document.getElementById('bdgModal').classList.add('hidden');
-  updateTopBar();
-}
+function closeBadge() { document.getElementById('bdgModal').classList.add('hidden'); updateTopBar(); }
 
-// -- WIZARD ---------------------------------------- --
 function sendWizard() {
   var input = document.getElementById('winput');
   var text = input.value.trim();
@@ -697,7 +641,7 @@ function callWizard(text) {
       'anthropic-dangerous-direct-browser-access':'true'
     },
     body: JSON.stringify({
-      model:'claude-sonnet-4-20250514',
+      model:'claude-sonnet-4-6',
       max_tokens:300,
       system: WIZARD_SYSTEM,
       messages:[{ role:'user', content: text + context }]
@@ -712,7 +656,7 @@ function callWizard(text) {
   })
   .catch(function(err){
     typing.remove();
-    addWizMsg('wiz', '⚠️ Connection issue: ' + err.message + '. Check your API key in the settings.');
+    addWizMsg('wiz', '⚠️ Connection issue: ' + err.message + '. Check your API key and try again.');
     wizBusy = false;
   });
 }
@@ -726,10 +670,9 @@ function getDemoReply(text) {
   if (t.includes('password') || t.includes('hash')) return '🔐 <strong>Password hashing:</strong> Never plain text, never MD5/SHA-256 (too fast).<br><br>Use: <strong>bcrypt</strong> (cost 12+), <strong>Argon2id</strong> (OWASP recommended), or <strong>scrypt</strong>. These are deliberately slow — making brute-force take years.';
   if (t.includes('jwt')) return '🧙 <strong>JWT attacks:</strong> The "alg:none" trick fools vulnerable libraries into skipping signature verification.<br><br>Shield: always pin the expected algorithm server-side and explicitly reject "none".';
   if (t.includes('race') || t.includes('toctou')) return '⚔️ <strong>Race conditions</strong> occur when two operations both pass a check before either completes the action.<br><br>Shield: database transactions with <strong>row-level locking</strong> (SELECT FOR UPDATE) or optimistic locking with version fields.';
-  return '🧙 <strong>Greetings!</strong> Add your Anthropic API key for full wizard wisdom. In demo mode I can help with: SQL Injection, XSS, CSRF, JWT, race conditions, passwords, file uploads, and any OWASP Top 10 topic. Just ask!';
+  return '🧙 <strong>Greetings!</strong> In demo mode I can help with: SQL Injection, XSS, CSRF, JWT, race conditions, passwords, file uploads, and OWASP Top 10. Add your Anthropic API key for full wizard wisdom — just refresh and enter it on the welcome screen!';
 }
 
-// -- HELPERS --------------------------------------- --
 function addWizMsg(role, html) {
   var wmsgs = document.getElementById('wmsgs');
   var d = document.createElement('div');
@@ -761,16 +704,9 @@ function mdToHtml(md) {
     .replace(/\n/g,'<br>');
 }
 
-function esc(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function saveState() { localStorage.setItem('sk2_state', JSON.stringify(state)); }
-
-function resetAll() {
-  localStorage.removeItem('sk2_state');
-  location.reload();
-}
+function resetAll() { localStorage.removeItem('sk2_state'); location.reload(); }
 </script>
 </body>
 </html>
