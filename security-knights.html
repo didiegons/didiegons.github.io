@@ -6,7 +6,7 @@
   <title>Security Knights | Dayo Egonu</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=Lato:wght@300;400;700;900&family=Fraunces:wght@700;900&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; }
     .font-uncial { font-family: 'Uncial Antiqua', serif; }
@@ -17,22 +17,65 @@
     @keyframes glow{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.8)}}
     details > summary .arr { transition:transform .25s; display:inline-block; }
     details[open] > summary .arr { transform:rotate(180deg); }
+
+    /* ── Portfolio Nav ── */
+    .port-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(11,16,32,0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+    }
+    .port-nav-inner {
+      max-width: 80rem; margin: 0 auto;
+      padding: 0 1.5rem;
+      height: 56px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .port-brand {
+      font-family: 'Fraunces', serif;
+      font-size: 1.1rem; font-weight: 700;
+      color: #F5B020; text-decoration: none;
+    }
+    .port-links { display: flex; align-items: center; gap: 4px; list-style: none; }
+    .port-links a {
+      font-family: 'Instrument Sans', sans-serif;
+      font-size: 0.8rem; font-weight: 500;
+      color: #96A3BA; text-decoration: none;
+      padding: 0.35rem 0.7rem; border-radius: 5px;
+      transition: color 0.2s, background 0.2s;
+      display: block;
+    }
+    .port-links a:hover { color: #F2F6FF; background: rgba(255,255,255,0.06); }
+    .port-links a.active { color: #F5B020; }
+    .port-links .li-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: #0a66c2; color: #fff !important;
+      border-radius: 6px;
+    }
+    .port-links .li-btn:hover { background: #0856a8 !important; }
+    @media(max-width:600px) { .port-links a .lbl { display: none; } }
   </style>
 </head>
 <body class="bg-[#0b1020] text-slate-100">
 
-  <!-- Nav -->
-  <nav class="sticky top-0 z-50 bg-[#0b1020]/80 backdrop-blur border-b border-white/10">
-    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-3 text-sm">
-      <span class="font-uncial text-amber-400/70 text-sm hidden sm:block">Security Knights</span>
-      <div class="flex items-center gap-2 ml-auto">
-        <a href="index.html"    class="px-3 py-1.5 rounded-md border border-white/15 bg-white/5 hover:bg-white/10 transition">🏠 Home</a>
-        <a href="projects.html" class="px-3 py-1.5 rounded-md border border-white/15 bg-white/5 hover:bg-white/10 transition">📁 Projects</a>
-        <a href="security-knights-live.html"
-           class="px-3 py-1.5 rounded-md border border-amber-500/40 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 transition flex items-center gap-1.5 font-semibold">
-          <span class="live-dot"></span> Play Now
-        </a>
-      </div>
+  <!-- ── Portfolio Nav ── -->
+  <nav class="port-nav">
+    <div class="port-nav-inner">
+      <a href="index.html" class="port-brand">Dayo Portfolio</a>
+      <ul class="port-links">
+        <li><a href="index.html"><span class="lbl">Home</span></a></li>
+        <li><a href="about.html"><span class="lbl">About</span></a></li>
+        <li><a href="projects.html" class="active"><span class="lbl">Projects</span></a></li>
+        <li><a href="index.html#skills"><span class="lbl">Skills</span></a></li>
+        <li><a href="index.html#contact"><span class="lbl">Contact</span></a></li>
+        <li>
+          <a href="https://www.linkedin.com/in/dayoegonu/" target="_blank" rel="noopener" class="li-btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+            <span class="lbl">LinkedIn</span>
+          </a>
+        </li>
+      </ul>
     </div>
   </nav>
 
@@ -118,7 +161,6 @@
 
     <!-- Accordions -->
     <section class="space-y-3">
-
       <details class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden">
         <summary class="cursor-pointer list-none px-4 py-3 flex items-center justify-between hover:bg-white/5 transition">
           <span class="font-semibold">Introduction</span><span class="arr text-slate-400">▾</span>
@@ -209,14 +251,11 @@
           valuable than ever.
         </div>
       </details>
-
     </section>
 
     <!-- Quote -->
     <section class="bg-emerald-400/10 border border-emerald-300/20 rounded-2xl p-5">
-      <p class="italic text-emerald-100">
-        "I finally understood OWASP Top 10 thanks to Security Knights — and it was fun!"
-      </p>
+      <p class="italic text-emerald-100">"I finally understood OWASP Top 10 thanks to Security Knights — and it was fun!"</p>
     </section>
 
     <!-- Impact -->
@@ -248,7 +287,6 @@
 
   <script>
     document.getElementById('y').textContent = new Date().getFullYear();
-    // Hide fallback divs when real images load
     document.querySelectorAll('header img, section img').forEach(img => {
       img.addEventListener('load', () => {
         const fb = document.getElementById(img.alt.toLowerCase().split(' ')[0][0] + '-fallback');
