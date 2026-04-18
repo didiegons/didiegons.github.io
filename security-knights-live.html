@@ -195,6 +195,100 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
 .bdgclose{padding:9px 24px;background:linear-gradient(135deg,#C48A10,#E8A820,#FFD700);border:none;border-radius:8px;font-family:'Cinzel',serif;font-size:.86rem;font-weight:700;color:#000;cursor:pointer;}
 
 
+
+/* ── PATH SELECTION ── */
+#pathModal{position:fixed;inset:0;z-index:900;background:rgba(4,6,18,.97);backdrop-filter:blur(18px);display:none;align-items:center;justify-content:center;padding:20px;flex-direction:column;gap:24px;}
+#pathModal.open{display:flex;}
+.path-title{font-family:'Uncial Antiqua',serif;font-size:2rem;color:var(--gold);text-align:center;text-shadow:0 0 30px rgba(232,168,32,.4);letter-spacing:.05em;}
+.path-sub{color:var(--muted);font-size:.9rem;text-align:center;max-width:500px;line-height:1.7;}
+.path-cards{display:flex;gap:16px;max-width:700px;width:100%;}
+.path-card{flex:1;border:1px solid rgba(232,168,32,.2);border-radius:16px;padding:28px 22px;cursor:pointer;transition:all .25s;background:linear-gradient(160deg,rgba(10,13,30,.9),rgba(8,10,22,.9));text-align:center;position:relative;overflow:hidden;}
+.path-card::before{content:'';position:absolute;inset:0;border-radius:16px;opacity:0;transition:opacity .25s;}
+.path-card.solo::before{background:radial-gradient(circle at 50% 0%,rgba(123,167,212,.12),transparent 60%);}
+.path-card.order::before{background:radial-gradient(circle at 50% 0%,rgba(232,168,32,.12),transparent 60%);}
+.path-card:hover{transform:translateY(-4px);border-color:rgba(232,168,32,.5);}
+.path-card:hover::before{opacity:1;}
+.path-card:hover .path-card-glow{opacity:1;}
+.path-card-glow{position:absolute;inset:-1px;border-radius:16px;border:1px solid rgba(232,168,32,.6);opacity:0;transition:opacity .25s;}
+.path-icon{font-size:3.5rem;margin-bottom:14px;filter:drop-shadow(0 0 16px rgba(232,168,32,.4));display:block;}
+.path-card-title{font-family:'Cinzel',serif;font-size:1.2rem;font-weight:700;color:#FFD700;margin-bottom:8px;}
+.path-card-desc{font-size:.82rem;color:var(--muted);line-height:1.6;margin-bottom:16px;}
+.path-card-tag{display:inline-flex;gap:5px;flex-wrap:wrap;justify-content:center;}
+.path-tag{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;font-family:'JetBrains Mono',monospace;background:rgba(232,168,32,.1);border:1px solid rgba(232,168,32,.2);color:var(--gold);}
+.path-card-btn{margin-top:18px;display:block;width:100%;padding:10px;border-radius:8px;font-family:'Cinzel',serif;font-size:.85rem;font-weight:700;border:none;cursor:pointer;letter-spacing:.05em;transition:all .2s;}
+.path-card.solo .path-card-btn{background:rgba(123,167,212,.15);border:1px solid rgba(123,167,212,.4);color:#7BA7D4;}
+.path-card.solo .path-card-btn:hover{background:rgba(123,167,212,.25);}
+.path-card.order .path-card-btn{background:linear-gradient(135deg,#C48A10,#E8A820,#FFD700);color:#000;}
+.path-card.order .path-card-btn:hover{box-shadow:0 0 20px rgba(232,168,32,.4);}
+
+/* ── ORDER CREATION ── */
+#orderCreateModal{position:fixed;inset:0;z-index:910;background:rgba(4,6,18,.97);backdrop-filter:blur(18px);display:none;align-items:center;justify-content:center;padding:20px;}
+#orderCreateModal.open{display:flex;}
+.ocm-card{background:linear-gradient(160deg,rgba(12,15,35,.99),rgba(8,10,22,.99));border:1px solid rgba(232,168,32,.35);border-radius:18px;padding:32px;max-width:480px;width:100%;box-shadow:0 0 80px rgba(232,168,32,.1);}
+.ocm-title{font-family:'Uncial Antiqua',serif;font-size:1.4rem;color:var(--gold);text-align:center;margin-bottom:6px;}
+.ocm-sub{font-size:.82rem;color:var(--muted);text-align:center;margin-bottom:22px;}
+.ocm-label{font-family:'Cinzel',serif;font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;margin-bottom:6px;display:block;}
+.ocm-input{width:100%;padding:10px 13px;background:rgba(4,6,18,.9);border:1px solid var(--bdr);border-radius:8px;color:var(--txt);font-size:.85rem;outline:none;margin-bottom:14px;transition:border-color .2s;}
+.ocm-input:focus{border-color:var(--gold);}
+.ocm-input::placeholder{color:rgba(122,139,170,.4);}
+.color-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.color-opt{width:30px;height:30px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .2s;}
+.color-opt.sel{border-color:#fff;box-shadow:0 0 10px currentColor;transform:scale(1.15);}
+.ocm-preview{background:rgba(4,6,18,.8);border-radius:10px;padding:14px;text-align:center;margin-bottom:18px;border:1px solid rgba(232,168,32,.1);}
+.ocm-preview-name{font-family:'Cinzel',serif;font-size:1rem;font-weight:700;margin-bottom:2px;}
+.ocm-preview-motto{font-size:.75rem;color:var(--muted);}
+.ocm-actions{display:flex;gap:8px;}
+
+/* ── SIDEBAR TABS ── */
+.sb-tabs{display:flex;border-bottom:1px solid rgba(232,168,32,.1);flex-shrink:0;}
+.sb-tab{flex:1;padding:9px 4px;font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;text-align:center;color:var(--muted);border:none;background:none;transition:all .2s;border-bottom:2px solid transparent;}
+.sb-tab.active{color:var(--gold);border-bottom-color:var(--gold);background:rgba(232,168,32,.04);}
+.sb-tab:hover:not(.active){color:var(--txt);}
+.sb-panel{display:none;flex:1;overflow-y:auto;}
+.sb-panel.active{display:flex;flex-direction:column;}
+
+/* ── ORDER PANEL ── */
+.order-banner{padding:14px;border-bottom:1px solid rgba(232,168,32,.1);text-align:center;}
+.order-name-display{font-family:'Cinzel',serif;font-size:.95rem;font-weight:700;margin-bottom:2px;}
+.order-motto-display{font-size:.7rem;color:var(--muted);font-style:italic;}
+.order-stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:10px 12px;border-bottom:1px solid rgba(232,168,32,.08);}
+.order-stat{background:rgba(232,168,32,.06);border:1px solid rgba(232,168,32,.1);border-radius:7px;padding:8px;text-align:center;}
+.order-stat-val{font-family:'JetBrains Mono',monospace;font-size:.95rem;font-weight:700;color:var(--gold);}
+.order-stat-lbl{font-size:.62rem;color:var(--muted);margin-top:2px;font-family:'JetBrains Mono',monospace;}
+.order-members{padding:10px 12px;}
+.om-title{font-family:'Cinzel',serif;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:8px;}
+.om-member{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:7px;margin-bottom:4px;background:rgba(255,255,255,.02);}
+.om-member.me{background:rgba(232,168,32,.07);border:1px solid rgba(232,168,32,.15);}
+.om-avatar{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;font-family:'Cinzel',serif;flex-shrink:0;}
+.om-info{flex:1;min-width:0;}
+.om-name{font-size:.75rem;font-weight:600;color:var(--txt);}
+.om-role{font-size:.62rem;color:var(--muted);}
+.om-xp{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--gold);font-weight:700;}
+
+/* ── SIEGE PANEL ── */
+.siege-panel{padding:12px;}
+.siege-header{text-align:center;margin-bottom:12px;}
+.siege-icon{font-size:2.2rem;display:block;margin-bottom:6px;filter:drop-shadow(0 0 12px rgba(232,64,64,.5));}
+.siege-title{font-family:'Cinzel',serif;font-size:.95rem;font-weight:700;color:#E84040;margin-bottom:2px;}
+.siege-sub{font-size:.7rem;color:var(--muted);}
+.siege-timer{background:rgba(232,64,64,.08);border:1px solid rgba(232,64,64,.2);border-radius:8px;padding:10px;text-align:center;margin-bottom:10px;}
+.siege-timer-val{font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:700;color:#E84040;letter-spacing:.1em;}
+.siege-timer-lbl{font-size:.62rem;color:var(--muted);margin-top:3px;}
+.siege-leaderboard{margin-bottom:10px;}
+.siege-lb-title{font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:6px;}
+.siege-lb-row{display:flex;align-items:center;gap:6px;padding:5px 7px;border-radius:6px;margin-bottom:3px;background:rgba(255,255,255,.02);}
+.siege-lb-row.mine{background:rgba(232,168,32,.08);border:1px solid rgba(232,168,32,.15);}
+.siege-lb-rank{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted);width:16px;}
+.siege-lb-rank.gold{color:#FFD700;}
+.siege-lb-rank.silver{color:#C0C0C0;}
+.siege-lb-rank.bronze{color:#CD7F32;}
+.siege-lb-name{flex:1;font-size:.72rem;color:var(--txt);}
+.siege-lb-xp{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--gold);}
+.siege-start-btn{width:100%;padding:10px;background:linear-gradient(135deg,#8B0000,#E84040);border:none;border-radius:8px;font-family:'Cinzel',serif;font-size:.8rem;font-weight:700;color:#fff;cursor:pointer;transition:all .2s;letter-spacing:.05em;}
+.siege-start-btn:hover{box-shadow:0 0 20px rgba(232,64,64,.4);transform:translateY(-1px);}
+.siege-done{text-align:center;padding:12px;font-size:.78rem;color:var(--muted);}
+.siege-done strong{color:var(--gold);}
+
 /* ── SHARE CARD ── */
 #shareModal{position:fixed;inset:0;z-index:900;background:rgba(4,6,18,.95);backdrop-filter:blur(18px);display:none;align-items:center;justify-content:center;padding:20px;}
 #shareModal.open{display:flex;}
@@ -268,6 +362,68 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
   <div class="dragon-text" id="dragon-text">🐉 The Dragon Strikes!<br><span style="font-size:55%;color:#FF8844;font-family:'Cinzel',serif">Study the explanation and continue your quest!</span></div>
 </div>
 
+
+
+<!-- ── PATH SELECTION ── -->
+<div id="pathModal">
+  <div class="path-title">⚔️ Choose Your Path ⚔️</div>
+  <div class="path-sub">Will you face the shadows alone, or band together with an Order of Knights to conquer the realm?</div>
+  <div class="path-cards">
+    <div class="path-card solo" onclick="choosePath('solo')">
+      <div class="path-card-glow"></div>
+      <span class="path-icon">🗡️</span>
+      <div class="path-card-title">Solo Quest</div>
+      <div class="path-card-desc">Walk the path alone. Earn XP, defeat challenges, and claim your rank through personal mastery. Your progress, your glory.</div>
+      <div class="path-card-tag">
+        <span class="path-tag">15 Challenges</span>
+        <span class="path-tag">Personal XP</span>
+        <span class="path-tag">3 Ranks</span>
+        <span class="path-tag">Certificate</span>
+      </div>
+      <button class="path-card-btn">Enter as a Lone Knight →</button>
+    </div>
+    <div class="path-card order" onclick="choosePath('order')">
+      <div class="path-card-glow"></div>
+      <span class="path-icon">⚔️</span>
+      <div class="path-card-title">Join an Order</div>
+      <div class="path-card-desc">Form or join a guild. Pool your knowledge in Weekly Sieges, climb the Order leaderboard, and control the realm together.</div>
+      <div class="path-card-tag">
+        <span class="path-tag">Guild System</span>
+        <span class="path-tag">Weekly Sieges</span>
+        <span class="path-tag">Territory Wars</span>
+        <span class="path-tag">Order XP</span>
+      </div>
+      <button class="path-card-btn">Form an Order →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── ORDER CREATION ── -->
+<div id="orderCreateModal">
+  <div class="ocm-card">
+    <div class="ocm-title">⚔️ Found Your Order</div>
+    <div class="ocm-sub">Name your guild, choose your banner colour, and set your motto.</div>
+
+    <label class="ocm-label">Order Name</label>
+    <input type="text" class="ocm-input" id="orderNameInput" placeholder="e.g. The Iron Coders" maxlength="28" oninput="updateOrderPreview()"/>
+
+    <label class="ocm-label">Banner Colour</label>
+    <div class="color-row" id="colorRow"></div>
+
+    <label class="ocm-label">Order Motto</label>
+    <input type="text" class="ocm-input" id="orderMottoInput" placeholder="e.g. Secure by default, defended by honour" maxlength="50" oninput="updateOrderPreview()"/>
+
+    <div class="ocm-preview">
+      <div class="ocm-preview-name" id="previewName" style="color:#E8A820">⚔️ The Iron Coders</div>
+      <div class="ocm-preview-motto" id="previewMotto">"Secure by default, defended by honour"</div>
+    </div>
+
+    <div class="ocm-actions">
+      <button class="bgold" style="flex:1;padding:10px;border-radius:8px;font-size:.85rem;" onclick="foundOrder()">⚔️ Found this Order</button>
+      <button class="bghost" style="padding:10px 14px;border-radius:8px;font-size:.85rem;" onclick="goBack()">← Back</button>
+    </div>
+  </div>
+</div>
 
 <!-- ── SHARE BADGE MODAL ── -->
 <div id="shareModal">
@@ -344,30 +500,76 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
 <div id="layout">
   <!-- Left sidebar -->
   <div id="sidebar-left">
-    <div id="sb-inner">
-      <div class="sb-title">⚔️ Quest Board</div>
-      <div class="sb-tier">
-        <div class="sb-tier-hdr">
-          <div class="sb-tier-name" style="color:var(--pc)">🛡️ Paige</div>
-          <div class="sb-tier-cnt" id="pcnt">0/5</div>
+    <div class="sb-tabs" id="sbTabs">
+      <button class="sb-tab active" data-panel="sbQuests" onclick="switchSbTab(this)">📜 Quests</button>
+      <button class="sb-tab" data-panel="sbOrder" id="sbOrderTab" onclick="switchSbTab(this)" style="display:none">⚔️ Order</button>
+      <button class="sb-tab" data-panel="sbSiege" id="sbSiegeTab" onclick="switchSbTab(this)" style="display:none">🏰 Siege</button>
+    </div>
+
+    <!-- QUEST BOARD PANEL -->
+    <div class="sb-panel active" id="sbQuests">
+      <div id="sb-inner" style="padding:10px;overflow-y:auto;flex:1;">
+        <div class="sb-tier">
+          <div class="sb-tier-hdr">
+            <div class="sb-tier-name" style="color:var(--pc)">🛡️ Paige</div>
+            <div class="sb-tier-cnt" id="pcnt">0/5</div>
+          </div>
+          <div id="pquests"></div>
         </div>
-        <div id="pquests"></div>
-      </div>
-      <div class="sb-tier">
-        <div class="sb-tier-hdr">
-          <div class="sb-tier-name" style="color:var(--sc)">⚔️ Squire</div>
-          <div class="sb-tier-cnt" id="scnt">0/5</div>
+        <div class="sb-tier">
+          <div class="sb-tier-hdr">
+            <div class="sb-tier-name" style="color:var(--sc)">⚔️ Squire</div>
+            <div class="sb-tier-cnt" id="scnt">0/5</div>
+          </div>
+          <div id="squests"></div>
         </div>
-        <div id="squests"></div>
-      </div>
-      <div class="sb-tier">
-        <div class="sb-tier-hdr">
-          <div class="sb-tier-name" style="color:var(--kc)">👑 Knight</div>
-          <div class="sb-tier-cnt" id="kcnt">0/5</div>
+        <div class="sb-tier">
+          <div class="sb-tier-hdr">
+            <div class="sb-tier-name" style="color:var(--kc)">👑 Knight</div>
+            <div class="sb-tier-cnt" id="kcnt">0/5</div>
+          </div>
+          <div id="kquests"></div>
         </div>
-        <div id="kquests"></div>
+        <button class="sb-reset" onclick="resetGame()">↺ Reset Progress</button>
       </div>
-      <button class="sb-reset" onclick="resetGame()">↺ Reset Progress</button>
+    </div>
+
+    <!-- ORDER PANEL -->
+    <div class="sb-panel" id="sbOrder">
+      <div class="order-banner" id="orderBannerEl">
+        <div class="order-name-display" id="orderNameEl">⚔️ My Order</div>
+        <div class="order-motto-display" id="orderMottoEl">Loading...</div>
+      </div>
+      <div class="order-stats">
+        <div class="order-stat"><div class="order-stat-val" id="orderTotalXP">0</div><div class="order-stat-lbl">Order XP</div></div>
+        <div class="order-stat"><div class="order-stat-val" id="orderRankEl">#1</div><div class="order-stat-lbl">Realm Rank</div></div>
+        <div class="order-stat"><div class="order-stat-val" id="orderMemberCount">1</div><div class="order-stat-lbl">Members</div></div>
+        <div class="order-stat"><div class="order-stat-val" id="orderZone">—</div><div class="order-stat-lbl">Zones Held</div></div>
+      </div>
+      <div class="order-members">
+        <div class="om-title">📋 Members</div>
+        <div id="membersList"></div>
+      </div>
+    </div>
+
+    <!-- SIEGE PANEL -->
+    <div class="sb-panel" id="sbSiege">
+      <div class="siege-panel">
+        <div class="siege-header">
+          <span class="siege-icon">🔥</span>
+          <div class="siege-title">Weekly Siege</div>
+          <div class="siege-sub" id="siegeEventName">The Shadow Sorcerer's Challenge</div>
+        </div>
+        <div class="siege-timer">
+          <div class="siege-timer-val" id="siegeTimerVal">06:14:22</div>
+          <div class="siege-timer-lbl">Until siege ends</div>
+        </div>
+        <div class="siege-leaderboard">
+          <div class="siege-lb-title">🏆 Order Standings</div>
+          <div id="siegeLeaderboard"></div>
+        </div>
+        <div id="siegeAction"></div>
+      </div>
     </div>
   </div>
 
@@ -925,12 +1127,25 @@ function showSlide(n) {
 function skipIntro() {
   if (introTimer) clearTimeout(introTimer);
   document.getElementById('intro').classList.add('done');
-  showKeyModal();
+  afterIntro();
 }
 
 function startIntro() {
   document.getElementById('intro').classList.add('done');
-  showKeyModal();
+  afterIntro();
+}
+
+function afterIntro() {
+  if (!gameMode) {
+    showPathModal();
+  } else {
+    // Returning player - restore order UI if in order mode
+    if (gameMode === 'order' && orderData) {
+      document.getElementById('sbOrderTab').style.display = '';
+      document.getElementById('sbSiegeTab').style.display = '';
+    }
+    showKeyModal();
+  }
 }
 
 // ═══════════════════════════════════════════════
@@ -1630,6 +1845,290 @@ function burst(x,y,col){
 }
 
 // ═══════════════════════════════════════════════
+// PATH & ORDER SYSTEM
+// ═══════════════════════════════════════════════
+var gameMode = localStorage.getItem('sk4_mode') || null; // 'solo' | 'order'
+var orderData = JSON.parse(localStorage.getItem('sk4_order') || 'null') || null;
+
+var ORDER_COLORS = [
+  '#E8A820','#E84040','#2ECC8A','#7BA7D4','#C0976A',
+  '#9B59B6','#E74C3C','#1ABC9C','#F39C12','#3498DB'
+];
+var selectedColor = ORDER_COLORS[0];
+
+// Simulated Order members (realistic demo data)
+var SIM_MEMBERS = [
+  {name:'CyberWarden',  role:'Grand Marshal', xp:310, avatar:'CW', color:'#E8A820'},
+  {name:'NetSentinel',  role:'Commander',     xp:285, avatar:'NS', color:'#2ECC8A'},
+  {name:'CodeGuard',    role:'Knight',        xp:240, avatar:'CG', color:'#7BA7D4'},
+  {name:'DataShield',   role:'Knight',        xp:190, avatar:'DS', color:'#C0976A'},
+  {name:'PhishHunter',  role:'Squire',        xp:155, avatar:'PH', color:'#9B59B6'},
+  {name:'ByteKnight',   role:'Squire',        xp:120, avatar:'BK', color:'#E84040'},
+];
+
+// Simulated Siege leaderboard
+var SIM_SIEGE_ORDERS = [
+  {name:'Iron Citadel',    xp:1240, mine:false},
+  {name:'Dark Sentinels',  xp:980,  mine:false},
+  {name:'Byte Wardens',    xp:750,  mine:false},
+  {name:'Code Crusaders',  xp:610,  mine:false},
+];
+
+// ── Path selection ──────────────────────────────
+function showPathModal() {
+  document.getElementById('pathModal').classList.add('open');
+}
+
+function choosePath(mode) {
+  if (mode === 'solo') {
+    gameMode = 'solo';
+    localStorage.setItem('sk4_mode', 'solo');
+    document.getElementById('pathModal').classList.remove('open');
+    document.getElementById('keyModal').classList.remove('hidden');
+  } else {
+    document.getElementById('pathModal').classList.remove('open');
+    document.getElementById('orderCreateModal').classList.add('open');
+    initColorPicker();
+  }
+}
+
+function goBack() {
+  document.getElementById('orderCreateModal').classList.remove('open');
+  showPathModal();
+}
+
+// ── Colour picker ───────────────────────────────
+function initColorPicker() {
+  var row = document.getElementById('colorRow');
+  row.innerHTML = '';
+  ORDER_COLORS.forEach(function(col, i) {
+    var d = document.createElement('div');
+    d.className = 'color-opt' + (i === 0 ? ' sel' : '');
+    d.style.background = col;
+    d.style.color = col;
+    d.onclick = function() {
+      document.querySelectorAll('.color-opt').forEach(function(x){ x.classList.remove('sel'); });
+      d.classList.add('sel');
+      selectedColor = col;
+      updateOrderPreview();
+    };
+    row.appendChild(d);
+  });
+}
+
+function updateOrderPreview() {
+  var name = document.getElementById('orderNameInput').value.trim() || 'The Iron Coders';
+  var motto = document.getElementById('orderMottoInput').value.trim() || 'Secure by default, defended by honour';
+  document.getElementById('previewName').textContent = '⚔️ ' + name;
+  document.getElementById('previewName').style.color = selectedColor;
+  document.getElementById('previewMotto').textContent = '"' + motto + '"';
+}
+
+function foundOrder() {
+  var name = document.getElementById('orderNameInput').value.trim();
+  var motto = document.getElementById('orderMottoInput').value.trim();
+  if (!name) {
+    document.getElementById('orderNameInput').style.borderColor = 'var(--crim)';
+    setTimeout(function(){ document.getElementById('orderNameInput').style.borderColor = ''; }, 1500);
+    return;
+  }
+  orderData = { name: name, motto: motto || 'For the realm!', color: selectedColor, founded: new Date().toISOString(), role: 'Grand Marshal' };
+  gameMode = 'order';
+  localStorage.setItem('sk4_mode', 'order');
+  localStorage.setItem('sk4_order', JSON.stringify(orderData));
+  document.getElementById('orderCreateModal').classList.remove('open');
+  // Show order tabs
+  document.getElementById('sbOrderTab').style.display = '';
+  document.getElementById('sbSiegeTab').style.display = '';
+  // Start game
+  document.getElementById('keyModal').classList.remove('hidden');
+  renderOrderPanel();
+  initSiege();
+}
+
+// ── Sidebar tab switching ────────────────────────
+function switchSbTab(btn) {
+  document.querySelectorAll('.sb-tab').forEach(function(t){ t.classList.remove('active'); });
+  document.querySelectorAll('.sb-panel').forEach(function(p){ p.classList.remove('active'); });
+  btn.classList.add('active');
+  var panel = document.getElementById(btn.getAttribute('data-panel'));
+  if (panel) panel.classList.add('active');
+}
+
+// ── Order Panel rendering ───────────────────────
+function renderOrderPanel() {
+  if (!orderData) return;
+
+  // Banner
+  var nameEl = document.getElementById('orderNameEl');
+  nameEl.textContent = '⚔️ ' + orderData.name;
+  nameEl.style.color = orderData.color;
+  document.getElementById('orderMottoEl').textContent = '"' + orderData.motto + '"';
+  document.getElementById('orderBannerEl').style.borderColor = orderData.color + '44';
+
+  // My XP in order total
+  var myXP = state.xp || 0;
+  var simTotal = SIM_MEMBERS.reduce(function(s,m){ return s+m.xp; }, 0);
+  var orderTotal = myXP + simTotal;
+  document.getElementById('orderTotalXP').textContent = orderTotal;
+  document.getElementById('orderMemberCount').textContent = SIM_MEMBERS.length + 1;
+  document.getElementById('orderRankEl').textContent = '#' + Math.max(1, 4 - Math.floor(myXP/100));
+  document.getElementById('orderZone').textContent = myXP >= 200 ? '2' : myXP >= 50 ? '1' : '—';
+
+  // Members list — me first
+  var list = document.getElementById('membersList');
+  list.innerHTML = '';
+  var me = { name: 'You', role: orderData.role, xp: myXP, avatar: 'ME', color: orderData.color, isMe: true };
+  var allMembers = [me].concat(SIM_MEMBERS).sort(function(a,b){ return b.xp-a.xp; });
+  allMembers.forEach(function(m, i) {
+    var div = document.createElement('div');
+    div.className = 'om-member' + (m.isMe ? ' me' : '');
+    div.innerHTML = '<div class="om-avatar" style="background:' + m.color + '22;border:1px solid' + m.color + '44;color:' + m.color + '">' + m.avatar + '</div>' +
+      '<div class="om-info"><div class="om-name">' + (m.isMe ? '⭐ ' + m.name : m.name) + '</div><div class="om-role">' + m.role + '</div></div>' +
+      '<div class="om-xp">' + m.xp + ' XP</div>';
+    list.appendChild(div);
+  });
+}
+
+// ── Siege Event ─────────────────────────────────
+var siegeTimer = null;
+var siegeEndTime = null;
+var siegeActive = false;
+var siegeScore = 0;
+
+var SIEGE_THEMES = [
+  { name:"The Shadow Sorcerer's Challenge",  icon:'🔥', topic:'Injection Spells',    challengeIds:[1,3,6,11,23] },
+  { name:"The Dragon's Cryptographic Trial", icon:'🐉', topic:'Cryptography & Auth', challengeIds:[3,8,13,21,24] },
+  { name:"The Realm Siege of Dark Forest",   icon:'⚔️', topic:'Access Control',      challengeIds:[2,7,12,19,22] },
+];
+var currentSiege = null;
+var siegeChallengeIdx = 0;
+var siegeAnswered = 0;
+
+function initSiege() {
+  // Pick this week's siege based on week number
+  var weekNum = Math.floor(Date.now() / (7*24*60*60*1000));
+  currentSiege = SIEGE_THEMES[weekNum % SIEGE_THEMES.length];
+
+  // Siege ends in ~7 days from Monday; for demo show a realistic countdown
+  var now = new Date();
+  var monday = new Date(now);
+  monday.setDate(now.getDate() - now.getDay() + 1); // This Monday
+  monday.setHours(0,0,0,0);
+  siegeEndTime = new Date(monday.getTime() + 7*24*60*60*1000); // Next Monday
+
+  document.getElementById('siegeEventName').textContent = currentSiege.name;
+  renderSiegeLeaderboard();
+  renderSiegeAction();
+  startSiegeTimer();
+}
+
+function startSiegeTimer() {
+  if (siegeTimer) clearInterval(siegeTimer);
+  siegeTimer = setInterval(function() {
+    var now = Date.now();
+    var diff = Math.max(0, siegeEndTime - now);
+    var h = Math.floor(diff / 3600000);
+    var m = Math.floor((diff % 3600000) / 60000);
+    var s = Math.floor((diff % 60000) / 1000);
+    document.getElementById('siegeTimerVal').textContent =
+      String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  }, 1000);
+}
+
+function renderSiegeLeaderboard() {
+  var myXP = state.xp || 0;
+  var myOrder = orderData ? { name: orderData.name, xp: myXP + Math.floor(myXP*0.3), mine: true } : null;
+  var allOrders = SIM_SIEGE_ORDERS.slice();
+  if (myOrder) {
+    allOrders.push(myOrder);
+    allOrders.sort(function(a,b){ return b.xp-a.xp; });
+  }
+  var lb = document.getElementById('siegeLeaderboard');
+  lb.innerHTML = '';
+  var medals = ['🥇','🥈','🥉'];
+  allOrders.forEach(function(o, i) {
+    var div = document.createElement('div');
+    div.className = 'siege-lb-row' + (o.mine ? ' mine' : '');
+    div.innerHTML = '<div class="siege-lb-rank ' + ['gold','silver','bronze'][i] + '">' + (medals[i] || (i+1)) + '</div>' +
+      '<div class="siege-lb-name">' + (o.mine ? '⭐ ' : '') + o.name + '</div>' +
+      '<div class="siege-lb-xp">' + o.xp + ' XP</div>';
+    lb.appendChild(div);
+  });
+}
+
+function renderSiegeAction() {
+  var el = document.getElementById('siegeAction');
+  var siDone = parseInt(localStorage.getItem('sk4_siege_done') || '0');
+  if (siDone >= (currentSiege ? currentSiege.challengeIds.length : 5)) {
+    el.innerHTML = '<div class="siege-done">✅ <strong>Siege contribution complete!</strong><br>Your Order has your XP. Check back next Monday!</div>';
+  } else {
+    el.innerHTML = '<button class="siege-start-btn" onclick="startSiegeChallenge()">⚔️ Fight the Siege! (' + siDone + '/5 done)</button>';
+  }
+}
+
+function startSiegeChallenge() {
+  // Run a siege challenge — uses a special challenge from the theme
+  var siDone = parseInt(localStorage.getItem('sk4_siege_done') || '0');
+  if (siDone >= 5) { renderSiegeAction(); return; }
+  var challengeId = currentSiege.challengeIds[siDone];
+  var ch = ALL_CHALLENGES.paige.concat(ALL_CHALLENGES.squire).concat(ALL_CHALLENGES.knight)
+    .find(function(c){ return c.id === challengeId; });
+  if (!ch) { ch = ALL_CHALLENGES.knight[siDone % ALL_CHALLENGES.knight.length]; }
+
+  // Briefly close qpanel and load a siege-themed question
+  current = ch;
+  answered = false;
+  // Shuffle options
+  var opts = ch.options.map(function(o,i){return {text:o,idx:i};});
+  for (var i=opts.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var tmp=opts[i];opts[i]=opts[j];opts[j]=tmp; }
+  shuffledOpts = opts;
+  shuffledCorrect = opts.findIndex(function(o){return o.idx===ch.correct;});
+  stoneIdx = Math.max(stoneIdx, 1);
+  renderQuestion(ch);
+
+  // Override header to show SIEGE styling
+  document.getElementById('qpTag').textContent = '🔥 SIEGE · ' + ch.topic;
+  document.getElementById('qpTag').style.color = '#E84040';
+  document.getElementById('qpTag').style.borderColor = '#E84040';
+  document.getElementById('qpXp').textContent = '+' + (ch.xp*2) + ' XP ⚔️ SIEGE';
+  document.getElementById('qpSub').textContent = 'Weekly Siege Challenge ' + (siDone+1) + ' of 5';
+  gameState = 'QUESTIONING';
+  document.getElementById('qpanel').classList.add('open');
+
+  // Intercept pickAnswer to also advance siege progress
+  var origPick = window._origSiegePick || pickAnswer;
+  if (!window._siegeHooked) {
+    window._siegeHooked = true;
+    var realPick = pickAnswer;
+    window.pickAnswer = function(idx) {
+      realPick(idx);
+      var isCorrect = idx === shuffledCorrect;
+      if (isCorrect) {
+        var done = parseInt(localStorage.getItem('sk4_siege_done') || '0') + 1;
+        localStorage.setItem('sk4_siege_done', done);
+        renderSiegeLeaderboard();
+        renderSiegeAction();
+        // Bonus XP for siege
+        state.xp += ch.xp; saveState(); updateHUD();
+        addWizMsg('wiz', '🔥 <strong>Siege strike!</strong> +' + (ch.xp*2) + ' XP contributed to your Order!');
+      }
+    };
+  }
+}
+
+// Update order panel whenever XP changes
+var _origSaveState = saveState;
+saveState = function() {
+  _origSaveState();
+  if (gameMode === 'order' && orderData) {
+    renderOrderPanel();
+    renderSiegeLeaderboard();
+  }
+};
+
+
+// ═══════════════════════════════════════════════
 // BADGE SHARE CARD GENERATOR
 // ═══════════════════════════════════════════════
 function openShareCard() {
@@ -2239,6 +2738,14 @@ function startGame(){
   gameState='WALKING';
   var startZone = stoneIdx >= 11 ? 'knight' : stoneIdx >= 6 ? 'squire' : 'paige';
   Music.start(startZone);
+  // Init order mode if applicable
+  if (gameMode === 'order' && orderData) {
+    document.getElementById('sbOrderTab').style.display = '';
+    document.getElementById('sbSiegeTab').style.display = '';
+    renderOrderPanel();
+    initSiege();
+    addWizMsg('wiz', '⚔️ <strong>Welcome back, ' + orderData.role + ' of ' + orderData.name + '!</strong> Your Order awaits.');
+  }
 
   // Restore: find last completed stone
   var lastDone=0;
