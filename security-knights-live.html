@@ -623,85 +623,183 @@ var sidebarShown = true, wizShown = true;
 // MUSIC ENGINE
 // ═══════════════════════════════════════════════
 var Music = {
-  ctx: null, master: null, playing: false, muted: false, loopTimer: null,
+  ctx: null, master: null, playing: false, muted: false,
+  loopTimer: null, currentZone: null,
 
-  start: function() {
-    if (this.playing) return;
+  start: function(zone) {
+    zone = zone || 'paige';
     try {
-      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-      this.master = this.ctx.createGain();
-      this.master.gain.value = 0.35;
-      this.master.connect(this.ctx.destination);
-      this.playing = true;
-      this.loop(this.ctx.currentTime);
-    } catch(e) { console.log('Audio not available'); }
+      if (!this.ctx) {
+        this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        this.master = this.ctx.createGain();
+        this.master.gain.value = 0.32;
+        this.master.connect(this.ctx.destination);
+      }
+      if (this.ctx.state === 'suspended') this.ctx.resume();
+    } catch(e) { return; }
+
+    if (this.currentZone === zone && this.playing) return; // same zone, already playing
+    this.stop();
+    this.playing = true;
+    this.currentZone = zone;
+    this.playZone(zone, this.ctx.currentTime + 0.05);
+  },
+
+  stop: function() {
+    if (this.loopTimer) { clearTimeout(this.loopTimer); this.loopTimer = null; }
+    this.playing = false;
   },
 
   toggle: function() {
-    if (!this.ctx) { this.start(); return; }
+    if (!this.ctx) { this.start(this.currentZone || 'paige'); return; }
     this.muted = !this.muted;
-    if (this.master) this.master.gain.value = this.muted ? 0 : 0.35;
+    if (this.master) this.master.gain.value = this.muted ? 0 : 0.32;
     document.getElementById('btnMute').textContent = this.muted ? '🔇' : '🔊';
   },
 
-  note: function(freq, start, dur, type, vol) {
-    if (!this.playing || !this.ctx) return;
+  changeZone: function(zone) {
+    if (this.currentZone === zone) return;
+    this.start(zone);
+  },
+
+  // ── Note helper ──
+  note: function(freq, start, dur, type, vol, detune) {
+    if (!this.playing || !this.ctx || !this.master) return;
+    if (start < this.ctx.currentTime) return;
     var o = this.ctx.createOscillator();
     var g = this.ctx.createGain();
     o.connect(g); g.connect(this.master);
     o.type = type || 'sine';
     o.frequency.value = freq;
+    if (detune) o.detune.value = detune;
     g.gain.setValueAtTime(0, start);
-    g.gain.linearRampToValueAtTime(vol || 0.25, start + 0.04);
-    g.gain.exponentialRampToValueAtTime(0.001, start + dur * 0.88);
+    g.gain.linearRampToValueAtTime(vol || 0.22, start + 0.04);
+    g.gain.exponentialRampToValueAtTime(0.001, start + dur * 0.85);
     o.start(start); o.stop(start + dur);
   },
 
-  loop: function(t) {
-    if (!this.playing) return;
-    var b = 60 / 108; // tempo
+  // ── Drum noise ──
+  drum: function(start, vol, pitch) {
+    if (!this.playing || !this.ctx || !this.master) return;
+    if (start < this.ctx.currentTime) return;
+    try {
+      var buf = this.ctx.createBuffer(1, Math.floor(this.ctx.sampleRate * 0.06), this.ctx.sampleRate);
+      var d = buf.getChannelData(0);
+      for (var j=0; j<d.length; j++) d[j] = (Math.random()*2-1) * Math.exp(-j/(pitch||400));
+      var src = this.ctx.createBufferSource();
+      src.buffer = buf;
+      var dg = this.ctx.createGain(); dg.gain.value = vol || 0.12;
+      src.connect(dg); dg.connect(this.master);
+      src.start(start);
+    } catch(e) {}
+  },
+
+  playZone: function(zone, t) {
+    if (!this.playing || this.currentZone !== zone) return;
+    var self = this;
+    var loopDur;
+
+    if (zone === 'paige') {
+      loopDur = this.playPaige(t);
+    } else if (zone === 'squire') {
+      loopDur = this.playSquire(t);
+    } else {
+      loopDur = this.playKnight(t);
+    }
+
+    this.loopTimer = setTimeout(function() {
+      self.playZone(zone, t + loopDur);
+    }, (loopDur - 0.6) * 1000);
+  },
+
+  // ══ PAIGE THEME: Bright meadow, C major pentatonic, cheerful ══════════════
+  playPaige: function(t) {
+    var b = 60/108;
     // C major pentatonic: C4, E4, G4, A4, C5, E5
-    var sc = [261.6, 329.6, 392, 440, 523.3, 659.3];
-    // Melody (16 steps)
-    var mel = [4,5,4,3,2,3,4,2, 3,4,5,4,3,2,1,0];
-    var dur = [1,1,1,2,1,1,2,1, 1,1,1,1,1,1,1,2];
-    var total = dur.reduce(function(a,b){return a+b;},0);
-
+    var sc = [261.6, 329.6, 392.0, 440.0, 523.3, 659.3];
+    var mel =  [4, 5, 4, 3, 2, 3, 4, 2,  3, 4, 5, 4, 3, 2, 1, 0];
+    var durs = [1, 1, 1, 2, 1, 1, 2, 1,  1, 1, 1, 1, 1, 1, 1, 2];
+    var total = durs.reduce(function(a,v){return a+v;}, 0);
     var mt = t;
-    for (var i = 0; i < mel.length; i++) {
-      this.note(sc[mel[i]], mt, dur[i]*b*0.8, 'sine', 0.2);
-      // Harmony (fifth above)
-      if (i % 2 === 0) this.note(sc[Math.min(mel[i]+2,5)], mt, dur[i]*b*0.7, 'sine', 0.07);
-      mt += dur[i] * b;
+    for (var i=0; i<mel.length; i++) {
+      this.note(sc[mel[i]], mt, durs[i]*b*0.8, 'sine', 0.18);
+      if (i%3===0) this.note(sc[Math.min(mel[i]+2,5)], mt, durs[i]*b*0.7, 'sine', 0.06);
+      mt += durs[i]*b;
     }
+    // Bass
+    var bass = [65.4, 130.8, 98.0, 130.8];
+    for (var i=0; i<4; i++) this.note(bass[i], t+i*4*b, 3.5*b, 'sine', 0.14);
+    // Light drums on beats
+    for (var i=0; i<4; i++) this.drum(t+i*4*b, 0.10, 500);
+    return total*b;
+  },
 
-    // Bass (every 4 beats)
-    var bass = [65.4, 130.8, 98, 130.8]; // C2, C3, G2, C3
-    for (var i = 0; i < 4; i++) {
-      this.note(bass[i], t + i*4*b, 3.5*b, 'sine', 0.15);
+  // ══ SQUIRE THEME: Dark forest, D minor, eerie & tense ════════════════════
+  playSquire: function(t) {
+    var b = 60/76; // slower, more ominous
+    // D natural minor: D3, F3, G3, A3, C4, D4, F4, A4
+    var sc = [146.8, 174.6, 196.0, 220.0, 261.6, 293.7, 349.2, 440.0];
+    // Eerie descending/ascending melody with tritones
+    var mel =  [4, 3, 2, 1, 0, 1, 2, 3,  4, 5, 4, 3, 2, 1, 0, 2];
+    var durs = [2, 1, 1, 2, 2, 1, 1, 2,  2, 1, 1, 1, 2, 1, 2, 1];
+    var total = durs.reduce(function(a,v){return a+v;}, 0);
+    var mt = t;
+    for (var i=0; i<mel.length; i++) {
+      this.note(sc[mel[i]], mt, durs[i]*b*0.75, 'triangle', 0.14);
+      // Dark harmony: minor third below
+      if (i%4===0) this.note(sc[mel[i]]*0.84, mt, durs[i]*b*0.9, 'sine', 0.08);
+      mt += durs[i]*b;
     }
-
-    // Drum (noise burst)
-    var self = this;
-    for (var i = 0; i < 4; i++) {
-      (function(beat) {
-        var bt = t + beat * 4 * b;
-        if (bt < self.ctx.currentTime + 0.01) return;
-        var buf = self.ctx.createBuffer(1, self.ctx.sampleRate * 0.05, self.ctx.sampleRate);
-        var d = buf.getChannelData(0);
-        for (var j = 0; j < d.length; j++) d[j] = (Math.random()*2-1) * Math.exp(-j/500);
-        var src = self.ctx.createBufferSource();
-        src.buffer = buf;
-        var dg = self.ctx.createGain();
-        src.connect(dg); dg.connect(self.master);
-        dg.gain.value = 0.12;
-        src.start(bt);
-      })(i);
+    // Deep bass drone on D
+    this.note(36.7, t, 8*b, 'sine', 0.18); // D1 low drone
+    this.note(73.4, t, 8*b, 'sine', 0.10); // D2
+    this.note(36.7, t+8*b, 8*b, 'sine', 0.18);
+    this.note(73.4, t+8*b, 8*b, 'sine', 0.10);
+    // Sparse creepy plucks
+    this.note(220.0, t+3*b, 0.3*b, 'sawtooth', 0.06);
+    this.note(196.0, t+7*b, 0.3*b, 'sawtooth', 0.06);
+    this.note(174.6, t+11*b, 0.3*b, 'sawtooth', 0.06);
+    // Slow heavy drums every 2 beats
+    for (var i=0; i<Math.floor(total/2); i++) {
+      this.drum(t+i*2*b, 0.16, 200); // deep thud
+      if (i%2===1) this.drum(t+i*2*b+0.5*b, 0.08, 800); // snare
     }
+    return total*b;
+  },
 
-    var loopDur = total * b;
-    var self = this;
-    this.loopTimer = setTimeout(function() { self.loop(t + loopDur); }, (loopDur - 0.5) * 1000);
+  // ══ KNIGHT THEME: Shadow castle, chromatic/diminished, epic & dark ════════
+  playKnight: function(t) {
+    var b = 60/128; // intense, driving tempo
+    // Diminished / chromatic: E2, G2, Bb2, Db3, E3, G3, Bb3, E4
+    var sc = [82.4, 98.0, 116.5, 138.6, 164.8, 196.0, 233.1, 329.6];
+    // Driving war march melody
+    var mel =  [0, 2, 4, 3, 2, 1, 0, 4,  6, 5, 4, 3, 4, 5, 6, 7,  4, 3, 2, 1, 2, 3, 4, 0];
+    var durs = [1, 1, 2, 1, 1, 1, 2, 2,  1, 1, 1, 1, 1, 1, 1, 2,  1, 1, 1, 1, 1, 1, 2, 2];
+    var total = durs.reduce(function(a,v){return a+v;}, 0);
+    var mt = t;
+    for (var i=0; i<mel.length; i++) {
+      this.note(sc[mel[i]], mt, durs[i]*b*0.7, 'square', 0.10);
+      // Octave below for power
+      this.note(sc[mel[i]]*0.5, mt, durs[i]*b*0.6, 'sawtooth', 0.08);
+      mt += durs[i]*b;
+    }
+    // Ominous bass: E1, pulsing
+    for (var i=0; i<Math.floor(total/2); i++) {
+      this.note(41.2, t+i*2*b, 1.8*b, 'sine', 0.22); // E1
+    }
+    // Low drone (pedal tone)
+    this.note(41.2, t, total*b*0.9, 'sine', 0.10, -1200); // detuned for thickness
+    // War drums: fast and driving
+    for (var i=0; i<total; i++) {
+      this.drum(t+i*b, 0.18, 150);      // deep kick every beat
+      if (i%2===1) this.drum(t+i*b+b*0.5, 0.10, 1000); // fast snare
+      if (i%4===0) this.drum(t+i*b, 0.22, 80);          // extra bass hit on 1
+    }
+    // High tension stab every 4 beats
+    for (var i=0; i<Math.floor(total/4); i++) {
+      this.note(329.6, t+i*4*b, 0.15*b, 'sawtooth', 0.12); // high stab
+    }
+    return total*b;
   }
 };
 
@@ -1098,6 +1196,8 @@ function walkToNextStone(){
     updateHUD();
     saveState();
   }
+  // Switch music when entering a new zone
+  Music.changeZone(zoneRank);
 }
 
 function onReachedWaypoint(){
@@ -1917,7 +2017,8 @@ document.addEventListener('DOMContentLoaded',function(){
 
 function startGame(){
   gameState='WALKING';
-  Music.start();
+  var startZone = stoneIdx >= 11 ? 'knight' : stoneIdx >= 6 ? 'squire' : 'paige';
+  Music.start(startZone);
 
   // Restore: find last completed stone
   var lastDone=0;
