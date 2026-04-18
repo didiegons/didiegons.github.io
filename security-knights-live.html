@@ -181,6 +181,401 @@ body::after{content:'';position:fixed;inset:0;
   .sleft,.sright{display:none;}
   .arena{height:calc(100vh - 58px);}
 }
+
+/* ══ GLOW-UP VISUAL ENHANCEMENTS ══════════════════════════════════════════ */
+
+/* Animated star background */
+@keyframes twinkle { 0%,100%{opacity:0;transform:scale(0)} 50%{opacity:1;transform:scale(1)} }
+@keyframes drift { 0%{transform:translateY(0) translateX(0)} 100%{transform:translateY(-100vh) translateX(20px)} }
+@keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+@keyframes auraPulse { 0%,100%{opacity:.3;transform:scale(1)} 50%{opacity:.6;transform:scale(1.05)} }
+@keyframes swordFloat { 0%,100%{transform:translateY(0) rotate(-5deg)} 50%{transform:translateY(-8px) rotate(5deg)} }
+@keyframes xpShimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+@keyframes badgePop { 0%{transform:scale(1)} 30%{transform:scale(1.4) rotate(15deg)} 60%{transform:scale(.9)} 100%{transform:scale(1)} }
+@keyframes correctFlash { 0%{box-shadow:0 0 0 0 rgba(46,204,138,.8)} 100%{box-shadow:0 0 0 30px rgba(46,204,138,0)} }
+@keyframes wrongFlash { 0%{box-shadow:0 0 0 0 rgba(232,64,64,.8)} 100%{box-shadow:0 0 0 30px rgba(232,64,64,0)} }
+@keyframes particleFly { 0%{transform:translate(0,0) scale(1);opacity:1} 100%{transform:translate(var(--tx),var(--ty)) scale(0);opacity:0} }
+@keyframes runeFloat { 0%{transform:translateY(0) rotate(0deg);opacity:0} 10%{opacity:.15} 90%{opacity:.15} 100%{transform:translateY(-60vh) rotate(360deg);opacity:0} }
+@keyframes logoGlow { 0%,100%{text-shadow:0 0 18px rgba(232,168,32,.5),0 0 40px rgba(232,168,32,.2)} 50%{text-shadow:0 0 30px rgba(232,168,32,.9),0 0 60px rgba(232,168,32,.4),0 0 100px rgba(255,200,50,.2)} }
+@keyframes borderFlow { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+@keyframes coinSpin { 0%{transform:rotateY(0deg)} 100%{transform:rotateY(360deg)} }
+
+/* ── STAR CANVAS LAYER ── */
+#star-canvas { position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.6; }
+
+/* ── AURORA BACKGROUND ── */
+body::before {
+  content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 80% 40% at 20% 80%, rgba(100,50,200,.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 30% at 80% 20%, rgba(200,100,50,.08) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(232,168,32,.04) 0%, transparent 70%);
+  animation:auraPulse 8s ease-in-out infinite;
+  pointer-events:none;z-index:0;
+}
+
+/* ── LOGO SUPER GLOW ── */
+.logo-text {
+  font-size:1.3rem !important;
+  animation:logoGlow 3s ease-in-out infinite !important;
+  letter-spacing:.05em;
+}
+.logo-text::before { content:'⚔️ '; }
+
+/* ── TOPBAR BOTTOM BORDER ── */
+.topbar::after {
+  height:2px !important;
+  background:linear-gradient(90deg,transparent,#E8A820,#FFD700,#E8A820,transparent) !important;
+  opacity:.7 !important;
+  animation:borderFlow 3s ease infinite;
+  background-size:200% 100%;
+}
+.topbar {
+  background:rgba(6,8,18,.98) !important;
+  box-shadow:0 2px 30px rgba(232,168,32,.15);
+}
+
+/* ── XP BAR SHIMMER ── */
+.xpbar {
+  height:8px !important;
+  border-radius:100px !important;
+  box-shadow:0 0 8px rgba(232,168,32,.2);
+}
+.xpfill {
+  background:linear-gradient(90deg,#C48A10,#E8A820,#FFD700,#E8A820,#C48A10) !important;
+  background-size:200% 100% !important;
+  animation:xpShimmer 2s linear infinite !important;
+  box-shadow:0 0 10px rgba(255,215,0,.5);
+}
+
+/* ── RANK BADGE GLOW ── */
+.rbadge {
+  box-shadow:0 0 12px rgba(123,167,212,.3);
+  font-size:13px !important;
+  padding:4px 12px !important;
+  border-radius:6px !important;
+}
+.rk { box-shadow:0 0 16px rgba(232,168,32,.4) !important; }
+
+/* ── BADGE ICONS ── */
+.bicon {
+  width:34px !important;height:34px !important;
+  font-size:16px !important;
+  border-radius:7px !important;
+  transition:all .3s !important;
+}
+.bicon.earned {
+  animation:badgePop .6s ease;
+  box-shadow:0 0 20px rgba(232,168,32,.6) !important;
+  border-color:var(--gold) !important;
+}
+
+/* ── SIDEBAR ── */
+.sleft {
+  background:linear-gradient(180deg, #0A0D1E 0%, #0D1025 100%) !important;
+  border-right:1px solid rgba(232,168,32,.15) !important;
+}
+.psec { border-bottom:1px solid rgba(232,168,32,.1) !important; }
+.ptitle { font-size:10px !important; letter-spacing:.2em !important; }
+
+/* ── QUEST ITEMS ── */
+.qi {
+  border-radius:8px !important;
+  transition:all .2s cubic-bezier(.34,1.56,.64,1) !important;
+  border:1px solid transparent !important;
+  padding:8px 10px !important;
+}
+.qi:hover {
+  background:rgba(232,168,32,.08) !important;
+  border-color:rgba(232,168,32,.25) !important;
+  transform:translateX(4px);
+  box-shadow:0 0 15px rgba(232,168,32,.1), -3px 0 0 var(--gold) !important;
+}
+.qi.active {
+  background:rgba(232,168,32,.12) !important;
+  border-color:rgba(232,168,32,.4) !important;
+  box-shadow:0 0 20px rgba(232,168,32,.15), -3px 0 0 var(--gold) !important;
+}
+.qi.done { opacity:.6 !important; }
+.qi.done .qname::after { content:' ✓'; color:var(--em); font-size:10px; }
+.xchip {
+  background:rgba(232,168,32,.15) !important;
+  border:1px solid rgba(232,168,32,.4) !important;
+  padding:2px 6px !important;
+  font-size:9px !important;
+  border-radius:4px !important;
+}
+
+/* ── RESET BTN ── */
+.resetbtn {
+  border-radius:7px !important;
+  font-family:'Cinzel',serif !important;
+  font-size:10px !important;
+  letter-spacing:.08em !important;
+  padding:8px !important;
+}
+
+/* ── ARENA BACKGROUND ── */
+.arena {
+  background:radial-gradient(ellipse at 50% 0%, rgba(30,15,60,.4) 0%, var(--bg) 70%) !important;
+}
+
+/* ── WELCOME SCREEN ── */
+.welcome { position:relative;overflow:hidden; }
+.wc {
+  font-size:5.5rem !important;
+  animation:swordFloat 3s ease-in-out infinite !important;
+  filter:drop-shadow(0 0 30px rgba(232,168,32,.8)) drop-shadow(0 0 60px rgba(232,168,32,.4)) !important;
+}
+.welcome h2 {
+  font-size:2.6rem !important;
+  background:linear-gradient(135deg, #E8A820, #FFD700, #E8A820);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  text-shadow:none !important;
+  animation:logoGlow 2s ease-in-out infinite;
+  filter:drop-shadow(0 0 20px rgba(232,168,32,.5));
+}
+.welcome p {
+  font-size:1rem !important;
+  color:#9EB3CC !important;
+  max-width:400px;
+  line-height:1.8;
+}
+.begin-btn {
+  padding:14px 36px !important;
+  font-size:1rem !important;
+  border-radius:10px !important;
+  background:linear-gradient(135deg,#C48A10,#E8A820,#FFD700,#E8A820,#C48A10) !important;
+  background-size:200% 100% !important;
+  animation:xpShimmer 2s linear infinite !important;
+  box-shadow:0 0 30px rgba(232,168,32,.5), 0 4px 20px rgba(0,0,0,.4) !important;
+  transform:translateY(0);
+  transition:transform .2s, box-shadow .2s !important;
+  letter-spacing:.08em;
+}
+.begin-btn:hover {
+  transform:translateY(-3px) scale(1.05) !important;
+  box-shadow:0 0 50px rgba(232,168,32,.8), 0 8px 30px rgba(0,0,0,.5) !important;
+}
+
+/* ── CHALLENGE CARD ── */
+.ch-card {
+  background:rgba(13,16,37,.6);
+  border:1px solid rgba(232,168,32,.15);
+  border-radius:14px;
+  padding:20px 22px;
+  backdrop-filter:blur(4px);
+  box-shadow:0 4px 40px rgba(0,0,0,.4), 0 0 60px rgba(30,15,60,.3);
+}
+.ch-hdr { border-bottom:1px solid rgba(232,168,32,.1); padding-bottom:14px; margin-bottom:18px; }
+.ch-title {
+  font-size:1.4rem !important;
+  background:linear-gradient(135deg,#E8DEBA,#FFD700);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.ch-xp {
+  background:linear-gradient(135deg,rgba(232,168,32,.15),rgba(232,168,32,.25)) !important;
+  border-color:rgba(232,168,32,.4) !important;
+  font-size:13px !important;
+  padding:5px 12px !important;
+  border-radius:6px !important;
+  box-shadow:0 0 12px rgba(232,168,32,.2);
+}
+.codebox {
+  background:rgba(5,8,20,.8) !important;
+  border:1px solid rgba(123,167,212,.2) !important;
+  border-left:3px solid rgba(123,167,212,.5) !important;
+  border-radius:8px !important;
+  font-size:.8rem !important;
+  box-shadow:inset 0 0 20px rgba(0,0,30,.5);
+}
+
+/* ── OPTION BUTTONS ── */
+.opt {
+  border-radius:10px !important;
+  padding:13px 16px !important;
+  transition:all .2s cubic-bezier(.34,1.56,.64,1) !important;
+  font-size:.9rem !important;
+  background:rgba(17,21,40,.8) !important;
+  border:1px solid rgba(30,45,80,.8) !important;
+}
+.opt:hover:not(:disabled) {
+  border-color:var(--gold) !important;
+  background:rgba(232,168,32,.1) !important;
+  transform:translateX(6px) !important;
+  box-shadow:0 0 20px rgba(232,168,32,.15), -3px 0 0 var(--gold) !important;
+}
+.oltr {
+  width:26px !important;height:26px !important;
+  background:rgba(232,168,32,.1) !important;
+  border:1px solid rgba(232,168,32,.3) !important;
+  font-size:11px !important;
+  border-radius:50% !important;
+}
+.opt.correct {
+  border-color:var(--em) !important;
+  background:rgba(46,204,138,.12) !important;
+  transform:none !important;
+  animation:correctFlash .6s ease !important;
+  box-shadow:0 0 30px rgba(46,204,138,.3) !important;
+}
+.opt.correct .oltr { background:rgba(46,204,138,.2) !important;border-color:var(--em) !important; }
+.opt.wrong {
+  border-color:var(--crim) !important;
+  background:rgba(232,64,64,.12) !important;
+  animation:wrongFlash .6s ease !important;
+}
+
+/* ── EXPLANATION BOX ── */
+.expl {
+  border-radius:10px !important;
+  padding:14px 16px !important;
+  font-size:.88rem !important;
+  border-left-width:3px !important;
+}
+.expl.ck {
+  background:rgba(46,204,138,.1) !important;
+  border-color:rgba(46,204,138,.4) !important;
+  box-shadow:0 0 20px rgba(46,204,138,.1);
+}
+.expl.wk {
+  background:rgba(232,64,64,.1) !important;
+  border-color:rgba(232,64,64,.4) !important;
+  box-shadow:0 0 20px rgba(232,64,64,.1);
+}
+
+/* ── NEXT BUTTON ── */
+.nxt {
+  border-radius:9px !important;
+  padding:11px 26px !important;
+  font-size:.9rem !important;
+  background:linear-gradient(135deg,#C48A10,#E8A820,#FFD700) !important;
+  box-shadow:0 0 20px rgba(232,168,32,.3) !important;
+  transition:all .2s !important;
+  letter-spacing:.06em;
+}
+.nxt:hover {
+  transform:translateY(-2px) scale(1.03) !important;
+  box-shadow:0 0 35px rgba(232,168,32,.6) !important;
+}
+
+/* ── WIZARD PANEL ── */
+.sright {
+  background:linear-gradient(180deg, rgba(10,8,25,.98) 0%, rgba(13,16,37,.98) 100%) !important;
+  border-left:1px solid rgba(232,168,32,.15) !important;
+}
+.whdr {
+  background:rgba(232,168,32,.05);
+  border-bottom:1px solid rgba(232,168,32,.15) !important;
+  padding:14px !important;
+}
+.wav {
+  background:radial-gradient(circle, rgba(232,168,32,.2), rgba(232,168,32,.05)) !important;
+  border:1px solid rgba(232,168,32,.4) !important;
+  box-shadow:0 0 15px rgba(232,168,32,.2);
+  font-size:20px !important;
+  width:38px !important;height:38px !important;
+}
+.wname { font-size:.95rem !important; color:#FFD700 !important; }
+.wm.wiz {
+  background:rgba(17,21,40,.9) !important;
+  border:1px solid rgba(232,168,32,.12) !important;
+  border-radius:10px !important;
+  border-bottom-left-radius:3px !important;
+  font-size:.82rem !important;
+  line-height:1.65 !important;
+}
+.wm.user {
+  background:rgba(232,168,32,.1) !important;
+  border:1px solid rgba(232,168,32,.2) !important;
+  border-radius:10px !important;
+  border-bottom-right-radius:3px !important;
+}
+.hbtn {
+  border-radius:6px !important;
+  padding:4px 9px !important;
+  font-size:10px !important;
+  transition:all .2s !important;
+  font-weight:600;
+}
+.hbtn:hover {
+  color:var(--gold) !important;
+  border-color:var(--gold) !important;
+  background:rgba(232,168,32,.08) !important;
+  transform:translateY(-1px);
+}
+.winput-row {
+  border-radius:10px !important;
+  background:rgba(5,8,20,.8) !important;
+  border:1px solid rgba(232,168,32,.2) !important;
+}
+.winput-row:focus-within {
+  border-color:var(--gold) !important;
+  box-shadow:0 0 15px rgba(232,168,32,.2);
+}
+
+/* ── MODALS ── */
+.mcard {
+  border-radius:16px !important;
+  border:1px solid rgba(232,168,32,.4) !important;
+  background:linear-gradient(135deg, rgba(15,12,30,.98), rgba(9,12,24,.98)) !important;
+  box-shadow:0 0 80px rgba(232,168,32,.25), 0 0 160px rgba(50,20,100,.2) !important;
+}
+.mcard h2 {
+  font-size:1.7rem !important;
+  background:linear-gradient(135deg, #E8A820, #FFD700);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.bgold {
+  border-radius:10px !important;
+  font-size:.9rem !important;
+  background:linear-gradient(135deg,#C48A10,#E8A820,#FFD700,#E8A820) !important;
+  background-size:200% 100% !important;
+  animation:xpShimmer 2s linear infinite !important;
+  box-shadow:0 0 20px rgba(232,168,32,.4) !important;
+  transition:all .2s !important;
+}
+.bgold:hover { transform:translateY(-2px) scale(1.02) !important; }
+.bghost { border-radius:10px !important; }
+.bdgcard {
+  background:linear-gradient(135deg, rgba(20,15,40,.98), rgba(10,8,25,.98)) !important;
+  border:2px solid var(--gold) !important;
+  box-shadow:0 0 100px rgba(232,168,32,.4), inset 0 0 60px rgba(232,168,32,.05) !important;
+  border-radius:20px !important;
+}
+.bdgemoji { filter:drop-shadow(0 0 20px rgba(232,168,32,.8)) !important; }
+.bdgcard h2 {
+  font-size:2rem !important;
+  background:linear-gradient(135deg,#E8A820,#FFD700,#FFF8DC);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+/* ── BACK BTN PULSE ── */
+.back-btn {
+  animation:none;
+  box-shadow:0 0 12px rgba(232,168,32,.2);
+  letter-spacing:.04em;
+}
+.back-btn:hover { box-shadow:0 0 20px rgba(232,168,32,.4) !important; transform:translateX(-2px); }
+
+/* ── RANK SECTION HEADERS ── */
+.rtitle { font-size:13px !important; letter-spacing:.05em; }
+
+/* ── PARTICLE BURST (JS driven) ── */
+.particle {
+  position:fixed;pointer-events:none;z-index:9999;
+  width:8px;height:8px;border-radius:50%;
+  animation:particleFly .8s ease-out forwards;
+}
+
 </style>
 </head>
 <body>
@@ -707,6 +1102,140 @@ function mdToHtml(md) {
 function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function saveState() { localStorage.setItem('sk2_state', JSON.stringify(state)); }
 function resetAll() { localStorage.removeItem('sk2_state'); location.reload(); }
+
+// ── STAR CANVAS ─────────────────────────────────────────────────────────────
+(function(){
+  var canvas = document.createElement('canvas');
+  canvas.id = 'star-canvas';
+  document.body.prepend(canvas);
+  var ctx = canvas.getContext('2d');
+  var stars = [];
+  function resize(){ canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+  for(var i=0;i<120;i++){
+    stars.push({
+      x:Math.random()*window.innerWidth,
+      y:Math.random()*window.innerHeight,
+      r:Math.random()*1.5+.3,
+      o:Math.random(),
+      s:Math.random()*.02+.005,
+      d:Math.random()>.5?1:-1
+    });
+  }
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    stars.forEach(function(s){
+      s.o+=s.s*s.d;
+      if(s.o>1||s.o<0){s.d*=-1;}
+      ctx.beginPath();
+      ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(255,220,120,'+s.o+')';
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ── FLOATING RUNES ───────────────────────────────────────────────────────────
+(function(){
+  var runes = ['⚔','🛡','✦','⚡','🔮','✧','⬡','◈','✶','⚜','🌟'];
+  function spawnRune(){
+    var el = document.createElement('div');
+    el.textContent = runes[Math.floor(Math.random()*runes.length)];
+    el.style.cssText = [
+      'position:fixed',
+      'left:'+(Math.random()*100)+'vw',
+      'top:110vh',
+      'font-size:'+(Math.random()*16+10)+'px',
+      'opacity:.12',
+      'pointer-events:none',
+      'z-index:0',
+      'animation:runeFloat '+(Math.random()*20+15)+'s linear forwards',
+      'filter:blur(.5px)'
+    ].join(';');
+    document.body.appendChild(el);
+    setTimeout(function(){ el.remove(); }, 35000);
+  }
+  spawnRune();
+  setInterval(spawnRune, 4000);
+})();
+
+// ── PARTICLE BURST ON CORRECT ANSWER ─────────────────────────────────────────
+function burstParticles(x, y, color) {
+  var colors = color ? [color] : ['#FFD700','#E8A820','#2ECC8A','#FFB347','#FFF8DC'];
+  for(var i=0;i<20;i++){
+    var p = document.createElement('div');
+    p.className = 'particle';
+    var angle = (Math.PI*2/20)*i;
+    var dist = 60+Math.random()*80;
+    var tx = Math.cos(angle)*dist;
+    var ty = Math.sin(angle)*dist;
+    p.style.cssText = [
+      'left:'+(x-4)+'px',
+      'top:'+(y-4)+'px',
+      'background:'+colors[Math.floor(Math.random()*colors.length)],
+      '--tx:'+tx+'px',
+      '--ty:'+ty+'px',
+      'width:'+(Math.random()*8+4)+'px',
+      'height:'+(Math.random()*8+4)+'px',
+      'animation-duration:'+(Math.random()*.5+.5)+'s',
+      'animation-delay:'+(Math.random()*.2)+'s'
+    ].join(';');
+    document.body.appendChild(p);
+    setTimeout(function(p){ p.remove(); }, 1200, p);
+  }
+}
+
+// ── OVERRIDE pickOpt TO ADD PARTICLE BURST ───────────────────────────────────
+var _origPickOpt = pickOpt;
+pickOpt = function(idx) {
+  _origPickOpt(idx);
+  // Fire particles from the clicked option
+  var btn = document.getElementById('opt'+idx);
+  if(btn) {
+    var rect = btn.getBoundingClientRect();
+    var cx = rect.left + rect.width/2;
+    var cy = rect.top + rect.height/2;
+    var isCorrect = idx === (current ? current.correct : -1);
+    if(isCorrect) {
+      burstParticles(cx, cy, '#2ECC8A');
+      // Big XP pop text
+      var pop = document.createElement('div');
+      pop.textContent = '+' + (current ? current.xp : '') + ' XP!';
+      pop.style.cssText = [
+        'position:fixed',
+        'left:'+(cx-30)+'px',
+        'top:'+(cy-50)+'px',
+        'font-family:Cinzel,serif',
+        'font-size:1.2rem',
+        'font-weight:700',
+        'color:#FFD700',
+        'pointer-events:none',
+        'z-index:9999',
+        'text-shadow:0 0 10px rgba(232,168,32,.8)',
+        'animation:fup .4s ease forwards',
+        'transition:all 1s'
+      ].join(';');
+      document.body.appendChild(pop);
+      setTimeout(function(){
+        pop.style.transform = 'translateY(-60px)';
+        pop.style.opacity = '0';
+        setTimeout(function(){ pop.remove(); }, 1000);
+      }, 200);
+    } else {
+      burstParticles(cx, cy, '#E84040');
+    }
+  }
+};
+
+// ── TOPBAR LOGO ENHANCED ──────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function(){
+  var logo = document.querySelector('.logo-text');
+  if(logo) logo.innerHTML = '⚔️ Security Knights';
+});
+
 </script>
 </body>
 </html>
