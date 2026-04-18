@@ -308,7 +308,7 @@ var CHALLENGES = [
     body:'The village board renders messages this way. What dark magic lurks?',
     code:'// Displaying the knight\'s message\nmessageDiv.innerHTML = userMessage; // from form input',
     options:['The code uses innerHTML instead of textContent','Missing authentication check','The variable name is too short','The page loads too slowly'],
-    correct:0, explanation:'Using innerHTML with user input enables XSS (Cross-Site Scripting). An attacker injects <script>steal(document.cookie)</script> and it runs in every visitor\'s browser. Fix: use textContent, or sanitize with DOMPurify.' },
+    correct:0, explanation:'Using innerHTML with user input enables XSS (Cross-Site Scripting). An attacker injects \u003cscript\u003esteal(document.cookie)\u003c/script\u003e and it runs in every visitor\'s browser. Fix: use textContent, or sanitize with DOMPurify.' },
 
   { id:3, rank:'paige', xp:10, topic:'Password Storage', title:'The Vault of Secrets',
     body:'The castle stores knight passwords. Which storage method is most dangerous?',
