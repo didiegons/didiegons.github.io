@@ -7,6 +7,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+button,input{font:inherit;}
+button{color:inherit;}
 html,body{height:100%;overflow:hidden;background:#090C18;}
 :root{
   --gold:#E8A820;--gdim:#C48A10;--gbg:rgba(232,168,32,.1);
@@ -124,9 +126,9 @@ html,body{height:100%;overflow:hidden;background:#090C18;}
 .opt.correct{border-color:var(--em) !important;background:var(--embg) !important;box-shadow:0 0 18px rgba(46,204,138,.2);}
 .opt.wrong{border-color:var(--crim) !important;background:var(--crimbg) !important;}
 .opt:disabled{cursor:not-allowed;}
-.oltr{width:28px;height:28px;border-radius:50%;background:#0A0D20;border:2px solid #E8A820;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#FFD700 !important;flex-shrink:0;box-shadow:0 0 8px rgba(232,168,32,.3);}
-.opt.correct .oltr{background:rgba(20,60,40,.9) !important;border-color:var(--em) !important;color:#2ECC8A !important;box-shadow:0 0 10px rgba(46,204,138,.4);}
-.opt.wrong .oltr{background:rgba(60,15,15,.9) !important;border-color:var(--crim) !important;color:#E84040 !important;box-shadow:0 0 10px rgba(232,64,64,.4);}
+.oltr{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;flex-shrink:0;background:#05080F;border:2px solid rgba(232,168,32,0.6);color:#FFD700;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:700;box-shadow:0 0 10px rgba(232,168,32,0.25);}
+.opt.correct .oltr{background:rgba(10,40,25,.9);border-color:#2ECC8A;color:#2ECC8A;}
+.opt.wrong .oltr{background:rgba(40,8,8,.9);border-color:#E84040;color:#E84040;}
 .expl{margin-top:12px;padding:12px 16px;border-radius:9px;font-size:.84rem;line-height:1.65;display:none;}
 .expl.show{display:block;}
 .expl.ck{background:var(--embg);border:1px solid rgba(46,204,138,.3);color:#A8E8C0;border-left:3px solid var(--em);}
@@ -217,16 +219,19 @@ html,body{height:100%;overflow:hidden;background:#090C18;}
       <div class="intro-title">Security Knights</div>
       <div class="intro-sub">A quest for secure code</div>
       <div class="intro-progress"><div class="intro-dot active"></div><div class="intro-dot"></div><div class="intro-dot"></div><div class="intro-dot"></div></div>
+      <button class="intro-btn" onclick="nextSlide()">Next →</button>
     </div>
     <div class="intro-slide" id="slide-1">
       <div class="intro-emoji">🌑</div>
       <div class="intro-story">In the realm of <strong>Codehaven</strong>, dark sorcerers exploit the <em>vulnerabilities</em> of unsuspecting applications — stealing secrets, corrupting data, and plunging the kingdom into chaos...</div>
       <div class="intro-progress"><div class="intro-dot"></div><div class="intro-dot active"></div><div class="intro-dot"></div><div class="intro-dot"></div></div>
+      <button class="intro-btn" onclick="nextSlide()">Next →</button>
     </div>
     <div class="intro-slide" id="slide-2">
       <div class="intro-emoji">🛡️</div>
       <div class="intro-story">The <strong>Council of Knights</strong> has summoned you — a warrior trained in the ancient art of <em>secure coding</em>. Walk the sacred path, answer each challenge, and <strong>protect the realm</strong>.</div>
       <div class="intro-progress"><div class="intro-dot"></div><div class="intro-dot"></div><div class="intro-dot active"></div><div class="intro-dot"></div></div>
+      <button class="intro-btn" onclick="nextSlide()">Next →</button>
     </div>
     <div class="intro-slide" id="slide-3">
       <div class="intro-emoji">🏰</div>
@@ -762,18 +767,12 @@ function runIntro() {
   }
   drawIntroScene();
 
-  // Auto-advance slides
-  advanceSlide();
 }
 
-function advanceSlide() {
-  if (introTimer) clearTimeout(introTimer);
+function nextSlide() {
   if (introSlide < INTRO_SLIDES - 1) {
-    introTimer = setTimeout(function() {
-      introSlide++;
-      showSlide(introSlide);
-      advanceSlide();
-    }, 3500);
+    introSlide++;
+    showSlide(introSlide);
   }
 }
 
@@ -1136,10 +1135,17 @@ function renderQuestion(ch){
   var letters=['A','B','C','D'];
   shuffledOpts.forEach(function(o,i){
     var btn=document.createElement('button');
+    btn.type='button';
     btn.className='opt'; btn.id='opt'+i;
-    btn.onclick=function(){pickAnswer(i);};
-    // Inline style guarantees color regardless of any CSS override
-    btn.innerHTML='<span class="oltr" style="color:#FFD700;background:#05080F;border:2px solid #E8A820;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0;font-family:monospace;">'+letters[i]+'</span>'+escHtml(o.text);
+    (function(idx){ btn.addEventListener('click', function(){ pickAnswer(idx); }); })(i);
+    // DOM node creation like codex — avoids innerHTML/browser color quirks
+    var badge=document.createElement('span');
+    badge.className='oltr';
+    badge.textContent=letters[i];
+    var txt=document.createElement('span');
+    txt.textContent=o.text;
+    btn.appendChild(badge);
+    btn.appendChild(txt);
     opts.appendChild(btn);
   });
 
