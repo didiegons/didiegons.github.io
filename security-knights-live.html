@@ -196,12 +196,12 @@ html,body{height:100%;overflow:hidden;background:#090C18;}
 @keyframes xppop{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-80px)}}
 
 /* Dragon overlay */
-#dragon-overlay{position:fixed;inset:0;z-index:800;pointer-events:none;display:none;}
+#dragon-overlay{position:fixed;inset:0;z-index:9000;pointer-events:none;display:none;background:rgba(0,0,0,0);}
 #dragon-overlay.active{display:block;}
 #dragon-canvas{position:absolute;inset:0;width:100%;height:100%;}
-.dragon-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Uncial Antiqua',serif;font-size:clamp(2rem,5vw,3.5rem);color:#FF4400;text-shadow:0 0 30px rgba(255,100,0,.9),0 0 60px rgba(255,0,0,.5);text-align:center;opacity:0;transition:opacity .4s;pointer-events:none;}
+.dragon-text{position:absolute;top:42%;left:50%;transform:translate(-50%,-50%);font-family:'Uncial Antiqua',serif;font-size:clamp(2rem,5vw,3.2rem);color:#FF4400;text-shadow:0 0 30px rgba(255,100,0,.9),0 0 60px rgba(255,0,0,.5),0 0 100px rgba(255,0,0,.3);text-align:center;opacity:0;transition:opacity .5s;pointer-events:none;white-space:nowrap;}
 .dragon-text.show{opacity:1;}
-@keyframes screenShake{0%,100%{transform:translate(0,0)}20%{transform:translate(-6px,3px)}40%{transform:translate(6px,-3px)}60%{transform:translate(-4px,4px)}80%{transform:translate(4px,-2px)}}
+@keyframes screenShake{0%,100%{transform:translate(0,0)}20%{transform:translate(-8px,4px)}40%{transform:translate(8px,-4px)}60%{transform:translate(-5px,5px)}80%{transform:translate(5px,-3px)}}
 </style>
 </head>
 <body>
@@ -1138,7 +1138,8 @@ function renderQuestion(ch){
     var btn=document.createElement('button');
     btn.className='opt'; btn.id='opt'+i;
     btn.onclick=function(){pickAnswer(i);};
-    btn.innerHTML='<span class="oltr">'+letters[i]+'</span>'+escHtml(o.text);
+    // Inline style guarantees color regardless of any CSS override
+    btn.innerHTML='<span class="oltr" style="color:#FFD700;background:#05080F;border:2px solid #E8A820;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0;font-family:monospace;">'+letters[i]+'</span>'+escHtml(o.text);
     opts.appendChild(btn);
   });
 
@@ -1498,11 +1499,15 @@ var dragonAnim = {
     var dctx = this.dctx;
     dctx.clearRect(0, 0, W, H);
 
-    // Dark red vignette overlay
-    var alpha = Math.min(0.7, this.t * 0.4);
-    var vgr = dctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, W*0.7);
-    vgr.addColorStop(0, 'rgba(40,0,0,0)');
-    vgr.addColorStop(1, 'rgba(10,0,0,' + alpha + ')');
+    // Strong dark cinematic backdrop — immediately visible
+    var bgAlpha = Math.min(0.88, this.t * 0.8);
+    dctx.fillStyle = 'rgba(4,0,8,' + bgAlpha + ')';
+    dctx.fillRect(0, 0, W, H);
+
+    // Red vignette edges
+    var vgr = dctx.createRadialGradient(W/2, H/2, W*0.2, W/2, H/2, W*0.8);
+    vgr.addColorStop(0, 'rgba(60,0,0,0)');
+    vgr.addColorStop(1, 'rgba(120,0,0,' + Math.min(0.5, this.t*0.4) + ')');
     dctx.fillStyle = vgr;
     dctx.fillRect(0, 0, W, H);
 
@@ -1515,21 +1520,25 @@ var dragonAnim = {
     if (this.t < 1.2) {
       // Flying in
       var p = this.t / 1.2;
-      dx = W * 1.15 - p * W * 0.75;
-      dy = H * 0.15 + Math.sin(p * Math.PI * 1.5) * H * 0.25;
+      dx = W * 1.2 - p * W * 0.78;
+      dy = H * 0.18 + Math.sin(p * Math.PI * 1.5) * H * 0.22;
     } else if (this.t < 2.2) {
       // Hovering / breathing fire
       var p = (this.t - 1.2) / 1.0;
-      dx = W * 0.55 + Math.sin(p * Math.PI * 2) * 30;
-      dy = H * 0.22 + Math.cos(p * Math.PI) * 20;
+      dx = W * 0.52 + Math.sin(p * Math.PI * 2) * 28;
+      dy = H * 0.28 + Math.cos(p * Math.PI) * 18;
     } else {
       // Flying away left-up
       var p = (this.t - 2.2) / 1.5;
-      dx = W * 0.55 - p * W * 1.3;
-      dy = H * 0.22 - p * H * 0.5;
+      dx = W * 0.52 - p * W * 1.4;
+      dy = H * 0.28 - p * H * 0.55;
     }
 
     var facingLeft = this.t > 2.2;
+
+    // Scale dragon 1.6x so it fills the screen
+    dctx.save();
+    dctx.translate(dx, dy); dctx.scale(1.6, 1.6); dctx.translate(-dx, -dy);
 
     // Add fire when hovering
     if (this.t > 1.1 && this.t < 2.3) {
@@ -1570,6 +1579,7 @@ var dragonAnim = {
 
     // Draw dragon
     this.drawDragon(dctx, dx, dy, facingLeft, this.t);
+    dctx.restore(); // close the scale transform
   },
 
   drawDragon: function(dctx, x, y, flip, t) {
