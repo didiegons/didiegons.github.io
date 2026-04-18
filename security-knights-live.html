@@ -194,6 +194,23 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
 .bdgcard p{color:var(--muted);font-size:.86rem;margin-bottom:18px;}
 .bdgclose{padding:9px 24px;background:linear-gradient(135deg,#C48A10,#E8A820,#FFD700);border:none;border-radius:8px;font-family:'Cinzel',serif;font-size:.86rem;font-weight:700;color:#000;cursor:pointer;}
 
+
+/* ── SHARE CARD ── */
+#shareModal{position:fixed;inset:0;z-index:900;background:rgba(4,6,18,.95);backdrop-filter:blur(18px);display:none;align-items:center;justify-content:center;padding:20px;}
+#shareModal.open{display:flex;}
+.share-wrap{background:linear-gradient(160deg,#0A0D22,#0D1030);border:1px solid rgba(232,168,32,.3);border-radius:20px;padding:28px;max-width:520px;width:100%;box-shadow:0 0 80px rgba(232,168,32,.12);}
+.share-wrap h3{font-family:'Cinzel',serif;font-size:1rem;color:var(--gold);text-align:center;margin-bottom:16px;letter-spacing:.08em;}
+#badgeCanvas{display:block;border-radius:12px;width:100%;box-shadow:0 8px 40px rgba(0,0,0,.5);}
+.share-actions{display:flex;gap:8px;margin-top:14px;}
+.share-btn{flex:1;padding:10px;border-radius:8px;font-family:'Cinzel',serif;font-size:.78rem;font-weight:700;cursor:pointer;border:none;transition:all .2s;letter-spacing:.05em;}
+.share-dl{background:linear-gradient(135deg,#C48A10,#E8A820,#FFD700);color:#000;}
+.share-dl:hover{transform:translateY(-2px);box-shadow:0 0 20px rgba(232,168,32,.4);}
+.share-ln{background:rgba(10,102,194,.9);color:#fff;}
+.share-ln:hover{background:#0856a8;}
+.share-cp{background:rgba(46,204,138,.15);border:1px solid rgba(46,204,138,.3);color:#2ECC8A;}
+.share-cp:hover{background:rgba(46,204,138,.25);}
+.share-close{position:absolute;top:14px;right:18px;background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;line-height:1;}
+
 /* Particles & XP popup */
 .pt{position:fixed;pointer-events:none;z-index:9999;border-radius:50%;animation:ptfly .8s ease-out forwards;}
 @keyframes ptfly{0%{transform:translate(0,0);opacity:1}100%{transform:translate(var(--tx),var(--ty));opacity:0}}
@@ -251,6 +268,21 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
   <div class="dragon-text" id="dragon-text">🐉 The Dragon Strikes!<br><span style="font-size:55%;color:#FF8844;font-family:'Cinzel',serif">Study the explanation and continue your quest!</span></div>
 </div>
 
+
+<!-- ── SHARE BADGE MODAL ── -->
+<div id="shareModal">
+  <div class="share-wrap" style="position:relative">
+    <button class="share-close" onclick="document.getElementById('shareModal').classList.remove('open')">✕</button>
+    <h3>⚔️ YOUR SECURITY KNIGHT CERTIFICATE ⚔️</h3>
+    <canvas id="badgeCanvas" width="900" height="500"></canvas>
+    <div class="share-actions">
+      <button class="share-btn share-dl" onclick="downloadBadge()">⬇ Download PNG</button>
+      <button class="share-btn share-ln" onclick="shareLinkedIn()">in LinkedIn</button>
+      <button class="share-btn share-cp" id="cpyBtn" onclick="copyShareText()">📋 Copy Text</button>
+    </div>
+  </div>
+</div>
+
 <!-- ── API KEY MODAL ── -->
 <div class="overlay" id="keyModal">
   <div class="mcard">
@@ -303,6 +335,7 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
   <div class="hud-right">
     <button class="hud-btn" id="btnQuests" onclick="toggleSidebar()">📜 Quests</button>
     <button class="hud-btn" id="btnWiz" onclick="toggleWizard()">🧙 Wizard</button>
+    <button class="hud-btn" onclick="openShareCard()" title="Get your certificate">🏅</button>
     <button class="hud-btn" id="btnMute" onclick="toggleMusic()">🔊</button>
   </div>
 </div>
@@ -1595,6 +1628,193 @@ function burst(x,y,col){
     setTimeout(function(el){el.remove();},1100,p);
   }
 }
+
+// ═══════════════════════════════════════════════
+// BADGE SHARE CARD GENERATOR
+// ═══════════════════════════════════════════════
+function openShareCard() {
+  document.getElementById('shareModal').classList.add('open');
+  drawBadgeCard();
+}
+
+function drawBadgeCard() {
+  var canvas = document.getElementById('badgeCanvas');
+  var c = canvas.getContext('2d');
+  var W = 900, H = 500;
+  c.clearRect(0,0,W,H);
+
+  // ── Background ──
+  var bg = c.createLinearGradient(0,0,W,H);
+  bg.addColorStop(0, '#07091A');
+  bg.addColorStop(0.5, '#0D1130');
+  bg.addColorStop(1, '#070915');
+  c.fillStyle = bg;
+  c.fillRect(0,0,W,H);
+
+  // Border glow
+  c.strokeStyle = 'rgba(232,168,32,0.6)';
+  c.lineWidth = 3;
+  c.strokeRect(8,8,W-16,H-16);
+  c.strokeStyle = 'rgba(232,168,32,0.2)';
+  c.lineWidth = 1;
+  c.strokeRect(14,14,W-28,H-28);
+
+  // Corner ornaments
+  drawCorner(c, 22, 22, 1, 1);
+  drawCorner(c, W-22, 22, -1, 1);
+  drawCorner(c, 22, H-22, 1, -1);
+  drawCorner(c, W-22, H-22, -1, -1);
+
+  // ── Star field ──
+  c.fillStyle = 'rgba(255,255,255,0.6)';
+  var starSeed = 42;
+  for (var s=0; s<80; s++) {
+    starSeed = (starSeed * 1664525 + 1013904223) & 0xFFFFFFFF;
+    var sx = ((starSeed >>> 0) % W);
+    starSeed = (starSeed * 1664525 + 1013904223) & 0xFFFFFFFF;
+    var sy = ((starSeed >>> 0) % H);
+    starSeed = (starSeed * 1664525 + 1013904223) & 0xFFFFFFFF;
+    var sr = ((starSeed >>> 0) % 10) / 10 * 1.5 + 0.3;
+    c.beginPath();
+    c.arc(sx, sy, sr, 0, Math.PI*2);
+    c.fill();
+  }
+
+  // ── Central shield ──
+  c.save();
+  c.translate(W/2, H/2 - 20);
+  drawShield(c, 90);
+  c.restore();
+
+  // ── Zone badge (rank) ──
+  var rank = state.rank || 'paige';
+  var rankData = {
+    paige:  { icon:'🛡️', label:'PAIGE', color:'#7BA7D4' },
+    squire: { icon:'⚔️', label:'SQUIRE', color:'#C0976A' },
+    knight: { icon:'👑', label:'KNIGHT', color:'#E8A820' }
+  };
+  var rd = rankData[rank];
+
+  // ── Title ──
+  c.textAlign = 'center';
+  c.fillStyle = 'rgba(232,168,32,0.55)';
+  c.font = '500 13px "Cinzel", serif';
+  c.fillText('SECURITY KNIGHTS', W/2, 48);
+
+  c.fillStyle = 'rgba(232,168,32,0.25)';
+  c.fillRect(W/2 - 120, 54, 240, 1);
+
+  c.fillStyle = rd.color;
+  c.font = 'bold 38px "Cinzel", serif';
+  c.fillText('CERTIFIED ' + rd.label, W/2, 98);
+
+  // ── Bottom XP and completion ──
+  var completed = (state.completed || []).length;
+  var total = CHALLENGES.length;
+
+  c.fillStyle = 'rgba(232,168,32,0.2)';
+  c.fillRect(W/2 - 160, H - 130, 320, 1);
+
+  c.fillStyle = 'rgba(232,200,120,0.8)';
+  c.font = '500 15px "Cinzel", serif';
+  c.fillText('OWASP Top 10 Secure Coding Challenge', W/2, H-108);
+
+  c.fillStyle = '#FFD700';
+  c.font = 'bold 22px "JetBrains Mono", monospace';
+  c.fillText(state.xp + ' XP  ·  ' + completed + '/' + total + ' Challenges', W/2, H-78);
+
+  // Date
+  var now = new Date();
+  var dateStr = now.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+  c.fillStyle = 'rgba(140,160,200,0.55)';
+  c.font = '400 11px "JetBrains Mono", monospace';
+  c.fillText('Completed ' + dateStr + '  ·  didiegons.github.io', W/2, H-48);
+
+  // Bottom tagline
+  c.fillStyle = 'rgba(232,168,32,0.35)';
+  c.font = '400 11px "Cinzel", serif';
+  c.fillText('The realm is safer with you.', W/2, H-26);
+}
+
+function drawShield(c, size) {
+  var s = size;
+  // Shield shape
+  var shGrad = c.createLinearGradient(-s, -s, s, s);
+  shGrad.addColorStop(0, 'rgba(232,168,32,0.25)');
+  shGrad.addColorStop(1, 'rgba(232,168,32,0.05)');
+  c.beginPath();
+  c.moveTo(0, -s);
+  c.bezierCurveTo(s, -s, s, -s*0.3, s, s*0.2);
+  c.bezierCurveTo(s, s*0.7, 0, s, 0, s);
+  c.bezierCurveTo(0, s, -s, s*0.7, -s, s*0.2);
+  c.bezierCurveTo(-s, -s*0.3, -s, -s, 0, -s);
+  c.closePath();
+  c.fillStyle = shGrad;
+  c.fill();
+  c.strokeStyle = 'rgba(232,168,32,0.7)';
+  c.lineWidth = 2.5;
+  c.stroke();
+
+  // Rank emoji
+  c.font = s * 0.6 + 'px serif';
+  c.textAlign = 'center';
+  c.textBaseline = 'middle';
+  var rank = state.rank || 'paige';
+  var icons = { paige:'🛡', squire:'⚔', knight:'👑' };
+  c.fillText(icons[rank] || '⚔', 0, 0);
+  c.textBaseline = 'alphabetic';
+}
+
+function drawCorner(c, x, y, dx, dy) {
+  var len = 22;
+  c.strokeStyle = 'rgba(232,168,32,0.55)';
+  c.lineWidth = 1.5;
+  c.beginPath();
+  c.moveTo(x + dx*len, y);
+  c.lineTo(x, y);
+  c.lineTo(x, y + dy*len);
+  c.stroke();
+  c.beginPath();
+  c.arc(x, y, 3, 0, Math.PI*2);
+  c.fillStyle = 'rgba(232,168,32,0.55)';
+  c.fill();
+}
+
+function downloadBadge() {
+  var canvas = document.getElementById('badgeCanvas');
+  var link = document.createElement('a');
+  link.download = 'SecurityKnights-Certificate-' + (state.rank||'knight') + '.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+function shareLinkedIn() {
+  var text = encodeURIComponent(
+    "I just completed the Security Knights OWASP Top 10 challenge! " +
+    "Earned " + state.xp + " XP and reached the rank of " + (state.rank||'Knight').toUpperCase() + ". " +
+    "\n\nGreat hands-on secure coding training — try it yourself! " +
+    "\n#CyberSecurity #OWASP #SecureCoding #SecurityKnights"
+  );
+  window.open('https://www.linkedin.com/sharing/share-offsite/?url=' +
+    encodeURIComponent('https://didiegons.github.io/security-knights-live.html') +
+    '&summary=' + text, '_blank');
+}
+
+function copyShareText() {
+  var text = "⚔️ I just became a Security Knight!\n\n" +
+    "Completed the Security Knights OWASP Top 10 challenge:\n" +
+    "✅ " + (state.completed||[]).length + "/15 challenges completed\n" +
+    "🏅 Rank: " + (state.rank||'Knight').toUpperCase() + "\n" +
+    "⭐ XP: " + state.xp + "\n\n" +
+    "Try it: https://didiegons.github.io/security-knights-live.html\n" +
+    "#CyberSecurity #OWASP #SecureCoding";
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('cpyBtn');
+    btn.textContent = '✅ Copied!';
+    setTimeout(function(){ btn.textContent = '📋 Copy Text'; }, 2000);
+  });
+}
+
 
 // ═══════════════════════════════════════════════
 // DRAGON ANIMATION
