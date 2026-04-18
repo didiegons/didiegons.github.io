@@ -68,6 +68,9 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
 @keyframes xpShine{0%{background-position:-200% 0}100%{background-position:200% 0}}
 .bdgs{display:flex;gap:5px;}
 .bicon{width:28px;height:28px;border-radius:6px;border:1px solid var(--bdr);background:#0D1025;display:flex;align-items:center;justify-content:center;font-size:14px;opacity:.2;transition:all .4s;}
+.miss-dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(232,64,64,.3);background:transparent;transition:all .3s;}
+.miss-dot.hit{background:#E84040;border-color:#E84040;box-shadow:0 0 10px rgba(232,64,64,.6);animation:missHit .4s ease;}
+@keyframes missHit{0%{transform:scale(1)}40%{transform:scale(1.6)}100%{transform:scale(1)}}
 .bicon.earned{opacity:1;border-color:var(--gold);box-shadow:0 0 14px rgba(232,168,32,.6);animation:badgePop .5s ease;}
 @keyframes badgePop{0%{transform:scale(1)}40%{transform:scale(1.5) rotate(15deg)}70%{transform:scale(.9)}100%{transform:scale(1)}}
 .hud-right{display:flex;align-items:center;gap:6px;}
@@ -290,6 +293,11 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
       <div class="bicon" id="bp" title="Paige Badge">🛡️</div>
       <div class="bicon" id="bs" title="Squire Badge">⚔️</div>
       <div class="bicon" id="bk" title="Knight Badge">👑</div>
+    </div>
+    <div id="missDots" style="display:flex;gap:5px;align-items:center;margin-left:6px;" title="Wrong answers — 3 = defeat!">
+      <div class="miss-dot" id="md1"></div>
+      <div class="miss-dot" id="md2"></div>
+      <div class="miss-dot" id="md3"></div>
     </div>
   </div>
   <div class="hud-right">
@@ -558,8 +566,9 @@ function selectQuestions() {
 // GAME STATE
 // ═══════════════════════════════════════════════
 var state = JSON.parse(localStorage.getItem('sk4_state') || 'null') || {
-  xp:0, rank:'paige', completed:[], badges:[], session:null
+  xp:0, rank:'paige', completed:[], badges:[], session:null, misses:0
 };
+if (!state.misses) state.misses = 0;
 
 // Ensure session questions are consistent
 var SESSION = null;
@@ -1080,6 +1089,15 @@ function walkToNextStone(){
   charMoving=true; charAction='walk';
   gameState='WALKING';
   document.getElementById('qpanel').classList.remove('open');
+  // Update rank based on zone as soon as we step into a new tier
+  var zoneRank = 'paige';
+  if (stoneIdx >= 11) zoneRank = 'knight';
+  else if (stoneIdx >= 6) zoneRank = 'squire';
+  if (zoneRank !== state.rank) {
+    state.rank = zoneRank;
+    updateHUD();
+    saveState();
+  }
 }
 
 function onReachedWaypoint(){
@@ -1190,11 +1208,22 @@ function pickAnswer(idx){
     burst(window.innerWidth*.42, window.innerHeight*.5, '#2ECC8A');
     addWizMsg('wiz','🎉 <strong>Correct!</strong> +'+current.xp+' XP! The realm grows safer!');
   } else {
+    state.misses = (state.misses || 0) + 1;
+    saveState();
     charAction='stumble';
     setTimeout(function(){charAction='idle';},1000);
-    addWizMsg('wiz','⚠️ Not quite. Correct answer: <strong>'+escHtml(shuffledOpts[shuffledCorrect].text)+'</strong>. Ask me to explain!');
-    // 🐉 Dragon attacks!
-    setTimeout(showDragonAttack, 300);
+    var missesLeft = 3 - state.misses;
+    if (state.misses >= 3) {
+      // 3 misses — dragon defeats the knight
+      addWizMsg('wiz','💀 <strong>Three wrong answers!</strong> The dragon has defeated you. The realm needs a stronger knight...');
+      setTimeout(function(){
+        showDragonAttack();
+        setTimeout(showDefeatScreen, 2000);
+      }, 300);
+    } else {
+      addWizMsg('wiz','⚠️ Not quite. Correct answer: <strong>'+escHtml(shuffledOpts[shuffledCorrect].text)+'</strong>. ⚠️ <strong>'+(missesLeft === 1 ? 'ONE warning left!' : missesLeft+' warnings left')+' — 3 wrong = defeat!</strong>');
+      setTimeout(showDragonAttack, 300);
+    }
   }
 }
 
@@ -1202,6 +1231,21 @@ function onNext(){
   document.getElementById('qpanel').classList.remove('open');
   charAction='idle';
   setTimeout(walkToNextStone, 450);
+}
+
+function showDefeatScreen(){
+  document.getElementById('dragon-overlay').classList.remove('active');
+  var ov=document.createElement('div');
+  ov.className='overlay';
+  ov.innerHTML='<div class="mcard" style="text-align:center;border-color:rgba(232,64,64,.5)">' +
+    '<span style="font-size:3.5rem;display:block;margin-bottom:14px">💀🐉</span>' +
+    '<h2 style="background:linear-gradient(135deg,#E84040,#FF6060);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Defeated!</h2>' +
+    '<p>The dragon has bested you after <strong style="color:#E84040">3 wrong answers</strong>.<br>The realm needs a stronger knight!</p>' +
+    '<p style="margin-top:4px;font-family:JetBrains Mono,monospace;font-size:.75rem;color:#7A8BAA">XP earned this run: <strong style="color:#E8A820">' + state.xp + '</strong></p>' +
+    '<div style="display:flex;gap:8px;margin-top:18px">' +
+    '<button class="bgold" style="flex:1" onclick="resetGame()">⚔️ Try Again</button>' +
+    '</div></div>';
+  document.body.appendChild(ov);
 }
 
 function showVictory(){
@@ -1219,24 +1263,32 @@ function showVictory(){
 // RANK & BADGES
 // ═══════════════════════════════════════════════
 function checkRankUp(prevXP){
-  // Paige badge: first correct answer
-  if(!state.badges.includes('paige') && state.completed.length>=1){
-    state.badges.push('paige'); showBadge('paige'); return;
+  // Rank is zone-based: which tier of stone you're currently on
+  // Stones 1-5 = Paige, 6-10 = Squire, 11-15 = Knight
+  var newRank = 'paige';
+  if (stoneIdx >= 11) newRank = 'knight';
+  else if (stoneIdx >= 6) newRank = 'squire';
+
+  if (newRank !== state.rank) {
+    state.rank = newRank;
   }
-  // Squire badge: reach 200 XP
-  if(!state.badges.includes('squire') && prevXP<200 && state.xp>=200){
-    state.badges.push('squire'); showBadge('squire'); return;
+
+  // Paige badge: complete first challenge
+  if(!state.badges.includes('paige') && state.completed.length >= 1){
+    state.badges.push('paige');
+    showBadge('paige');
+    return;
   }
-  // Rank changes
-  RANK_ORDER.forEach(function(rank,i){
-    if(i===0) return;
-    if(prevXP < XP_THRESH[rank] && state.xp >= XP_THRESH[rank]){
-      state.rank=rank;
-    }
-  });
-  // Knight badge: complete all 15
-  if(!state.badges.includes('knight') && state.completed.length>=15){
-    state.badges.push('knight'); showBadge('knight');
+  // Squire badge: enter squire zone (stone 6+)
+  if(!state.badges.includes('squire') && stoneIdx >= 6){
+    state.badges.push('squire');
+    showBadge('squire');
+    return;
+  }
+  // Knight badge: enter knight zone (stone 11+) OR complete all 15
+  if(!state.badges.includes('knight') && (stoneIdx >= 11 || state.completed.length >= 15)){
+    state.badges.push('knight');
+    showBadge('knight');
   }
 }
 
@@ -1255,12 +1307,13 @@ function showBadge(rank){
 
 function updateHUD(){
   var rank=state.rank, xp=state.xp;
-  var ri=RANK_ORDER.indexOf(rank);
-  var nextT=ri+1<RANK_ORDER.length?XP_THRESH[RANK_ORDER[ri+1]]:XP_THRESH[rank]+300;
-  var prevT=XP_THRESH[rank];
-  var pct=Math.min(100,((xp-prevT)/(nextT-prevT))*100);
+  // XP bar: show progress within current zone (5 questions per zone)
+  // Zone XP caps: Paige ~75, Squire ~110 more (185 total), Knight ~125 more (310 total)
+  var zoneRanges = { paige:[0,75], squire:[75,185], knight:[185,310] };
+  var r = zoneRanges[rank] || [0,75];
+  var pct = Math.min(100, Math.max(0, ((xp - r[0]) / (r[1] - r[0])) * 100));
   document.getElementById('xpFill').style.width=pct+'%';
-  document.getElementById('xpLbl').textContent=xp+'/'+nextT;
+  document.getElementById('xpLbl').textContent=xp+' XP';
   var rb=document.getElementById('rankBadge');
   rb.textContent=RANK_ICONS[rank]+' '+RANK_LABELS[rank];
   rb.className='rbadge '+RANK_CSS[rank];
@@ -1271,6 +1324,12 @@ function updateHUD(){
       el.classList.add('earned');
     }
   });
+  // Update miss dots
+  var misses = state.misses || 0;
+  for (var m=1; m<=3; m++) {
+    var dot = document.getElementById('md'+m);
+    if (dot) dot.classList.toggle('hit', m <= misses);
+  }
 }
 
 function saveState(){localStorage.setItem('sk4_state',JSON.stringify(state));}
