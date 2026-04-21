@@ -654,77 +654,72 @@ _drawTroll: function(ctx, cx, cy, t, sc) {
 _applyOverrides: function() {
   var self = this;
 
-  if (this._overridesApplied) {
-    console.log('[SK Story] Overrides already applied — skipping.');
-    return;
-  }
-
-  if (typeof openQuestion === 'undefined' || typeof pickAnswer === 'undefined') {
-    console.warn('[SK Story] Game functions not found yet, retrying...');
-    setTimeout(function() { self._applyOverrides(); }, 200);
-    return;
-  }
-
+  if (this._overridesApplied) { return; }
   this._overridesApplied = true;
 
-  var _origOpen    = window.openQuestion;
   var _origPick    = window.pickAnswer;
   var _origVictory = window.showVictory;
+  var _origWaypoint = window.onReachedWaypoint;
 
-  // ── openQuestion override ─────────────────────────
-  // Strategy: call _origOpen FIRST (sets up current, renders HTML,
-  // schedules panel open at 250ms). Then intercept the panel open,
-  // show narrative, and re-open panel when narrative is dismissed.
-  // This avoids any callback chain issues entirely.
-  window.openQuestion = function() {
-    if (typeof gameState !== 'undefined') gameState = 'QUESTIONING';
+  // ── PRE-NARRATIVE: MutationObserver on #qpanel ───
+  // We do NOT override openQuestion at all.
+  // The original game opens #qpanel normally.
+  // We intercept that via CSS class change, show narrative,
+  // then re-open the panel. No callback chains, no timing tricks.
+  var lastNarrativeStone = -1;
 
-    var idx    = typeof stoneIdx !== 'undefined' ? stoneIdx : 0;
-    var doBoss = idx === 5 ? 'thornback' : idx === 10 ? 'grimfang' : idx === 15 ? 'malachar' : null;
-    var story  = self.STORY[idx];
-    var hasNarrative = !!(story && story.pre);
-
-    // Step 1 — Run the original. It renders the question panel HTML
-    // and schedules classList.add('open') after 250ms.
-    _origOpen.call(window);
-
-    // If nothing to show, let the original open the panel normally.
-    if (!hasNarrative && !doBoss) return;
-
-    // Step 2 — Block the panel from appearing.
-    // The original adds 'open' at 250ms; we remove it at 270ms.
+  function attachPanelObserver() {
     var qp = document.getElementById('qpanel');
-    setTimeout(function() {
-      if (qp) qp.classList.remove('open');
-    }, 270);
+    if (!qp) { setTimeout(attachPanelObserver, 300); return; }
 
-    // Step 3 — Show pre-narrative (or boss), then re-open panel.
-    var openPanel = function() {
-      if (qp) setTimeout(function() { qp.classList.add('open'); }, 80);
-    };
+    var obs = new MutationObserver(function() {
+      if (!qp.classList.contains('open')) return;
 
-    self._runPre(idx, function() {
-      if (doBoss) {
-        self.showBossEncounter(doBoss, function() { openPanel(); });
-      } else {
-        openPanel();
-      }
+      var stone = typeof stoneIdx !== 'undefined' ? stoneIdx : 0;
+      if (stone === lastNarrativeStone) return;  // already shown for this stone
+
+      var story  = self.STORY[stone];
+      var hasPre = !!(story && story.pre);
+      var doBoss = stone === 5  ? 'thornback' :
+                   stone === 10 ? 'grimfang'  :
+                   stone === 15 ? 'malachar'  : null;
+
+      if (!hasPre && !doBoss) return;  // no narrative for this stone
+
+      lastNarrativeStone = stone;
+      qp.classList.remove('open');  // hide panel while narrative shows
+
+      var openPanel = function() {
+        setTimeout(function() { qp.classList.add('open'); }, 60);
+      };
+
+      self._runPre(stone, function() {
+        if (doBoss) { self.showBossEncounter(doBoss, openPanel); }
+        else { openPanel(); }
+      });
     });
-  };
 
-  // ── pickAnswer override ───────────────────────────
-  window.pickAnswer = function(idx) {
-    if (typeof answered !== 'undefined' && answered) return;
-    var isCorrect = (typeof shuffledCorrect !== 'undefined') && idx === shuffledCorrect;
-    var curStone  = typeof stoneIdx !== 'undefined' ? stoneIdx : 0;
-    _origPick.call(window, idx);
-    self._runPost(curStone, isCorrect);
-  };
+    obs.observe(qp, { attributes: true, attributeFilter: ['class'] });
+    console.log('[SK Story] ✅ Panel observer active.');
+  }
+  setTimeout(attachPanelObserver, 200);
 
-  // ── onReachedWaypoint override ────────────────────
+  // ── pickAnswer override — post-narrative ──────────
+  if (!window._skStoryPickHooked) {
+    window._skStoryPickHooked = true;
+    window.pickAnswer = function(idx) {
+      if (typeof answered !== 'undefined' && answered) return;
+      var isCorrect = (typeof shuffledCorrect !== 'undefined') && idx === shuffledCorrect;
+      var curStone  = typeof stoneIdx !== 'undefined' ? stoneIdx : 0;
+      _origPick.call(window, idx);
+      self._runPost(curStone, isCorrect);
+    };
+  }
+
+  // ── onReachedWaypoint — zone transitions + victory only
   window.onReachedWaypoint = function() {
-    var idx    = typeof stoneIdx  !== 'undefined' ? stoneIdx  : 0;
-    var maxWps = typeof WAYPOINTS !== 'undefined' ? WAYPOINTS.length - 1 : 15;
+    var idx    = typeof stoneIdx   !== 'undefined' ? stoneIdx   : 0;
+    var maxWps = typeof WAYPOINTS  !== 'undefined' ? WAYPOINTS.length - 1 : 15;
 
     if (idx >= maxWps) {
       if (typeof charAction  !== 'undefined') charAction  = 'victory';
@@ -732,28 +727,26 @@ _applyOverrides: function() {
       if (typeof showVictory === 'function')  setTimeout(window.showVictory, 1200);
       return;
     }
-
     if (typeof charAction !== 'undefined') charAction = 'idle';
 
     if (idx === 6) {
       if (typeof gameState !== 'undefined') gameState = 'MODAL';
       setTimeout(function() {
         self.showZoneTransition(2, function() {
-          if (typeof gameState !== 'undefined') gameState = 'QUESTIONING';
-          window.openQuestion();
+          lastNarrativeStone = -1;  // allow narrative to fire for new zone
+          _origWaypoint.call(window);
         });
       }, 400);
     } else if (idx === 11) {
       if (typeof gameState !== 'undefined') gameState = 'MODAL';
       setTimeout(function() {
         self.showZoneTransition(3, function() {
-          if (typeof gameState !== 'undefined') gameState = 'QUESTIONING';
-          window.openQuestion();
+          lastNarrativeStone = -1;
+          _origWaypoint.call(window);
         });
       }, 400);
     } else {
-      if (typeof gameState !== 'undefined') gameState = 'QUESTIONING';
-      window.openQuestion();
+      _origWaypoint.call(window);
     }
   };
 
@@ -763,14 +756,14 @@ _applyOverrides: function() {
       '⚡ "The darkness lifts! Malachar is defeated! Knight — you have saved Codehaven. Our data integrity is restored. The realm breathes again. You are a true Security Knight. —Princess Vera" ⚡',
       function() {
         self.showNarrative('merlin',
-          'You have done it. All OWASP trials mastered. Thornback\'s orcs are routed. Grimfang\'s trolls have fled. Malachar dissolves into the void. Codehaven stands because of YOU. Your certificate awaits, Knight.',
+          'You have done it. All OWASP trials mastered. Thornback routed. Grimfang fled. Malachar dissolves into the void. Codehaven stands because of YOU. Your certificate awaits, Knight.',
           function() { _origVictory.call(window); }
         );
       }
     );
   };
 
-  console.log('[SK Story] ✅ Overrides applied (simple panel-block strategy).');
+  console.log('[SK Story] ✅ Story system ready (MutationObserver strategy).');
 },
 
 // ──────────────────────────────────────────────
