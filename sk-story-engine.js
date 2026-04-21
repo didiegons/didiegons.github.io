@@ -678,6 +678,11 @@ _applyOverrides: function() {
 
   // ── openQuestion override ─────────────────────────
   window.openQuestion = function() {
+    // Lock gameState immediately so the animation loop stops detecting
+    // this waypoint and calling openQuestion a second time while the
+    // narrative is showing. Without this, two overlapping calls collide.
+    if (typeof gameState !== 'undefined') gameState = 'QUESTIONING';
+
     var idx = typeof stoneIdx !== 'undefined' ? stoneIdx : 0;
     var doBoss = idx === 5 ? 'thornback' : idx === 10 ? 'grimfang' : idx === 15 ? 'malachar' : null;
     self._runPre(idx, function() {
@@ -737,8 +742,9 @@ _applyOverrides: function() {
         });
       }, 400);
 
-    // Normal stone — call our openQuestion (pre-narrative → original question)
+    // Normal stone — lock state then call our openQuestion
     } else {
+      if (typeof gameState !== 'undefined') gameState = 'QUESTIONING';
       window.openQuestion();
     }
   };
