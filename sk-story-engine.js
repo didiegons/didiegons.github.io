@@ -654,20 +654,29 @@ _drawTroll: function(ctx, cx, cy, t, sc) {
 _applyOverrides: function() {
   var self = this;
 
+  // GUARD: prevent running twice (e.g. from retry + install both firing)
+  // Double-running causes _origOpen to capture our own wrapper instead of
+  // the true original, creating a double-narrative chain.
+  if (this._overridesApplied) {
+    console.log('[SK Story] Overrides already applied — skipping duplicate run.');
+    return;
+  }
+
   // Guard: make sure the game functions exist
   if (typeof openQuestion === 'undefined' ||
-      typeof pickAnswer === 'undefined' ||
-      typeof onReachedWaypoint === 'undefined') {
+      typeof pickAnswer === 'undefined') {
     console.warn('[SK Story] Game functions not found yet, retrying in 200ms...');
     setTimeout(function() { self._applyOverrides(); }, 200);
     return;
   }
 
-  var _origOpen = window.openQuestion;
-  var _origPick = window.pickAnswer;
-  var _origWaypoint = window.onReachedWaypoint;
+  this._overridesApplied = true;
+
+  var _origOpen    = window.openQuestion;
+  var _origPick    = window.pickAnswer;
   var _origVictory = window.showVictory;
 
+  // ── openQuestion override ─────────────────────────
   window.openQuestion = function() {
     var idx = typeof stoneIdx !== 'undefined' ? stoneIdx : 0;
     var doBoss = idx === 5 ? 'thornback' : idx === 10 ? 'grimfang' : idx === 15 ? 'malachar' : null;
@@ -680,43 +689,64 @@ _applyOverrides: function() {
     });
   };
 
+  // ── pickAnswer override ───────────────────────────
   window.pickAnswer = function(idx) {
-    // Don't set answered here — let the original do it.
-    // If we set it first, the original sees answered=true and returns immediately,
-    // which prevents the Continue button, XP award, and explanation from appearing.
     if (typeof answered !== 'undefined' && answered) return;
     var isCorrect = (typeof shuffledCorrect !== 'undefined') && idx === shuffledCorrect;
-    var curStone = typeof stoneIdx !== 'undefined' ? stoneIdx : 0;
-    _origPick.call(window, idx);   // original handles answered=true, XP, button, etc.
-    self._runPost(curStone, isCorrect);  // then we layer the narrative on top
+    var curStone  = typeof stoneIdx !== 'undefined' ? stoneIdx : 0;
+    _origPick.call(window, idx);
+    self._runPost(curStone, isCorrect);
   };
 
+  // ── onReachedWaypoint override ────────────────────
+  // We do NOT delegate to _origWaypoint because _origWaypoint internally
+  // calls openQuestion() which would now trigger our wrapper AGAIN,
+  // causing a second narrative to appear before the question opens.
+  // Instead we replicate the original's essential logic directly.
   window.onReachedWaypoint = function() {
-    var idx = typeof stoneIdx !== 'undefined' ? stoneIdx : 0;
+    var idx     = typeof stoneIdx   !== 'undefined' ? stoneIdx   : 0;
+    var maxWps  = typeof WAYPOINTS  !== 'undefined' ? WAYPOINTS.length - 1 : 15;
+
+    // Victory condition
+    if (idx >= maxWps) {
+      if (typeof charAction  !== 'undefined') charAction  = 'victory';
+      if (typeof gameState   !== 'undefined') gameState   = 'VICTORY';
+      if (typeof showVictory === 'function')  setTimeout(window.showVictory, 1200);
+      return;
+    }
+
+    if (typeof charAction !== 'undefined') charAction = 'idle';
+
+    // Zone transition: entering Dark Forest (stone 6)
     if (idx === 6) {
       if (typeof gameState !== 'undefined') gameState = 'MODAL';
       setTimeout(function() {
         self.showZoneTransition(2, function() {
           if (typeof gameState !== 'undefined') gameState = 'QUESTIONING';
-          _origOpen.call(window);
+          window.openQuestion();
         });
       }, 400);
+
+    // Zone transition: entering Shadow Castle (stone 11)
     } else if (idx === 11) {
       if (typeof gameState !== 'undefined') gameState = 'MODAL';
       setTimeout(function() {
         self.showZoneTransition(3, function() {
           if (typeof gameState !== 'undefined') gameState = 'QUESTIONING';
-          _origOpen.call(window);
+          window.openQuestion();
         });
       }, 400);
+
+    // Normal stone — call our openQuestion (pre-narrative → original question)
     } else {
-      _origWaypoint.call(window);
+      window.openQuestion();
     }
   };
 
+  // ── showVictory override ──────────────────────────
   window.showVictory = function() {
     self.showNarrative('vera',
-      '⚡ "The darkness lifts! Malachar is defeated! Knight — you have saved Codehaven. Our data integrity is restored. Our users are protected. The realm breathes again. You are a true Security Knight. —Princess Vera" ⚡',
+      '⚡ "The darkness lifts! Malachar is defeated! Knight — you have saved Codehaven. Our data integrity is restored. The realm breathes again. You are a true Security Knight. —Princess Vera" ⚡',
       function() {
         self.showNarrative('merlin',
           'You have done it. SQL Injection to Logging Failures — all mastered. Thornback\'s orcs are routed. Grimfang\'s trolls have fled. Malachar dissolves into the void. Codehaven stands because of YOU. Your certificate awaits, Knight.',
