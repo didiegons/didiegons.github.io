@@ -180,7 +180,7 @@ var CSS = `
 // ══════════════════════════════════════════════
 var HTML = `
 <div id="story-dlg">
-  <div class="sdlg-card" onclick="SK.closeNarrative()">
+  <div class="sdlg-card" id="sdlg-card">
     <div class="sdlg-portrait" id="sdlg-portrait">🧙</div>
     <div class="sdlg-body">
       <div class="sdlg-name" id="sdlg-name">Merlin the Wizard</div>
@@ -742,6 +742,20 @@ install: function() {
   var wrap = document.createElement('div');
   wrap.innerHTML = HTML;
   while (wrap.firstChild) document.body.appendChild(wrap.firstChild);
+
+  // Attach click listeners via JS — more reliable than inline onclick attributes
+  // which can silently fail if SK isn't fully initialized when clicked
+  var self2 = this;
+  setTimeout(function() {
+    var card = document.getElementById('sdlg-card');
+    if (card) card.addEventListener('click', function() { self2.closeNarrative(); });
+
+    var ztBtn = document.getElementById('zt-btn');
+    if (ztBtn) ztBtn.addEventListener('click', function() { self2.closeZoneTransition(); });
+
+    var bossBtn = document.getElementById('boss-fight-btn');
+    if (bossBtn) bossBtn.addEventListener('click', function() { self2.startBossFight(); });
+  }, 100);
 
   // 3. Apply game flow overrides after DOM is fully ready
   var self = this;
