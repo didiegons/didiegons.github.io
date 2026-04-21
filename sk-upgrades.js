@@ -382,44 +382,56 @@
     setTimeout(function () { pop.remove(); }, 2200);
   }
 
-  // Hook into openQuestion to start the timer for timed tiers
+  // Hook timer to question panel opening using MutationObserver.
+  // This avoids double-wrapping openQuestion (story engine already wraps it).
+  // We watch for #qpanel getting the 'open' class, then check the tier.
   function attachTimerHooks() {
-    if (typeof openQuestion === 'undefined') { setTimeout(attachTimerHooks, 300); return; }
+    var qpanel = document.getElementById('qpanel');
+    if (!qpanel) { setTimeout(attachTimerHooks, 400); return; }
 
-    var _orig = window.openQuestion;
-    window.openQuestion = function () {
-      _orig.apply(window, arguments);
-
-      // Determine tier of current challenge
-      setTimeout(function () {
-        var tier = (typeof current !== 'undefined' && current) ? current.tier : null;
-        if (tier === 'Knight') startTimer(TIMER_LIMIT);
-        else if (tier === 'Squire') startTimer(SQUIRE_LIMIT);
-        else stopTimer();
-      }, 350);
-    };
-
-    // Stop timer when answer is selected
-    var _origPick = window.pickAnswer;
-    window.pickAnswer = function (idx) {
-      stopTimer();
-
-      // ── STREAK LOGIC ──────────────────────────────────
-      if (typeof answered !== 'undefined' && !answered) {
-        var isCorrect = (typeof shuffledCorrect !== 'undefined') && idx === shuffledCorrect;
-        if (isCorrect) {
-          var count = SKStreak.correct();
-          var msg = SKStreak.getMessage();
-          if (msg) showStreakPop(msg);
-        } else {
-          SKStreak.wrong();
+    var observer = new MutationObserver(function(mutations) {
+      mutations.forEach(function(m) {
+        if (m.attributeName === 'class') {
+          var isOpen = qpanel.classList.contains('open');
+          if (isOpen) {
+            // Question just opened — check tier
+            var tier = (typeof current !== 'undefined' && current) ? current.tier : null;
+            if (tier === 'Knight') startTimer(TIMER_LIMIT);
+            else if (tier === 'Squire') startTimer(SQUIRE_LIMIT);
+            else stopTimer();
+          } else {
+            // Panel closed — stop timer
+            stopTimer();
+          }
         }
-      }
+      });
+    });
+    observer.observe(qpanel, { attributes: true });
 
-      _origPick.apply(window, arguments);
-    };
+    // Hook pickAnswer for streak — but only ONCE, checking a flag
+    // to avoid double-wrapping if upgrades loads after story engine
+    if (!window._skStreakHooked && typeof pickAnswer !== 'undefined') {
+      window._skStreakHooked = true;
+      var _origPick = window.pickAnswer;
+      window.pickAnswer = function(idx) {
+        stopTimer(); // always stop timer on answer
+        // Read answered BEFORE calling original (original sets it to true)
+        var alreadyAnswered = (typeof answered !== 'undefined') && answered;
+        if (!alreadyAnswered) {
+          var isCorrect = (typeof shuffledCorrect !== 'undefined') && idx === shuffledCorrect;
+          if (isCorrect) {
+            var count = SKStreak.correct();
+            var msg = SKStreak.getMessage();
+            if (msg) showStreakPop(msg);
+          } else {
+            SKStreak.wrong();
+          }
+        }
+        _origPick.apply(window, arguments);
+      };
+    }
 
-    console.log('[SK Upgrades] ✅ Timer hooks attached.');
+    console.log('[SK Upgrades] ✅ Timer (MutationObserver) + streak hooks attached.');
   }
 
   function showStreakPop(message) {
@@ -431,12 +443,12 @@
   }
 
   if (document.readyState === 'complete' || document.readyState === 'interactive') {
-    setTimeout(injectTimerEl, 200);
-    setTimeout(attachTimerHooks, 400);
+    setTimeout(injectTimerEl, 300);
+    setTimeout(attachTimerHooks, 800); // after story engine's 100ms + game init
   } else {
     document.addEventListener('DOMContentLoaded', function () {
-      setTimeout(injectTimerEl, 200);
-      setTimeout(attachTimerHooks, 400);
+      setTimeout(injectTimerEl, 300);
+      setTimeout(attachTimerHooks, 800);
     });
   }
 
@@ -606,18 +618,7 @@
   // The SESSION_KEY timestamp is written on every page load.
   // ═══════════════════════════════════════════════════════
 
-  // ── BONUS: XP popup enhanced with streak info ──────────
-  // Patches the XP pop to show streak multiplier if active
-  function attachStreakXPDisplay() {
-    if (typeof pickAnswer === 'undefined') { setTimeout(attachStreakXPDisplay, 400); return; }
-
-    // The streak pop is already handled in attachTimerHooks above.
-    // This function is intentionally minimal — streak display
-    // is shown via showStreakPop() when the answer is picked.
-    console.log('[SK Upgrades] ✅ Streak XP display ready.');
-  }
-
-  setTimeout(attachStreakXPDisplay, 600);
+  // Streak display is handled inside attachTimerHooks above.
 
   // ── SUMMARY LOG ────────────────────────────────────────
   console.log([
