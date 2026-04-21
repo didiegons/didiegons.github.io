@@ -681,12 +681,14 @@ _applyOverrides: function() {
   };
 
   window.pickAnswer = function(idx) {
+    // Don't set answered here — let the original do it.
+    // If we set it first, the original sees answered=true and returns immediately,
+    // which prevents the Continue button, XP award, and explanation from appearing.
     if (typeof answered !== 'undefined' && answered) return;
-    if (typeof answered !== 'undefined') answered = true;
     var isCorrect = (typeof shuffledCorrect !== 'undefined') && idx === shuffledCorrect;
     var curStone = typeof stoneIdx !== 'undefined' ? stoneIdx : 0;
-    _origPick.call(window, idx);
-    self._runPost(curStone, isCorrect);
+    _origPick.call(window, idx);   // original handles answered=true, XP, button, etc.
+    self._runPost(curStone, isCorrect);  // then we layer the narrative on top
   };
 
   window.onReachedWaypoint = function() {
