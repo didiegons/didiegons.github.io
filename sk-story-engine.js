@@ -654,18 +654,13 @@ _drawTroll: function(ctx, cx, cy, t, sc) {
 _applyOverrides: function() {
   var self = this;
 
-  // GUARD: prevent running twice (e.g. from retry + install both firing)
-  // Double-running causes _origOpen to capture our own wrapper instead of
-  // the true original, creating a double-narrative chain.
   if (this._overridesApplied) {
-    console.log('[SK Story] Overrides already applied — skipping duplicate run.');
+    console.log('[SK Story] Overrides already applied — skipping.');
     return;
   }
 
-  // Guard: make sure the game functions exist
-  if (typeof openQuestion === 'undefined' ||
-      typeof pickAnswer === 'undefined') {
-    console.warn('[SK Story] Game functions not found yet, retrying in 200ms...');
+  if (typeof openQuestion === 'undefined' || typeof pickAnswer === 'undefined') {
+    console.warn('[SK Story] Game functions not found yet, retrying...');
     setTimeout(function() { self._applyOverrides(); }, 200);
     return;
   }
@@ -677,19 +672,42 @@ _applyOverrides: function() {
   var _origVictory = window.showVictory;
 
   // ── openQuestion override ─────────────────────────
+  // Strategy: call _origOpen FIRST (sets up current, renders HTML,
+  // schedules panel open at 250ms). Then intercept the panel open,
+  // show narrative, and re-open panel when narrative is dismissed.
+  // This avoids any callback chain issues entirely.
   window.openQuestion = function() {
-    // Lock gameState immediately so the animation loop stops detecting
-    // this waypoint and calling openQuestion a second time while the
-    // narrative is showing. Without this, two overlapping calls collide.
     if (typeof gameState !== 'undefined') gameState = 'QUESTIONING';
 
-    var idx = typeof stoneIdx !== 'undefined' ? stoneIdx : 0;
+    var idx    = typeof stoneIdx !== 'undefined' ? stoneIdx : 0;
     var doBoss = idx === 5 ? 'thornback' : idx === 10 ? 'grimfang' : idx === 15 ? 'malachar' : null;
+    var story  = self.STORY[idx];
+    var hasNarrative = !!(story && story.pre);
+
+    // Step 1 — Run the original. It renders the question panel HTML
+    // and schedules classList.add('open') after 250ms.
+    _origOpen.call(window);
+
+    // If nothing to show, let the original open the panel normally.
+    if (!hasNarrative && !doBoss) return;
+
+    // Step 2 — Block the panel from appearing.
+    // The original adds 'open' at 250ms; we remove it at 270ms.
+    var qp = document.getElementById('qpanel');
+    setTimeout(function() {
+      if (qp) qp.classList.remove('open');
+    }, 270);
+
+    // Step 3 — Show pre-narrative (or boss), then re-open panel.
+    var openPanel = function() {
+      if (qp) setTimeout(function() { qp.classList.add('open'); }, 80);
+    };
+
     self._runPre(idx, function() {
       if (doBoss) {
-        self.showBossEncounter(doBoss, function() { _origOpen.call(window); });
+        self.showBossEncounter(doBoss, function() { openPanel(); });
       } else {
-        _origOpen.call(window);
+        openPanel();
       }
     });
   };
@@ -704,15 +722,10 @@ _applyOverrides: function() {
   };
 
   // ── onReachedWaypoint override ────────────────────
-  // We do NOT delegate to _origWaypoint because _origWaypoint internally
-  // calls openQuestion() which would now trigger our wrapper AGAIN,
-  // causing a second narrative to appear before the question opens.
-  // Instead we replicate the original's essential logic directly.
   window.onReachedWaypoint = function() {
-    var idx     = typeof stoneIdx   !== 'undefined' ? stoneIdx   : 0;
-    var maxWps  = typeof WAYPOINTS  !== 'undefined' ? WAYPOINTS.length - 1 : 15;
+    var idx    = typeof stoneIdx  !== 'undefined' ? stoneIdx  : 0;
+    var maxWps = typeof WAYPOINTS !== 'undefined' ? WAYPOINTS.length - 1 : 15;
 
-    // Victory condition
     if (idx >= maxWps) {
       if (typeof charAction  !== 'undefined') charAction  = 'victory';
       if (typeof gameState   !== 'undefined') gameState   = 'VICTORY';
@@ -722,7 +735,6 @@ _applyOverrides: function() {
 
     if (typeof charAction !== 'undefined') charAction = 'idle';
 
-    // Zone transition: entering Dark Forest (stone 6)
     if (idx === 6) {
       if (typeof gameState !== 'undefined') gameState = 'MODAL';
       setTimeout(function() {
@@ -731,8 +743,6 @@ _applyOverrides: function() {
           window.openQuestion();
         });
       }, 400);
-
-    // Zone transition: entering Shadow Castle (stone 11)
     } else if (idx === 11) {
       if (typeof gameState !== 'undefined') gameState = 'MODAL';
       setTimeout(function() {
@@ -741,8 +751,6 @@ _applyOverrides: function() {
           window.openQuestion();
         });
       }, 400);
-
-    // Normal stone — lock state then call our openQuestion
     } else {
       if (typeof gameState !== 'undefined') gameState = 'QUESTIONING';
       window.openQuestion();
@@ -755,14 +763,14 @@ _applyOverrides: function() {
       '⚡ "The darkness lifts! Malachar is defeated! Knight — you have saved Codehaven. Our data integrity is restored. The realm breathes again. You are a true Security Knight. —Princess Vera" ⚡',
       function() {
         self.showNarrative('merlin',
-          'You have done it. SQL Injection to Logging Failures — all mastered. Thornback\'s orcs are routed. Grimfang\'s trolls have fled. Malachar dissolves into the void. Codehaven stands because of YOU. Your certificate awaits, Knight.',
+          'You have done it. All OWASP trials mastered. Thornback\'s orcs are routed. Grimfang\'s trolls have fled. Malachar dissolves into the void. Codehaven stands because of YOU. Your certificate awaits, Knight.',
           function() { _origVictory.call(window); }
         );
       }
     );
   };
 
-  console.log('[SK Story] ✅ Story system installed & game flow overrides applied.');
+  console.log('[SK Story] ✅ Overrides applied (simple panel-block strategy).');
 },
 
 // ──────────────────────────────────────────────
