@@ -127,27 +127,120 @@
     }
     p:last-of-type{margin-bottom:0;}
 
-    /* ── PROFILE LAYOUT ── */
-    .profile-layout{
-      display:flex;flex-wrap:wrap;
-      gap:2.5rem;align-items:flex-start;
+    /* ══════════════════════════════════════════
+       ── CINEMATIC HERO PROFILE CARD ──
+    ══════════════════════════════════════════ */
+    .hero-card{
+      position:relative;
+      overflow:hidden;
+      min-height:520px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      margin-bottom:20px;
+      background:var(--surface);
     }
-    .profile-image{flex:0 0 200px;}
-    .profile-image img{
-      width:100%;border-radius:12px;
-      border:1px solid var(--border2);
-      opacity:0.92;
-      transition:opacity 0.2s;
-    }
-    .profile-image img:hover{opacity:1;}
-    .profile-text{flex:1 1 360px;}
 
-    .name-heading{
-      font-family:var(--sans);
-      font-size:clamp(1.8rem,3vw,2.4rem);
-      font-weight:800;color:var(--text);
-      margin-bottom:8px;letter-spacing:-0.01em;
+    /* The actual photo — anchored right, fills full height */
+    .hero-photo{
+      position:absolute;
+      inset:0 0 0 auto;
+      width:52%;
+      height:100%;
+      object-fit:cover;
+      object-position:center top;
+      display:block;
+      /* Subtle desaturation to blend with dark palette */
+      filter:saturate(0.82) brightness(0.88);
+      transition:filter 0.4s ease;
     }
+    .hero-card:hover .hero-photo{
+      filter:saturate(0.95) brightness(0.95);
+    }
+
+    /* Cyber grid texture overlay on the photo */
+    .hero-photo-overlay{
+      position:absolute;
+      inset:0 0 0 auto;
+      width:52%;
+      height:100%;
+      pointer-events:none;
+      background-image:
+        linear-gradient(rgba(0,217,126,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,217,126,0.03) 1px, transparent 1px);
+      background-size:28px 28px;
+      z-index:1;
+    }
+
+    /* Main gradient: dark bg fades into transparent, revealing photo on right */
+    .hero-gradient{
+      position:absolute;
+      inset:0;
+      background:
+        /* Left solid dark */
+        linear-gradient(
+          to right,
+          var(--bg) 0%,
+          var(--bg) 30%,
+          rgba(7,8,10,0.96) 40%,
+          rgba(7,8,10,0.80) 52%,
+          rgba(7,8,10,0.30) 65%,
+          transparent 80%
+        );
+      z-index:2;
+    }
+
+    /* Green accent glow along the right edge of the text area */
+    .hero-glow{
+      position:absolute;
+      left:42%;
+      top:50%;
+      transform:translateY(-50%);
+      width:2px;
+      height:60%;
+      background:linear-gradient(
+        to bottom,
+        transparent,
+        rgba(0,217,126,0.4) 40%,
+        rgba(0,217,126,0.4) 60%,
+        transparent
+      );
+      z-index:3;
+      filter:blur(3px);
+    }
+
+    /* Text content sits on top of everything */
+    .hero-content{
+      position:relative;
+      z-index:4;
+      padding:3rem 3rem 3rem 3rem;
+      max-width:58%;
+      min-height:520px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap:0;
+    }
+
+    .hero-section-label{
+      font-family:var(--mono);font-size:10px;
+      color:var(--accent);letter-spacing:0.15em;
+      text-transform:uppercase;margin-bottom:12px;
+    }
+
+    .hero-name{
+      font-family:var(--sans);
+      font-size:clamp(2rem,3.5vw,2.8rem);
+      font-weight:800;color:var(--text);
+      letter-spacing:-0.02em;
+      line-height:1.1;
+      margin-bottom:14px;
+    }
+    .hero-name em{
+      color:var(--accent);
+      font-style:normal;
+      display:block;
+    }
+
     .role-badge{
       display:inline-flex;align-items:center;gap:6px;
       background:var(--gold-dim);
@@ -156,22 +249,89 @@
       font-weight:500;padding:5px 14px;
       border-radius:20px;
       border:1px solid rgba(202,167,74,0.2);
-      margin-bottom:1.25rem;
+      margin-bottom:1.5rem;
       letter-spacing:0.04em;
+      width:fit-content;
+    }
+
+    .hero-bio{
+      font-size:14px;color:var(--text2);
+      line-height:1.85;
+      font-family:var(--serif);
+      margin-bottom:1.5rem;
+      /* Keep text readable over gradient */
+      max-width:420px;
     }
 
     /* ── PILLS ── */
     .pills{
       display:flex;flex-wrap:wrap;gap:8px;
-      margin-top:1.25rem;
+      margin-bottom:1.75rem;
     }
     .pill{
       font-family:var(--mono);font-size:11px;
-      background:var(--bg2);
+      background:rgba(7,8,10,0.7);
       border:1px solid var(--border2);
       color:var(--text3);
       padding:5px 12px;border-radius:4px;
       letter-spacing:0.04em;
+      backdrop-filter:blur(4px);
+    }
+
+    /* ── CONTACT BUTTONS ── */
+    .contact-row{
+      display:flex;gap:10px;flex-wrap:wrap;
+    }
+    .btn{
+      font-family:var(--sans);font-weight:700;
+      font-size:13px;letter-spacing:0.02em;
+      padding:10px 20px;border-radius:8px;
+      text-decoration:none;cursor:pointer;
+      transition:all 0.15s;border:none;
+      display:inline-flex;align-items:center;gap:7px;
+    }
+    .btn-accent{background:var(--accent);color:#07080A;}
+    .btn-accent:hover{background:#00f590;}
+    .btn-ghost{
+      background:rgba(7,8,10,0.6);
+      color:var(--text2);
+      border:1px solid var(--border2);
+      backdrop-filter:blur(4px);
+    }
+    .btn-ghost:hover{border-color:var(--text3);color:var(--text);background:var(--surface2);}
+
+    /* ── MOBILE: stack photo on top ── */
+    @media(max-width:700px){
+      .hero-card{min-height:auto;}
+      .hero-photo{
+        position:relative;
+        inset:auto;
+        width:100%;
+        height:260px;
+        object-position:center 20%;
+      }
+      .hero-photo-overlay{
+        position:absolute;
+        width:100%;
+        height:260px;
+        top:0;left:0;
+      }
+      .hero-gradient{
+        background:linear-gradient(
+          to bottom,
+          transparent 40%,
+          var(--bg) 100%
+        );
+        top:0;height:260px;
+      }
+      .hero-glow{display:none;}
+      .hero-content{
+        position:relative;
+        max-width:100%;
+        padding:2rem;
+        min-height:auto;
+        margin-top:-40px;
+      }
     }
 
     /* ── INTERESTS GRID ── */
@@ -200,27 +360,6 @@
       font-size:12px;color:var(--text2);
       line-height:1.6;font-style:italic;
     }
-
-    /* ── CONTACT BUTTONS ── */
-    .contact-row{
-      display:flex;gap:10px;flex-wrap:wrap;
-      margin-top:1.5rem;
-    }
-    .btn{
-      font-family:var(--sans);font-weight:700;
-      font-size:13px;letter-spacing:0.02em;
-      padding:10px 20px;border-radius:8px;
-      text-decoration:none;cursor:pointer;
-      transition:all 0.15s;border:none;
-      display:inline-flex;align-items:center;gap:7px;
-    }
-    .btn-accent{background:var(--accent);color:#07080A;}
-    .btn-accent:hover{background:#00f590;}
-    .btn-ghost{
-      background:transparent;color:var(--text2);
-      border:1px solid var(--border2);
-    }
-    .btn-ghost:hover{border-color:var(--text3);color:var(--text);background:var(--surface2);}
 
     /* ── AVIATION TRIBUTE ── */
     .tribute-card{
@@ -258,6 +397,10 @@
       from{opacity:0;transform:translateY(16px);}
       to{opacity:1;transform:none;}
     }
+    @keyframes photoReveal{
+      from{opacity:0;filter:saturate(0) brightness(0.5);}
+      to{opacity:1;filter:saturate(0.82) brightness(0.88);}
+    }
     .fade-up{opacity:0;animation:fadeUp 0.5s ease forwards;}
     .d1{animation-delay:0.05s;}
     .d2{animation-delay:0.15s;}
@@ -265,6 +408,10 @@
     .d4{animation-delay:0.35s;}
     .d5{animation-delay:0.45s;}
     .d6{animation-delay:0.55s;}
+
+    .hero-photo{
+      animation:photoReveal 0.9s ease 0.2s both;
+    }
   </style>
 </head>
 <body>
@@ -298,25 +445,59 @@
     <div class="page-sub">Researcher, builder, lifelong learner.</div>
   </div>
 
-  <!-- Profile card -->
-  <div class="card fade-up d2">
-    <div class="profile-layout">
-      <div class="profile-image">
-        <img src="images/dayo-profile.jpg" alt="Dayo Egonu"/>
+  <!-- ══ CINEMATIC HERO PROFILE CARD ══ -->
+  <div class="hero-card fade-up d2">
+
+    <!-- Photo: fills the right side -->
+    <img
+      class="hero-photo"
+      src="images/dayo-profile.jpg"
+      alt="Dayo Egonu"
+    />
+
+    <!-- Cyber grid texture on photo -->
+    <div class="hero-photo-overlay"></div>
+
+    <!-- Gradient fade from dark left → transparent right -->
+    <div class="hero-gradient"></div>
+
+    <!-- Vertical accent glow at the transition point -->
+    <div class="hero-glow"></div>
+
+    <!-- All text content, z-indexed above everything -->
+    <div class="hero-content">
+      <div class="hero-section-label">Profile</div>
+
+      <div class="hero-name">
+        Dayo
+        <em>Egonu</em>
       </div>
-      <div class="profile-text">
-        <div class="section-label">Profile</div>
-        <div class="name-heading">Dayo Egonu</div>
-        <div class="role-badge">Aspiring AI Lead &nbsp;·&nbsp; Cybersecurity &amp; ML</div>
-        <p>
-          I'm an Information Protection Advisor and aspiring AI leader with a background spanning cybersecurity, forensic accounting, machine learning, and database systems. I thrive at the intersection of technical depth and strategic communication — translating complex concepts into tools and frameworks that are practical, accessible, and impactful.
-        </p>
-        <p>
-          My work focuses on building AI-powered applications that solve real problems — from protecting small businesses against cyber threats to making machine learning concepts understandable to non-technical audiences. I believe the best technology is the kind that anyone can use with confidence.
-        </p>
-        <p>
-          Outside of tech, you'll find me serving aces on the tennis court, locked into the strategy of a Formula 1 or MotoGP race, or following the tension of a 50-over cricket match. That same love for precision and competitive strategy drives how I approach every project I build.
-        </p>
+
+      <div class="role-badge">Aspiring AI Lead &nbsp;·&nbsp; Cybersecurity &amp; ML</div>
+
+      <p class="hero-bio">
+        Information Protection Advisor and aspiring AI leader with a background spanning
+        cybersecurity, forensic accounting, machine learning, and database systems —
+        translating complex concepts into tools that are practical, accessible, and impactful.
+      </p>
+
+      <div class="pills">
+        <span class="pill">NLP &amp; Semantics</span>
+        <span class="pill">AI Security</span>
+        <span class="pill">Machine Learning</span>
+        <span class="pill">Forensic Accounting</span>
+        <span class="pill">Python &amp; SQL</span>
+      </div>
+
+      <div class="contact-row">
+        <a href="projects.html" class="btn btn-accent">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          View research
+        </a>
+        <a href="https://www.linkedin.com/in/dayoegonu/" target="_blank" rel="noopener" class="btn btn-ghost">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+          LinkedIn
+        </a>
       </div>
     </div>
   </div>
