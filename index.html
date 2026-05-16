@@ -348,8 +348,30 @@ h1.hero-title .line2{color:var(--accent);}
   transition:border-color 0.2s,transform 0.2s;
   text-decoration:none;
   color:inherit;
+  position:relative;
 }
 .project-card:hover{border-color:var(--border2);transform:translateY(-3px);}
+
+.live-pill{
+  position:absolute;
+  top:10px;right:10px;
+  z-index:3;
+  font-family:var(--mono);font-size:9.5px;
+  background:rgba(88,166,255,0.18);
+  color:var(--sky);
+  border:1px solid rgba(88,166,255,0.4);
+  padding:3px 8px;border-radius:20px;
+  letter-spacing:0.08em;
+  display:flex;align-items:center;gap:5px;
+  text-transform:uppercase;
+  font-weight:600;
+}
+.live-pill::before{
+  content:'';
+  width:5px;height:5px;border-radius:50%;
+  background:var(--sky);
+  animation:breathe 2s ease-in-out infinite;
+}
 
 .card-img-wrap{
   height:160px;overflow:hidden;
@@ -410,6 +432,7 @@ h1.hero-title .line2{color:var(--accent);}
   color:var(--accent);text-decoration:none;
   letter-spacing:0.06em;
 }
+.card-link.sky{color:var(--sky);}
 .card-link:hover{text-decoration:underline;}
 .card-date{font-family:var(--mono);font-size:10px;color:var(--text3);}
 
@@ -698,7 +721,8 @@ footer{
       </div>
     </a>
 
-    <a href="fairaudit_ai.html" class="project-card">
+    <a href="https://fairaudit.streamlit.app/" target="_blank" rel="noopener" class="project-card">
+      <span class="live-pill">Live App</span>
       <div class="card-img-wrap">
         <div class="card-img-placeholder" style="background:linear-gradient(135deg,#07080A 0%,#0F1623 100%);">
           <span style="color:#58A6FF;font-size:28px;font-family:var(--mono);">FA</span>
@@ -712,7 +736,7 @@ footer{
         <div class="card-title">FairAudit AI</div>
         <div class="card-desc">A horizontal bias audit framework for AI systems across hiring, lending, healthcare, and justice — mapping regulatory requirements to defensible statistical audits.</div>
         <div class="card-footer-row">
-          <span class="card-link">View framework →</span>
+          <span class="card-link sky">Open app →</span>
           <span class="card-date">May 2026</span>
         </div>
       </div>
