@@ -13,6 +13,7 @@
       --border:rgba(255,255,255,0.10); --white:#F2F6FF;
       --green:#00D97E; --green2:#00F590;
       --red:#f85149; --red-bg:rgba(248,81,73,.12);
+      --blue:#58a6ff; --blue2:#93c5fd;
     }
     body { background:var(--bg); color:var(--white); font-family:'Instrument Sans',sans-serif; min-height:100vh; }
 
@@ -45,15 +46,16 @@
     .card-9  { grid-column:span 4; grid-row:span 1; }
     .card-10 { grid-column:span 12; grid-row:span 1; }
     .card-11 { grid-column:span 12; grid-row:span 1; }
+    .card-12 { grid-column:span 12; grid-row:span 1; }
 
     @media (max-width:900px) {
       .bento { grid-template-columns:repeat(2,1fr); grid-auto-rows:200px; }
-      .card-1,.card-2,.card-3,.card-4,.card-5,.card-6,.card-7,.card-8,.card-9,.card-10,.card-11 { grid-column:span 2; grid-row:span 1; }
+      .card-1,.card-2,.card-3,.card-4,.card-5,.card-6,.card-7,.card-8,.card-9,.card-10,.card-11,.card-12 { grid-column:span 2; grid-row:span 1; }
       .card-1 { grid-row:span 2; }
     }
     @media (max-width:540px) {
       .bento { grid-template-columns:1fr; }
-      .card-1,.card-2,.card-3,.card-4,.card-5,.card-6,.card-7,.card-8,.card-9,.card-10,.card-11 { grid-column:span 1; grid-row:span 1; }
+      .card-1,.card-2,.card-3,.card-4,.card-5,.card-6,.card-7,.card-8,.card-9,.card-10,.card-11,.card-12 { grid-column:span 1; grid-row:span 1; }
     }
 
     .card-img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform 0.5s ease; }
@@ -111,6 +113,28 @@
     .fvis-tags { display:flex; gap:6px; flex-wrap:wrap; margin-top:4px; }
     .fvis-chip { font-size:0.55rem; padding:0.15rem 0.5rem; border-radius:3px; background:rgba(248,81,73,0.12); color:#f98080; border:1px solid rgba(248,81,73,0.2); text-transform:uppercase; letter-spacing:0.08em; font-weight:600; }
 
+    /* card-12: FairAudit AI */
+    .card-12 { background:linear-gradient(135deg,#0a0f1a 0%,#0f1623 50%,#0c1219 100%); justify-content:center; border:1px solid rgba(88,166,255,0.15); }
+    .card-12:hover { border-color:rgba(88,166,255,0.35); box-shadow:0 24px 60px rgba(88,166,255,0.06); }
+    .card-12-inner { position:relative; z-index:2; display:grid; grid-template-columns:1fr 1fr; align-items:center; gap:2rem; padding:1.4rem 1.75rem; width:100%; }
+    @media(max-width:640px){ .card-12-inner { grid-template-columns:1fr; } .fairaudit-vis { display:none; } }
+    .card-12 h3 { font-size:1.4rem; margin-bottom:0.4rem; font-family:'Fraunces',serif; color:#fff; }
+    .card-12 p { display:block; font-size:0.76rem; color:rgba(255,255,255,0.60); line-height:1.6; margin-bottom:0.75rem; }
+    .card-12-tag { font-size:0.6rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; padding:0.2rem 0.55rem; border-radius:3px; margin-bottom:0.6rem; display:inline-block; background:rgba(88,166,255,0.12); color:var(--blue2); border:1px solid rgba(88,166,255,0.25); }
+    .card-12-arrow { display:inline-flex; align-items:center; gap:0.3rem; font-size:0.75rem; font-weight:600; color:var(--blue2); transition:gap 0.2s; }
+    .card-12:hover .card-12-arrow { gap:0.5rem; }
+    .badge-concept { position:absolute; top:1rem; right:1rem; z-index:3; font-size:0.58rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:0.22rem 0.6rem; border-radius:20px; background:var(--blue); color:#07080A; display:flex; align-items:center; gap:4px; }
+    .concept-dot { width:5px; height:5px; border-radius:50%; background:#07080A; animation:pulse 2s ease-in-out infinite; }
+    .fairaudit-vis { display:flex; flex-direction:column; gap:10px; }
+    .favis-row { display:grid; grid-template-columns:120px 1fr 42px; align-items:center; gap:8px; }
+    .favis-label { font-size:0.6rem; color:rgba(255,255,255,0.40); font-family:'Instrument Sans',sans-serif; }
+    .favis-bar-bg { height:4px; background:rgba(255,255,255,0.07); border-radius:2px; overflow:hidden; position:relative; }
+    .favis-bar-fill { height:100%; border-radius:2px; }
+    .favis-threshold { position:absolute; left:80%; top:-3px; bottom:-3px; width:1px; background:rgba(255,255,255,0.3); }
+    .favis-num { font-size:0.6rem; text-align:right; font-weight:600; font-family:'Instrument Sans',sans-serif; }
+    .favis-tags { display:flex; gap:6px; flex-wrap:wrap; margin-top:4px; }
+    .favis-chip { font-size:0.55rem; padding:0.15rem 0.5rem; border-radius:3px; background:rgba(88,166,255,0.12); color:var(--blue2); border:1px solid rgba(88,166,255,0.2); text-transform:uppercase; letter-spacing:0.08em; font-weight:600; }
+
     .card-fallback { background:#1C2030; }
     .card-fallback .card-overlay { background:none; }
 
@@ -133,6 +157,7 @@
     .card:nth-child(9)  { animation-delay:0.45s }
     .card:nth-child(10) { animation-delay:0.50s }
     .card:nth-child(11) { animation-delay:0.55s }
+    .card:nth-child(12) { animation-delay:0.60s }
   </style>
 </head>
 <body>
@@ -154,7 +179,7 @@
     <div class="overline">Applied AI · Portfolio</div>
     <h1>Project <em>Artifacts</em></h1>
   </div>
-  <div class="project-count">11</div>
+  <div class="project-count">12</div>
 </div>
 
 <main class="bento">
@@ -337,6 +362,52 @@
           <span class="fvis-chip">Duplicate detection</span>
           <span class="fvis-chip">Threshold splitting</span>
           <span class="fvis-chip">Shell company scoring</span>
+        </div>
+      </div>
+    </div>
+  </a>
+
+  <!-- 12 — FairAudit AI (full-width banner) -->
+  <a href="fairaudit_ai.html" class="card card-12">
+    <div class="badge-concept"><span class="concept-dot"></span>Concept</div>
+    <div class="card-12-inner">
+      <div>
+        <span class="card-12-tag">AI Governance · Fairness Auditing · Compliance</span>
+        <h3>FairAudit AI — Bias Detection for High-Stakes AI</h3>
+        <p>A horizontal bias audit framework for AI systems across hiring, lending, healthcare, justice, education, housing, and beyond. Maps regulatory requirements (NYC LL144, EU AI Act, NIST AI RMF) to defensible statistical audits — turning fairness compliance from a checkbox into evidence.</p>
+        <span class="card-12-arrow">View Framework →</span>
+      </div>
+      <div class="fairaudit-vis">
+        <div class="favis-row">
+          <span class="favis-label">Healthcare AI</span>
+          <div class="favis-bar-bg"><div class="favis-bar-fill" style="width:94%;background:#00D97E;"></div><div class="favis-threshold"></div></div>
+          <span class="favis-num" style="color:#00D97E;">0.94</span>
+        </div>
+        <div class="favis-row">
+          <span class="favis-label">Lending Model</span>
+          <div class="favis-bar-bg"><div class="favis-bar-fill" style="width:85%;background:#00D97E;"></div><div class="favis-threshold"></div></div>
+          <span class="favis-num" style="color:#00D97E;">0.85</span>
+        </div>
+        <div class="favis-row">
+          <span class="favis-label">Hiring AI</span>
+          <div class="favis-bar-bg"><div class="favis-bar-fill" style="width:71%;background:#e3b341;"></div><div class="favis-threshold"></div></div>
+          <span class="favis-num" style="color:#e3b341;">0.71</span>
+        </div>
+        <div class="favis-row">
+          <span class="favis-label">Recidivism</span>
+          <div class="favis-bar-bg"><div class="favis-bar-fill" style="width:58%;background:#f85149;"></div><div class="favis-threshold"></div></div>
+          <span class="favis-num" style="color:#f85149;">0.58</span>
+        </div>
+        <div class="favis-row">
+          <span class="favis-label">Tenant Screen</span>
+          <div class="favis-bar-bg"><div class="favis-bar-fill" style="width:42%;background:#f85149;"></div><div class="favis-threshold"></div></div>
+          <span class="favis-num" style="color:#f85149;">0.42</span>
+        </div>
+        <div class="favis-tags">
+          <span class="favis-chip">Demographic Parity</span>
+          <span class="favis-chip">Equalized Odds</span>
+          <span class="favis-chip">4/5ths Rule</span>
+          <span class="favis-chip">Intersectional</span>
         </div>
       </div>
     </div>
