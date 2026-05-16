@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FairAudit AI — Bias Audit Framework for High-Stakes AI Systems</title>
+<meta name="description" content="A horizontal bias audit framework for AI systems in hiring, finance, healthcare, criminal justice, and beyond. Built by Dayo Egonu.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0d12;
+  --bg-elevated: #11161e;
+  --bg-card: #161c26;
+  --border: rgba(212, 165, 116, 0.12);
+  --border-strong: rgba(212, 165, 116, 0.28);
+  --text: #e8e4dc;
+  --text-muted: #8b8579;
+  --text-dim: #5a5447;
+  --accent: #d4a574;
+  --accent-bright: #e8b988;
+  --accent-deep: #8a6a3f;
+  --danger: #c97064;
+  --success: #7fa87f;
+  --serif: 'Fraunces', Georgia, serif;
+  --sans: 'Manrope', -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --max-width: 1280px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-weight: 400;
+  line-height: 1.6;
+  font-size: 16px;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(212, 165, 116, 0.08), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(212, 165, 116, 0.04), transparent);
+}
+
+/* ===== NAV ===== */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 1.25rem 2rem;
+  background: rgba(10, 13, 18, 0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo-mark {
+  width: 24px;
+  height: 24px;
+  border: 1.5px solid var(--accent);
+  border-radius: 50%;
+  position: relative;
+  display: inline-block;
+}
+
+.logo-mark::before,
+.logo-mark::after {
+  content: '';
+  position: absolute;
+  background: var(--accent);
+}
+
+.logo-mark::before {
+  width: 1.5px;
+  height: 14px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.logo-mark::after {
+  width: 14px;
+  height: 1.5px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+  align-items: center;
+}
+
+.nav-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  letter-spacing: 0.02em;
+}
+
+.nav-links a:hover {
+  color: var(--accent);
+}
+
+/* ===== HERO ===== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 8rem 2rem 4rem;
+  position: relative;
+}
+
+.hero-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 5rem;
+  align-items: center;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  margin-bottom: 2rem;
+  padding-left: 2rem;
+  position: relative;
+}
+
+.eyebrow::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 1.5rem;
+  height: 1px;
+  background: var(--accent);
+}
+
+.hero h1 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(2.5rem, 6.5vw, 5.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  margin-bottom: 2rem;
+  color: var(--text);
+}
+
+.hero h1 em {
+  font-style: italic;
+  color: var(--accent);
+  font-weight: 300;
+}
+
+.hero-tagline {
+  font-size: 1.125rem;
+  color: var(--text-muted);
+  max-width: 540px;
+  margin-bottom: 2.5rem;
+  line-height: 1.7;
+}
+
+.hero-meta {
+  display: flex;
+  gap: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.8125rem;
+  color: var(--text-dim);
+  font-family: var(--mono);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.hero-meta span strong {
+  color: var(--text);
+  display: block;
+  font-family: var(--sans);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  margin-top: 0.25rem;
+}
+
+/* Hero visual - audit dashboard mockup */
+.hero-visual {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+
+.hero-visual::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+
+.audit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.audit-title {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.audit-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  color: var(--danger);
+  letter-spacing: 0.1em;
+}
+
+.audit-status::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--danger);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.metric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0.625rem 0;
+  border-bottom: 1px solid rgba(212, 165, 116, 0.06);
+}
+
+.metric-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-family: var(--mono);
+  letter-spacing: 0.05em;
+}
+
+.metric-value {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.metric-value.pass { color: var(--success); }
+.metric-value.fail { color: var(--danger); }
+.metric-value.neutral { color: var(--text); }
+
+.disparate-impact-bar {
+  margin-top: auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.bar-label {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+.bar-track {
+  height: 4px;
+  background: var(--bg-elevated);
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  width: 62%;
+  background: linear-gradient(90deg, var(--danger), var(--accent));
+  border-radius: 2px;
+}
+
+.bar-threshold {
+  position: absolute;
+  left: 80%;
+  top: -4px;
+  bottom: -4px;
+  width: 1px;
+  background: var(--text-muted);
+}
+
+.bar-legend {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  color: var(--text-dim);
+}
+
+/* ===== SECTIONS ===== */
+section {
+  padding: 6rem 2rem;
+  position: relative;
+}
+
+.section-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.section-label {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  margin-bottom: 1.5rem;
+  padding-left: 2rem;
+  position: relative;
+}
+
+.section-label::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 1.5rem;
+  height: 1px;
+  background: var(--accent);
+}
+
+.section-heading {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(2rem, 4.5vw, 3.75rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin-bottom: 1.5rem;
+  max-width: 900px;
+}
+
+.section-heading em {
+  font-style: italic;
+  color: var(--accent);
+  font-weight: 300;
+}
+
+.section-intro {
+  font-size: 1.0625rem;
+  color: var(--text-muted);
+  max-width: 720px;
+  line-height: 1.7;
+  margin-bottom: 4rem;
+}
+
+/* ===== PROBLEM SECTION ===== */
+.problem-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  margin: 3rem 0;
+}
+
+.stat {
+  padding: 3rem 2rem;
+  border-right: 1px solid var(--border);
+}
+
+.stat:last-child {
+  border-right: none;
+}
+
+.stat-number {
+  font-family: var(--serif);
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 300;
+  color: var(--accent);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  margin-bottom: 1rem;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  max-width: 280px;
+}
+
+/* ===== DOMAINS GRID ===== */
+.domains-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+
+.domain-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 2rem 1.75rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.domain-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.domain-card:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+}
+
+.domain-card:hover::before {
+  transform: scaleX(1);
+}
+
+.domain-num {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  color: var(--accent);
+  letter-spacing: 0.15em;
+  margin-bottom: 1rem;
+}
+
+.domain-title {
+  font-family: var(--serif);
+  font-size: 1.375rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.75rem;
+  color: var(--text);
+}
+
+.domain-desc {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.domain-regulator {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.domain-regulator strong {
+  color: var(--accent-deep);
+  font-weight: 500;
+}
+
+/* ===== METHODOLOGY ===== */
+.methodology {
+  background: var(--bg-elevated);
+}
+
+.method-steps {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.method-step {
+  padding: 2rem;
+  background: var(--bg-card);
+  border-left: 2px solid var(--accent);
+  position: relative;
+}
+
+.step-num {
+  font-family: var(--serif);
+  font-size: 3rem;
+  font-weight: 300;
+  color: var(--accent);
+  line-height: 1;
+  position: absolute;
+  top: 1.5rem;
+  right: 2rem;
+  opacity: 0.4;
+}
+
+.step-title {
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+  color: var(--text);
+}
+
+.step-desc {
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+  max-width: 500px;
+}
+
+.step-tech {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tech-tag {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  padding: 0.25rem 0.625rem;
+  background: rgba(212, 165, 116, 0.08);
+  color: var(--accent);
+  border: 1px solid var(--border-strong);
+  border-radius: 2px;
+  letter-spacing: 0.05em;
+}
+
+/* ===== TECH STACK ===== */
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 3rem;
+}
+
+.tech-card {
+  padding: 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  text-align: left;
+}
+
+.tech-category {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 0.75rem;
+}
+
+.tech-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tech-list li {
+  font-size: 0.9375rem;
+  color: var(--text);
+  font-family: var(--mono);
+  font-weight: 400;
+}
+
+.tech-list li::before {
+  content: '+ ';
+  color: var(--accent);
+}
+
+/* ===== BUSINESS MODEL ===== */
+.business-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0;
+  margin-top: 3rem;
+  border: 1px solid var(--border);
+}
+
+.business-path {
+  padding: 2.5rem 2rem;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-card);
+  transition: background 0.3s ease;
+}
+
+.business-path:hover {
+  background: var(--bg-elevated);
+}
+
+.path-stage {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  color: var(--accent);
+  letter-spacing: 0.2em;
+  margin-bottom: 1rem;
+}
+
+.path-title {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin-bottom: 1rem;
+  color: var(--text);
+}
+
+.path-revenue {
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  color: var(--accent);
+  font-style: italic;
+  margin-bottom: 0.75rem;
+}
+
+.path-desc {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
+/* ===== CTA ===== */
+.cta-section {
+  padding: 8rem 2rem;
+  text-align: center;
+  background: linear-gradient(180deg, var(--bg) 0%, var(--bg-elevated) 100%);
+  border-top: 1px solid var(--border);
+}
+
+.cta-inner {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.cta-section h2 {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+}
+
+.cta-section h2 em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.cta-section p {
+  font-size: 1.125rem;
+  color: var(--text-muted);
+  margin-bottom: 3rem;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  font-family: var(--sans);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  border: 1px solid transparent;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.btn-primary:hover {
+  background: var(--accent-bright);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+
+.btn-secondary:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn-arrow {
+  transition: transform 0.25s ease;
+}
+
+.btn:hover .btn-arrow {
+  transform: translateX(4px);
+}
+
+/* ===== FOOTER ===== */
+footer {
+  padding: 3rem 2rem 2rem;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.footer-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.footer-credit {
+  font-size: 0.8125rem;
+  color: var(--text-dim);
+  font-family: var(--mono);
+  letter-spacing: 0.05em;
+}
+
+.footer-credit a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.footer-credit a:hover {
+  text-decoration: underline;
+}
+
+.footer-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+
+.footer-links a {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-family: var(--mono);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.footer-links a:hover {
+  color: var(--accent);
+}
+
+/* ===== ANIMATIONS ===== */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: reveal 0.8s ease forwards;
+}
+
+@keyframes reveal {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero h1 { animation: reveal 1s ease forwards; }
+.hero .eyebrow { animation: reveal 0.6s ease forwards; }
+.hero-tagline { animation: reveal 1s ease 0.2s forwards; opacity: 0; }
+.hero-meta { animation: reveal 1s ease 0.4s forwards; opacity: 0; }
+.hero-visual { animation: reveal 1.2s ease 0.3s forwards; opacity: 0; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 968px) {
+  .hero-inner {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .hero-visual {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .problem-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .stat {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .stat:last-child {
+    border-bottom: none;
+  }
+
+  .method-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .hero-meta {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  section {
+    padding: 4rem 1.25rem;
+  }
+
+  .hero {
+    padding: 7rem 1.25rem 3rem;
+  }
+
+  nav {
+    padding: 1rem 1.25rem;
+  }
+
+  .footer-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <span class="logo-mark"></span>
+      <span>FairAudit AI</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#problem">Problem</a></li>
+      <li><a href="#domains">Domains</a></li>
+      <li><a href="#methodology">Method</a></li>
+      <li><a href="#business">Model</a></li>
+      <li><a href="projects.html">← All Projects</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="eyebrow">Portfolio · AI Governance</div>
+      <h1>Auditing the algorithms <em>making decisions</em> about people.</h1>
+      <p class="hero-tagline">A horizontal bias audit framework for high-stakes AI systems — hiring, lending, healthcare, justice, and beyond. Built at the intersection of cybersecurity, machine learning, and algorithmic accountability.</p>
+      <div class="hero-meta">
+        <span>Status<strong>Concept · In Development</strong></span>
+        <span>Domain<strong>AI Ethics & Governance</strong></span>
+        <span>Stack<strong>Python · Fairlearn · AIF360</strong></span>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="audit-header">
+        <span class="audit-title">Audit Report · #FH-2026-0142</span>
+        <span class="audit-status">Bias Detected</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">Demographic Parity</span>
+        <span class="metric-value fail">0.62</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">Equalized Odds</span>
+        <span class="metric-value fail">0.71</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">Predictive Parity</span>
+        <span class="metric-value neutral">0.88</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">Calibration</span>
+        <span class="metric-value pass">0.94</span>
+      </div>
+      <div class="disparate-impact-bar">
+        <div class="bar-label">Disparate Impact Ratio</div>
+        <div class="bar-track">
+          <div class="bar-fill"></div>
+          <div class="bar-threshold"></div>
+        </div>
+        <div class="bar-legend">
+          <span>0.0</span>
+          <span>4/5ths threshold</span>
+          <span>1.0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="problem">
+  <div class="section-inner">
+    <div class="section-label">The Problem</div>
+    <h2 class="section-heading">Algorithms decide. <em>Few audit them.</em></h2>
+    <p class="section-intro">AI systems now make consequential decisions about who gets hired, who gets a loan, who gets medical care, and who gets parole. Bias in these systems doesn't just exist — it scales. A biased human recruiter sees hundreds of resumes a year. A biased model sees millions, faster, and with the false veneer of mathematical objectivity.</p>
+
+    <div class="problem-stats">
+      <div class="stat">
+        <div class="stat-number">85%</div>
+        <div class="stat-label">of AI projects fail to deliver on fairness commitments without structured audits</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">$1B+</div>
+        <div class="stat-label">Amazon's documented loss on a single biased hiring AI before shutting it down</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">21</div>
+        <div class="stat-label">mathematical definitions of fairness — most often mutually incompatible</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="domains">
+  <div class="section-inner">
+    <div class="section-label">Coverage</div>
+    <h2 class="section-heading">Ten domains. <em>One framework.</em></h2>
+    <p class="section-intro">FairAudit AI is built as a horizontal engine with domain-specific modules. Each vertical has its own protected attributes, regulatory landscape, and fairness considerations — but the underlying audit logic is shared.</p>
+
+    <div class="domains-grid">
+      <div class="domain-card">
+        <div class="domain-num">01 / Employment</div>
+        <h3 class="domain-title">Hiring & Recruitment</h3>
+        <p class="domain-desc">Resume screening, video interview AI, skills assessment scoring, automated rejection systems.</p>
+        <div class="domain-regulator"><strong>Regulators:</strong> EEOC · NYC LL144 · IL HB3773</div>
+      </div>
+
+      <div class="domain-card">
+        <div class="domain-num">02 / Financial</div>
+        <h3 class="domain-title">Lending & Credit</h3>
+        <p class="domain-desc">Credit scoring models, loan approval algorithms, insurance underwriting, fraud detection systems.</p>
+        <div class="domain-regulator"><strong>Regulators:</strong> CFPB · ECOA · Fair Lending</div>
+      </div>
+
+      <div class="domain-card">
+        <div class="domain-num">03 / Healthcare</div>
+        <h3 class="domain-title">Clinical AI</h3>
+        <p class="domain-desc">Diagnostic algorithms, treatment recommendations, patient risk scoring, triage systems.</p>
+        <div class="domain-regulator"><strong>Regulators:</strong> FDA · HHS · State Boards</div>
+      </div>
+
+      <div class="domain-card">
+        <div class="domain-num">04 / Justice</div>
+        <h3 class="domain-title">Criminal Justice</h3>
+        <p class="domain-desc">Recidivism prediction, predictive policing, bail and parole decision support tools.</p>
+        <div class="domain-regulator"><strong>Regulators:</strong> DOJ · State courts</div>
+      </div>
+
+      <div class="domain-card">
+        <div class="domain-num">05 / Education</div>
+        <h3 class="domain-title">Academic Systems</h3>
+        <p class="domain-desc">Admissions algorithms, essay scoring, plagiarism detection, proctoring software, student risk models.</p>
+        <div class="domain-regulator"><strong>Regulators:</strong> DOE · Title VI · FERPA</div>
+      </div>
+
+      <div class="domain-card">
+        <div class="domain-num">06 / Housing</div>
+        <h3 class="domain-title">Real Estate</h3>
+        <p class="domain-desc">Tenant screening, mortgage approval, property valuation algorithms, rental pricing engines.</p>
+        <div class="domain-regulator"><strong>Regulators:</strong> HUD · Fair Housing Act</div>
+      </div>
+
+      <div class="domain-card">
+        <div class="domain-num">07 / Platform</div>
+        <h3 class="domain-title">Content & Search</h3>
+        <p class="domain-desc">Recommendation engines, search ranking, content moderation, ad targeting algorithms.</p>
+        <div class="domain-regulator"><strong>Regulators:</strong> EU DSA · FTC</div>
+      </div>
+
+      <div class="domain-card">
+        <div class="domain-num">08 / Public Sector</div>
+        <h3 class="domain-title">Government Services</h3>
+        <p class="domain-desc">Benefits eligibility, child welfare risk, immigration scoring, fraud detection in public programs.</p>
+        <div class="domain-regulator"><strong>Regulators:</strong> EO 14110 · State AI Acts</div>
+      </div>
+
+      <div class="domain-card">
+        <div class="domain-num">09 / GenAI</div>
+        <h3 class="domain-title">Generative Systems</h3>
+        <p class="domain-desc">LLM stereotyping audits, image generation bias, RAG pipeline content fairness, chatbot output review.</p>
+        <div class="domain-regulator"><strong>Regulators:</strong> EU AI Act · NIST AI RMF</div>
+      </div>
+
+      <div class="domain-card">
+        <div class="domain-num">10 / Workplace</div>
+        <h3 class="domain-title">Performance & HR</h3>
+        <p class="domain-desc">Automated performance reviews, productivity monitoring, promotion algorithms, sentiment analysis.</p>
+        <div class="domain-regulator"><strong>Regulators:</strong> EEOC · NLRB</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="methodology" id="methodology">
+  <div class="section-inner">
+    <div class="section-label">Methodology</div>
+    <h2 class="section-heading">A five-stage <em>audit pipeline.</em></h2>
+    <p class="section-intro">Bias audits aren't a single test — they're a structured investigation. FairAudit AI runs each system through a defensible methodology designed to satisfy regulators, inform engineers, and protect end users.</p>
+
+    <div class="method-steps">
+      <div class="method-step">
+        <div class="step-num">01</div>
+        <h3 class="step-title">Data Profiling</h3>
+        <p class="step-desc">Inspect the training data for representation gaps, label noise, and historical bias signatures. Identify protected attributes and known proxies before any model is touched.</p>
+        <div class="step-tech">
+          <span class="tech-tag">Pandas</span>
+          <span class="tech-tag">Aequitas</span>
+          <span class="tech-tag">SweetViz</span>
+        </div>
+      </div>
+
+      <div class="method-step">
+        <div class="step-num">02</div>
+        <h3 class="step-title">Fairness Metrics</h3>
+        <p class="step-desc">Run a suite of fairness tests: demographic parity, equalized odds, predictive parity, calibration. Apply the EEOC four-fifths rule. Compute disparate impact across single and intersectional groups.</p>
+        <div class="step-tech">
+          <span class="tech-tag">Fairlearn</span>
+          <span class="tech-tag">AIF360</span>
+          <span class="tech-tag">scikit-learn</span>
+        </div>
+      </div>
+
+      <div class="method-step">
+        <div class="step-num">03</div>
+        <h3 class="step-title">Explainability</h3>
+        <p class="step-desc">Surface feature importance and counterfactual explanations. Identify which inputs are driving disparities and whether protected attributes are encoded through correlated proxies.</p>
+        <div class="step-tech">
+          <span class="tech-tag">SHAP</span>
+          <span class="tech-tag">LIME</span>
+          <span class="tech-tag">DiCE</span>
+        </div>
+      </div>
+
+      <div class="method-step">
+        <div class="step-num">04</div>
+        <h3 class="step-title">Narrative Report</h3>
+        <p class="step-desc">Generate a plain-English audit report mapping findings to relevant regulations. Translate statistical results into language compliance teams, executives, and affected communities can act on.</p>
+        <div class="step-tech">
+          <span class="tech-tag">Claude API</span>
+          <span class="tech-tag">Jinja2</span>
+          <span class="tech-tag">WeasyPrint</span>
+        </div>
+      </div>
+
+      <div class="method-step">
+        <div class="step-num">05</div>
+        <h3 class="step-title">Mitigation & Monitoring</h3>
+        <p class="step-desc">Recommend specific mitigations — reweighting, threshold adjustment, feature removal, post-processing. Deploy continuous monitoring to catch drift before it becomes a violation.</p>
+        <div class="step-tech">
+          <span class="tech-tag">Evidently</span>
+          <span class="tech-tag">MLflow</span>
+          <span class="tech-tag">Streamlit</span>
+        </div>
+      </div>
+
+      <div class="method-step">
+        <div class="step-num">06</div>
+        <h3 class="step-title">Governance Integration</h3>
+        <p class="step-desc">Map findings to internal policy and external regulation. Produce audit artifacts for board review, regulator submission, and public transparency reports where required.</p>
+        <div class="step-tech">
+          <span class="tech-tag">NIST AI RMF</span>
+          <span class="tech-tag">EU AI Act</span>
+          <span class="tech-tag">ISO 42001</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-inner">
+    <div class="section-label">Tech Stack</div>
+    <h2 class="section-heading">Production-grade <em>tooling.</em></h2>
+    <p class="section-intro">Built on open-source foundations with proven enterprise adoption. Designed to integrate with existing ML pipelines, not replace them.</p>
+
+    <div class="tech-grid">
+      <div class="tech-card">
+        <div class="tech-category">Core Engine</div>
+        <ul class="tech-list">
+          <li>Python 3.11+</li>
+          <li>Fairlearn</li>
+          <li>IBM AIF360</li>
+          <li>Aequitas</li>
+        </ul>
+      </div>
+      <div class="tech-card">
+        <div class="tech-category">Explainability</div>
+        <ul class="tech-list">
+          <li>SHAP</li>
+          <li>LIME</li>
+          <li>DiCE</li>
+          <li>InterpretML</li>
+        </ul>
+      </div>
+      <div class="tech-card">
+        <div class="tech-category">LLM Layer</div>
+        <ul class="tech-list">
+          <li>Anthropic Claude</li>
+          <li>RCCO prompting</li>
+          <li>RAG pipeline</li>
+          <li>Audit narrative gen</li>
+        </ul>
+      </div>
+      <div class="tech-card">
+        <div class="tech-category">Interface</div>
+        <ul class="tech-list">
+          <li>FastAPI</li>
+          <li>React + Vite</li>
+          <li>Recharts</li>
+          <li>Tailwind CSS</li>
+        </ul>
+      </div>
+      <div class="tech-card">
+        <div class="tech-category">Monitoring</div>
+        <ul class="tech-list">
+          <li>Evidently AI</li>
+          <li>MLflow</li>
+          <li>Prometheus</li>
+          <li>Grafana</li>
+        </ul>
+      </div>
+      <div class="tech-card">
+        <div class="tech-category">Reporting</div>
+        <ul class="tech-list">
+          <li>Jinja2 templates</li>
+          <li>WeasyPrint PDF</li>
+          <li>Plotly</li>
+          <li>NIST AI RMF</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="business">
+  <div class="section-inner">
+    <div class="section-label">Business Model</div>
+    <h2 class="section-heading">Consultancy first. <em>Product second.</em></h2>
+    <p class="section-intro">A staged go-to-market strategy. Begin with high-touch audit engagements that build credibility and surface real client problems. Productize the repeatable patterns into SaaS and training offerings as the market matures.</p>
+
+    <div class="business-grid">
+      <div class="business-path">
+        <div class="path-stage">Phase 01</div>
+        <h3 class="path-title">Audit Engagements</h3>
+        <div class="path-revenue">$5K – $25K per audit</div>
+        <p class="path-desc">Hands-on bias audits for mid-market companies. Deliverable is a regulator-ready report plus remediation roadmap. Low capital, high learning.</p>
+      </div>
+      <div class="business-path">
+        <div class="path-stage">Phase 02</div>
+        <h3 class="path-title">Continuous Monitoring</h3>
+        <div class="path-revenue">$500 – $5K monthly</div>
+        <p class="path-desc">SaaS dashboard for ongoing fairness monitoring. Drift detection, alerting, automated quarterly reports. Recurring revenue, scalable margins.</p>
+      </div>
+      <div class="business-path">
+        <div class="path-stage">Phase 03</div>
+        <h3 class="path-title">Training & Workshops</h3>
+        <div class="path-revenue">$5K – $15K per session</div>
+        <p class="path-desc">Bias literacy training for HR, compliance, and engineering teams. Half-day to two-day workshops. Builds market awareness and pipeline.</p>
+      </div>
+      <div class="business-path">
+        <div class="path-stage">Phase 04</div>
+        <h3 class="path-title">Vendor Due Diligence</h3>
+        <div class="path-revenue">$10K – $50K per engagement</div>
+        <p class="path-desc">Pre-purchase audits of third-party AI tools on behalf of enterprise buyers. Procurement teams need this; nobody offers it well yet.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="cta-inner">
+    <h2>Interested in <em>building this together?</em></h2>
+    <p>FairAudit AI is in active development. Open to design partners, early clients, and collaborators working at the intersection of AI ethics, compliance, and machine learning engineering.</p>
+    <div class="cta-buttons">
+      <a href="https://linkedin.com/in/dayoegonu/" target="_blank" rel="noopener" class="btn btn-primary">
+        Connect on LinkedIn
+        <span class="btn-arrow">→</span>
+      </a>
+      <a href="index.html#contact" class="btn btn-secondary">
+        Get in touch
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-credit">
+      Built by <a href="https://linkedin.com/in/dayoegonu/" target="_blank" rel="noopener">Dayo Egonu</a> · Applied AI & Cybersecurity
+    </div>
+    <ul class="footer-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="index.html#skills">Skills</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+
+</body>
+</html>
