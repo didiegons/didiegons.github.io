@@ -18,6 +18,44 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
   --pc:#7BA7D4;--sc:#C0976A;--kc:#E8A820;
 }
 
+
+/* ── VIDEO INTRO ── */
+#videoIntro{
+  position:fixed;inset:0;z-index:2000;background:#000;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity 1s ease;
+}
+#videoIntro.fade-out{opacity:0;pointer-events:none;}
+#videoIntro.done{display:none;}
+#trailerVideo{
+  width:100%;height:100%;object-fit:cover;
+}
+.video-skip{
+  position:absolute;bottom:28px;right:28px;
+  background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.25);
+  color:rgba(255,255,255,.7);font-family:'Cinzel',serif;font-size:12px;
+  padding:8px 18px;border-radius:6px;cursor:pointer;
+  transition:all .2s;z-index:10;letter-spacing:.06em;
+  backdrop-filter:blur(6px);
+}
+.video-skip:hover{
+  background:rgba(0,0,0,.8);color:#fff;
+  border-color:rgba(255,255,255,.5);
+}
+.video-logo{
+  position:absolute;bottom:28px;left:28px;
+  font-family:'Uncial Antiqua',serif;font-size:1rem;
+  color:rgba(232,168,32,.7);letter-spacing:.06em;
+  text-shadow:0 0 20px rgba(232,168,32,.4);
+  z-index:10;
+}
+.video-bar{
+  position:absolute;bottom:0;left:0;height:3px;
+  background:linear-gradient(90deg,#C48A10,#E8A820,#FFD700);
+  transition:width .3s linear;width:0%;
+  box-shadow:0 0 8px rgba(232,168,32,.6);
+}
+
 /* ── INTRO ── */
 #intro{position:fixed;inset:0;z-index:1000;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;}
 #intro.done{display:none;}
@@ -321,6 +359,17 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
 </style>
 </head>
 <body>
+
+
+<!-- ── TRAILER VIDEO INTRO ── -->
+<div id="videoIntro">
+  <video id="trailerVideo" playsinline muted autoplay>
+    <source src="trailer.mp4" type="video/mp4">
+  </video>
+  <div class="video-logo">⚔️ Security Knights</div>
+  <button class="video-skip" onclick="skipVideo()">Skip ▶</button>
+  <div class="video-bar" id="videoBar"></div>
+</div>
 
 <!-- ── INTRO ── -->
 <div id="intro">
@@ -1037,6 +1086,80 @@ var Music = {
     return total*b;
   }
 };
+
+
+// ═══════════════════════════════════════════════
+// VIDEO TRAILER INTRO
+// ═══════════════════════════════════════════════
+function initVideoIntro() {
+  var vid = document.getElementById('trailerVideo');
+  var bar = document.getElementById('videoBar');
+  var intro = document.getElementById('videoIntro');
+
+  if (!vid) { afterVideo(); return; }
+
+  // Progress bar
+  vid.addEventListener('timeupdate', function() {
+    if (vid.duration) {
+      bar.style.width = (vid.currentTime / vid.duration * 100) + '%';
+    }
+  });
+
+  // When video ends — fade out then show intro
+  vid.addEventListener('ended', function() {
+    fadeOutVideo();
+  });
+
+  // If video fails to load (file not uploaded yet) — skip straight to intro
+  vid.addEventListener('error', function() {
+    console.log('Video not found — skipping to intro');
+    intro.classList.add('done');
+    afterVideo();
+  });
+
+  // Try to play
+  var playPromise = vid.play();
+  if (playPromise !== undefined) {
+    playPromise.catch(function() {
+      // Autoplay blocked — show a tap-to-play screen
+      showTapToPlay();
+    });
+  }
+}
+
+function showTapToPlay() {
+  var intro = document.getElementById('videoIntro');
+  var tap = document.createElement('div');
+  tap.style.cssText = 'position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;z-index:5;background:rgba(0,0,0,.6);gap:16px;';
+  tap.innerHTML = '<div style="font-size:4rem;filter:drop-shadow(0 0 20px rgba(232,168,32,.8))">⚔️</div>' +
+    '<div style="font-family:Cinzel,serif;font-size:1.1rem;color:#FFD700;letter-spacing:.08em;text-shadow:0 0 20px rgba(232,168,32,.6)">Tap to watch the trailer</div>';
+  tap.onclick = function() {
+    tap.remove();
+    document.getElementById('trailerVideo').play();
+  };
+  intro.appendChild(tap);
+}
+
+function fadeOutVideo() {
+  var intro = document.getElementById('videoIntro');
+  intro.classList.add('fade-out');
+  setTimeout(function() {
+    intro.classList.add('done');
+    afterVideo();
+  }, 1000);
+}
+
+function skipVideo() {
+  var vid = document.getElementById('trailerVideo');
+  vid.pause();
+  fadeOutVideo();
+}
+
+function afterVideo() {
+  // Start the existing animated intro
+  runIntro();
+}
+
 
 // ═══════════════════════════════════════════════
 // INTRO
@@ -2732,8 +2855,8 @@ document.addEventListener('DOMContentLoaded',function(){
   // Build map
   buildMap();
 
-  // Run intro
-  runIntro();
+  // Run video trailer first, then intro
+  initVideoIntro();
   requestAnimationFrame(loop);
 });
 
