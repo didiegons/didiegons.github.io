@@ -23,7 +23,7 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
 #videoIntro{
   position:fixed;inset:0;z-index:2000;background:#000;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  transition:opacity 1s ease;
+  transition:opacity 1s ease;overflow:visible;
 }
 #videoIntro.fade-out{opacity:0;pointer-events:none;}
 #videoIntro.done{display:none;}
@@ -31,16 +31,16 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
   width:100%;height:100%;object-fit:cover;
 }
 .video-skip{
-  position:absolute;bottom:28px;right:28px;
-  background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.25);
-  color:rgba(255,255,255,.7);font-family:'Cinzel',serif;font-size:12px;
-  padding:8px 18px;border-radius:6px;cursor:pointer;
-  transition:all .2s;z-index:10;letter-spacing:.06em;
-  backdrop-filter:blur(6px);
+  position:fixed;top:20px;right:24px;
+  background:rgba(0,0,0,.65);border:1px solid rgba(255,255,255,.3);
+  color:rgba(255,255,255,.85);font-family:'Cinzel',serif;font-size:12px;
+  padding:8px 20px;border-radius:6px;cursor:pointer;
+  transition:all .2s;z-index:9999 !important;letter-spacing:.06em;
+  backdrop-filter:blur(6px);pointer-events:all;
 }
 .video-skip:hover{
-  background:rgba(0,0,0,.8);color:#fff;
-  border-color:rgba(255,255,255,.5);
+  background:rgba(232,168,32,.3);color:#FFD700;
+  border-color:rgba(232,168,32,.6);
 }
 .video-logo{
   position:absolute;bottom:28px;left:28px;
@@ -57,7 +57,7 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
 }
 
 /* ── INTRO ── */
-#intro{position:fixed;inset:0;z-index:1000;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;}
+#intro{position:fixed;inset:0;z-index:1000;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:visible;}
 #intro.done{display:none;}
 #intro-stars{position:absolute;inset:0;overflow:hidden;}
 .istar{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d) ease-in-out infinite;}
@@ -78,8 +78,8 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
 .intro-dot.active{background:var(--gold);}
 .intro-btn{padding:13px 36px;background:linear-gradient(135deg,#C48A10,#E8A820,#FFD700);border:none;border-radius:10px;font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:#000;cursor:pointer;box-shadow:0 0 30px rgba(232,168,32,.5);transition:all .2s;letter-spacing:.06em;}
 .intro-btn:hover{transform:translateY(-3px);box-shadow:0 0 50px rgba(232,168,32,.8);}
-.intro-skip{position:absolute;top:20px;right:24px;font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.35);cursor:pointer;border:1px solid rgba(255,255,255,.1);padding:5px 12px;border-radius:4px;transition:all .2s;}
-.intro-skip:hover{color:rgba(255,255,255,.7);border-color:rgba(255,255,255,.3);}
+.intro-skip{position:fixed;top:20px;right:24px;font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.55);cursor:pointer;border:1px solid rgba(255,255,255,.2);padding:6px 14px;border-radius:4px;transition:all .2s;z-index:9999 !important;pointer-events:all;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);}
+.intro-skip:hover{color:#FFD700;border-color:rgba(232,168,32,.5);background:rgba(0,0,0,.6);}
 #intro-canvas{position:absolute;inset:0;z-index:1;}
 
 /* ── HUD ── */
@@ -364,8 +364,8 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
 
 <!-- ── TRAILER VIDEO INTRO ── -->
 <div id="videoIntro">
-  <video id="trailerVideo" playsinline muted autoplay>
-    <source src="trailer.mp4" type="video/mp4">
+  <video id="trailerVideo" playsinline webkit-playsinline autoplay preload="auto">
+    <source src="./trailer.mp4" type="video/mp4">
   </video>
   <div class="video-logo">⚔️ Security Knights</div>
   <button class="video-skip" onclick="skipVideo()">Skip ▶</button>
@@ -1099,8 +1099,10 @@ function initVideoIntro() {
 
   if (!vid) { afterVideo(); return; }
 
-  // If video fails to load — skip to intro silently
+  // If video fails to load — log and skip to intro
   vid.addEventListener('error', function() {
+    console.error('Video load error:', vid.error);
+    alert('Could not load trailer.mp4. Check the file path/name and that it uses H.264/AAC encoding.');
     intro.classList.add('done');
     afterVideo();
   });
@@ -1152,7 +1154,12 @@ function showTapToPlay() {
   tap.onclick = function() {
     tap.remove();
     var vid = document.getElementById('trailerVideo');
-    vid.play().catch(function() { fadeOutVideo(); });
+    // Allow audio to play
+    vid.play().catch(function(err) {
+      console.error('Trailer failed to play:', err);
+      alert('Trailer failed to play. Check that trailer.mp4 exists, is reachable, and uses H.264/AAC encoding.');
+      fadeOutVideo();
+    });
   };
   intro.appendChild(tap);
 }
@@ -1168,7 +1175,10 @@ function fadeOutVideo() {
 
 function skipVideo() {
   var vid = document.getElementById('trailerVideo');
-  vid.pause();
+  if (vid) { try { vid.pause(); } catch(e) {} }
+  // Also remove tap screen if showing
+  var tap = document.getElementById('tapScreen');
+  if (tap) tap.remove();
   fadeOutVideo();
 }
 
