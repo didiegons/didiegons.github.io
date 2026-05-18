@@ -355,6 +355,7 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
 #dragon-canvas{position:absolute;inset:0;width:100%;height:100%;}
 .dragon-text{position:absolute;top:42%;left:50%;transform:translate(-50%,-50%);font-family:'Uncial Antiqua',serif;font-size:clamp(2rem,5vw,3.2rem);color:#FF4400;text-shadow:0 0 30px rgba(255,100,0,.9),0 0 60px rgba(255,0,0,.5),0 0 100px rgba(255,0,0,.3);text-align:center;opacity:0;transition:opacity .5s;pointer-events:none;white-space:nowrap;}
 .dragon-text.show{opacity:1;}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.1);opacity:1}}
 @keyframes screenShake{0%,100%{transform:translate(0,0)}20%{transform:translate(-8px,4px)}40%{transform:translate(8px,-4px)}60%{transform:translate(-5px,5px)}80%{transform:translate(5px,-3px)}}
 </style>
 </head>
@@ -1098,44 +1099,60 @@ function initVideoIntro() {
 
   if (!vid) { afterVideo(); return; }
 
-  // Progress bar
+  // If video fails to load — skip to intro silently
+  vid.addEventListener('error', function() {
+    intro.classList.add('done');
+    afterVideo();
+  });
+
+  // Progress bar update
   vid.addEventListener('timeupdate', function() {
     if (vid.duration) {
       bar.style.width = (vid.currentTime / vid.duration * 100) + '%';
     }
   });
 
-  // When video ends — fade out then show intro
+  // When video ends — fade out
   vid.addEventListener('ended', function() {
     fadeOutVideo();
   });
 
-  // If video fails to load (file not uploaded yet) — skip straight to intro
-  vid.addEventListener('error', function() {
-    console.log('Video not found — skipping to intro');
-    intro.classList.add('done');
-    afterVideo();
-  });
+  // Always show tap-to-play first (handles all browser autoplay policies)
+  showTapToPlay();
 
-  // Try to play
+  // Also try autoplay silently — if it works, great!
   var playPromise = vid.play();
   if (playPromise !== undefined) {
-    playPromise.catch(function() {
-      // Autoplay blocked — show a tap-to-play screen
-      showTapToPlay();
+    playPromise.then(function() {
+      // Autoplay worked — remove the tap screen
+      var tap = document.getElementById('tapScreen');
+      if (tap) tap.remove();
+    }).catch(function() {
+      // Autoplay blocked — tap screen is already showing, user will click
     });
   }
 }
 
 function showTapToPlay() {
   var intro = document.getElementById('videoIntro');
+  // Don't add twice
+  if (document.getElementById('tapScreen')) return;
   var tap = document.createElement('div');
-  tap.style.cssText = 'position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;z-index:5;background:rgba(0,0,0,.6);gap:16px;';
-  tap.innerHTML = '<div style="font-size:4rem;filter:drop-shadow(0 0 20px rgba(232,168,32,.8))">⚔️</div>' +
-    '<div style="font-family:Cinzel,serif;font-size:1.1rem;color:#FFD700;letter-spacing:.08em;text-shadow:0 0 20px rgba(232,168,32,.6)">Tap to watch the trailer</div>';
+  tap.id = 'tapScreen';
+  tap.style.cssText = [
+    'position:absolute;inset:0;z-index:5;cursor:pointer;',
+    'display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;',
+    'background:radial-gradient(ellipse at center, rgba(20,10,40,.85) 0%, rgba(0,0,0,.92) 100%);'
+  ].join('');
+  tap.innerHTML =
+    '<div style="font-size:5rem;filter:drop-shadow(0 0 30px rgba(232,168,32,.9));animation:float 3s ease-in-out infinite">⚔️</div>' +
+    '<div style="font-family:Uncial Antiqua,serif;font-size:clamp(1.5rem,4vw,2.5rem);color:#FFD700;letter-spacing:.06em;text-shadow:0 0 30px rgba(232,168,32,.7);text-align:center;">Security Knights</div>' +
+    '<div style="font-family:Cinzel,serif;font-size:clamp(.8rem,2vw,1rem);color:rgba(232,168,32,.7);letter-spacing:.2em;text-transform:uppercase;text-align:center;">Tap anywhere to begin</div>' +
+    '<div style="width:60px;height:60px;border-radius:50%;border:2px solid rgba(232,168,32,.5);display:flex;align-items:center;justify-content:center;font-size:1.5rem;animation:pulse 2s ease-in-out infinite;box-shadow:0 0 20px rgba(232,168,32,.3);">▶</div>';
   tap.onclick = function() {
     tap.remove();
-    document.getElementById('trailerVideo').play();
+    var vid = document.getElementById('trailerVideo');
+    vid.play().catch(function() { fadeOutVideo(); });
   };
   intro.appendChild(tap);
 }
