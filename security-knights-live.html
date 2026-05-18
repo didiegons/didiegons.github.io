@@ -18,8 +18,71 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
   --pc:#7BA7D4;--sc:#C0976A;--kc:#E8A820;
 }
 
+
+/* ── VIDEO INTRO ── */
+#videoIntro{
+  position:fixed;inset:0;z-index:2000;background:#000;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity 1s ease;overflow:visible;
+}
+#videoIntro.fade-out{opacity:0;pointer-events:none;}
+#videoIntro.done{display:none;}
+#trailerVideo{
+  width:100%;height:100%;object-fit:cover;
+}
+.video-skip{
+  position:fixed;top:20px;right:24px;
+  background:rgba(0,0,0,.65);border:1px solid rgba(255,255,255,.3);
+  color:rgba(255,255,255,.85);font-family:'Cinzel',serif;font-size:12px;
+  padding:8px 20px;border-radius:6px;cursor:pointer;
+  transition:all .2s;z-index:9999 !important;letter-spacing:.06em;
+  backdrop-filter:blur(6px);pointer-events:all;
+}
+.video-skip:hover{
+  background:rgba(232,168,32,.3);color:#FFD700;
+  border-color:rgba(232,168,32,.6);
+}
+.video-logo{
+  position:absolute;bottom:28px;left:28px;
+  font-family:'Uncial Antiqua',serif;font-size:1rem;
+  color:rgba(232,168,32,.7);letter-spacing:.06em;
+  text-shadow:0 0 20px rgba(232,168,32,.4);
+  z-index:10;
+}
+.video-bar{
+  position:absolute;bottom:0;left:0;height:3px;
+  background:linear-gradient(90deg,#C48A10,#E8A820,#FFD700);
+  transition:width .3s linear;width:0%;
+  box-shadow:0 0 8px rgba(232,168,32,.6);
+}
+
+
+/* ── FILL IN THE BLANK ── */
+.fill-wrap{margin-top:14px;}
+.fill-label{font-family:'Cinzel',serif;font-size:.72rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:8px;display:block;}
+.fill-row{display:flex;gap:8px;align-items:center;}
+.fill-input{flex:1;padding:12px 16px;background:rgba(15,18,38,.9);
+  border:2px solid rgba(232,168,32,.25);border-radius:9px;
+  color:var(--txt);font-family:'JetBrains Mono',monospace;font-size:.9rem;
+  outline:none;transition:all .2s;letter-spacing:.04em;}
+.fill-input:focus{border-color:var(--gold);box-shadow:0 0 14px rgba(232,168,32,.2);}
+.fill-input.correct{border-color:var(--em) !important;background:rgba(46,204,138,.1);
+  color:var(--em);box-shadow:0 0 14px rgba(46,204,138,.25);}
+.fill-input.wrong{border-color:var(--crim) !important;background:rgba(232,64,64,.1);
+  color:var(--crim);box-shadow:0 0 14px rgba(232,64,64,.2);}
+.fill-submit{padding:12px 20px;background:linear-gradient(135deg,#C48A10,#E8A820,#FFD700);
+  border:none;border-radius:9px;font-family:'Cinzel',serif;font-size:.82rem;
+  font-weight:700;color:#000;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;}
+.fill-submit:hover{transform:translateY(-2px);box-shadow:0 0 16px rgba(232,168,32,.4);}
+.fill-submit:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+.fill-hint{margin-top:8px;font-size:.75rem;color:var(--muted);font-family:'JetBrains Mono',monospace;}
+.fill-hint span{color:rgba(232,168,32,.5);}
+.fill-correct-ans{margin-top:6px;font-size:.78rem;color:var(--muted);font-family:'JetBrains Mono',monospace;}
+.fill-correct-ans strong{color:var(--em);}
+
 /* ── INTRO ── */
-#intro{position:fixed;inset:0;z-index:1000;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;}
+#intro{position:fixed;inset:0;z-index:1000;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:visible;}
 #intro.done{display:none;}
 #intro-stars{position:absolute;inset:0;overflow:hidden;}
 .istar{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d) ease-in-out infinite;}
@@ -40,8 +103,8 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
 .intro-dot.active{background:var(--gold);}
 .intro-btn{padding:13px 36px;background:linear-gradient(135deg,#C48A10,#E8A820,#FFD700);border:none;border-radius:10px;font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:#000;cursor:pointer;box-shadow:0 0 30px rgba(232,168,32,.5);transition:all .2s;letter-spacing:.06em;}
 .intro-btn:hover{transform:translateY(-3px);box-shadow:0 0 50px rgba(232,168,32,.8);}
-.intro-skip{position:absolute;top:20px;right:24px;font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.35);cursor:pointer;border:1px solid rgba(255,255,255,.1);padding:5px 12px;border-radius:4px;transition:all .2s;}
-.intro-skip:hover{color:rgba(255,255,255,.7);border-color:rgba(255,255,255,.3);}
+.intro-skip{position:fixed;top:20px;right:24px;font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.55);cursor:pointer;border:1px solid rgba(255,255,255,.2);padding:6px 14px;border-radius:4px;transition:all .2s;z-index:9999 !important;pointer-events:all;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);}
+.intro-skip:hover{color:#FFD700;border-color:rgba(232,168,32,.5);background:rgba(0,0,0,.6);}
 #intro-canvas{position:absolute;inset:0;z-index:1;}
 
 /* ── HUD ── */
@@ -317,10 +380,22 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
 #dragon-canvas{position:absolute;inset:0;width:100%;height:100%;}
 .dragon-text{position:absolute;top:42%;left:50%;transform:translate(-50%,-50%);font-family:'Uncial Antiqua',serif;font-size:clamp(2rem,5vw,3.2rem);color:#FF4400;text-shadow:0 0 30px rgba(255,100,0,.9),0 0 60px rgba(255,0,0,.5),0 0 100px rgba(255,0,0,.3);text-align:center;opacity:0;transition:opacity .5s;pointer-events:none;white-space:nowrap;}
 .dragon-text.show{opacity:1;}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.1);opacity:1}}
 @keyframes screenShake{0%,100%{transform:translate(0,0)}20%{transform:translate(-8px,4px)}40%{transform:translate(8px,-4px)}60%{transform:translate(-5px,5px)}80%{transform:translate(5px,-3px)}}
 </style>
 </head>
 <body>
+
+
+<!-- ── TRAILER VIDEO INTRO ── -->
+<div id="videoIntro">
+  <video id="trailerVideo" playsinline webkit-playsinline autoplay preload="auto">
+    <source src="./trailer.mp4" type="video/mp4">
+  </video>
+  <div class="video-logo">⚔️ Security Knights</div>
+  <button class="video-skip" onclick="skipVideo()">Skip ▶</button>
+  <div class="video-bar" id="videoBar"></div>
+</div>
 
 <!-- ── INTRO ── -->
 <div id="intro">
@@ -782,6 +857,79 @@ knight: [
 ]
 };
 
+
+// ═══════════════════════════════════════════════
+// FILL-IN-THE-BLANK QUESTIONS
+// ═══════════════════════════════════════════════
+var FILL_CHALLENGES = {
+paige: [
+  {id:51, xp:15, topic:'SQL Injection', type:'fill',
+   title:'Complete the Shield',
+   body:'Parameterized queries prevent SQL injection. Complete the safe version of this query:',
+   code:'// Vulnerable:\ndb.execute("SELECT * FROM users WHERE id = " + userId);\n\n// Safe (fill in the blank):\ndb.execute("SELECT * FROM users WHERE id = ?", [userId]);',
+   blank:'Complete the placeholder character',
+   answer:'?',
+   accept:['?','$1','%s',':id'],
+   hint:'A single punctuation character — a placeholder',
+   explanation:'The ? is the parameterized placeholder. It tells the database to treat this as DATA not SQL code, completely preventing injection.'},
+  {id:52, xp:15, topic:'Password Storage', type:'fill',
+   title:'Name the Algorithm',
+   body:'Fill in the missing algorithm — the one OWASP recommends most for password hashing in 2024:',
+   code:'const hash = await _____(password, { memoryCost: 65536 });',
+   blank:'The recommended modern password hashing algorithm',
+   answer:'argon2id',
+   accept:['argon2id','argon2','argon'],
+   hint:'It won the Password Hashing Competition in 2015',
+   explanation:'Argon2id is the OWASP top recommendation for password hashing. It is memory-hard (harder to brute-force with GPUs) and resistant to side-channel attacks. bcrypt is also acceptable.'},
+],
+squire: [
+  {id:53, xp:25, topic:'Security Headers', type:'fill',
+   title:'Write the Shield',
+   body:'Add the HTTP response header value that blocks ALL iframe embedding (clickjacking protection):',
+   code:'res.setHeader("X-Frame-Options", "_____");',
+   blank:'The value that blocks all iframes',
+   answer:'DENY',
+   accept:['DENY','deny'],
+   hint:'One word — the strongest option that blocks ALL framing',
+   explanation:'X-Frame-Options: DENY completely prevents your page from being loaded in any iframe. SAMEORIGIN allows your own domain only. DENY is the safest default for login pages.'},
+  {id:54, xp:25, topic:'CSRF', type:'fill',
+   title:'The Secret Token',
+   body:'CSRF tokens must be stored server-side. Fill in where they go:',
+   code:'const token = crypto.randomBytes(32).toString("hex");\nreq._____.csrfToken = token;',
+   blank:'Where server-side per-user data is stored',
+   answer:'session',
+   accept:['session','req.session'],
+   hint:'Server-side, not in the cookie or localStorage',
+   explanation:'CSRF tokens must be stored in the server-side session — not in cookies or localStorage (both accessible to attackers). Compare the token in the form body against the one in the session on every state-changing request.'},
+],
+knight: [
+  {id:55, xp:35, topic:'JWT Security', type:'fill',
+   title:'Lock the Algorithm',
+   body:'Prevent the alg:none JWT attack by pinning the algorithm. Fill in the missing option name:',
+   code:'// Vulnerable:\njwt.verify(token, secret);\n\n// Secure:\njwt.verify(token, secret, { _____: ["HS256"] });',
+   blank:'The option that pins allowed signing algorithms',
+   answer:'algorithms',
+   accept:['algorithms','algorithm'],
+   hint:'A plural noun — you pass an array of allowed algorithm names',
+   explanation:'The algorithms option tells the JWT verifier to ONLY accept tokens signed with the listed algorithm. This blocks alg:none and algorithm confusion attacks entirely.'},
+  {id:56, xp:35, topic:'Race Conditions', type:'fill',
+   title:'Lock the Treasury',
+   body:'Prevent the race condition double-spend by locking the database row. Fill in the two missing SQL keywords:',
+   code:'// Vulnerable:\nSELECT balance FROM accounts WHERE id = ?\n\n// Safe:\nSELECT balance FROM accounts WHERE id = ? _____ _____;',
+   blank:'Two SQL keywords that lock the row for the transaction',
+   answer:'FOR UPDATE',
+   accept:['for update','FOR UPDATE','for update nowait','FOR UPDATE NOWAIT'],
+   hint:'Two words — tells the database you are about to modify this row',
+   explanation:'SELECT ... FOR UPDATE places a row-level lock preventing other transactions from reading or modifying the row until your transaction commits. This eliminates the TOCTOU window.'},
+]
+}
+// Merge fill-in questions into the pool for random selection
+['paige','squire','knight'].forEach(function(tier) {
+  if (FILL_CHALLENGES[tier]) {
+    ALL_CHALLENGES[tier] = ALL_CHALLENGES[tier].concat(FILL_CHALLENGES[tier]);
+  }
+});
+
 // Select 5 random questions from each tier
 function selectQuestions() {
   var selected = {};
@@ -1038,13 +1186,116 @@ var Music = {
   }
 };
 
+
+// ═══════════════════════════════════════════════
+// VIDEO TRAILER INTRO
+// ═══════════════════════════════════════════════
+function initVideoIntro() {
+  var vid = document.getElementById('trailerVideo');
+  var bar = document.getElementById('videoBar');
+  var intro = document.getElementById('videoIntro');
+
+  if (!vid) { afterVideo(); return; }
+
+  // If video fails to load — log and skip to intro
+  vid.addEventListener('error', function() {
+    console.error('Video load error:', vid.error);
+    alert('Could not load trailer.mp4. Check the file path/name and that it uses H.264/AAC encoding.');
+    intro.classList.add('done');
+    afterVideo();
+  });
+
+  // Progress bar update
+  vid.addEventListener('timeupdate', function() {
+    if (vid.duration) {
+      bar.style.width = (vid.currentTime / vid.duration * 100) + '%';
+    }
+  });
+
+  // When video ends — fade out
+  vid.addEventListener('ended', function() {
+    fadeOutVideo();
+  });
+
+  // Always show tap-to-play first (handles all browser autoplay policies)
+  showTapToPlay();
+
+  // Also try autoplay silently — if it works, great!
+  var playPromise = vid.play();
+  if (playPromise !== undefined) {
+    playPromise.then(function() {
+      // Autoplay worked — remove the tap screen
+      var tap = document.getElementById('tapScreen');
+      if (tap) tap.remove();
+    }).catch(function() {
+      // Autoplay blocked — tap screen is already showing, user will click
+    });
+  }
+}
+
+function showTapToPlay() {
+  var intro = document.getElementById('videoIntro');
+  // Don't add twice
+  if (document.getElementById('tapScreen')) return;
+  var tap = document.createElement('div');
+  tap.id = 'tapScreen';
+  tap.style.cssText = [
+    'position:absolute;inset:0;z-index:5;cursor:pointer;',
+    'display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;',
+    'background:radial-gradient(ellipse at center, rgba(20,10,40,.85) 0%, rgba(0,0,0,.92) 100%);'
+  ].join('');
+  tap.innerHTML =
+    '<div style="font-size:5rem;filter:drop-shadow(0 0 30px rgba(232,168,32,.9));animation:float 3s ease-in-out infinite">⚔️</div>' +
+    '<div style="font-family:Uncial Antiqua,serif;font-size:clamp(1.5rem,4vw,2.5rem);color:#FFD700;letter-spacing:.06em;text-shadow:0 0 30px rgba(232,168,32,.7);text-align:center;">Security Knights</div>' +
+    '<div style="font-family:Cinzel,serif;font-size:clamp(.8rem,2vw,1rem);color:rgba(232,168,32,.7);letter-spacing:.2em;text-transform:uppercase;text-align:center;">Tap anywhere to begin</div>' +
+    '<div style="width:60px;height:60px;border-radius:50%;border:2px solid rgba(232,168,32,.5);display:flex;align-items:center;justify-content:center;font-size:1.5rem;animation:pulse 2s ease-in-out infinite;box-shadow:0 0 20px rgba(232,168,32,.3);">▶</div>';
+  tap.onclick = function() {
+    tap.remove();
+    var vid = document.getElementById('trailerVideo');
+    // Allow audio to play
+    vid.play().catch(function(err) {
+      console.error('Trailer failed to play:', err);
+      alert('Trailer failed to play. Check that trailer.mp4 exists, is reachable, and uses H.264/AAC encoding.');
+      fadeOutVideo();
+    });
+  };
+  intro.appendChild(tap);
+}
+
+function fadeOutVideo() {
+  var intro = document.getElementById('videoIntro');
+  intro.classList.add('fade-out');
+  setTimeout(function() {
+    intro.classList.add('done');
+    afterVideo();
+  }, 1000);
+}
+
+function skipVideo() {
+  var vid = document.getElementById('trailerVideo');
+  if (vid) { try { vid.pause(); } catch(e) {} }
+  // Also remove tap screen if showing
+  var tap = document.getElementById('tapScreen');
+  if (tap) tap.remove();
+  fadeOutVideo();
+}
+
+function afterVideo() {
+  // Start the existing animated intro
+  runIntro();
+}
+
+
 // ═══════════════════════════════════════════════
 // INTRO
 // ═══════════════════════════════════════════════
 var introSlide = 0, introTimer = null;
 var INTRO_SLIDES = 4;
 
+var introStarted = false;
 function runIntro() {
+  if (introStarted) return; // prevent double-init
+  introStarted = true;
   // Generate stars
   var stars = document.getElementById('intro-stars');
   for (var i = 0; i < 150; i++) {
@@ -1518,6 +1769,30 @@ function renderQuestion(ch){
   document.getElementById('qpExpl').className='expl';
   document.getElementById('qpExpl').textContent='';
   document.getElementById('nxtBtn').className='nxt';
+
+  // Handle fill-in-the-blank type
+  if (ch.type === 'fill') {
+    var opts = document.getElementById('qpOpts');
+    opts.innerHTML = '';
+    var wrap = document.createElement('div');
+    wrap.className = 'fill-wrap';
+    wrap.innerHTML =
+      '<label class="fill-label">✍️ Fill in the blank</label>' +
+      '<div class="fill-row">' +
+        '<input type="text" class="fill-input" id="fillInput" placeholder="Type your answer…" autocomplete="off"/>' +
+        '<button class="fill-submit" id="fillSubmit" onclick="submitFill()">Submit ⚔️</button>' +
+      '</div>' +
+      '<div class="fill-hint">Hint: <span>' + escHtml(ch.hint || '') + '</span></div>';
+    opts.appendChild(wrap);
+    // Allow Enter key
+    setTimeout(function() {
+      var inp = document.getElementById('fillInput');
+      if (inp) {
+        inp.addEventListener('keydown', function(e) { if (e.key === 'Enter') submitFill(); });
+        inp.focus();
+      }
+    }, 350);
+  }
 }
 
 function pickAnswer(idx){
@@ -1602,8 +1877,11 @@ function showVictory(){
   ov.innerHTML='<div class="mcard" style="text-align:center"><h2>Quest Complete! 👑</h2>'+
     '<p style="font-size:2.8rem;margin:14px 0">🏆</p>'+
     '<p>You are a true <strong style="color:#E8A820">Security Knight</strong>!<br>Total XP: <strong style="color:#FFD700">'+state.xp+'</strong></p>'+
-    '<div style="display:flex;gap:8px;margin-top:18px"><button class="bgold" onclick="this.closest(\'.overlay\').remove()">Keep Exploring</button>'+
-    '<button class="bghost" onclick="resetGame()">↺ Play Again</button></div></div>';
+    '<div style="display:flex;gap:8px;margin-top:18px;flex-wrap:wrap">'+
+    '<button class="bgold" style="flex:1" onclick="document.querySelector(\'.overlay\').remove();openShareCard()">🏅 Get Certificate</button>'+
+    '<button class="bgold" onclick="resetGame()">↺ Play Again</button>'+
+    '<button class="bghost" onclick="this.closest(\'.overlay\').remove()">Keep Exploring</button>'+
+    '</div></div>';
   document.body.appendChild(ov);
 }
 
@@ -2673,6 +2951,72 @@ function showDragonAttack() {
   dragonAnim.show();
 }
 
+function submitFill() {
+  if (answered || !current || current.type !== 'fill') return;
+  var inp = document.getElementById('fillInput');
+  var submitBtn = document.getElementById('fillSubmit');
+  if (!inp) return;
+
+  var val = inp.value.trim().toLowerCase();
+  if (!val) { inp.focus(); return; }
+
+  answered = true;
+  if (submitBtn) submitBtn.disabled = true;
+
+  // Check against accepted answers (case-insensitive)
+  var accepted = (current.accept || [current.answer]).map(function(a){ return a.toLowerCase(); });
+  var isCorrect = accepted.indexOf(val) !== -1;
+
+  inp.classList.add(isCorrect ? 'correct' : 'wrong');
+  inp.disabled = true;
+
+  // Show correct answer if wrong
+  if (!isCorrect) {
+    var hint = document.createElement('div');
+    hint.className = 'fill-correct-ans';
+    hint.innerHTML = 'Correct answer: <strong>' + escHtml(current.answer) + '</strong>';
+    inp.parentElement.parentElement.appendChild(hint);
+  }
+
+  // Reuse the same result logic as pickAnswer
+  var expl = document.getElementById('qpExpl');
+  expl.textContent = current.explanation;
+  expl.className = 'expl show ' + (isCorrect ? 'ck' : 'wk');
+  document.getElementById('nxtBtn').className = 'nxt show';
+
+  if (isCorrect) {
+    var prevXP = state.xp;
+    state.xp += current.xp;
+    if (!state.completed.includes(current.id)) state.completed.push(current.id);
+    checkRankUp(prevXP);
+    saveState(); updateHUD(); renderSidebar();
+    charAction = 'victory';
+    var pop = document.createElement('div');
+    pop.className = 'xppop';
+    pop.textContent = '+' + current.xp + ' XP!';
+    pop.style.left = (window.innerWidth * .4) + 'px';
+    pop.style.top = (window.innerHeight * .45) + 'px';
+    document.body.appendChild(pop);
+    setTimeout(function(){ pop.remove(); }, 1600);
+    burst(window.innerWidth * .42, window.innerHeight * .5, '#2ECC8A');
+    addWizMsg('wiz', '🎉 <strong>Correct!</strong> +' + current.xp + ' XP! Well done, brave coder!');
+  } else {
+    state.misses = (state.misses || 0) + 1;
+    saveState();
+    charAction = 'stumble';
+    setTimeout(function(){ charAction = 'idle'; }, 1000);
+    var missesLeft = 3 - state.misses;
+    if (state.misses >= 3) {
+      addWizMsg('wiz', '💀 <strong>Three wrong answers!</strong> The dragon defeats you...');
+      setTimeout(function(){ showDragonAttack(); setTimeout(showDefeatScreen, 2000); }, 300);
+    } else {
+      addWizMsg('wiz', '⚠️ Not quite! Correct: <strong>' + escHtml(current.answer) + '</strong>. ' +
+        (missesLeft === 1 ? '⚠️ ONE warning left!' : missesLeft + ' warnings left') + ' — 3 wrong = defeat!');
+      setTimeout(showDragonAttack, 300);
+    }
+  }
+}
+
 function escHtml(s){
   if(!s) return '';
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -2728,9 +3072,10 @@ document.addEventListener('DOMContentLoaded',function(){
 
   // Build map
   buildMap();
+  saveState(); // ensure state is persisted before starting
 
-  // Run intro
-  runIntro();
+  // Run video trailer first, then intro
+  initVideoIntro();
   requestAnimationFrame(loop);
 });
 
@@ -2771,8 +3116,5 @@ function startGame(){
   }
 }
 </script>
-
-<script src="sk-story-engine.js"></script>
-
 </body>
 </html>
