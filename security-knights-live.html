@@ -1602,8 +1602,11 @@ function showVictory(){
   ov.innerHTML='<div class="mcard" style="text-align:center"><h2>Quest Complete! 👑</h2>'+
     '<p style="font-size:2.8rem;margin:14px 0">🏆</p>'+
     '<p>You are a true <strong style="color:#E8A820">Security Knight</strong>!<br>Total XP: <strong style="color:#FFD700">'+state.xp+'</strong></p>'+
-    '<div style="display:flex;gap:8px;margin-top:18px"><button class="bgold" onclick="this.closest(\'.overlay\').remove()">Keep Exploring</button>'+
-    '<button class="bghost" onclick="resetGame()">↺ Play Again</button></div></div>';
+    '<div style="display:flex;gap:8px;margin-top:18px;flex-wrap:wrap">'+
+    '<button class="bgold" style="flex:1" onclick="document.querySelector(\'.overlay\').remove();openShareCard()">🏅 Get Certificate</button>'+
+    '<button class="bgold" onclick="resetGame()">↺ Play Again</button>'+
+    '<button class="bghost" onclick="this.closest(\'.overlay\').remove()">Keep Exploring</button>'+
+    '</div></div>';
   document.body.appendChild(ov);
 }
 
@@ -2771,8 +2774,5 @@ function startGame(){
   }
 }
 </script>
-
-<script src="sk-story-engine.js"></script>
-
 </body>
 </html>
