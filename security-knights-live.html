@@ -884,7 +884,7 @@ db.execute("SELECT * FROM users WHERE id = _____", [userId]);',
    answer:'argon2id',
    accept:['argon2id','argon2','argon'],
    hint:'It won the Password Hashing Competition in 2015',
-   explanation:'Argon2id is OWASP's top recommendation for password hashing. It's memory-hard (harder to brute-force with GPUs) and resistant to side-channel attacks. bcrypt is also acceptable.'},
+   explanation:'Argon2id is OWASP top recommendation for password hashing. It is memory-hard (harder to brute-force with GPUs) and resistant to side-channel attacks. bcrypt is also acceptable.'},
 ],
 squire: [
   {id:53, xp:25, topic:'Security Headers', type:'fill',
@@ -895,7 +895,7 @@ res.setHeader("X-Frame-Options", "_____");',
    blank:'The value that blocks all iframes',
    answer:'DENY',
    accept:['DENY','deny'],
-   hint:'It's one word — the strongest option that blocks ALL framing',
+   hint:'One word — the strongest option that blocks ALL framing',
    explanation:'X-Frame-Options: DENY completely prevents your page from being loaded in any iframe. SAMEORIGIN allows your own domain only. DENY is the safest default for login pages and sensitive UI.'},
   {id:54, xp:25, topic:'CSRF', type:'fill',
    title:'The Secret Token',
@@ -903,13 +903,13 @@ res.setHeader("X-Frame-Options", "_____");',
    code:'// Server generates token:
 const token = crypto.randomBytes(32).toString("hex");
 
-// Store it in the user's _____:
+// Store it in the user session _____:
 req._____.csrfToken = token;',
    blank:'Where server-side session data is stored',
    answer:'session',
    accept:['session','req.session'],
-   hint:'It's server-side, not in the cookie or localStorage',
-   explanation:'CSRF tokens must be stored in the server-side session — not in cookies or localStorage (both are accessible to attackers). On each request, compare the token in the form body against the one in the session.'},
+   hint:'Server-side, not in the cookie or localStorage',
+   explanation:'CSRF tokens must be stored in the server-side session — not in cookies or localStorage (both accessible to attackers). Compare the token in the form body against the one in the session.'},
 ],
 knight: [
   {id:55, xp:35, topic:'JWT Security', type:'fill',
@@ -923,7 +923,7 @@ jwt.verify(token, secret, { _____: ["HS256"] });',
    blank:'The option name that pins allowed algorithms',
    answer:'algorithms',
    accept:['algorithms','algorithm'],
-   hint:'It's a plural noun — you pass an array of allowed algorithm names',
+   hint:'A plural noun — you pass an array of allowed algorithm names',
    explanation:'The algorithms option in most JWT libraries tells the verifier to ONLY accept tokens signed with the listed algorithm. This completely blocks alg:none and algorithm confusion attacks because the library rejects any other value.'},
   {id:56, xp:35, topic:'Race Conditions', type:'fill',
    title:'Lock the Treasury',
@@ -1310,7 +1310,10 @@ function afterVideo() {
 var introSlide = 0, introTimer = null;
 var INTRO_SLIDES = 4;
 
+var introStarted = false;
 function runIntro() {
+  if (introStarted) return; // prevent double-init
+  introStarted = true;
   // Generate stars
   var stars = document.getElementById('intro-stars');
   for (var i = 0; i < 150; i++) {
