@@ -866,81 +866,63 @@ paige: [
   {id:51, xp:15, topic:'SQL Injection', type:'fill',
    title:'Complete the Shield',
    body:'Parameterized queries prevent SQL injection. Complete the safe version of this query:',
-   code:'// Vulnerable:
-db.execute("SELECT * FROM users WHERE id = " + userId);
-
-// Safe (fill in the blank):
-db.execute("SELECT * FROM users WHERE id = _____", [userId]);',
-   blank:'Complete the placeholder character used in parameterized queries',
+   code:'// Vulnerable:\ndb.execute("SELECT * FROM users WHERE id = " + userId);\n\n// Safe (fill in the blank):\ndb.execute("SELECT * FROM users WHERE id = ?", [userId]);',
+   blank:'Complete the placeholder character',
    answer:'?',
    accept:['?','$1','%s',':id'],
-   hint:'It is a single punctuation character — a placeholder',
-   explanation:'The ? (or $1, :param) is the parameterized placeholder. It tells the database "treat this as DATA not as SQL code", completely preventing injection.'},
+   hint:'A single punctuation character — a placeholder',
+   explanation:'The ? is the parameterized placeholder. It tells the database to treat this as DATA not SQL code, completely preventing injection.'},
   {id:52, xp:15, topic:'Password Storage', type:'fill',
    title:'Name the Algorithm',
-   body:'Your castle uses this to hash passwords. Fill in the missing algorithm name — the one OWASP recommends most in 2024:',
+   body:'Fill in the missing algorithm — the one OWASP recommends most for password hashing in 2024:',
    code:'const hash = await _____(password, { memoryCost: 65536 });',
    blank:'The recommended modern password hashing algorithm',
    answer:'argon2id',
    accept:['argon2id','argon2','argon'],
    hint:'It won the Password Hashing Competition in 2015',
-   explanation:'Argon2id is OWASP top recommendation for password hashing. It is memory-hard (harder to brute-force with GPUs) and resistant to side-channel attacks. bcrypt is also acceptable.'},
+   explanation:'Argon2id is the OWASP top recommendation for password hashing. It is memory-hard (harder to brute-force with GPUs) and resistant to side-channel attacks. bcrypt is also acceptable.'},
 ],
 squire: [
   {id:53, xp:25, topic:'Security Headers', type:'fill',
    title:'Write the Shield',
-   body:'Add the HTTP header that prevents your page from being embedded in iframes (clickjacking protection). Fill in the header value:',
-   code:'// Add this response header:
-res.setHeader("X-Frame-Options", "_____");',
+   body:'Add the HTTP response header value that blocks ALL iframe embedding (clickjacking protection):',
+   code:'res.setHeader("X-Frame-Options", "_____");',
    blank:'The value that blocks all iframes',
    answer:'DENY',
    accept:['DENY','deny'],
    hint:'One word — the strongest option that blocks ALL framing',
-   explanation:'X-Frame-Options: DENY completely prevents your page from being loaded in any iframe. SAMEORIGIN allows your own domain only. DENY is the safest default for login pages and sensitive UI.'},
+   explanation:'X-Frame-Options: DENY completely prevents your page from being loaded in any iframe. SAMEORIGIN allows your own domain only. DENY is the safest default for login pages.'},
   {id:54, xp:25, topic:'CSRF', type:'fill',
    title:'The Secret Token',
-   body:'CSRF protection requires a secret token. Fill in where it should be stored on the server to validate requests:',
-   code:'// Server generates token:
-const token = crypto.randomBytes(32).toString("hex");
-
-// Store it in the user session _____:
-req._____.csrfToken = token;',
-   blank:'Where server-side session data is stored',
+   body:'CSRF tokens must be stored server-side. Fill in where they go:',
+   code:'const token = crypto.randomBytes(32).toString("hex");\nreq._____.csrfToken = token;',
+   blank:'Where server-side per-user data is stored',
    answer:'session',
    accept:['session','req.session'],
    hint:'Server-side, not in the cookie or localStorage',
-   explanation:'CSRF tokens must be stored in the server-side session — not in cookies or localStorage (both accessible to attackers). Compare the token in the form body against the one in the session.'},
+   explanation:'CSRF tokens must be stored in the server-side session — not in cookies or localStorage (both accessible to attackers). Compare the token in the form body against the one in the session on every state-changing request.'},
 ],
 knight: [
   {id:55, xp:35, topic:'JWT Security', type:'fill',
    title:'Lock the Algorithm',
-   body:'Prevent the alg:none JWT attack by explicitly telling your library which algorithm to expect. Fill in the missing option:',
-   code:'// Vulnerable — trusts the token header:
-jwt.verify(token, secret);
-
-// Secure — pin the algorithm:
-jwt.verify(token, secret, { _____: ["HS256"] });',
-   blank:'The option name that pins allowed algorithms',
+   body:'Prevent the alg:none JWT attack by pinning the algorithm. Fill in the missing option name:',
+   code:'// Vulnerable:\njwt.verify(token, secret);\n\n// Secure:\njwt.verify(token, secret, { _____: ["HS256"] });',
+   blank:'The option that pins allowed signing algorithms',
    answer:'algorithms',
    accept:['algorithms','algorithm'],
    hint:'A plural noun — you pass an array of allowed algorithm names',
-   explanation:'The algorithms option in most JWT libraries tells the verifier to ONLY accept tokens signed with the listed algorithm. This completely blocks alg:none and algorithm confusion attacks because the library rejects any other value.'},
+   explanation:'The algorithms option tells the JWT verifier to ONLY accept tokens signed with the listed algorithm. This blocks alg:none and algorithm confusion attacks entirely.'},
   {id:56, xp:35, topic:'Race Conditions', type:'fill',
    title:'Lock the Treasury',
-   body:'Prevent the race condition by using a SQL locking clause. Fill in the missing words:',
-   code:'// Vulnerable — allows race condition:
-const balance = await db.query("SELECT balance FROM accounts WHERE id = ?", [id]);
-
-// Safe — locks the row:
-const balance = await db.query("SELECT balance FROM accounts WHERE id = ? _____ _____", [id]);',
-   blank:'Two SQL keywords that lock the row for this transaction',
-   answer:'for update',
-   accept:['for update','FOR UPDATE','FOR UPDATE NOWAIT'],
-   hint:'Two words — tells the database "I am going to modify this row"',
-   explanation:'SELECT ... FOR UPDATE places a row-level lock that prevents other transactions from reading OR modifying that row until your transaction commits. This eliminates the TOCTOU window that allows double-spending.'},
+   body:'Prevent the race condition double-spend by locking the database row. Fill in the two missing SQL keywords:',
+   code:'// Vulnerable:\nSELECT balance FROM accounts WHERE id = ?\n\n// Safe:\nSELECT balance FROM accounts WHERE id = ? _____ _____;',
+   blank:'Two SQL keywords that lock the row for the transaction',
+   answer:'FOR UPDATE',
+   accept:['for update','FOR UPDATE','for update nowait','FOR UPDATE NOWAIT'],
+   hint:'Two words — tells the database you are about to modify this row',
+   explanation:'SELECT ... FOR UPDATE places a row-level lock preventing other transactions from reading or modifying the row until your transaction commits. This eliminates the TOCTOU window.'},
 ]
-};
-
+}
 // Merge fill-in questions into the pool for random selection
 ['paige','squire','knight'].forEach(function(tier) {
   if (FILL_CHALLENGES[tier]) {
