@@ -56,6 +56,31 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
   box-shadow:0 0 8px rgba(232,168,32,.6);
 }
 
+
+/* ── FILL IN THE BLANK ── */
+.fill-wrap{margin-top:14px;}
+.fill-label{font-family:'Cinzel',serif;font-size:.72rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:8px;display:block;}
+.fill-row{display:flex;gap:8px;align-items:center;}
+.fill-input{flex:1;padding:12px 16px;background:rgba(15,18,38,.9);
+  border:2px solid rgba(232,168,32,.25);border-radius:9px;
+  color:var(--txt);font-family:'JetBrains Mono',monospace;font-size:.9rem;
+  outline:none;transition:all .2s;letter-spacing:.04em;}
+.fill-input:focus{border-color:var(--gold);box-shadow:0 0 14px rgba(232,168,32,.2);}
+.fill-input.correct{border-color:var(--em) !important;background:rgba(46,204,138,.1);
+  color:var(--em);box-shadow:0 0 14px rgba(46,204,138,.25);}
+.fill-input.wrong{border-color:var(--crim) !important;background:rgba(232,64,64,.1);
+  color:var(--crim);box-shadow:0 0 14px rgba(232,64,64,.2);}
+.fill-submit{padding:12px 20px;background:linear-gradient(135deg,#C48A10,#E8A820,#FFD700);
+  border:none;border-radius:9px;font-family:'Cinzel',serif;font-size:.82rem;
+  font-weight:700;color:#000;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;}
+.fill-submit:hover{transform:translateY(-2px);box-shadow:0 0 16px rgba(232,168,32,.4);}
+.fill-submit:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+.fill-hint{margin-top:8px;font-size:.75rem;color:var(--muted);font-family:'JetBrains Mono',monospace;}
+.fill-hint span{color:rgba(232,168,32,.5);}
+.fill-correct-ans{margin-top:6px;font-size:.78rem;color:var(--muted);font-family:'JetBrains Mono',monospace;}
+.fill-correct-ans strong{color:var(--em);}
+
 /* ── INTRO ── */
 #intro{position:fixed;inset:0;z-index:1000;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:visible;}
 #intro.done{display:none;}
@@ -831,6 +856,97 @@ knight: [
    correct:1,explanation:'Buffer overflows allow attackers to overwrite memory and execute arbitrary code. Fix: use safe functions (snprintf with size limit), bounds-check all copies, prefer memory-safe languages, and enable stack protection flags (ASLR, canaries).'}
 ]
 };
+
+
+// ═══════════════════════════════════════════════
+// FILL-IN-THE-BLANK QUESTIONS
+// ═══════════════════════════════════════════════
+var FILL_CHALLENGES = {
+paige: [
+  {id:51, xp:15, topic:'SQL Injection', type:'fill',
+   title:'Complete the Shield',
+   body:'Parameterized queries prevent SQL injection. Complete the safe version of this query:',
+   code:'// Vulnerable:
+db.execute("SELECT * FROM users WHERE id = " + userId);
+
+// Safe (fill in the blank):
+db.execute("SELECT * FROM users WHERE id = _____", [userId]);',
+   blank:'Complete the placeholder character used in parameterized queries',
+   answer:'?',
+   accept:['?','$1','%s',':id'],
+   hint:'It is a single punctuation character — a placeholder',
+   explanation:'The ? (or $1, :param) is the parameterized placeholder. It tells the database "treat this as DATA not as SQL code", completely preventing injection.'},
+  {id:52, xp:15, topic:'Password Storage', type:'fill',
+   title:'Name the Algorithm',
+   body:'Your castle uses this to hash passwords. Fill in the missing algorithm name — the one OWASP recommends most in 2024:',
+   code:'const hash = await _____(password, { memoryCost: 65536 });',
+   blank:'The recommended modern password hashing algorithm',
+   answer:'argon2id',
+   accept:['argon2id','argon2','argon'],
+   hint:'It won the Password Hashing Competition in 2015',
+   explanation:'Argon2id is OWASP's top recommendation for password hashing. It's memory-hard (harder to brute-force with GPUs) and resistant to side-channel attacks. bcrypt is also acceptable.'},
+],
+squire: [
+  {id:53, xp:25, topic:'Security Headers', type:'fill',
+   title:'Write the Shield',
+   body:'Add the HTTP header that prevents your page from being embedded in iframes (clickjacking protection). Fill in the header value:',
+   code:'// Add this response header:
+res.setHeader("X-Frame-Options", "_____");',
+   blank:'The value that blocks all iframes',
+   answer:'DENY',
+   accept:['DENY','deny'],
+   hint:'It's one word — the strongest option that blocks ALL framing',
+   explanation:'X-Frame-Options: DENY completely prevents your page from being loaded in any iframe. SAMEORIGIN allows your own domain only. DENY is the safest default for login pages and sensitive UI.'},
+  {id:54, xp:25, topic:'CSRF', type:'fill',
+   title:'The Secret Token',
+   body:'CSRF protection requires a secret token. Fill in where it should be stored on the server to validate requests:',
+   code:'// Server generates token:
+const token = crypto.randomBytes(32).toString("hex");
+
+// Store it in the user's _____:
+req._____.csrfToken = token;',
+   blank:'Where server-side session data is stored',
+   answer:'session',
+   accept:['session','req.session'],
+   hint:'It's server-side, not in the cookie or localStorage',
+   explanation:'CSRF tokens must be stored in the server-side session — not in cookies or localStorage (both are accessible to attackers). On each request, compare the token in the form body against the one in the session.'},
+],
+knight: [
+  {id:55, xp:35, topic:'JWT Security', type:'fill',
+   title:'Lock the Algorithm',
+   body:'Prevent the alg:none JWT attack by explicitly telling your library which algorithm to expect. Fill in the missing option:',
+   code:'// Vulnerable — trusts the token header:
+jwt.verify(token, secret);
+
+// Secure — pin the algorithm:
+jwt.verify(token, secret, { _____: ["HS256"] });',
+   blank:'The option name that pins allowed algorithms',
+   answer:'algorithms',
+   accept:['algorithms','algorithm'],
+   hint:'It's a plural noun — you pass an array of allowed algorithm names',
+   explanation:'The algorithms option in most JWT libraries tells the verifier to ONLY accept tokens signed with the listed algorithm. This completely blocks alg:none and algorithm confusion attacks because the library rejects any other value.'},
+  {id:56, xp:35, topic:'Race Conditions', type:'fill',
+   title:'Lock the Treasury',
+   body:'Prevent the race condition by using a SQL locking clause. Fill in the missing words:',
+   code:'// Vulnerable — allows race condition:
+const balance = await db.query("SELECT balance FROM accounts WHERE id = ?", [id]);
+
+// Safe — locks the row:
+const balance = await db.query("SELECT balance FROM accounts WHERE id = ? _____ _____", [id]);',
+   blank:'Two SQL keywords that lock the row for this transaction',
+   answer:'for update',
+   accept:['for update','FOR UPDATE','FOR UPDATE NOWAIT'],
+   hint:'Two words — tells the database "I am going to modify this row"',
+   explanation:'SELECT ... FOR UPDATE places a row-level lock that prevents other transactions from reading OR modifying that row until your transaction commits. This eliminates the TOCTOU window that allows double-spending.'},
+]
+};
+
+// Merge fill-in questions into the pool for random selection
+['paige','squire','knight'].forEach(function(tier) {
+  if (FILL_CHALLENGES[tier]) {
+    ALL_CHALLENGES[tier] = ALL_CHALLENGES[tier].concat(FILL_CHALLENGES[tier]);
+  }
+});
 
 // Select 5 random questions from each tier
 function selectQuestions() {
@@ -1668,6 +1784,30 @@ function renderQuestion(ch){
   document.getElementById('qpExpl').className='expl';
   document.getElementById('qpExpl').textContent='';
   document.getElementById('nxtBtn').className='nxt';
+
+  // Handle fill-in-the-blank type
+  if (ch.type === 'fill') {
+    var opts = document.getElementById('qpOpts');
+    opts.innerHTML = '';
+    var wrap = document.createElement('div');
+    wrap.className = 'fill-wrap';
+    wrap.innerHTML =
+      '<label class="fill-label">✍️ Fill in the blank</label>' +
+      '<div class="fill-row">' +
+        '<input type="text" class="fill-input" id="fillInput" placeholder="Type your answer…" autocomplete="off"/>' +
+        '<button class="fill-submit" id="fillSubmit" onclick="submitFill()">Submit ⚔️</button>' +
+      '</div>' +
+      '<div class="fill-hint">Hint: <span>' + escHtml(ch.hint || '') + '</span></div>';
+    opts.appendChild(wrap);
+    // Allow Enter key
+    setTimeout(function() {
+      var inp = document.getElementById('fillInput');
+      if (inp) {
+        inp.addEventListener('keydown', function(e) { if (e.key === 'Enter') submitFill(); });
+        inp.focus();
+      }
+    }, 350);
+  }
 }
 
 function pickAnswer(idx){
@@ -2824,6 +2964,72 @@ var dragonAnim = {
 
 function showDragonAttack() {
   dragonAnim.show();
+}
+
+function submitFill() {
+  if (answered || !current || current.type !== 'fill') return;
+  var inp = document.getElementById('fillInput');
+  var submitBtn = document.getElementById('fillSubmit');
+  if (!inp) return;
+
+  var val = inp.value.trim().toLowerCase();
+  if (!val) { inp.focus(); return; }
+
+  answered = true;
+  if (submitBtn) submitBtn.disabled = true;
+
+  // Check against accepted answers (case-insensitive)
+  var accepted = (current.accept || [current.answer]).map(function(a){ return a.toLowerCase(); });
+  var isCorrect = accepted.indexOf(val) !== -1;
+
+  inp.classList.add(isCorrect ? 'correct' : 'wrong');
+  inp.disabled = true;
+
+  // Show correct answer if wrong
+  if (!isCorrect) {
+    var hint = document.createElement('div');
+    hint.className = 'fill-correct-ans';
+    hint.innerHTML = 'Correct answer: <strong>' + escHtml(current.answer) + '</strong>';
+    inp.parentElement.parentElement.appendChild(hint);
+  }
+
+  // Reuse the same result logic as pickAnswer
+  var expl = document.getElementById('qpExpl');
+  expl.textContent = current.explanation;
+  expl.className = 'expl show ' + (isCorrect ? 'ck' : 'wk');
+  document.getElementById('nxtBtn').className = 'nxt show';
+
+  if (isCorrect) {
+    var prevXP = state.xp;
+    state.xp += current.xp;
+    if (!state.completed.includes(current.id)) state.completed.push(current.id);
+    checkRankUp(prevXP);
+    saveState(); updateHUD(); renderSidebar();
+    charAction = 'victory';
+    var pop = document.createElement('div');
+    pop.className = 'xppop';
+    pop.textContent = '+' + current.xp + ' XP!';
+    pop.style.left = (window.innerWidth * .4) + 'px';
+    pop.style.top = (window.innerHeight * .45) + 'px';
+    document.body.appendChild(pop);
+    setTimeout(function(){ pop.remove(); }, 1600);
+    burst(window.innerWidth * .42, window.innerHeight * .5, '#2ECC8A');
+    addWizMsg('wiz', '🎉 <strong>Correct!</strong> +' + current.xp + ' XP! Well done, brave coder!');
+  } else {
+    state.misses = (state.misses || 0) + 1;
+    saveState();
+    charAction = 'stumble';
+    setTimeout(function(){ charAction = 'idle'; }, 1000);
+    var missesLeft = 3 - state.misses;
+    if (state.misses >= 3) {
+      addWizMsg('wiz', '💀 <strong>Three wrong answers!</strong> The dragon defeats you...');
+      setTimeout(function(){ showDragonAttack(); setTimeout(showDefeatScreen, 2000); }, 300);
+    } else {
+      addWizMsg('wiz', '⚠️ Not quite! Correct: <strong>' + escHtml(current.answer) + '</strong>. ' +
+        (missesLeft === 1 ? '⚠️ ONE warning left!' : missesLeft + ' warnings left') + ' — 3 wrong = defeat!');
+      setTimeout(showDragonAttack, 300);
+    }
+  }
 }
 
 function escHtml(s){
