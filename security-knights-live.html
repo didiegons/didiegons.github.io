@@ -1443,6 +1443,504 @@ function drawTorch(mc,x,y){
 // ═══════════════════════════════════════════════
 // KNIGHT DRAWING
 // ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+// KNIGHT CHARACTER — Rank-Evolving 2D Art System
+// ═══════════════════════════════════════════════
+
+// ── Sword: simple iron (Paige) ──────────────────
+function drawSwordBasic(ctx) {
+  ctx.save();
+  // Blade
+  var bg = ctx.createLinearGradient(-2,0,2,0);
+  bg.addColorStop(0,'#888'); bg.addColorStop(0.5,'#DDD'); bg.addColorStop(1,'#888');
+  ctx.fillStyle=bg; ctx.strokeStyle='#555'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(-2,0); ctx.lineTo(2,0); ctx.lineTo(1,-28); ctx.lineTo(0,-32); ctx.lineTo(-1,-28); ctx.closePath(); ctx.fill(); ctx.stroke();
+  // Highlight
+  ctx.fillStyle='rgba(255,255,255,0.45)';
+  ctx.beginPath(); ctx.moveTo(0,-2); ctx.lineTo(0.7,-26); ctx.lineTo(0,-30); ctx.lineTo(-0.7,-26); ctx.closePath(); ctx.fill();
+  // Guard
+  ctx.fillStyle='#9B6914'; ctx.strokeStyle='#5A3800'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.ellipse(0,0,8,3,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  // Grip
+  ctx.fillStyle='#5A3010'; ctx.beginPath(); ctx.rect(-2,0,4,10); ctx.fill(); ctx.stroke();
+  // Pommel
+  ctx.fillStyle='#999'; ctx.beginPath(); ctx.arc(0,11,3,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.restore();
+}
+
+// ── Sword: polished steel (Squire) ──────────────
+function drawSwordSteel(ctx) {
+  ctx.save();
+  // Blade with fuller
+  var bg = ctx.createLinearGradient(-3,0,3,0);
+  bg.addColorStop(0,'#7A8A9A'); bg.addColorStop(0.35,'#E8EEF4'); bg.addColorStop(0.65,'#E8EEF4'); bg.addColorStop(1,'#7A8A9A');
+  ctx.fillStyle=bg; ctx.strokeStyle='#4A5A6A'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(-2.5,0); ctx.lineTo(2.5,0); ctx.lineTo(1.2,-30); ctx.lineTo(0,-35); ctx.lineTo(-1.2,-30); ctx.closePath(); ctx.fill(); ctx.stroke();
+  // Fuller groove
+  ctx.strokeStyle='rgba(0,0,0,0.18)'; ctx.lineWidth=0.8;
+  ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(0,-28); ctx.stroke();
+  // Guard — steel with blue gem
+  var cg = ctx.createLinearGradient(-11,-3,11,3);
+  cg.addColorStop(0,'#5A7090'); cg.addColorStop(0.5,'#A8C0D0'); cg.addColorStop(1,'#5A7090');
+  ctx.fillStyle=cg; ctx.strokeStyle='#304050'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.ellipse(0,0,11,4,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.fillStyle='#4080C0'; ctx.beginPath(); ctx.arc(0,0,2.2,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='rgba(150,200,255,0.9)'; ctx.beginPath(); ctx.arc(-0.6,-0.6,0.8,0,Math.PI*2); ctx.fill();
+  // Grip with wrapping
+  ctx.fillStyle='#1A3A60'; ctx.strokeStyle='#0A2040'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.rect(-2,0,4,12); ctx.fill(); ctx.stroke();
+  ctx.strokeStyle='#4A7090'; ctx.lineWidth=0.8;
+  for(var y=2;y<12;y+=3){ctx.beginPath();ctx.moveTo(-2,y);ctx.lineTo(2,y);ctx.stroke();}
+  // Pommel
+  var pg=ctx.createRadialGradient(-1,-1,0,0,13,4);
+  pg.addColorStop(0,'#D0D8E0'); pg.addColorStop(1,'#4A6070');
+  ctx.fillStyle=pg; ctx.strokeStyle='#2A4050'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.arc(0,13,4,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.restore();
+}
+
+// ── Sword: enchanted glowing blade (Knight) ──────
+function drawSwordGlowing(ctx) {
+  ctx.save();
+  // Aura
+  var a=0.22+Math.sin(Date.now()/400)*0.08;
+  var og=ctx.createRadialGradient(0,-18,0,0,-18,16);
+  og.addColorStop(0,'rgba(80,140,255,'+a+')'); og.addColorStop(1,'rgba(40,80,255,0)');
+  ctx.fillStyle=og; ctx.beginPath(); ctx.ellipse(0,-18,14,28,0,0,Math.PI*2); ctx.fill();
+  // Blade
+  var bg=ctx.createLinearGradient(-3,0,3,0);
+  bg.addColorStop(0,'#3A70C0'); bg.addColorStop(0.3,'#C0DCFF'); bg.addColorStop(0.5,'#FFFFFF'); bg.addColorStop(0.7,'#C0DCFF'); bg.addColorStop(1,'#3A70C0');
+  ctx.fillStyle=bg; ctx.strokeStyle='#1A50A0'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(-3,0); ctx.lineTo(3,0); ctx.lineTo(1.5,-32); ctx.lineTo(0,-38); ctx.lineTo(-1.5,-32); ctx.closePath(); ctx.fill(); ctx.stroke();
+  // Rune marks
+  ctx.strokeStyle='rgba(140,190,255,0.7)'; ctx.lineWidth=0.8;
+  for(var y=-6;y>-30;y-=7){ctx.beginPath();ctx.moveTo(-1.5,y);ctx.lineTo(1.5,y);ctx.stroke();}
+  // Gold crossguard with gems
+  var cg=ctx.createLinearGradient(-13,-3,13,3);
+  cg.addColorStop(0,'#7A4A00'); cg.addColorStop(0.3,'#FFD700'); cg.addColorStop(0.5,'#FFEC50'); cg.addColorStop(0.7,'#FFD700'); cg.addColorStop(1,'#7A4A00');
+  ctx.fillStyle=cg; ctx.strokeStyle='#5A3000'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.ellipse(0,0,13,4.5,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.arc(-12,0,3.5,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.arc(12,0,3.5,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.fillStyle='rgba(150,200,255,0.9)'; ctx.beginPath(); ctx.arc(-12,-1,1.2,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(12,-1,1.2,0,Math.PI*2); ctx.fill();
+  // Grip
+  ctx.fillStyle='#0A1828'; ctx.strokeStyle='#050E18'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.rect(-2.5,0,5,13); ctx.fill(); ctx.stroke();
+  ctx.strokeStyle='#C48A10'; ctx.lineWidth=1;
+  for(var y=2;y<13;y+=2.5){ctx.beginPath();ctx.moveTo(-2.5,y);ctx.lineTo(2.5,y);ctx.stroke();}
+  // Pommel — gem
+  var pm=ctx.createRadialGradient(-1.5,12.5,0,0,14,5.5);
+  pm.addColorStop(0,'#A0D0FF'); pm.addColorStop(0.5,'#2060C0'); pm.addColorStop(1,'#001040');
+  ctx.fillStyle=pm; ctx.strokeStyle='#C48A10'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.arc(0,14,5.5,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.fillStyle='rgba(210,235,255,0.95)'; ctx.beginPath(); ctx.arc(-1.5,12.5,1.5,0,Math.PI*2); ctx.fill();
+  ctx.restore();
+}
+
+// ── Paige: leather armor, open face ─────────────
+function drawKnightPaige(ctx,bob,ls,as,action){
+  var oc='#2A1400'; ctx.lineJoin='round'; ctx.lineCap='round';
+  // Shadow
+  ctx.globalAlpha=0.22; ctx.fillStyle='#000';
+  ctx.beginPath(); ctx.ellipse(0,12,17,5,0,0,Math.PI*2); ctx.fill(); ctx.globalAlpha=1;
+
+  // Back leg
+  ctx.strokeStyle=oc; ctx.lineWidth=1.5;
+  ctx.fillStyle='#7A4020';
+  ctx.beginPath(); ctx.ellipse(-5,-2+bob+ls*0.8,5,10,0.08,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.fillStyle='#3A1800'; ctx.beginPath(); ctx.ellipse(-5,9+bob+ls*0.8,6.5,4,-0.15,0,Math.PI*2); ctx.fill(); ctx.stroke();
+
+  // Wooden shield
+  if(action!=='victory'){
+    ctx.save(); ctx.translate(-20,-26+bob+as);
+    var wg=ctx.createRadialGradient(-2,-2,1,0,0,11);
+    wg.addColorStop(0,'#D4A040'); wg.addColorStop(0.6,'#9A6020'); wg.addColorStop(1,'#5A2E00');
+    ctx.fillStyle=wg; ctx.strokeStyle='#3A1800'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.arc(0,0,11,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.strokeStyle='rgba(80,40,0,0.3)'; ctx.lineWidth=1;
+    for(var g=-8;g<=8;g+=4){var h=Math.sqrt(Math.max(0,121-g*g)); ctx.beginPath(); ctx.moveTo(g,-h*0.9); ctx.lineTo(g,h*0.9); ctx.stroke();}
+    ctx.strokeStyle='#909090'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(0,0,11,0,Math.PI*2); ctx.stroke();
+    ctx.fillStyle='#A0A0A0'; ctx.strokeStyle='#555'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.arc(0,0,3.5,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle='rgba(255,255,255,0.6)'; ctx.beginPath(); ctx.arc(-1,-1,1,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+
+  // Front leg
+  ctx.strokeStyle=oc; ctx.lineWidth=1.5;
+  ctx.fillStyle='#8B4A25';
+  ctx.beginPath(); ctx.ellipse(5,-2+bob-ls*0.8,5.5,10.5,-0.08,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.fillStyle='#3A1800'; ctx.beginPath(); ctx.ellipse(6,9+bob-ls*0.8,7.5,4,-0.2,0,Math.PI*2); ctx.fill(); ctx.stroke();
+
+  // Leather body
+  var vg=ctx.createLinearGradient(-13,-38+bob,13,-12+bob);
+  vg.addColorStop(0,'#B06830'); vg.addColorStop(0.35,'#D08040'); vg.addColorStop(0.65,'#B06028'); vg.addColorStop(1,'#7A3A18');
+  ctx.fillStyle=vg; ctx.strokeStyle=oc; ctx.lineWidth=1.5;
+  ctx.beginPath();
+  ctx.moveTo(-9,-12+bob); ctx.bezierCurveTo(-14,-22+bob,-14,-32+bob,-10,-38+bob);
+  ctx.bezierCurveTo(-5,-41+bob,5,-41+bob,10,-38+bob); ctx.bezierCurveTo(14,-32+bob,14,-22+bob,9,-12+bob);
+  ctx.closePath(); ctx.fill(); ctx.stroke();
+  // Lace
+  ctx.strokeStyle='rgba(160,80,20,0.55)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(0,-36+bob); ctx.lineTo(0,-14+bob); ctx.stroke();
+  for(var sy=-33;sy<-14;sy+=5){
+    ctx.beginPath(); ctx.moveTo(-2,sy+bob); ctx.lineTo(2,sy+bob); ctx.stroke();
+  }
+
+  // Belt
+  ctx.strokeStyle=oc; ctx.lineWidth=1.5; ctx.fillStyle='#3A1800';
+  ctx.beginPath(); ctx.rect(-12,-15+bob,24,5); ctx.fill(); ctx.stroke();
+  ctx.fillStyle='#C48A10'; ctx.strokeStyle='#7A4A00'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.rect(-3.5,-14.5+bob,7,4); ctx.fill(); ctx.stroke();
+
+  // Pauldrons
+  ctx.strokeStyle=oc; ctx.lineWidth=1.5; ctx.fillStyle='#C07030';
+  ctx.beginPath(); ctx.ellipse(-13,-36+bob+as,8,4.5,0.5,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(13,-36+bob-as,8,4.5,-0.5,0,Math.PI*2); ctx.fill(); ctx.stroke();
+
+  // Left arm
+  ctx.fillStyle='#C07840';
+  ctx.beginPath(); ctx.ellipse(-16,-26+bob+as,4.5,9,0.12,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.fillStyle='#7A3A10'; ctx.beginPath(); ctx.ellipse(-17,-15+bob+as,4,4,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
+
+  // Right arm + sword
+  if(action==='victory'){
+    ctx.fillStyle='#C07840'; ctx.beginPath(); ctx.ellipse(15,-40+bob-as,4.5,9,-0.5,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.save(); ctx.translate(17,-50+bob-as); ctx.rotate(-0.5); drawSwordBasic(ctx); ctx.restore();
+  } else {
+    ctx.fillStyle='#C07840'; ctx.beginPath(); ctx.ellipse(16,-26+bob-as,4.5,9,-0.12,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle='#7A3A10'; ctx.beginPath(); ctx.ellipse(17,-15+bob-as,4,4,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.save(); ctx.translate(21,-18+bob-as); ctx.rotate(0.25); drawSwordBasic(ctx); ctx.restore();
+  }
+
+  // Neck
+  ctx.fillStyle='#E8B068'; ctx.strokeStyle='#C08040'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.ellipse(0,-42+bob,5,5,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
+
+  // Back hair
+  ctx.fillStyle='#7A4A18'; ctx.strokeStyle='#4A2800'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.arc(0,-53+bob,14,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  // Leather cap
+  ctx.fillStyle='#8B4A18';
+  ctx.beginPath(); ctx.arc(0,-53+bob,14,Math.PI*0.9,Math.PI*0.1,false);
+  ctx.lineTo(8,-40+bob); ctx.lineTo(-8,-40+bob); ctx.closePath(); ctx.fill(); ctx.stroke();
+
+  // Face
+  var fg=ctx.createRadialGradient(-3,-56+bob,0,0,-53+bob,11);
+  fg.addColorStop(0,'#F8D498'); fg.addColorStop(1,'#C8883A');
+  ctx.fillStyle=fg; ctx.strokeStyle='#C08040'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.ellipse(0,-53+bob,9.5,12,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
+
+  // Eyes
+  ctx.fillStyle='#2A1808';
+  ctx.beginPath(); ctx.ellipse(-3.5,-54+bob,2,1.8,0.1,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(3.5,-54+bob,2,1.8,-0.1,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,0.9)';
+  ctx.beginPath(); ctx.arc(-2.7,-54.8+bob,0.9,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(4.3,-54.8+bob,0.9,0,Math.PI*2); ctx.fill();
+
+  // Smile
+  ctx.strokeStyle='#A06030'; ctx.lineWidth=1.2;
+  ctx.beginPath(); ctx.arc(0,-49+bob,3.5,0.15,Math.PI-0.15); ctx.stroke();
+
+  // Front hair/bangs
+  ctx.fillStyle='#9B5C20'; ctx.strokeStyle='#6B3808'; ctx.lineWidth=1;
+  ctx.beginPath();
+  ctx.moveTo(-11,-61+bob); ctx.bezierCurveTo(-14,-54+bob,-10,-49+bob,-8,-52+bob);
+  ctx.bezierCurveTo(-5,-65+bob,0,-68+bob,0,-67+bob);
+  ctx.bezierCurveTo(0,-68+bob,5,-65+bob,7,-52+bob);
+  ctx.bezierCurveTo(10,-49+bob,14,-54+bob,11,-61+bob);
+  ctx.fill(); ctx.stroke();
+}
+
+// ── Squire: chainmail + half-helm ───────────────
+function drawKnightSquire(ctx,bob,ls,as,action){
+  var oc='#1A2838'; ctx.lineJoin='round'; ctx.lineCap='round';
+  // Shadow
+  ctx.globalAlpha=0.22; ctx.fillStyle='#000';
+  ctx.beginPath(); ctx.ellipse(0,12,18,5,0,0,Math.PI*2); ctx.fill(); ctx.globalAlpha=1;
+
+  function plateMetal(x1,y1,x2,y2){
+    var g=ctx.createLinearGradient(x1,y1,x2,y2);
+    g.addColorStop(0,'#3A5070'); g.addColorStop(0.4,'#7AACCC'); g.addColorStop(1,'#3A5070'); return g;
+  }
+
+  // Back greave
+  ctx.strokeStyle=oc; ctx.lineWidth=1.5;
+  ctx.fillStyle=plateMetal(-8,0,8,0);
+  ctx.beginPath(); ctx.ellipse(-5,-2+bob+ls*0.8,5.5,10.5,0.08,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.fillStyle='#8ABACF'; ctx.beginPath(); ctx.arc(-5,-5+bob+ls*0.8,4,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.fillStyle=plateMetal(-8,0,8,0); ctx.beginPath(); ctx.ellipse(-5,9+bob+ls*0.8,7,4,-0.15,0,Math.PI*2); ctx.fill(); ctx.stroke();
+
+  // Heater shield
+  if(action!=='victory'){
+    ctx.save(); ctx.translate(-20,-26+bob+as);
+    var shg=ctx.createLinearGradient(-10,-14,10,14);
+    shg.addColorStop(0,'#2A5898'); shg.addColorStop(0.4,'#5090C0'); shg.addColorStop(1,'#162A60');
+    ctx.fillStyle=shg; ctx.strokeStyle='#A0B0C0'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(-11,-14); ctx.lineTo(11,-14);
+    ctx.bezierCurveTo(13,-14,13,0,10,6); ctx.bezierCurveTo(6,12,0,16,0,16);
+    ctx.bezierCurveTo(0,16,-6,12,-10,6); ctx.bezierCurveTo(-13,0,-13,-14,-11,-14);
+    ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.strokeStyle='#C8D4E0'; ctx.lineWidth=1.5; ctx.stroke();
+    // Cross
+    ctx.strokeStyle='rgba(180,210,255,0.45)'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(0,-13); ctx.lineTo(0,15); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(-10,-4); ctx.lineTo(10,-4); ctx.stroke();
+    ctx.restore();
+  }
+
+  // Front greave
+  ctx.strokeStyle=oc; ctx.lineWidth=1.5;
+  ctx.fillStyle=plateMetal(-8,0,8,0);
+  ctx.beginPath(); ctx.ellipse(5,-2+bob-ls*0.8,6,11,-0.08,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.fillStyle='#8ABACF'; ctx.beginPath(); ctx.arc(5,-5+bob-ls*0.8,4.5,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.fillStyle=plateMetal(-8,0,8,0); ctx.beginPath(); ctx.ellipse(6,9+bob-ls*0.8,7.5,4,-0.2,0,Math.PI*2); ctx.fill(); ctx.stroke();
+
+  // Chainmail body
+  var cg=ctx.createLinearGradient(-13,-38+bob,13,-12+bob);
+  cg.addColorStop(0,'#5A7090'); cg.addColorStop(0.4,'#7A9AB0'); cg.addColorStop(1,'#4A6080');
+  ctx.fillStyle=cg; ctx.strokeStyle=oc; ctx.lineWidth=1.5;
+  ctx.beginPath();
+  ctx.moveTo(-10,-12+bob); ctx.bezierCurveTo(-14,-22+bob,-14,-32+bob,-10,-38+bob);
+  ctx.bezierCurveTo(-5,-42+bob,5,-42+bob,10,-38+bob); ctx.bezierCurveTo(14,-32+bob,14,-22+bob,10,-12+bob);
+  ctx.closePath(); ctx.fill(); ctx.stroke();
+
+  // Plate chest overlay
+  var pg=ctx.createLinearGradient(-9,-36+bob,9,-15+bob);
+  pg.addColorStop(0,'#6090B0'); pg.addColorStop(0.3,'#A0C8D8'); pg.addColorStop(0.7,'#5080A0'); pg.addColorStop(1,'#3A5870');
+  ctx.fillStyle=pg; ctx.strokeStyle='#2A4050'; ctx.lineWidth=1.5;
+  ctx.beginPath();
+  ctx.moveTo(-8,-16+bob); ctx.bezierCurveTo(-10,-24+bob,-9,-34+bob,-6,-36+bob);
+  ctx.bezierCurveTo(-2,-38+bob,2,-38+bob,6,-36+bob); ctx.bezierCurveTo(9,-34+bob,10,-24+bob,8,-16+bob);
+  ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.strokeStyle='rgba(160,200,220,0.5)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(0,-36+bob); ctx.lineTo(0,-16+bob); ctx.stroke();
+
+  // Belt
+  ctx.fillStyle='#3A5070'; ctx.strokeStyle=oc; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.rect(-11,-15+bob,22,5); ctx.fill(); ctx.stroke();
+  ctx.fillStyle='#C08010'; ctx.strokeStyle='#7A5000'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.rect(-3.5,-14.5+bob,7,4); ctx.fill(); ctx.stroke();
+
+  // Pauldrons
+  ctx.strokeStyle=oc; ctx.lineWidth=1.5; ctx.fillStyle=plateMetal(-9,-5,9,5);
+  ctx.beginPath(); ctx.ellipse(-14,-36+bob+as,9,5,0.4,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(14,-36+bob-as,9,5,-0.4,0,Math.PI*2); ctx.fill(); ctx.stroke();
+
+  // Arms
+  ctx.fillStyle=cg;
+  ctx.beginPath(); ctx.ellipse(-17,-26+bob+as,5,9,0.12,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.fillStyle=plateMetal(-5,-5,5,5); ctx.beginPath(); ctx.ellipse(-17,-15+bob+as,4.5,4.5,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
+
+  if(action==='victory'){
+    ctx.fillStyle=cg; ctx.beginPath(); ctx.ellipse(16,-40+bob-as,5,9,-0.5,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.save(); ctx.translate(18,-50+bob-as); ctx.rotate(-0.5); drawSwordSteel(ctx); ctx.restore();
+  } else {
+    ctx.fillStyle=cg; ctx.beginPath(); ctx.ellipse(17,-26+bob-as,5,9,-0.12,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle=plateMetal(-5,-5,5,5); ctx.beginPath(); ctx.ellipse(17,-15+bob-as,4.5,4.5,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.save(); ctx.translate(22,-18+bob-as); ctx.rotate(0.25); drawSwordSteel(ctx); ctx.restore();
+  }
+
+  // Gorget
+  ctx.fillStyle=plateMetal(-7,-4,7,4); ctx.strokeStyle=oc; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.ellipse(0,-40+bob,7,4,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
+
+  // Half-helm
+  var hg=ctx.createLinearGradient(-13,-66+bob,13,-42+bob);
+  hg.addColorStop(0,'#3A5878'); hg.addColorStop(0.3,'#7AABC8'); hg.addColorStop(0.7,'#4A7898'); hg.addColorStop(1,'#283848');
+  ctx.fillStyle=hg; ctx.strokeStyle=oc; ctx.lineWidth=2;
+  ctx.beginPath();
+  ctx.arc(0,-54+bob,14,Math.PI*1.1,Math.PI*0);
+  ctx.bezierCurveTo(14,-40+bob,10,-38+bob,6,-40+bob);
+  ctx.lineTo(-6,-40+bob); ctx.bezierCurveTo(-10,-38+bob,-14,-40+bob,-14,-54+bob);
+  ctx.closePath(); ctx.fill(); ctx.stroke();
+  // Cheek guards
+  ctx.fillStyle='#4A7090';
+  ctx.beginPath(); ctx.ellipse(-10,-46+bob,5,7,0.3,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(10,-46+bob,5,7,-0.3,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  // Nasal
+  ctx.fillStyle='#5A80A0'; ctx.strokeStyle='#2A4050'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.rect(-1.5,-54+bob,3,14); ctx.fill(); ctx.stroke();
+  // Eyes
+  ctx.fillStyle='#1A1008';
+  ctx.beginPath(); ctx.ellipse(-4,-52+bob,2.5,2,0,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(4,-52+bob,2.5,2,0,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,0.85)';
+  ctx.beginPath(); ctx.arc(-3,-52.8+bob,0.9,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(5,-52.8+bob,0.9,0,Math.PI*2); ctx.fill();
+  // Lower face
+  ctx.fillStyle='#C4885A'; ctx.strokeStyle='#A06030'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.ellipse(0,-44+bob,6,4,0,0,Math.PI*2); ctx.fill();
+  // Helm highlight
+  ctx.fillStyle='rgba(200,230,255,0.16)';
+  ctx.beginPath(); ctx.arc(-4,-58+bob,7,Math.PI*1.2,Math.PI*1.85); ctx.fill();
+  // Blue feather
+  ctx.fillStyle='#2A5880'; ctx.strokeStyle='#183850'; ctx.lineWidth=1;
+  ctx.beginPath();
+  ctx.moveTo(0,-68+bob); ctx.bezierCurveTo(-5,-65+bob,-6,-59+bob,-3,-55+bob);
+  ctx.bezierCurveTo(1,-53+bob,4,-57+bob,3,-62+bob); ctx.bezierCurveTo(5,-59+bob,4,-66+bob,0,-68+bob);
+  ctx.fill(); ctx.stroke();
+}
+
+// ── Knight: full plate + great helm ─────────────
+function drawKnightFull(ctx,bob,ls,as,action){
+  var oc='#080E20'; ctx.lineJoin='round'; ctx.lineCap='round';
+  // Shadow
+  ctx.globalAlpha=0.25; ctx.fillStyle='#000';
+  ctx.beginPath(); ctx.ellipse(0,12,21,6,0,0,Math.PI*2); ctx.fill(); ctx.globalAlpha=1;
+
+  function pl(dark){
+    var g=ctx.createLinearGradient(-10,-5,10,5);
+    if(dark){g.addColorStop(0,'#0E1E48');g.addColorStop(0.3,'#3060A0');g.addColorStop(0.5,'#4A80B8');g.addColorStop(0.7,'#2A5090');g.addColorStop(1,'#0A1838');}
+    else{g.addColorStop(0,'#182840');g.addColorStop(0.3,'#4878B0');g.addColorStop(0.5,'#7AAAD0');g.addColorStop(0.7,'#3868A8');g.addColorStop(1,'#101E38');}
+    return g;
+  }
+
+  // Back greave
+  ctx.strokeStyle=oc; ctx.lineWidth=1.5;
+  ctx.fillStyle=pl(true);
+  ctx.beginPath(); ctx.ellipse(-5,-2+bob+ls*0.8,6.5,11,0.08,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.fillStyle=pl(false); ctx.beginPath(); ctx.arc(-5,-5+bob+ls*0.8,5,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.strokeStyle='#C48A10'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(-5,-5+bob+ls*0.8,5,0,Math.PI*2); ctx.stroke();
+  ctx.strokeStyle=oc; ctx.fillStyle=pl(true); ctx.beginPath(); ctx.ellipse(-5,9+bob+ls*0.8,7.5,4.5,-0.15,0,Math.PI*2); ctx.fill(); ctx.stroke();
+
+  // Large kite shield
+  if(action!=='victory'){
+    ctx.save(); ctx.translate(-22,-26+bob+as);
+    var shg=ctx.createLinearGradient(-12,-18,12,20);
+    shg.addColorStop(0,'#1A4090');shg.addColorStop(0.3,'#3878C0');shg.addColorStop(0.7,'#1030780');shg.addColorStop(1,'#081830');
+    ctx.fillStyle=shg; ctx.strokeStyle='#B0C0D0'; ctx.lineWidth=2;
+    ctx.beginPath();
+    ctx.moveTo(-12,-18); ctx.lineTo(12,-18);
+    ctx.bezierCurveTo(14,-18,14,-4,12,4); ctx.bezierCurveTo(8,14,0,22,0,22);
+    ctx.bezierCurveTo(0,22,-8,14,-12,4); ctx.bezierCurveTo(-14,-4,-14,-18,-12,-18);
+    ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.strokeStyle='#E8A820'; ctx.lineWidth=2; ctx.stroke();
+    // Lock emblem
+    ctx.fillStyle='#E8A820'; ctx.strokeStyle='#8B5A00'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.rect(-5.5,-2,11,9); ctx.fill(); ctx.stroke();
+    ctx.strokeStyle='#E8A820'; ctx.lineWidth=2.5;
+    ctx.beginPath(); ctx.arc(0,-2,4,Math.PI,0); ctx.stroke();
+    ctx.fillStyle='#FFD700'; ctx.beginPath(); ctx.arc(0,2.5,1.8,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='rgba(255,220,100,0.5)'; ctx.beginPath(); ctx.ellipse(0,-6,8,8,0,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+
+  // Front greave (brighter — faces viewer)
+  ctx.strokeStyle=oc; ctx.lineWidth=1.5;
+  ctx.fillStyle=pl(false);
+  ctx.beginPath(); ctx.ellipse(5,-2+bob-ls*0.8,7,12,-0.08,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.fillStyle=pl(false); ctx.beginPath(); ctx.arc(5,-5+bob-ls*0.8,5.5,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.strokeStyle='#C48A10'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(5,-5+bob-ls*0.8,5.5,0,Math.PI*2); ctx.stroke();
+  ctx.strokeStyle=oc; ctx.fillStyle=pl(false); ctx.beginPath(); ctx.ellipse(7,9+bob-ls*0.8,8.5,4.5,-0.2,0,Math.PI*2); ctx.fill(); ctx.stroke();
+
+  // Body — full plate
+  ctx.fillStyle=pl(true); ctx.strokeStyle=oc; ctx.lineWidth=1.5;
+  ctx.beginPath();
+  ctx.moveTo(-10,-12+bob); ctx.bezierCurveTo(-15,-22+bob,-15,-34+bob,-11,-41+bob);
+  ctx.bezierCurveTo(-5,-45+bob,5,-45+bob,11,-41+bob); ctx.bezierCurveTo(15,-34+bob,15,-22+bob,10,-12+bob);
+  ctx.closePath(); ctx.fill(); ctx.stroke();
+  // Breastplate face
+  ctx.fillStyle=pl(false);
+  ctx.beginPath();
+  ctx.moveTo(-8,-14+bob); ctx.bezierCurveTo(-11,-24+bob,-10,-35+bob,-7,-38+bob);
+  ctx.bezierCurveTo(-3,-41+bob,3,-41+bob,7,-38+bob); ctx.bezierCurveTo(10,-35+bob,11,-24+bob,8,-14+bob);
+  ctx.closePath(); ctx.fill(); ctx.stroke();
+  // Gold center ridge
+  ctx.strokeStyle='#E8A820'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(0,-40+bob); ctx.lineTo(0,-14+bob); ctx.stroke();
+  ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(-8,-28+bob); ctx.bezierCurveTo(-4,-30+bob,4,-30+bob,8,-28+bob); ctx.stroke();
+  // Gold fauld trim
+  ctx.strokeStyle=oc; ctx.fillStyle=pl(true); ctx.lineWidth=1.5;
+  for(var f=-1;f<=1;f++){
+    ctx.beginPath(); ctx.ellipse(f*5.5,-14+bob,5.5,3.5,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  }
+  ctx.strokeStyle='#E8A820'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(-11,-15+bob); ctx.lineTo(11,-15+bob); ctx.stroke();
+
+  // Large pauldrons
+  ctx.strokeStyle=oc; ctx.lineWidth=1.5; ctx.fillStyle=pl(false);
+  ctx.beginPath(); ctx.ellipse(-16,-36+bob+as,11,6.5,0.45,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(16,-36+bob-as,11,6.5,-0.45,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.strokeStyle='#E8A820'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.ellipse(-16,-36+bob+as,11,6.5,0.45,0,Math.PI*2); ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(16,-36+bob-as,11,6.5,-0.45,0,Math.PI*2); ctx.stroke();
+  ctx.strokeStyle=oc; ctx.fillStyle=pl(true);
+  ctx.beginPath(); ctx.ellipse(-16,-38+bob+as,6,3.5,0.45,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(16,-38+bob-as,6,3.5,-0.45,0,Math.PI*2); ctx.fill(); ctx.stroke();
+
+  // Arms
+  ctx.strokeStyle=oc; ctx.lineWidth=1.5; ctx.fillStyle=pl(true);
+  ctx.beginPath(); ctx.ellipse(-18,-26+bob+as,5.5,10,0.12,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.fillStyle=pl(false); ctx.beginPath(); ctx.arc(-18,-28+bob+as,4.5,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.fillStyle=pl(true); ctx.beginPath(); ctx.ellipse(-18,-15+bob+as,5,5.5,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.strokeStyle='#C48A10'; ctx.lineWidth=1; ctx.beginPath(); ctx.arc(-18,-28+bob+as,4.5,0,Math.PI*2); ctx.stroke();
+  ctx.strokeStyle=oc;
+
+  if(action==='victory'){
+    ctx.fillStyle=pl(false); ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.ellipse(17,-42+bob-as,5.5,10,-0.5,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle=pl(false); ctx.beginPath(); ctx.arc(17,-43+bob-as,4.5,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.save(); ctx.translate(20,-54+bob-as); ctx.rotate(-0.5); drawSwordGlowing(ctx); ctx.restore();
+  } else {
+    ctx.fillStyle=pl(false); ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.ellipse(18,-26+bob-as,5.5,10,-0.12,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle=pl(false); ctx.beginPath(); ctx.arc(18,-28+bob-as,4.5,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle=pl(true); ctx.beginPath(); ctx.ellipse(18,-15+bob-as,5,5.5,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.strokeStyle='#C48A10'; ctx.lineWidth=1; ctx.beginPath(); ctx.arc(18,-28+bob-as,4.5,0,Math.PI*2); ctx.stroke();
+    ctx.strokeStyle=oc;
+    ctx.save(); ctx.translate(24,-18+bob-as); ctx.rotate(0.25); drawSwordGlowing(ctx); ctx.restore();
+  }
+
+  // Gorget
+  ctx.fillStyle=pl(false); ctx.strokeStyle=oc; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.ellipse(0,-41+bob,8,5,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.strokeStyle='#E8A820'; ctx.lineWidth=1; ctx.beginPath(); ctx.ellipse(0,-41+bob,8,5,0,0,Math.PI*2); ctx.stroke();
+  ctx.strokeStyle=oc;
+
+  // Great helm
+  var hg=ctx.createLinearGradient(-15,-70+bob,15,-40+bob);
+  hg.addColorStop(0,'#0E1E48'); hg.addColorStop(0.25,'#2A5090'); hg.addColorStop(0.5,'#5888C0'); hg.addColorStop(0.75,'#2A4A80'); hg.addColorStop(1,'#0A1430');
+  ctx.fillStyle=hg; ctx.strokeStyle=oc; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.arc(0,-55+bob,16,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  // Helm base band (wider)
+  ctx.fillStyle=pl(true); ctx.beginPath(); ctx.ellipse(0,-42+bob,17,5.5,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  // Gold trim bands
+  ctx.strokeStyle='#E8A820'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.arc(0,-55+bob,16,Math.PI*0.85,Math.PI*0.15,false); ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(0,-42+bob,17,5.5,0,0,Math.PI*2); ctx.stroke();
+  // Vision slit T-shape
+  ctx.fillStyle='#04080F'; ctx.strokeStyle='#0A1020';
+  ctx.beginPath(); ctx.rect(-13,-58+bob,26,4); ctx.fill();
+  ctx.beginPath(); ctx.rect(-2,-58+bob,4,14); ctx.fill();
+  ctx.strokeStyle='#E8A820'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.rect(-13,-58+bob,26,4); ctx.stroke();
+  ctx.beginPath(); ctx.rect(-2,-58+bob,4,14); ctx.stroke();
+  // Vision slit inner glow
+  ctx.fillStyle='rgba(80,130,200,0.18)';
+  ctx.beginPath(); ctx.rect(-12,-57.5+bob,24,3); ctx.fill();
+  // Helm highlight
+  ctx.fillStyle='rgba(180,220,255,0.15)';
+  ctx.beginPath(); ctx.arc(-4,-62+bob,9,Math.PI*1.2,Math.PI*1.9); ctx.fill();
+
+  // Red battle plume
+  for(var p=0;p<5;p++){
+    var po=(p-2)*2.8;
+    ctx.fillStyle=p===2?'#E84040':p===1||p===3?'#C02020':'#901010';
+    ctx.strokeStyle='#700000'; ctx.lineWidth=0.8;
+    ctx.beginPath();
+    ctx.moveTo(po,-72+bob);
+    ctx.bezierCurveTo(po-3.5,-64+bob,po-2,-57+bob,0,-53+bob);
+    ctx.bezierCurveTo(po+2,-57+bob,po+3.5,-64+bob,po,-72+bob);
+    ctx.fill(); ctx.stroke();
+  }
+  ctx.fillStyle='#C48A10'; ctx.strokeStyle='#7A5000'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.ellipse(0,-71+bob,4.5,2.5,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
+}
+
 function drawKnight(ctx,cx,cy,frame,dir,action){
   ctx.save(); ctx.translate(cx,cy);
   if(dir<0) ctx.scale(-1,1);
@@ -1450,40 +1948,15 @@ function drawKnight(ctx,cx,cy,frame,dir,action){
   var bob=[0,-4,0,-4][f];
   var ls=[7,0,-7,0][f];
   var as=[-3,0,3,0][f];
-  if(action==='victory'){bob=-10+Math.sin(Date.now()/130)*5;as=Math.sin(Date.now()/110)*12;}
+  if(action==='victory'){bob=-10+Math.sin(Date.now()/130)*5;as=Math.sin(Date.now()/110)*12;ls=0;}
   if(action==='stumble'){bob=Math.sin(Date.now()/80)*4;}
-  ctx.globalAlpha=0.22;ctx.fillStyle='#000';ctx.beginPath();ctx.ellipse(0,7-bob*.3,18,5,0,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
-  ctx.fillStyle='#1A3A70';
-  ctx.fillRect(-10,-10+bob+ls*.8,9,18-Math.abs(ls)*.3);
-  ctx.fillRect(1,-10+bob-ls*.8,9,18-Math.abs(ls)*.3);
-  ctx.fillStyle='#0D2040';
-  ctx.fillRect(-11,7+bob+ls*.8,11,6);ctx.fillRect(0,7+bob-ls*.8,11,6);
-  ctx.fillStyle='#3A6FBF';ctx.fillRect(-12,-34+bob,24,26);
-  ctx.fillStyle='#4A85D9';ctx.fillRect(-10,-33+bob,20,12);
-  ctx.fillStyle='#2D5A99';ctx.fillRect(-12,-22+bob,24,4);
-  ctx.fillStyle='#C48A10';ctx.fillRect(-12,-12+bob,24,4);
-  ctx.fillStyle='#3A6FBF';
-  ctx.fillRect(-19,-32+bob+as,8,18);ctx.fillRect(11,-32+bob-as,8,18);
-  ctx.fillStyle='#2D5A99';ctx.fillRect(-25,-36+bob+as,11,20);
-  ctx.strokeStyle='#E8A820';ctx.lineWidth=1.5;ctx.strokeRect(-25,-36+bob+as,11,20);
-  ctx.fillStyle='#E8A820';ctx.fillRect(-22,-30+bob+as,3,3);
-  if(action==='victory'){
-    ctx.fillStyle='#C8C8C8';ctx.fillRect(16,-52+bob-as,4,26);
-    ctx.fillStyle='#8B4A00';ctx.fillRect(14,-60+bob-as,8,10);
-    ctx.fillStyle='#C48A10';ctx.fillRect(12,-52+bob-as,12,3);
-  } else {
-    ctx.fillStyle='#C8C8C8';ctx.fillRect(18,-34+bob-as,4,28);
-    ctx.fillStyle='#8B4A00';ctx.fillRect(16,-42+bob-as,7,10);
-    ctx.fillStyle='#C48A10';ctx.fillRect(14,-32+bob-as,12,3);
-  }
-  ctx.fillStyle='#F0C890';ctx.fillRect(-5,-44+bob,10,12);
-  ctx.fillStyle='#2D5A99';ctx.fillRect(-12,-58+bob,24,16);
-  ctx.fillStyle='#1A3A70';ctx.fillRect(-9,-48+bob,18,6);
-  ctx.fillStyle='#C48A10';ctx.fillRect(-12,-58+bob,24,3);ctx.fillRect(-12,-43+bob,24,2);
-  ctx.fillStyle='#E84040';ctx.fillRect(-3,-68+bob,6,12);ctx.fillRect(-6,-66+bob,12,5);
-  ctx.fillStyle='#FF6060';ctx.fillRect(-2,-70+bob,4,4);
+  var rank=state.rank||'paige';
+  if(rank==='paige')       drawKnightPaige(ctx,bob,ls,as,action);
+  else if(rank==='squire') drawKnightSquire(ctx,bob,ls,as,action);
+  else                     drawKnightFull(ctx,bob,ls,as,action);
   ctx.restore();
 }
+
 
 // ═══════════════════════════════════════════════
 // CANVAS & RESIZE
