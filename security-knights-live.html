@@ -44,6 +44,61 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
 .intro-skip:hover{color:rgba(255,255,255,.7);border-color:rgba(255,255,255,.3);}
 #intro-canvas{position:absolute;inset:0;z-index:1;}
 
+/* ── TRAILER ── */
+#trailer-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: opacity .8s ease;
+}
+
+#trailer-screen.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#introTrailer {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(.72) contrast(1.05);
+}
+
+.trailer-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(0,0,0,.12), rgba(0,0,0,.6));
+  pointer-events: none;
+}
+
+#skipTrailerBtn {
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  z-index: 30;
+  padding: 12px 20px;
+  border-radius: 8px;
+  background: rgba(0,0,0,.65);
+  border: 1px solid rgba(232,168,32,.4);
+  color: #FFD700;
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .2s;
+  backdrop-filter: blur(6px);
+}
+
+#skipTrailerBtn:hover {
+  background: rgba(232,168,32,.15);
+  box-shadow: 0 0 18px rgba(232,168,32,.45);
+  transform: translateY(-2px);
+}
+
 /* ── HUD ── */
 #hud{position:fixed;top:0;left:0;right:0;height:56px;z-index:100;
   background:rgba(6,8,18,.98);
@@ -326,31 +381,79 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
 <div id="intro">
   <canvas id="intro-canvas"></canvas>
   <div id="intro-stars"></div>
+
+  <!-- ── TRAILER VIDEO ── -->
+  <div id="trailer-screen">
+    <video id="introTrailer" autoplay muted playsinline>
+      <source src="trailer.mp4" type="video/mp4">
+    </video>
+
+    <div class="trailer-overlay"></div>
+
+    <button id="skipTrailerBtn">Skip Trailer ▶</button>
+  </div>
+
   <span class="intro-skip" onclick="skipIntro()">Skip ▶</span>
-  <div id="intro-content">
+
+  <div id="intro-content" style="display:none;">
     <div class="intro-slide active" id="slide-0">
       <div class="intro-emoji">⚔️</div>
       <div class="intro-title">Security Knights</div>
       <div class="intro-sub">A quest for secure code</div>
-      <div class="intro-progress"><div class="intro-dot active"></div><div class="intro-dot"></div><div class="intro-dot"></div><div class="intro-dot"></div></div>
+      <div class="intro-progress">
+        <div class="intro-dot active"></div>
+        <div class="intro-dot"></div>
+        <div class="intro-dot"></div>
+        <div class="intro-dot"></div>
+      </div>
       <button class="intro-btn" onclick="nextSlide()">Next →</button>
     </div>
+
     <div class="intro-slide" id="slide-1">
       <div class="intro-emoji">🌑</div>
-      <div class="intro-story">In the realm of <strong>Codehaven</strong>, dark sorcerers exploit the <em>vulnerabilities</em> of unsuspecting applications — stealing secrets, corrupting data, and plunging the kingdom into chaos...</div>
-      <div class="intro-progress"><div class="intro-dot"></div><div class="intro-dot active"></div><div class="intro-dot"></div><div class="intro-dot"></div></div>
+      <div class="intro-story">
+        In the realm of <strong>Codehaven</strong>, dark sorcerers exploit the
+        <em>vulnerabilities</em> of unsuspecting applications — stealing secrets,
+        corrupting data, and plunging the kingdom into chaos...
+      </div>
+      <div class="intro-progress">
+        <div class="intro-dot"></div>
+        <div class="intro-dot active"></div>
+        <div class="intro-dot"></div>
+        <div class="intro-dot"></div>
+      </div>
       <button class="intro-btn" onclick="nextSlide()">Next →</button>
     </div>
+
     <div class="intro-slide" id="slide-2">
       <div class="intro-emoji">🛡️</div>
-      <div class="intro-story">The <strong>Council of Knights</strong> has summoned you — a warrior trained in the ancient art of <em>secure coding</em>. Walk the sacred path, answer each challenge, and <strong>protect the realm</strong>.</div>
-      <div class="intro-progress"><div class="intro-dot"></div><div class="intro-dot"></div><div class="intro-dot active"></div><div class="intro-dot"></div></div>
+      <div class="intro-story">
+        The <strong>Council of Knights</strong> has summoned you — a warrior trained
+        in the ancient art of <em>secure coding</em>. Walk the sacred path, answer
+        each challenge, and <strong>protect the realm</strong>.
+      </div>
+      <div class="intro-progress">
+        <div class="intro-dot"></div>
+        <div class="intro-dot"></div>
+        <div class="intro-dot active"></div>
+        <div class="intro-dot"></div>
+      </div>
       <button class="intro-btn" onclick="nextSlide()">Next →</button>
     </div>
+
     <div class="intro-slide" id="slide-3">
       <div class="intro-emoji">🏰</div>
-      <div class="intro-story">Fifteen stepping stones stand between you and the <strong>Shadow Castle</strong>. Each stone guards a secret of the <em>OWASP Top 10</em>. Answer correctly and advance. The realm is counting on you.</div>
-      <div class="intro-progress"><div class="intro-dot"></div><div class="intro-dot"></div><div class="intro-dot"></div><div class="intro-dot active"></div></div>
+      <div class="intro-story">
+        Fifteen stepping stones stand between you and the
+        <strong>Shadow Castle</strong>. Each stone guards a secret of the
+        <em>OWASP Top 10</em>. Answer correctly and advance. The realm is counting on you.
+      </div>
+      <div class="intro-progress">
+        <div class="intro-dot"></div>
+        <div class="intro-dot"></div>
+        <div class="intro-dot"></div>
+        <div class="intro-dot active"></div>
+      </div>
       <button class="intro-btn" onclick="startIntro()">⚔️ Begin Your Quest</button>
     </div>
   </div>
@@ -1039,12 +1142,85 @@ var Music = {
 };
 
 // ═══════════════════════════════════════════════
+// TRAILER
+// ═══════════════════════════════════════════════
+function initTrailer() {
+  var vid = document.getElementById('introTrailer');
+
+  // No video element — go straight to story
+  if (!vid) {
+    showIntroStory();
+    return;
+  }
+
+  // Fallback: if video stalls or never fires 'ended', advance after 15s
+  var fallbackTimeout = setTimeout(function () {
+    hideTrailer();
+  }, 15000);
+
+  // Natural end of video
+  vid.addEventListener('ended', function () {
+    clearTimeout(fallbackTimeout);
+    hideTrailer();
+  });
+
+  // Missing file or codec error
+  vid.addEventListener('error', function () {
+    clearTimeout(fallbackTimeout);
+    showIntroStory();
+  });
+
+  // Autoplay blocked by browser
+  vid.play().catch(function () {
+    clearTimeout(fallbackTimeout);
+    showIntroStory();
+  });
+
+  // Wire up skip button here — keeps JS in one place, no inline onclick
+  var skipBtn = document.getElementById('skipTrailerBtn');
+  if (skipBtn) {
+    skipBtn.addEventListener('click', skipTrailer);
+  }
+}
+
+function skipTrailer() {
+  var vid = document.getElementById('introTrailer');
+  if (vid) {
+    vid.pause();
+  }
+  hideTrailer();
+}
+
+function hideTrailer() {
+  var trailer = document.getElementById('trailer-screen');
+
+  // Guard against double-calls (rapid clicks, etc.)
+  if (!trailer || trailer.style.display === 'none') return;
+
+  trailer.classList.add('hidden');
+
+  setTimeout(function () {
+    trailer.style.display = 'none';
+    showIntroStory();
+  }, 800);
+}
+
+function showIntroStory() {
+  var content = document.getElementById('intro-content');
+  if (content) {
+    content.style.display = 'block';
+  }
+}
+
+// ═══════════════════════════════════════════════
 // INTRO
 // ═══════════════════════════════════════════════
 var introSlide = 0, introTimer = null;
 var INTRO_SLIDES = 4;
 
 function runIntro() {
+  initTrailer(); // ← trailer runs first; story slides shown after
+
   // Generate stars
   var stars = document.getElementById('intro-stars');
   for (var i = 0; i < 150; i++) {
@@ -1504,7 +1680,6 @@ function renderQuestion(ch){
     btn.type='button';
     btn.className='opt'; btn.id='opt'+i;
     (function(idx){ btn.addEventListener('click', function(){ pickAnswer(idx); }); })(i);
-    // DOM node creation like codex — avoids innerHTML/browser color quirks
     var badge=document.createElement('span');
     badge.className='oltr';
     badge.textContent=letters[i];
@@ -1611,8 +1786,6 @@ function showVictory(){
 // RANK & BADGES
 // ═══════════════════════════════════════════════
 function checkRankUp(prevXP){
-  // Rank is zone-based: which tier of stone you're currently on
-  // Stones 1-5 = Paige, 6-10 = Squire, 11-15 = Knight
   var newRank = 'paige';
   if (stoneIdx >= 11) newRank = 'knight';
   else if (stoneIdx >= 6) newRank = 'squire';
@@ -1655,8 +1828,6 @@ function showBadge(rank){
 
 function updateHUD(){
   var rank=state.rank, xp=state.xp;
-  // XP bar: show progress within current zone (5 questions per zone)
-  // Zone XP caps: Paige ~75, Squire ~110 more (185 total), Knight ~125 more (310 total)
   var zoneRanges = { paige:[0,75], squire:[75,185], knight:[185,310] };
   var r = zoneRanges[rank] || [0,75];
   var pct = Math.min(100, Math.max(0, ((xp - r[0]) / (r[1] - r[0])) * 100));
@@ -1802,7 +1973,7 @@ function getDemoReply(text){
   if(t.includes('csrf')) return '⚔️ <strong>CSRF</strong> tricks your browser into making requests you never intended.<br><br>• Evil site embeds a hidden form/image<br>• Your browser sends cookies automatically<br><br>🛡️ Shield: CSRF tokens, SameSite=Strict cookies.';
   if(t.includes('password')||t.includes('hash')) return '🔐 Password hashing guidelines:<br><br>• ✅ bcrypt (cost 12+)<br>• ✅ Argon2id (recommended by OWASP)<br>• ✅ scrypt<br>• ❌ MD5 — cracked in milliseconds<br>• ❌ SHA-256 — too fast for passwords<br>• ❌ Plain text — catastrophic';
   if(t.includes('jwt')) return '🧙 <strong>JWT attacks:</strong><br><br>• <strong>alg:none</strong> — strips signature verification<br>• Algorithm confusion (RS256 → HS256)<br>• Weak secrets bruteforceable with jwt-cracker<br><br>🛡️ Shield: Pin algorithm server-side, reject "none", rotate secrets.';
-  if(t.includes('csrf')||t.includes('ssrf')) return '🏰 <strong>SSRF</strong> makes the server fetch internal resources on an attacker\'s behalf.<br><br>• Target: http://169.254.169.254 (AWS metadata)<br>• Can expose cloud credentials<br><br>🛡️ Shield: Allowlist URLs, block private IP ranges.';
+  if(t.includes('ssrf')) return '🏰 <strong>SSRF</strong> makes the server fetch internal resources on an attacker\'s behalf.<br><br>• Target: http://169.254.169.254 (AWS metadata)<br>• Can expose cloud credentials<br><br>🛡️ Shield: Allowlist URLs, block private IP ranges.';
   if(t.includes('race')||t.includes('toctou')) return '⚔️ <strong>Race Conditions</strong> occur when two operations both pass a check before either completes.<br><br>🛡️ Shield:<br>• Database row-level locking (SELECT FOR UPDATE)<br>• Optimistic locking with version fields<br>• Atomic operations';
   if(t.includes('real')||t.includes('example')) return '🌍 <strong>Real-world examples:</strong><br><br>• <strong>Equifax 2017</strong>: Apache Struts CVE exploited (OWASP A06)<br>• <strong>Twitter 2022</strong>: API auth bypass exposed 5.4M accounts (IDOR)<br>• <strong>Log4Shell 2021</strong>: JNDI injection via log messages<br>• <strong>SolarWinds 2020</strong>: Supply chain attack via build system';
   if(t.includes('prevent')||t.includes('fix')||t.includes('shield')) return '🛡️ <strong>General secure coding principles:</strong><br><br>• Validate and sanitize ALL user inputs<br>• Use parameterized queries (never string concat)<br>• Apply least privilege everywhere<br>• Authenticate AND authorize every request<br>• Keep dependencies updated<br>• Log security events and alert on anomalies';
@@ -2010,12 +2181,12 @@ function initSiege() {
   var weekNum = Math.floor(Date.now() / (7*24*60*60*1000));
   currentSiege = SIEGE_THEMES[weekNum % SIEGE_THEMES.length];
 
-  // Siege ends in ~7 days from Monday; for demo show a realistic countdown
+  // Siege ends next Monday
   var now = new Date();
   var monday = new Date(now);
-  monday.setDate(now.getDate() - now.getDay() + 1); // This Monday
+  monday.setDate(now.getDate() - now.getDay() + 1);
   monday.setHours(0,0,0,0);
-  siegeEndTime = new Date(monday.getTime() + 7*24*60*60*1000); // Next Monday
+  siegeEndTime = new Date(monday.getTime() + 7*24*60*60*1000);
 
   document.getElementById('siegeEventName').textContent = currentSiege.name;
   renderSiegeLeaderboard();
@@ -2068,7 +2239,6 @@ function renderSiegeAction() {
 }
 
 function startSiegeChallenge() {
-  // Run a siege challenge — uses a special challenge from the theme
   var siDone = parseInt(localStorage.getItem('sk4_siege_done') || '0');
   if (siDone >= 5) { renderSiegeAction(); return; }
   var challengeId = currentSiege.challengeIds[siDone];
@@ -2076,10 +2246,8 @@ function startSiegeChallenge() {
     .find(function(c){ return c.id === challengeId; });
   if (!ch) { ch = ALL_CHALLENGES.knight[siDone % ALL_CHALLENGES.knight.length]; }
 
-  // Briefly close qpanel and load a siege-themed question
   current = ch;
   answered = false;
-  // Shuffle options
   var opts = ch.options.map(function(o,i){return {text:o,idx:i};});
   for (var i=opts.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var tmp=opts[i];opts[i]=opts[j];opts[j]=tmp; }
   shuffledOpts = opts;
@@ -2087,7 +2255,6 @@ function startSiegeChallenge() {
   stoneIdx = Math.max(stoneIdx, 1);
   renderQuestion(ch);
 
-  // Override header to show SIEGE styling
   document.getElementById('qpTag').textContent = '🔥 SIEGE · ' + ch.topic;
   document.getElementById('qpTag').style.color = '#E84040';
   document.getElementById('qpTag').style.borderColor = '#E84040';
@@ -2096,8 +2263,6 @@ function startSiegeChallenge() {
   gameState = 'QUESTIONING';
   document.getElementById('qpanel').classList.add('open');
 
-  // Intercept pickAnswer to also advance siege progress
-  var origPick = window._origSiegePick || pickAnswer;
   if (!window._siegeHooked) {
     window._siegeHooked = true;
     var realPick = pickAnswer;
@@ -2109,7 +2274,6 @@ function startSiegeChallenge() {
         localStorage.setItem('sk4_siege_done', done);
         renderSiegeLeaderboard();
         renderSiegeAction();
-        // Bonus XP for siege
         state.xp += ch.xp; saveState(); updateHUD();
         addWizMsg('wiz', '🔥 <strong>Siege strike!</strong> +' + (ch.xp*2) + ' XP contributed to your Order!');
       }
@@ -2207,7 +2371,6 @@ function drawBadgeCard() {
   c.font = 'bold 38px "Cinzel", serif';
   c.fillText('CERTIFIED ' + rd.label, W/2, 98);
 
-  // ── Bottom XP and completion ──
   var completed = (state.completed || []).length;
   var total = CHALLENGES.length;
 
@@ -2222,14 +2385,12 @@ function drawBadgeCard() {
   c.font = 'bold 22px "JetBrains Mono", monospace';
   c.fillText(state.xp + ' XP  ·  ' + completed + '/' + total + ' Challenges', W/2, H-78);
 
-  // Date
   var now = new Date();
   var dateStr = now.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
   c.fillStyle = 'rgba(140,160,200,0.55)';
   c.font = '400 11px "JetBrains Mono", monospace';
   c.fillText('Completed ' + dateStr + '  ·  didiegons.github.io', W/2, H-48);
 
-  // Bottom tagline
   c.fillStyle = 'rgba(232,168,32,0.35)';
   c.font = '400 11px "Cinzel", serif';
   c.fillText('The realm is safer with you.', W/2, H-26);
@@ -2237,7 +2398,6 @@ function drawBadgeCard() {
 
 function drawShield(c, size) {
   var s = size;
-  // Shield shape
   var shGrad = c.createLinearGradient(-s, -s, s, s);
   shGrad.addColorStop(0, 'rgba(232,168,32,0.25)');
   shGrad.addColorStop(1, 'rgba(232,168,32,0.05)');
@@ -2254,7 +2414,6 @@ function drawShield(c, size) {
   c.lineWidth = 2.5;
   c.stroke();
 
-  // Rank emoji
   c.font = s * 0.6 + 'px serif';
   c.textAlign = 'center';
   c.textBaseline = 'middle';
@@ -2321,10 +2480,10 @@ function copyShareText() {
 var dragonAnim = {
   running: false,
   t: 0,
-  dc: null,  // canvas context
+  dc: null,
   dctx: null,
   raf: null,
-  fire: [],  // fire particles
+  fire: [],
 
   show: function() {
     if (this.running) return;
@@ -2351,12 +2510,10 @@ var dragonAnim = {
       hud.style.animation = '';
     }, 1400);
 
-    // Show text after dragon arrives
     setTimeout(function() {
       document.getElementById('dragon-text').classList.add('show');
     }, 900);
 
-    // Hide after 3.2s
     var self = this;
     setTimeout(function() {
       document.getElementById('dragon-text').classList.remove('show');
@@ -2383,36 +2540,29 @@ var dragonAnim = {
     var dctx = this.dctx;
     dctx.clearRect(0, 0, W, H);
 
-    // Strong dark cinematic backdrop — immediately visible
     var bgAlpha = Math.min(0.88, this.t * 0.8);
     dctx.fillStyle = 'rgba(4,0,8,' + bgAlpha + ')';
     dctx.fillRect(0, 0, W, H);
 
-    // Red vignette edges
     var vgr = dctx.createRadialGradient(W/2, H/2, W*0.2, W/2, H/2, W*0.8);
     vgr.addColorStop(0, 'rgba(60,0,0,0)');
     vgr.addColorStop(1, 'rgba(120,0,0,' + Math.min(0.5, this.t*0.4) + ')');
     dctx.fillStyle = vgr;
     dctx.fillRect(0, 0, W, H);
 
-    // Dragon position - swoops from right, curves across sky
     var progress = Math.min(1, this.t / 2.5);
     var eased = 1 - Math.pow(1 - progress, 3);
 
-    // Path: start off-screen right, swoops to center-left, then up-left
     var dx, dy;
     if (this.t < 1.2) {
-      // Flying in
       var p = this.t / 1.2;
       dx = W * 1.2 - p * W * 0.78;
       dy = H * 0.18 + Math.sin(p * Math.PI * 1.5) * H * 0.22;
     } else if (this.t < 2.2) {
-      // Hovering / breathing fire
       var p = (this.t - 1.2) / 1.0;
       dx = W * 0.52 + Math.sin(p * Math.PI * 2) * 28;
       dy = H * 0.28 + Math.cos(p * Math.PI) * 18;
     } else {
-      // Flying away left-up
       var p = (this.t - 2.2) / 1.5;
       dx = W * 0.52 - p * W * 1.4;
       dy = H * 0.28 - p * H * 0.55;
@@ -2420,11 +2570,9 @@ var dragonAnim = {
 
     var facingLeft = this.t > 2.2;
 
-    // Scale dragon 1.6x so it fills the screen
     dctx.save();
     dctx.translate(dx, dy); dctx.scale(1.6, 1.6); dctx.translate(-dx, -dy);
 
-    // Add fire when hovering
     if (this.t > 1.1 && this.t < 2.3) {
       for (var i = 0; i < 4; i++) {
         this.fire.push({
@@ -2439,7 +2587,6 @@ var dragonAnim = {
       }
     }
 
-    // Update & draw fire particles
     for (var i = this.fire.length - 1; i >= 0; i--) {
       var p = this.fire[i];
       p.x += p.vx;
@@ -2461,9 +2608,8 @@ var dragonAnim = {
       dctx.restore();
     }
 
-    // Draw dragon
     this.drawDragon(dctx, dx, dy, facingLeft, this.t);
-    dctx.restore(); // close the scale transform
+    dctx.restore();
   },
 
   drawDragon: function(dctx, x, y, flip, t) {
@@ -2474,7 +2620,6 @@ var dragonAnim = {
     var wingFlap = Math.sin(t * 8) * 0.4;
     var bodyWobble = Math.sin(t * 4) * 3;
 
-    // Dragon shadow
     dctx.globalAlpha = 0.2;
     dctx.fillStyle = '#000';
     dctx.beginPath();
@@ -2491,7 +2636,6 @@ var dragonAnim = {
     dctx.quadraticCurveTo(80, 40, 110, 10 + Math.sin(t * 5) * 15);
     dctx.quadraticCurveTo(130, -5, 120, 25 + Math.sin(t * 3) * 10);
     dctx.stroke();
-    // Tail spikes
     dctx.fillStyle = '#8B0000';
     for (var i = 0; i < 3; i++) {
       var tx2 = 80 + i * 18, ty2 = 30 + i * 5;
@@ -2504,7 +2648,6 @@ var dragonAnim = {
     }
 
     // ── WINGS ──
-    // Left wing (upper)
     dctx.fillStyle = '#4A0000';
     dctx.beginPath();
     dctx.moveTo(-10, -10);
@@ -2513,7 +2656,6 @@ var dragonAnim = {
     dctx.quadraticCurveTo(-60, 40, -10, 20);
     dctx.closePath();
     dctx.fill();
-    // Wing membrane details
     dctx.strokeStyle = '#6A0010';
     dctx.lineWidth = 1.5;
     dctx.globalAlpha = 0.6;
@@ -2526,7 +2668,6 @@ var dragonAnim = {
     }
     dctx.globalAlpha = 1;
 
-    // Right wing (lower/folded)
     dctx.fillStyle = '#3A0000';
     dctx.beginPath();
     dctx.moveTo(20, 0);
@@ -2536,7 +2677,6 @@ var dragonAnim = {
     dctx.fill();
 
     // ── BODY ──
-    // Main body
     var bodyGrad = dctx.createRadialGradient(-10, 0, 5, -10, 0, 55);
     bodyGrad.addColorStop(0, '#3A1A00');
     bodyGrad.addColorStop(0.5, '#1A0A00');
@@ -2546,13 +2686,11 @@ var dragonAnim = {
     dctx.ellipse(-10, 10 + bodyWobble * 0.5, 50, 35, 0.2, 0, Math.PI * 2);
     dctx.fill();
 
-    // Belly scales (lighter)
     dctx.fillStyle = '#5A2A10';
     dctx.beginPath();
     dctx.ellipse(-20, 25 + bodyWobble * 0.3, 28, 18, 0.1, 0, Math.PI * 2);
     dctx.fill();
 
-    // Back spikes
     dctx.fillStyle = '#8B0000';
     for (var i = 0; i < 5; i++) {
       var sx = -30 + i * 12, sy = -22 - (i === 2 ? 6 : 0) + bodyWobble * 0.3;
@@ -2577,7 +2715,6 @@ var dragonAnim = {
     dctx.lineTo(5, 70 + Math.cos(t * 6) * 8);
     dctx.lineTo(-5, 82 + Math.cos(t * 6) * 8);
     dctx.stroke();
-    // Claws
     dctx.strokeStyle = '#555';
     dctx.lineWidth = 3;
     [[-30,80],[-5,82]].forEach(function(pos) {
@@ -2590,7 +2727,6 @@ var dragonAnim = {
     });
 
     // ── HEAD & NECK ──
-    // Neck
     dctx.fillStyle = '#2A1A00';
     dctx.beginPath();
     dctx.moveTo(-40, -20);
@@ -2598,7 +2734,6 @@ var dragonAnim = {
     dctx.quadraticCurveTo(-70, -30, -40, -10);
     dctx.fill();
 
-    // Head
     var headX = -85, headY = -50 + Math.sin(t * 3) * 8;
     var headGrad = dctx.createRadialGradient(headX, headY, 3, headX, headY, 32);
     headGrad.addColorStop(0, '#3A1A00');
@@ -2608,18 +2743,15 @@ var dragonAnim = {
     dctx.ellipse(headX, headY, 32, 22, -0.3, 0, Math.PI * 2);
     dctx.fill();
 
-    // Snout
     dctx.fillStyle = '#1A0A00';
     dctx.beginPath();
     dctx.ellipse(headX - 24, headY + 6, 18, 12, -0.3, 0, Math.PI * 2);
     dctx.fill();
 
-    // Eye (glowing red)
     dctx.fillStyle = '#FF0000';
     dctx.beginPath();
     dctx.arc(headX - 10, headY - 8, 8, 0, Math.PI * 2);
     dctx.fill();
-    // Eye glow
     var eyeGlow = dctx.createRadialGradient(headX-10, headY-8, 0, headX-10, headY-8, 18);
     eyeGlow.addColorStop(0, 'rgba(255,0,0,0.6)');
     eyeGlow.addColorStop(1, 'rgba(255,0,0,0)');
@@ -2627,13 +2759,11 @@ var dragonAnim = {
     dctx.beginPath();
     dctx.arc(headX - 10, headY - 8, 18, 0, Math.PI * 2);
     dctx.fill();
-    // Pupil
     dctx.fillStyle = '#000';
     dctx.beginPath();
     dctx.arc(headX - 11, headY - 7, 3.5, 0, Math.PI * 2);
     dctx.fill();
 
-    // Horns
     dctx.fillStyle = '#555';
     dctx.beginPath();
     dctx.moveTo(headX - 4, headY - 20);
@@ -2648,7 +2778,6 @@ var dragonAnim = {
     dctx.closePath();
     dctx.fill();
 
-    // Fire breath
     if (t > 1.1 && t < 2.3) {
       var fIntensity = Math.sin((t - 1.1) / 1.2 * Math.PI);
       var fg2 = dctx.createLinearGradient(headX - 42, headY + 6, headX - 120, headY + 6);
@@ -2738,7 +2867,6 @@ function startGame(){
   gameState='WALKING';
   var startZone = stoneIdx >= 11 ? 'knight' : stoneIdx >= 6 ? 'squire' : 'paige';
   Music.start(startZone);
-  // Init order mode if applicable
   if (gameMode === 'order' && orderData) {
     document.getElementById('sbOrderTab').style.display = '';
     document.getElementById('sbSiegeTab').style.display = '';
@@ -2747,7 +2875,6 @@ function startGame(){
     addWizMsg('wiz', '⚔️ <strong>Welcome back, ' + orderData.role + ' of ' + orderData.name + '!</strong> Your Order awaits.');
   }
 
-  // Restore: find last completed stone
   var lastDone=0;
   for(var i=1;i<=15;i++){
     if(CHALLENGES[i-1]&&state.completed.includes(CHALLENGES[i-1].id)) lastDone=i;
