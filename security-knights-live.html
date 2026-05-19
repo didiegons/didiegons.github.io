@@ -40,7 +40,7 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
 .intro-dot.active{background:var(--gold);}
 .intro-btn{padding:13px 36px;background:linear-gradient(135deg,#C48A10,#E8A820,#FFD700);border:none;border-radius:10px;font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:#000;cursor:pointer;box-shadow:0 0 30px rgba(232,168,32,.5);transition:all .2s;letter-spacing:.06em;}
 .intro-btn:hover{transform:translateY(-3px);box-shadow:0 0 50px rgba(232,168,32,.8);}
-.intro-skip{position:absolute;top:20px;right:24px;font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.35);cursor:pointer;border:1px solid rgba(255,255,255,.1);padding:5px 12px;border-radius:4px;transition:all .2s;}
+.intro-skip{position:absolute;top:20px;right:24px;z-index:50;font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.35);cursor:pointer;border:1px solid rgba(255,255,255,.1);padding:5px 12px;border-radius:4px;transition:all .2s;}
 .intro-skip:hover{color:rgba(255,255,255,.7);border-color:rgba(255,255,255,.3);}
 #intro-canvas{position:absolute;inset:0;z-index:1;}
 
@@ -97,6 +97,65 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
   background: rgba(232,168,32,.15);
   box-shadow: 0 0 18px rgba(232,168,32,.45);
   transform: translateY(-2px);
+}
+
+/* ── TAP-TO-PLAY SPLASH ── */
+#tap-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 25;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at center, rgba(20,15,40,.97), rgba(0,0,0,.99));
+  cursor: pointer;
+  gap: 16px;
+}
+
+#tap-screen.gone { display: none; }
+
+.tap-sword {
+  font-size: 5rem;
+  filter: drop-shadow(0 0 30px rgba(232,168,32,.8));
+  animation: float 3s ease-in-out infinite;
+}
+
+.tap-title {
+  font-family: 'Uncial Antiqua', serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  color: var(--gold);
+  text-shadow: 0 0 40px rgba(232,168,32,.6);
+  letter-spacing: .05em;
+}
+
+.tap-sub {
+  font-family: 'Cinzel', serif;
+  font-size: .85rem;
+  color: rgba(232,222,186,.5);
+  letter-spacing: .3em;
+  text-transform: uppercase;
+}
+
+.tap-play-btn {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: rgba(232,168,32,.12);
+  border: 2px solid rgba(232,168,32,.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.9rem;
+  color: var(--gold);
+  margin-top: 10px;
+  animation: tapPulse 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes tapPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(232,168,32,.3); transform: scale(1); }
+  50%       { box-shadow: 0 0 50px rgba(232,168,32,.7); transform: scale(1.1); }
 }
 
 /* ── HUD ── */
@@ -249,8 +308,6 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
 .bdgcard p{color:var(--muted);font-size:.86rem;margin-bottom:18px;}
 .bdgclose{padding:9px 24px;background:linear-gradient(135deg,#C48A10,#E8A820,#FFD700);border:none;border-radius:8px;font-family:'Cinzel',serif;font-size:.86rem;font-weight:700;color:#000;cursor:pointer;}
 
-
-
 /* ── PATH SELECTION ── */
 #pathModal{position:fixed;inset:0;z-index:900;background:rgba(4,6,18,.97);backdrop-filter:blur(18px);display:none;align-items:center;justify-content:center;padding:20px;flex-direction:column;gap:24px;}
 #pathModal.open{display:flex;}
@@ -384,76 +441,47 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
 
   <!-- ── TRAILER VIDEO ── -->
   <div id="trailer-screen">
-    <video id="introTrailer" autoplay muted playsinline>
+
+    <!-- Tap-to-play splash — shown first so browser allows sound -->
+    <div id="tap-screen">
+      <div class="tap-sword">⚔️</div>
+      <div class="tap-title">Security Knights</div>
+      <div class="tap-sub">Tap anywhere to begin</div>
+      <div class="tap-play-btn">▶</div>
+    </div>
+
+    <video id="introTrailer" muted playsinline preload="auto">
       <source src="trailer.mp4" type="video/mp4">
     </video>
-
     <div class="trailer-overlay"></div>
-
     <button id="skipTrailerBtn">Skip Trailer ▶</button>
   </div>
 
   <span class="intro-skip" onclick="skipIntro()">Skip ▶</span>
-
   <div id="intro-content" style="display:none;">
     <div class="intro-slide active" id="slide-0">
       <div class="intro-emoji">⚔️</div>
       <div class="intro-title">Security Knights</div>
       <div class="intro-sub">A quest for secure code</div>
-      <div class="intro-progress">
-        <div class="intro-dot active"></div>
-        <div class="intro-dot"></div>
-        <div class="intro-dot"></div>
-        <div class="intro-dot"></div>
-      </div>
+      <div class="intro-progress"><div class="intro-dot active"></div><div class="intro-dot"></div><div class="intro-dot"></div><div class="intro-dot"></div></div>
       <button class="intro-btn" onclick="nextSlide()">Next →</button>
     </div>
-
     <div class="intro-slide" id="slide-1">
       <div class="intro-emoji">🌑</div>
-      <div class="intro-story">
-        In the realm of <strong>Codehaven</strong>, dark sorcerers exploit the
-        <em>vulnerabilities</em> of unsuspecting applications — stealing secrets,
-        corrupting data, and plunging the kingdom into chaos...
-      </div>
-      <div class="intro-progress">
-        <div class="intro-dot"></div>
-        <div class="intro-dot active"></div>
-        <div class="intro-dot"></div>
-        <div class="intro-dot"></div>
-      </div>
+      <div class="intro-story">In the realm of <strong>Codehaven</strong>, dark sorcerers exploit the <em>vulnerabilities</em> of unsuspecting applications — stealing secrets, corrupting data, and plunging the kingdom into chaos...</div>
+      <div class="intro-progress"><div class="intro-dot"></div><div class="intro-dot active"></div><div class="intro-dot"></div><div class="intro-dot"></div></div>
       <button class="intro-btn" onclick="nextSlide()">Next →</button>
     </div>
-
     <div class="intro-slide" id="slide-2">
       <div class="intro-emoji">🛡️</div>
-      <div class="intro-story">
-        The <strong>Council of Knights</strong> has summoned you — a warrior trained
-        in the ancient art of <em>secure coding</em>. Walk the sacred path, answer
-        each challenge, and <strong>protect the realm</strong>.
-      </div>
-      <div class="intro-progress">
-        <div class="intro-dot"></div>
-        <div class="intro-dot"></div>
-        <div class="intro-dot active"></div>
-        <div class="intro-dot"></div>
-      </div>
+      <div class="intro-story">The <strong>Council of Knights</strong> has summoned you — a warrior trained in the ancient art of <em>secure coding</em>. Walk the sacred path, answer each challenge, and <strong>protect the realm</strong>.</div>
+      <div class="intro-progress"><div class="intro-dot"></div><div class="intro-dot"></div><div class="intro-dot active"></div><div class="intro-dot"></div></div>
       <button class="intro-btn" onclick="nextSlide()">Next →</button>
     </div>
-
     <div class="intro-slide" id="slide-3">
       <div class="intro-emoji">🏰</div>
-      <div class="intro-story">
-        Fifteen stepping stones stand between you and the
-        <strong>Shadow Castle</strong>. Each stone guards a secret of the
-        <em>OWASP Top 10</em>. Answer correctly and advance. The realm is counting on you.
-      </div>
-      <div class="intro-progress">
-        <div class="intro-dot"></div>
-        <div class="intro-dot"></div>
-        <div class="intro-dot"></div>
-        <div class="intro-dot active"></div>
-      </div>
+      <div class="intro-story">Fifteen stepping stones stand between you and the <strong>Shadow Castle</strong>. Each stone guards a secret of the <em>OWASP Top 10</em>. Answer correctly and advance. The realm is counting on you.</div>
+      <div class="intro-progress"><div class="intro-dot"></div><div class="intro-dot"></div><div class="intro-dot"></div><div class="intro-dot active"></div></div>
       <button class="intro-btn" onclick="startIntro()">⚔️ Begin Your Quest</button>
     </div>
   </div>
@@ -464,8 +492,6 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
   <canvas id="dragon-canvas"></canvas>
   <div class="dragon-text" id="dragon-text">🐉 The Dragon Strikes!<br><span style="font-size:55%;color:#FF8844;font-family:'Cinzel',serif">Study the explanation and continue your quest!</span></div>
 </div>
-
-
 
 <!-- ── PATH SELECTION ── -->
 <div id="pathModal">
@@ -506,21 +532,16 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
   <div class="ocm-card">
     <div class="ocm-title">⚔️ Found Your Order</div>
     <div class="ocm-sub">Name your guild, choose your banner colour, and set your motto.</div>
-
     <label class="ocm-label">Order Name</label>
     <input type="text" class="ocm-input" id="orderNameInput" placeholder="e.g. The Iron Coders" maxlength="28" oninput="updateOrderPreview()"/>
-
     <label class="ocm-label">Banner Colour</label>
     <div class="color-row" id="colorRow"></div>
-
     <label class="ocm-label">Order Motto</label>
     <input type="text" class="ocm-input" id="orderMottoInput" placeholder="e.g. Secure by default, defended by honour" maxlength="50" oninput="updateOrderPreview()"/>
-
     <div class="ocm-preview">
       <div class="ocm-preview-name" id="previewName" style="color:#E8A820">⚔️ The Iron Coders</div>
       <div class="ocm-preview-motto" id="previewMotto">"Secure by default, defended by honour"</div>
     </div>
-
     <div class="ocm-actions">
       <button class="bgold" style="flex:1;padding:10px;border-radius:8px;font-size:.85rem;" onclick="foundOrder()">⚔️ Found this Order</button>
       <button class="bghost" style="padding:10px 14px;border-radius:8px;font-size:.85rem;" onclick="goBack()">← Back</button>
@@ -601,15 +622,12 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
 
 <!-- ── LAYOUT ── -->
 <div id="layout">
-  <!-- Left sidebar -->
   <div id="sidebar-left">
     <div class="sb-tabs" id="sbTabs">
       <button class="sb-tab active" data-panel="sbQuests" onclick="switchSbTab(this)">📜 Quests</button>
       <button class="sb-tab" data-panel="sbOrder" id="sbOrderTab" onclick="switchSbTab(this)" style="display:none">⚔️ Order</button>
       <button class="sb-tab" data-panel="sbSiege" id="sbSiegeTab" onclick="switchSbTab(this)" style="display:none">🏰 Siege</button>
     </div>
-
-    <!-- QUEST BOARD PANEL -->
     <div class="sb-panel active" id="sbQuests">
       <div id="sb-inner" style="padding:10px;overflow-y:auto;flex:1;">
         <div class="sb-tier">
@@ -636,8 +654,6 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
         <button class="sb-reset" onclick="resetGame()">↺ Reset Progress</button>
       </div>
     </div>
-
-    <!-- ORDER PANEL -->
     <div class="sb-panel" id="sbOrder">
       <div class="order-banner" id="orderBannerEl">
         <div class="order-name-display" id="orderNameEl">⚔️ My Order</div>
@@ -654,8 +670,6 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
         <div id="membersList"></div>
       </div>
     </div>
-
-    <!-- SIEGE PANEL -->
     <div class="sb-panel" id="sbSiege">
       <div class="siege-panel">
         <div class="siege-header">
@@ -676,7 +690,6 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
     </div>
   </div>
 
-  <!-- Map -->
   <div id="map-area">
     <canvas id="gc"></canvas>
     <div id="qpanel">
@@ -696,7 +709,6 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
     </div>
   </div>
 
-  <!-- Wizard -->
   <div id="wpanel">
     <div class="whdr">
       <div class="wav">🧙</div>
@@ -885,12 +897,10 @@ knight: [
 ]
 };
 
-// Select 5 random questions from each tier
 function selectQuestions() {
   var selected = {};
   ['paige','squire','knight'].forEach(function(tier) {
     var pool = ALL_CHALLENGES[tier].slice();
-    // Shuffle pool
     for (var i = pool.length - 1; i > 0; i--) {
       var j = Math.floor(Math.random() * (i + 1));
       var tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp;
@@ -908,7 +918,6 @@ var state = JSON.parse(localStorage.getItem('sk4_state') || 'null') || {
 };
 if (!state.misses) state.misses = 0;
 
-// Ensure session questions are consistent
 var SESSION = null;
 if (state.session) {
   SESSION = state.session;
@@ -918,7 +927,6 @@ if (state.session) {
   localStorage.setItem('sk4_state', JSON.stringify(state));
 }
 
-// Flat ordered challenge list
 var CHALLENGES = SESSION.paige.concat(SESSION.squire).concat(SESSION.knight);
 
 var RANK_ORDER = ['paige','squire','knight'];
@@ -929,7 +937,6 @@ var RANK_CSS   = {paige:'rp', squire:'rs', knight:'rk'};
 
 var MAP_W = 3600, MAP_H = 560, CAM_EASE = 0.07;
 
-// Waypoints: start + 15 stones + castle
 var WAYPOINTS = [
   {x:80,  y:440},{x:260, y:400},{x:460, y:450},{x:650, y:410},{x:850, y:450},
   {x:1060,y:410},{x:1280,y:440},{x:1480,y:400},{x:1680,y:450},{x:1880,y:410},
@@ -938,8 +945,8 @@ var WAYPOINTS = [
 ];
 
 var current = null;
-var shuffledOpts = []; // shuffled options for current question
-var shuffledCorrect = 0; // correct index in shuffled array
+var shuffledOpts = [];
+var shuffledCorrect = 0;
 var answered = false;
 var apiKey = sessionStorage.getItem('sk4_key') || '';
 var demoMode = false;
@@ -976,7 +983,7 @@ var Music = {
       if (this.ctx.state === 'suspended') this.ctx.resume();
     } catch(e) { return; }
 
-    if (this.currentZone === zone && this.playing) return; // same zone, already playing
+    if (this.currentZone === zone && this.playing) return;
     this.stop();
     this.playing = true;
     this.currentZone = zone;
@@ -1000,7 +1007,6 @@ var Music = {
     this.start(zone);
   },
 
-  // ── Note helper ──
   note: function(freq, start, dur, type, vol, detune) {
     if (!this.playing || !this.ctx || !this.master) return;
     if (start < this.ctx.currentTime) return;
@@ -1016,7 +1022,6 @@ var Music = {
     o.start(start); o.stop(start + dur);
   },
 
-  // ── Drum noise ──
   drum: function(start, vol, pitch) {
     if (!this.playing || !this.ctx || !this.master) return;
     if (start < this.ctx.currentTime) return;
@@ -1036,24 +1041,14 @@ var Music = {
     if (!this.playing || this.currentZone !== zone) return;
     var self = this;
     var loopDur;
-
-    if (zone === 'paige') {
-      loopDur = this.playPaige(t);
-    } else if (zone === 'squire') {
-      loopDur = this.playSquire(t);
-    } else {
-      loopDur = this.playKnight(t);
-    }
-
-    this.loopTimer = setTimeout(function() {
-      self.playZone(zone, t + loopDur);
-    }, (loopDur - 0.6) * 1000);
+    if (zone === 'paige') { loopDur = this.playPaige(t); }
+    else if (zone === 'squire') { loopDur = this.playSquire(t); }
+    else { loopDur = this.playKnight(t); }
+    this.loopTimer = setTimeout(function() { self.playZone(zone, t + loopDur); }, (loopDur - 0.6) * 1000);
   },
 
-  // ══ PAIGE THEME: Bright meadow, C major pentatonic, cheerful ══════════════
   playPaige: function(t) {
     var b = 60/108;
-    // C major pentatonic: C4, E4, G4, A4, C5, E5
     var sc = [261.6, 329.6, 392.0, 440.0, 523.3, 659.3];
     var mel =  [4, 5, 4, 3, 2, 3, 4, 2,  3, 4, 5, 4, 3, 2, 1, 0];
     var durs = [1, 1, 1, 2, 1, 1, 2, 1,  1, 1, 1, 1, 1, 1, 1, 2];
@@ -1064,137 +1059,131 @@ var Music = {
       if (i%3===0) this.note(sc[Math.min(mel[i]+2,5)], mt, durs[i]*b*0.7, 'sine', 0.06);
       mt += durs[i]*b;
     }
-    // Bass
     var bass = [65.4, 130.8, 98.0, 130.8];
     for (var i=0; i<4; i++) this.note(bass[i], t+i*4*b, 3.5*b, 'sine', 0.14);
-    // Light drums on beats
     for (var i=0; i<4; i++) this.drum(t+i*4*b, 0.10, 500);
     return total*b;
   },
 
-  // ══ SQUIRE THEME: Dark forest, D minor, eerie & tense ════════════════════
   playSquire: function(t) {
-    var b = 60/76; // slower, more ominous
-    // D natural minor: D3, F3, G3, A3, C4, D4, F4, A4
+    var b = 60/76;
     var sc = [146.8, 174.6, 196.0, 220.0, 261.6, 293.7, 349.2, 440.0];
-    // Eerie descending/ascending melody with tritones
     var mel =  [4, 3, 2, 1, 0, 1, 2, 3,  4, 5, 4, 3, 2, 1, 0, 2];
     var durs = [2, 1, 1, 2, 2, 1, 1, 2,  2, 1, 1, 1, 2, 1, 2, 1];
     var total = durs.reduce(function(a,v){return a+v;}, 0);
     var mt = t;
     for (var i=0; i<mel.length; i++) {
       this.note(sc[mel[i]], mt, durs[i]*b*0.75, 'triangle', 0.14);
-      // Dark harmony: minor third below
       if (i%4===0) this.note(sc[mel[i]]*0.84, mt, durs[i]*b*0.9, 'sine', 0.08);
       mt += durs[i]*b;
     }
-    // Deep bass drone on D
-    this.note(36.7, t, 8*b, 'sine', 0.18); // D1 low drone
-    this.note(73.4, t, 8*b, 'sine', 0.10); // D2
+    this.note(36.7, t, 8*b, 'sine', 0.18);
+    this.note(73.4, t, 8*b, 'sine', 0.10);
     this.note(36.7, t+8*b, 8*b, 'sine', 0.18);
     this.note(73.4, t+8*b, 8*b, 'sine', 0.10);
-    // Sparse creepy plucks
     this.note(220.0, t+3*b, 0.3*b, 'sawtooth', 0.06);
     this.note(196.0, t+7*b, 0.3*b, 'sawtooth', 0.06);
     this.note(174.6, t+11*b, 0.3*b, 'sawtooth', 0.06);
-    // Slow heavy drums every 2 beats
     for (var i=0; i<Math.floor(total/2); i++) {
-      this.drum(t+i*2*b, 0.16, 200); // deep thud
-      if (i%2===1) this.drum(t+i*2*b+0.5*b, 0.08, 800); // snare
+      this.drum(t+i*2*b, 0.16, 200);
+      if (i%2===1) this.drum(t+i*2*b+0.5*b, 0.08, 800);
     }
     return total*b;
   },
 
-  // ══ KNIGHT THEME: Shadow castle, chromatic/diminished, epic & dark ════════
   playKnight: function(t) {
-    var b = 60/128; // intense, driving tempo
-    // Diminished / chromatic: E2, G2, Bb2, Db3, E3, G3, Bb3, E4
+    var b = 60/128;
     var sc = [82.4, 98.0, 116.5, 138.6, 164.8, 196.0, 233.1, 329.6];
-    // Driving war march melody
     var mel =  [0, 2, 4, 3, 2, 1, 0, 4,  6, 5, 4, 3, 4, 5, 6, 7,  4, 3, 2, 1, 2, 3, 4, 0];
     var durs = [1, 1, 2, 1, 1, 1, 2, 2,  1, 1, 1, 1, 1, 1, 1, 2,  1, 1, 1, 1, 1, 1, 2, 2];
     var total = durs.reduce(function(a,v){return a+v;}, 0);
     var mt = t;
     for (var i=0; i<mel.length; i++) {
       this.note(sc[mel[i]], mt, durs[i]*b*0.7, 'square', 0.10);
-      // Octave below for power
       this.note(sc[mel[i]]*0.5, mt, durs[i]*b*0.6, 'sawtooth', 0.08);
       mt += durs[i]*b;
     }
-    // Ominous bass: E1, pulsing
-    for (var i=0; i<Math.floor(total/2); i++) {
-      this.note(41.2, t+i*2*b, 1.8*b, 'sine', 0.22); // E1
-    }
-    // Low drone (pedal tone)
-    this.note(41.2, t, total*b*0.9, 'sine', 0.10, -1200); // detuned for thickness
-    // War drums: fast and driving
+    for (var i=0; i<Math.floor(total/2); i++) { this.note(41.2, t+i*2*b, 1.8*b, 'sine', 0.22); }
+    this.note(41.2, t, total*b*0.9, 'sine', 0.10, -1200);
     for (var i=0; i<total; i++) {
-      this.drum(t+i*b, 0.18, 150);      // deep kick every beat
-      if (i%2===1) this.drum(t+i*b+b*0.5, 0.10, 1000); // fast snare
-      if (i%4===0) this.drum(t+i*b, 0.22, 80);          // extra bass hit on 1
+      this.drum(t+i*b, 0.18, 150);
+      if (i%2===1) this.drum(t+i*b+b*0.5, 0.10, 1000);
+      if (i%4===0) this.drum(t+i*b, 0.22, 80);
     }
-    // High tension stab every 4 beats
-    for (var i=0; i<Math.floor(total/4); i++) {
-      this.note(329.6, t+i*4*b, 0.15*b, 'sawtooth', 0.12); // high stab
-    }
+    for (var i=0; i<Math.floor(total/4); i++) { this.note(329.6, t+i*4*b, 0.15*b, 'sawtooth', 0.12); }
     return total*b;
   }
 };
 
 // ═══════════════════════════════════════════════
-// TRAILER
+// TRAILER  ← CHANGE 3: new functions added here
 // ═══════════════════════════════════════════════
 function initTrailer() {
-  var vid = document.getElementById('introTrailer');
+  var vid    = document.getElementById('introTrailer');
+  var tapScr = document.getElementById('tap-screen');
+  var skipBtn = document.getElementById('skipTrailerBtn');
 
   // No video element — go straight to story
-  if (!vid) {
-    showIntroStory();
-    return;
+  if (!vid) { showIntroStory(); return; }
+
+  // Wire skip button (works at any point during intro)
+  if (skipBtn) { skipBtn.addEventListener('click', skipTrailer); }
+
+  // ── startPlayback: called after the user's first tap ──────────────────
+  function startPlayback() {
+    // Hide the tap-to-play splash
+    if (tapScr) tapScr.classList.add('gone');
+
+    // Unmute — browser allows this after a user gesture
+    vid.muted  = false;
+    vid.volume = 1;
+
+    // Safety net: advance after 15 s in case the video stalls
+    var fallbackTimeout = setTimeout(function () { hideTrailer(); }, 15000);
+
+    vid.addEventListener('ended', function () {
+      clearTimeout(fallbackTimeout);
+      hideTrailer();
+    });
+
+    vid.addEventListener('error', function () {
+      clearTimeout(fallbackTimeout);
+      showIntroStory();
+    });
+
+    vid.play().catch(function () {
+      // Couldn't play with sound — try muted as last resort
+      vid.muted = true;
+      vid.play().catch(function () {
+        clearTimeout(fallbackTimeout);
+        showIntroStory();
+      });
+    });
   }
 
-  // Fallback: if video stalls or never fires 'ended', advance after 15s
-  var fallbackTimeout = setTimeout(function () {
-    hideTrailer();
-  }, 15000);
-
-  // Natural end of video
-  vid.addEventListener('ended', function () {
-    clearTimeout(fallbackTimeout);
-    hideTrailer();
-  });
-
-  // Missing file or codec error
-  vid.addEventListener('error', function () {
-    clearTimeout(fallbackTimeout);
-    showIntroStory();
-  });
-
-  // Autoplay blocked by browser
-  vid.play().catch(function () {
-    clearTimeout(fallbackTimeout);
-    showIntroStory();
-  });
-
-  // Wire up skip button here — keeps JS in one place, no inline onclick
-  var skipBtn = document.getElementById('skipTrailerBtn');
-  if (skipBtn) {
-    skipBtn.addEventListener('click', skipTrailer);
+  // ── Wait for a tap before playing, so sound is allowed ────────────────
+  if (tapScr) {
+    tapScr.addEventListener('click', startPlayback, { once: true });
+  } else {
+    // No splash screen in DOM — fall back to silent autoplay
+    vid.muted = true;
+    var fb = setTimeout(function () { hideTrailer(); }, 15000);
+    vid.addEventListener('ended', function () { clearTimeout(fb); hideTrailer(); });
+    vid.addEventListener('error', function () { clearTimeout(fb); showIntroStory(); });
+    vid.play().catch(function () { clearTimeout(fb); showIntroStory(); });
   }
 }
 
 function skipTrailer() {
   var vid = document.getElementById('introTrailer');
-  if (vid) {
-    vid.pause();
-  }
+  if (vid) { vid.pause(); }
   hideTrailer();
 }
 
 function hideTrailer() {
   var trailer = document.getElementById('trailer-screen');
 
-  // Guard against double-calls (rapid clicks, etc.)
+  // Guard against double-calls (rapid clicks, race with ended event, etc.)
   if (!trailer || trailer.style.display === 'none') return;
 
   trailer.classList.add('hidden');
@@ -1207,9 +1196,7 @@ function hideTrailer() {
 
 function showIntroStory() {
   var content = document.getElementById('intro-content');
-  if (content) {
-    content.style.display = 'block';
-  }
+  if (content) { content.style.display = 'block'; }
 }
 
 // ═══════════════════════════════════════════════
@@ -1219,7 +1206,7 @@ var introSlide = 0, introTimer = null;
 var INTRO_SLIDES = 4;
 
 function runIntro() {
-  initTrailer(); // ← trailer runs first; story slides shown after
+  initTrailer(); // ← CHANGE 4: trailer plays first; story slides shown after
 
   // Generate stars
   var stars = document.getElementById('intro-stars');
@@ -1233,7 +1220,6 @@ function runIntro() {
     stars.appendChild(s);
   }
 
-  // Intro canvas scene
   var ic = document.getElementById('intro-canvas');
   var ictx = ic.getContext('2d');
   ic.width = window.innerWidth; ic.height = window.innerHeight;
@@ -1241,63 +1227,37 @@ function runIntro() {
   function drawIntroScene() {
     ictx.clearRect(0,0,ic.width,ic.height);
     var t = Date.now() / 1000;
-
-    // Ground
     ictx.fillStyle = '#0A1A0A';
     ictx.fillRect(0, ic.height*0.7, ic.width, ic.height*0.3);
-
-    // Distant castle silhouette
     ictx.fillStyle = 'rgba(20,15,35,0.8)';
     var cx = ic.width * 0.75;
     var cy = ic.height * 0.4;
     ictx.fillRect(cx-80, cy, 160, ic.height*0.3);
-    for (var i = 0; i < 5; i++) {
-      ictx.fillRect(cx - 80 + i*40, cy - 40, 25, 40);
-    }
-    // Castle glow
+    for (var i = 0; i < 5; i++) { ictx.fillRect(cx - 80 + i*40, cy - 40, 25, 40); }
     ictx.fillStyle = 'rgba(80,40,160,0.15)';
-    ictx.beginPath();
-    ictx.arc(cx, cy+20, 120, 0, Math.PI*2);
-    ictx.fill();
-
-    // Fireflies
+    ictx.beginPath(); ictx.arc(cx, cy+20, 120, 0, Math.PI*2); ictx.fill();
     for (var i = 0; i < 8; i++) {
       var fx = ic.width*0.3 + Math.sin(t*0.7 + i*0.8)*ic.width*0.15;
       var fy = ic.height*0.5 + Math.cos(t*0.5 + i*1.2)*ic.height*0.15;
       var fo = 0.3 + Math.sin(t*2 + i) * 0.3;
       ictx.fillStyle = 'rgba(200,220,50,' + fo + ')';
-      ictx.beginPath();
-      ictx.arc(fx, fy, 2.5, 0, Math.PI*2);
-      ictx.fill();
+      ictx.beginPath(); ictx.arc(fx, fy, 2.5, 0, Math.PI*2); ictx.fill();
     }
-
-    // Torch flame at bottom
     ictx.fillStyle = 'rgba(255,120,0,' + (0.6 + Math.sin(t*4)*0.3) + ')';
-    ictx.beginPath();
-    ictx.arc(ic.width*0.2, ic.height*0.7, 15 + Math.sin(t*5)*3, 0, Math.PI*2);
-    ictx.fill();
+    ictx.beginPath(); ictx.arc(ic.width*0.2, ic.height*0.7, 15 + Math.sin(t*5)*3, 0, Math.PI*2); ictx.fill();
     ictx.fillStyle = 'rgba(255,220,0,' + (0.8 + Math.sin(t*5)*0.2) + ')';
-    ictx.beginPath();
-    ictx.arc(ic.width*0.2, ic.height*0.7, 6, 0, Math.PI*2);
-    ictx.fill();
-
+    ictx.beginPath(); ictx.arc(ic.width*0.2, ic.height*0.7, 6, 0, Math.PI*2); ictx.fill();
     requestAnimationFrame(drawIntroScene);
   }
   drawIntroScene();
-
 }
 
 function nextSlide() {
-  if (introSlide < INTRO_SLIDES - 1) {
-    introSlide++;
-    showSlide(introSlide);
-  }
+  if (introSlide < INTRO_SLIDES - 1) { introSlide++; showSlide(introSlide); }
 }
 
 function showSlide(n) {
-  document.querySelectorAll('.intro-slide').forEach(function(s,i) {
-    s.classList.toggle('active', i === n);
-  });
+  document.querySelectorAll('.intro-slide').forEach(function(s,i) { s.classList.toggle('active', i === n); });
 }
 
 function skipIntro() {
@@ -1315,7 +1275,6 @@ function afterIntro() {
   if (!gameMode) {
     showPathModal();
   } else {
-    // Returning player - restore order UI if in order mode
     if (gameMode === 'order' && orderData) {
       document.getElementById('sbOrderTab').style.display = '';
       document.getElementById('sbSiegeTab').style.display = '';
@@ -1335,7 +1294,6 @@ function buildMap() {
   var mc = mapCanvas.getContext('2d');
   var z1 = MAP_W/3, z2 = MAP_W*2/3;
 
-  // Sky zones
   var g = mc.createLinearGradient(0,0,0,MAP_H*0.55);
   g.addColorStop(0,'#1A6B9E'); g.addColorStop(1,'#5BACD4');
   mc.fillStyle=g; mc.fillRect(0,0,z1,MAP_H*0.55);
@@ -1346,7 +1304,6 @@ function buildMap() {
   g.addColorStop(0,'#0A0A1E'); g.addColorStop(1,'#1A0A2E');
   mc.fillStyle=g; mc.fillRect(z2,0,MAP_W-z2,MAP_H*0.55);
 
-  // Ground zones
   g = mc.createLinearGradient(0,MAP_H*0.5,0,MAP_H);
   g.addColorStop(0,'#3A8A2A'); g.addColorStop(1,'#1E5010');
   mc.fillStyle=g; mc.fillRect(0,MAP_H*0.5,z1,MAP_H*0.5);
@@ -1357,13 +1314,11 @@ function buildMap() {
   g.addColorStop(0,'#2A2A3A'); g.addColorStop(1,'#141420');
   mc.fillStyle=g; mc.fillRect(z2,MAP_H*0.5,MAP_W-z2,MAP_H*0.5);
 
-  // Hills
   mc.fillStyle='#4CAF50';
   for(var i=0;i<6;i++){mc.beginPath();mc.ellipse(i*180+90,MAP_H*0.52,120,45,0,Math.PI,0);mc.fill();}
   mc.fillStyle='#1A4A1A';
   for(var i=0;i<6;i++){mc.beginPath();mc.ellipse(z1+i*180+90,MAP_H*0.52,110,55,0,Math.PI,0);mc.fill();}
 
-  // Castle background
   mc.fillStyle='#1E1E2E';
   mc.fillRect(z2+200,0,MAP_W-z2-200,MAP_H*0.54);
   mc.fillStyle='#2A2A3A';
@@ -1371,13 +1326,11 @@ function buildMap() {
   mc.fillStyle='rgba(255,120,0,.35)';
   for(var i=0;i<8;i++){mc.beginPath();mc.arc(z2+250+i*140,MAP_H*0.18,12,0,Math.PI*2);mc.fill();}
 
-  // Clouds
   mc.fillStyle='rgba(255,255,255,0.65)';
   [[150,60,70],[420,40,90],[750,70,60],[1000,50,80]].forEach(function(c){drawCloud(mc,c[0],c[1],c[2]);});
   mc.fillStyle='rgba(60,40,80,0.55)';
   [[2700,55,100],[2950,40,80],[3200,65,110],[3450,45,70]].forEach(function(c){drawCloud(mc,c[0],c[1],c[2]);});
 
-  // Path
   mc.strokeStyle='rgba(139,100,48,.85)'; mc.lineWidth=26; mc.lineCap='round'; mc.lineJoin='round';
   mc.beginPath(); mc.moveTo(WAYPOINTS[0].x,WAYPOINTS[0].y);
   for(var i=1;i<WAYPOINTS.length;i++){
@@ -1388,7 +1341,6 @@ function buildMap() {
   mc.stroke();
   mc.strokeStyle='rgba(210,170,100,.2)'; mc.lineWidth=14; mc.stroke();
 
-  // Trees and decorations
   [90,200,350,500,700,900,1100].forEach(function(x){drawOak(mc,x,MAP_H*0.48-20);});
   [1350,1500,1650,1800,1950,2050].forEach(function(x){drawPine(mc,x,MAP_H*0.5-30);});
   var fc=['#FFD700','#FF6B6B','#FF85A1','#FFA500'];
@@ -1405,7 +1357,6 @@ function buildMap() {
   mc.font='18px serif';
   for(var i=0;i<5;i++) mc.fillText('💀',z2+300+i*180,MAP_H*0.55);
 
-  // Zone labels
   mc.font='bold 12px Cinzel,serif';mc.fillStyle='rgba(232,200,100,.45)';mc.textAlign='center';
   mc.fillText('⸺ THE GREEN FIELDS ⸺',z1/2,26);
   mc.fillText('⸺ THE DARK FOREST ⸺',z1+(z2-z1)/2,26);
@@ -1446,30 +1397,21 @@ function drawKnight(ctx,cx,cy,frame,dir,action){
   var as=[-3,0,3,0][f];
   if(action==='victory'){bob=-10+Math.sin(Date.now()/130)*5;as=Math.sin(Date.now()/110)*12;}
   if(action==='stumble'){bob=Math.sin(Date.now()/80)*4;}
-
   ctx.globalAlpha=0.22;ctx.fillStyle='#000';ctx.beginPath();ctx.ellipse(0,7-bob*.3,18,5,0,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
-
-  // Legs
   ctx.fillStyle='#1A3A70';
   ctx.fillRect(-10,-10+bob+ls*.8,9,18-Math.abs(ls)*.3);
   ctx.fillRect(1,-10+bob-ls*.8,9,18-Math.abs(ls)*.3);
-  // Boots
   ctx.fillStyle='#0D2040';
   ctx.fillRect(-11,7+bob+ls*.8,11,6);ctx.fillRect(0,7+bob-ls*.8,11,6);
-  // Body
   ctx.fillStyle='#3A6FBF';ctx.fillRect(-12,-34+bob,24,26);
   ctx.fillStyle='#4A85D9';ctx.fillRect(-10,-33+bob,20,12);
   ctx.fillStyle='#2D5A99';ctx.fillRect(-12,-22+bob,24,4);
-  // Belt
   ctx.fillStyle='#C48A10';ctx.fillRect(-12,-12+bob,24,4);
-  // Arms
   ctx.fillStyle='#3A6FBF';
   ctx.fillRect(-19,-32+bob+as,8,18);ctx.fillRect(11,-32+bob-as,8,18);
-  // Shield
   ctx.fillStyle='#2D5A99';ctx.fillRect(-25,-36+bob+as,11,20);
   ctx.strokeStyle='#E8A820';ctx.lineWidth=1.5;ctx.strokeRect(-25,-36+bob+as,11,20);
   ctx.fillStyle='#E8A820';ctx.fillRect(-22,-30+bob+as,3,3);
-  // Sword
   if(action==='victory'){
     ctx.fillStyle='#C8C8C8';ctx.fillRect(16,-52+bob-as,4,26);
     ctx.fillStyle='#8B4A00';ctx.fillRect(14,-60+bob-as,8,10);
@@ -1479,16 +1421,12 @@ function drawKnight(ctx,cx,cy,frame,dir,action){
     ctx.fillStyle='#8B4A00';ctx.fillRect(16,-42+bob-as,7,10);
     ctx.fillStyle='#C48A10';ctx.fillRect(14,-32+bob-as,12,3);
   }
-  // Neck
   ctx.fillStyle='#F0C890';ctx.fillRect(-5,-44+bob,10,12);
-  // Helmet
   ctx.fillStyle='#2D5A99';ctx.fillRect(-12,-58+bob,24,16);
   ctx.fillStyle='#1A3A70';ctx.fillRect(-9,-48+bob,18,6);
   ctx.fillStyle='#C48A10';ctx.fillRect(-12,-58+bob,24,3);ctx.fillRect(-12,-43+bob,24,2);
-  // Plume
   ctx.fillStyle='#E84040';ctx.fillRect(-3,-68+bob,6,12);ctx.fillRect(-6,-66+bob,12,5);
   ctx.fillStyle='#FF6060';ctx.fillRect(-2,-70+bob,4,4);
-
   ctx.restore();
 }
 
@@ -1545,7 +1483,6 @@ function render(){
   ctx.scale(scale,scale);
   ctx.translate(-camX/scale,0);
   if(mapCanvas) ctx.drawImage(mapCanvas,0,0);
-  // Draw stones
   for(var i=1;i<WAYPOINTS.length-1;i++) drawStone(ctx,WAYPOINTS[i],i);
   drawStartFlag(ctx);
   drawEndGate(ctx);
@@ -1560,7 +1497,6 @@ function drawStone(ctx,wp,idx){
   var isCur = stoneIdx===idx;
   var isLocked = !isDone && stoneIdx < idx;
   var x=wp.x, y=wp.y, r=24;
-
   if(isCur){ctx.shadowColor='#E8A820';ctx.shadowBlur=28+Math.sin(tick*.1)*8;}
   ctx.beginPath();ctx.arc(x,y-r,r,0,Math.PI*2);
   if(isDone){ctx.fillStyle='#1A4A2A';ctx.fill();ctx.strokeStyle='#2ECC8A';}
@@ -1568,12 +1504,10 @@ function drawStone(ctx,wp,idx){
   else if(isLocked){ctx.fillStyle='rgba(8,10,22,.7)';ctx.fill();ctx.strokeStyle='#1E2D50';}
   else{ctx.fillStyle='#1A2040';ctx.fill();ctx.strokeStyle='#3A5080';}
   ctx.lineWidth=3;ctx.stroke();ctx.shadowBlur=0;
-
   ctx.font='bold 13px Cinzel,serif';ctx.textAlign='center';ctx.textBaseline='middle';
   if(isDone){ctx.fillStyle='#2ECC8A';ctx.fillText('✓',x,y-r);}
   else if(isLocked){ctx.fillStyle='#2A3A5A';ctx.fillText('🔒',x,y-r);}
   else{ctx.fillStyle=isCur?'#FFD700':'#7A9ACA';ctx.fillText(String(idx),x,y-r);}
-
   if(!isLocked){
     ctx.font='9px JetBrains Mono,monospace';
     ctx.fillStyle=isDone?'rgba(46,204,138,.7)':isCur?'rgba(232,168,32,.8)':'rgba(100,130,180,.55)';
@@ -1611,16 +1545,10 @@ function walkToNextStone(){
   charMoving=true; charAction='walk';
   gameState='WALKING';
   document.getElementById('qpanel').classList.remove('open');
-  // Update rank based on zone as soon as we step into a new tier
   var zoneRank = 'paige';
   if (stoneIdx >= 11) zoneRank = 'knight';
   else if (stoneIdx >= 6) zoneRank = 'squire';
-  if (zoneRank !== state.rank) {
-    state.rank = zoneRank;
-    updateHUD();
-    saveState();
-  }
-  // Switch music when entering a new zone
+  if (zoneRank !== state.rank) { state.rank = zoneRank; updateHUD(); saveState(); }
   Music.changeZone(zoneRank);
 }
 
@@ -1639,8 +1567,6 @@ function openQuestion(){
   if(!ch){ walkToNextStone(); return; }
   current = ch;
   answered = false;
-
-  // Shuffle options
   var opts = ch.options.map(function(o,i){return {text:o,idx:i};});
   for(var i=opts.length-1;i>0;i--){
     var j=Math.floor(Math.random()*(i+1));
@@ -1648,12 +1574,10 @@ function openQuestion(){
   }
   shuffledOpts = opts;
   shuffledCorrect = opts.findIndex(function(o){return o.idx===ch.correct;});
-
   charAction='idle';
   gameState='QUESTIONING';
   renderQuestion(ch);
   setTimeout(function(){document.getElementById('qpanel').classList.add('open');}, 250);
-
   addWizMsg('wiz','⚔️ Stone <strong>'+stoneIdx+'</strong>: <em>'+ch.title+'</em> ('+ch.topic+'). Ask me for hints!');
   renderSidebar();
 }
@@ -1671,7 +1595,6 @@ function renderQuestion(ch){
   var codeEl=document.getElementById('qpCode');
   if(ch.code){codeEl.style.display='block';codeEl.textContent=ch.code;}
   else codeEl.style.display='none';
-
   var opts=document.getElementById('qpOpts');
   opts.innerHTML='';
   var letters=['A','B','C','D'];
@@ -1689,7 +1612,6 @@ function renderQuestion(ch){
     btn.appendChild(txt);
     opts.appendChild(btn);
   });
-
   document.getElementById('qpExpl').className='expl';
   document.getElementById('qpExpl').textContent='';
   document.getElementById('nxtBtn').className='nxt';
@@ -1699,7 +1621,6 @@ function pickAnswer(idx){
   if(answered||!current) return;
   answered=true;
   var isCorrect = idx === shuffledCorrect;
-
   shuffledOpts.forEach(function(_,i){
     var btn=document.getElementById('opt'+i);
     if(!btn) return;
@@ -1707,12 +1628,10 @@ function pickAnswer(idx){
     if(i===shuffledCorrect) btn.classList.add('correct');
     else if(i===idx&&!isCorrect) btn.classList.add('wrong');
   });
-
   var expl=document.getElementById('qpExpl');
   expl.textContent=current.explanation;
   expl.className='expl show '+(isCorrect?'ck':'wk');
   document.getElementById('nxtBtn').className='nxt show';
-
   if(isCorrect){
     var prevXP=state.xp;
     state.xp+=current.xp;
@@ -1720,7 +1639,6 @@ function pickAnswer(idx){
     checkRankUp(prevXP);
     saveState(); updateHUD(); renderSidebar();
     charAction='victory';
-    // XP popup
     var pop=document.createElement('div');
     pop.className='xppop';
     pop.textContent='+'+current.xp+' XP!';
@@ -1737,12 +1655,8 @@ function pickAnswer(idx){
     setTimeout(function(){charAction='idle';},1000);
     var missesLeft = 3 - state.misses;
     if (state.misses >= 3) {
-      // 3 misses — dragon defeats the knight
       addWizMsg('wiz','💀 <strong>Three wrong answers!</strong> The dragon has defeated you. The realm needs a stronger knight...');
-      setTimeout(function(){
-        showDragonAttack();
-        setTimeout(showDefeatScreen, 2000);
-      }, 300);
+      setTimeout(function(){ showDragonAttack(); setTimeout(showDefeatScreen, 2000); }, 300);
     } else {
       addWizMsg('wiz','⚠️ Not quite. Correct answer: <strong>'+escHtml(shuffledOpts[shuffledCorrect].text)+'</strong>. ⚠️ <strong>'+(missesLeft === 1 ? 'ONE warning left!' : missesLeft+' warnings left')+' — 3 wrong = defeat!</strong>');
       setTimeout(showDragonAttack, 300);
@@ -1765,9 +1679,7 @@ function showDefeatScreen(){
     '<h2 style="background:linear-gradient(135deg,#E84040,#FF6060);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Defeated!</h2>' +
     '<p>The dragon has bested you after <strong style="color:#E84040">3 wrong answers</strong>.<br>The realm needs a stronger knight!</p>' +
     '<p style="margin-top:4px;font-family:JetBrains Mono,monospace;font-size:.75rem;color:#7A8BAA">XP earned this run: <strong style="color:#E8A820">' + state.xp + '</strong></p>' +
-    '<div style="display:flex;gap:8px;margin-top:18px">' +
-    '<button class="bgold" style="flex:1" onclick="resetGame()">⚔️ Try Again</button>' +
-    '</div></div>';
+    '<div style="display:flex;gap:8px;margin-top:18px"><button class="bgold" style="flex:1" onclick="resetGame()">⚔️ Try Again</button></div></div>';
   document.body.appendChild(ov);
 }
 
@@ -1789,28 +1701,10 @@ function checkRankUp(prevXP){
   var newRank = 'paige';
   if (stoneIdx >= 11) newRank = 'knight';
   else if (stoneIdx >= 6) newRank = 'squire';
-
-  if (newRank !== state.rank) {
-    state.rank = newRank;
-  }
-
-  // Paige badge: complete first challenge
-  if(!state.badges.includes('paige') && state.completed.length >= 1){
-    state.badges.push('paige');
-    showBadge('paige');
-    return;
-  }
-  // Squire badge: enter squire zone (stone 6+)
-  if(!state.badges.includes('squire') && stoneIdx >= 6){
-    state.badges.push('squire');
-    showBadge('squire');
-    return;
-  }
-  // Knight badge: enter knight zone (stone 11+) OR complete all 15
-  if(!state.badges.includes('knight') && (stoneIdx >= 11 || state.completed.length >= 15)){
-    state.badges.push('knight');
-    showBadge('knight');
-  }
+  if (newRank !== state.rank) { state.rank = newRank; }
+  if(!state.badges.includes('paige') && state.completed.length >= 1){ state.badges.push('paige'); showBadge('paige'); return; }
+  if(!state.badges.includes('squire') && stoneIdx >= 6){ state.badges.push('squire'); showBadge('squire'); return; }
+  if(!state.badges.includes('knight') && (stoneIdx >= 11 || state.completed.length >= 15)){ state.badges.push('knight'); showBadge('knight'); }
 }
 
 function showBadge(rank){
@@ -1839,11 +1733,8 @@ function updateHUD(){
   RANK_ORDER.forEach(function(r){
     var id=r==='paige'?'bp':r==='squire'?'bs':'bk';
     var el=document.getElementById(id);
-    if(state.badges.includes(r) && !el.classList.contains('earned')){
-      el.classList.add('earned');
-    }
+    if(state.badges.includes(r) && !el.classList.contains('earned')){ el.classList.add('earned'); }
   });
-  // Update miss dots
   var misses = state.misses || 0;
   for (var m=1; m<=3; m++) {
     var dot = document.getElementById('md'+m);
@@ -1898,17 +1789,13 @@ function toggleSidebar(){
   document.getElementById('btnQuests').classList.toggle('active',sidebarShown);
   resizeCanvas();
 }
-
 function toggleWizard(){
   wizShown=!wizShown;
   document.getElementById('wpanel').classList.toggle('collapsed',!wizShown);
   document.getElementById('btnWiz').classList.toggle('active',wizShown);
   resizeCanvas();
 }
-
-function toggleMusic(){
-  Music.toggle();
-}
+function toggleMusic(){ Music.toggle(); }
 
 // ═══════════════════════════════════════════════
 // WIZARD & AI
@@ -2018,16 +1905,11 @@ function burst(x,y,col){
 // ═══════════════════════════════════════════════
 // PATH & ORDER SYSTEM
 // ═══════════════════════════════════════════════
-var gameMode = localStorage.getItem('sk4_mode') || null; // 'solo' | 'order'
+var gameMode = localStorage.getItem('sk4_mode') || null;
 var orderData = JSON.parse(localStorage.getItem('sk4_order') || 'null') || null;
-
-var ORDER_COLORS = [
-  '#E8A820','#E84040','#2ECC8A','#7BA7D4','#C0976A',
-  '#9B59B6','#E74C3C','#1ABC9C','#F39C12','#3498DB'
-];
+var ORDER_COLORS = ['#E8A820','#E84040','#2ECC8A','#7BA7D4','#C0976A','#9B59B6','#E74C3C','#1ABC9C','#F39C12','#3498DB'];
 var selectedColor = ORDER_COLORS[0];
 
-// Simulated Order members (realistic demo data)
 var SIM_MEMBERS = [
   {name:'CyberWarden',  role:'Grand Marshal', xp:310, avatar:'CW', color:'#E8A820'},
   {name:'NetSentinel',  role:'Commander',     xp:285, avatar:'NS', color:'#2ECC8A'},
@@ -2037,7 +1919,6 @@ var SIM_MEMBERS = [
   {name:'ByteKnight',   role:'Squire',        xp:120, avatar:'BK', color:'#E84040'},
 ];
 
-// Simulated Siege leaderboard
 var SIM_SIEGE_ORDERS = [
   {name:'Iron Citadel',    xp:1240, mine:false},
   {name:'Dark Sentinels',  xp:980,  mine:false},
@@ -2045,10 +1926,7 @@ var SIM_SIEGE_ORDERS = [
   {name:'Code Crusaders',  xp:610,  mine:false},
 ];
 
-// ── Path selection ──────────────────────────────
-function showPathModal() {
-  document.getElementById('pathModal').classList.add('open');
-}
+function showPathModal() { document.getElementById('pathModal').classList.add('open'); }
 
 function choosePath(mode) {
   if (mode === 'solo') {
@@ -2068,20 +1946,16 @@ function goBack() {
   showPathModal();
 }
 
-// ── Colour picker ───────────────────────────────
 function initColorPicker() {
   var row = document.getElementById('colorRow');
   row.innerHTML = '';
   ORDER_COLORS.forEach(function(col, i) {
     var d = document.createElement('div');
     d.className = 'color-opt' + (i === 0 ? ' sel' : '');
-    d.style.background = col;
-    d.style.color = col;
+    d.style.background = col; d.style.color = col;
     d.onclick = function() {
       document.querySelectorAll('.color-opt').forEach(function(x){ x.classList.remove('sel'); });
-      d.classList.add('sel');
-      selectedColor = col;
-      updateOrderPreview();
+      d.classList.add('sel'); selectedColor = col; updateOrderPreview();
     };
     row.appendChild(d);
   });
@@ -2108,16 +1982,13 @@ function foundOrder() {
   localStorage.setItem('sk4_mode', 'order');
   localStorage.setItem('sk4_order', JSON.stringify(orderData));
   document.getElementById('orderCreateModal').classList.remove('open');
-  // Show order tabs
   document.getElementById('sbOrderTab').style.display = '';
   document.getElementById('sbSiegeTab').style.display = '';
-  // Start game
   document.getElementById('keyModal').classList.remove('hidden');
   renderOrderPanel();
   initSiege();
 }
 
-// ── Sidebar tab switching ────────────────────────
 function switchSbTab(btn) {
   document.querySelectorAll('.sb-tab').forEach(function(t){ t.classList.remove('active'); });
   document.querySelectorAll('.sb-panel').forEach(function(p){ p.classList.remove('active'); });
@@ -2126,32 +1997,24 @@ function switchSbTab(btn) {
   if (panel) panel.classList.add('active');
 }
 
-// ── Order Panel rendering ───────────────────────
 function renderOrderPanel() {
   if (!orderData) return;
-
-  // Banner
   var nameEl = document.getElementById('orderNameEl');
   nameEl.textContent = '⚔️ ' + orderData.name;
   nameEl.style.color = orderData.color;
   document.getElementById('orderMottoEl').textContent = '"' + orderData.motto + '"';
   document.getElementById('orderBannerEl').style.borderColor = orderData.color + '44';
-
-  // My XP in order total
   var myXP = state.xp || 0;
   var simTotal = SIM_MEMBERS.reduce(function(s,m){ return s+m.xp; }, 0);
-  var orderTotal = myXP + simTotal;
-  document.getElementById('orderTotalXP').textContent = orderTotal;
+  document.getElementById('orderTotalXP').textContent = myXP + simTotal;
   document.getElementById('orderMemberCount').textContent = SIM_MEMBERS.length + 1;
   document.getElementById('orderRankEl').textContent = '#' + Math.max(1, 4 - Math.floor(myXP/100));
   document.getElementById('orderZone').textContent = myXP >= 200 ? '2' : myXP >= 50 ? '1' : '—';
-
-  // Members list — me first
   var list = document.getElementById('membersList');
   list.innerHTML = '';
   var me = { name: 'You', role: orderData.role, xp: myXP, avatar: 'ME', color: orderData.color, isMe: true };
   var allMembers = [me].concat(SIM_MEMBERS).sort(function(a,b){ return b.xp-a.xp; });
-  allMembers.forEach(function(m, i) {
+  allMembers.forEach(function(m) {
     var div = document.createElement('div');
     div.className = 'om-member' + (m.isMe ? ' me' : '');
     div.innerHTML = '<div class="om-avatar" style="background:' + m.color + '22;border:1px solid' + m.color + '44;color:' + m.color + '">' + m.avatar + '</div>' +
@@ -2161,33 +2024,22 @@ function renderOrderPanel() {
   });
 }
 
-// ── Siege Event ─────────────────────────────────
-var siegeTimer = null;
-var siegeEndTime = null;
-var siegeActive = false;
-var siegeScore = 0;
-
+var siegeTimer = null, siegeEndTime = null;
 var SIEGE_THEMES = [
   { name:"The Shadow Sorcerer's Challenge",  icon:'🔥', topic:'Injection Spells',    challengeIds:[1,3,6,11,23] },
   { name:"The Dragon's Cryptographic Trial", icon:'🐉', topic:'Cryptography & Auth', challengeIds:[3,8,13,21,24] },
   { name:"The Realm Siege of Dark Forest",   icon:'⚔️', topic:'Access Control',      challengeIds:[2,7,12,19,22] },
 ];
 var currentSiege = null;
-var siegeChallengeIdx = 0;
-var siegeAnswered = 0;
 
 function initSiege() {
-  // Pick this week's siege based on week number
   var weekNum = Math.floor(Date.now() / (7*24*60*60*1000));
   currentSiege = SIEGE_THEMES[weekNum % SIEGE_THEMES.length];
-
-  // Siege ends next Monday
   var now = new Date();
   var monday = new Date(now);
   monday.setDate(now.getDate() - now.getDay() + 1);
   monday.setHours(0,0,0,0);
   siegeEndTime = new Date(monday.getTime() + 7*24*60*60*1000);
-
   document.getElementById('siegeEventName').textContent = currentSiege.name;
   renderSiegeLeaderboard();
   renderSiegeAction();
@@ -2211,10 +2063,7 @@ function renderSiegeLeaderboard() {
   var myXP = state.xp || 0;
   var myOrder = orderData ? { name: orderData.name, xp: myXP + Math.floor(myXP*0.3), mine: true } : null;
   var allOrders = SIM_SIEGE_ORDERS.slice();
-  if (myOrder) {
-    allOrders.push(myOrder);
-    allOrders.sort(function(a,b){ return b.xp-a.xp; });
-  }
+  if (myOrder) { allOrders.push(myOrder); allOrders.sort(function(a,b){ return b.xp-a.xp; }); }
   var lb = document.getElementById('siegeLeaderboard');
   lb.innerHTML = '';
   var medals = ['🥇','🥈','🥉'];
@@ -2245,16 +2094,13 @@ function startSiegeChallenge() {
   var ch = ALL_CHALLENGES.paige.concat(ALL_CHALLENGES.squire).concat(ALL_CHALLENGES.knight)
     .find(function(c){ return c.id === challengeId; });
   if (!ch) { ch = ALL_CHALLENGES.knight[siDone % ALL_CHALLENGES.knight.length]; }
-
-  current = ch;
-  answered = false;
+  current = ch; answered = false;
   var opts = ch.options.map(function(o,i){return {text:o,idx:i};});
   for (var i=opts.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var tmp=opts[i];opts[i]=opts[j];opts[j]=tmp; }
   shuffledOpts = opts;
   shuffledCorrect = opts.findIndex(function(o){return o.idx===ch.correct;});
   stoneIdx = Math.max(stoneIdx, 1);
   renderQuestion(ch);
-
   document.getElementById('qpTag').textContent = '🔥 SIEGE · ' + ch.topic;
   document.getElementById('qpTag').style.color = '#E84040';
   document.getElementById('qpTag').style.borderColor = '#E84040';
@@ -2262,7 +2108,6 @@ function startSiegeChallenge() {
   document.getElementById('qpSub').textContent = 'Weekly Siege Challenge ' + (siDone+1) + ' of 5';
   gameState = 'QUESTIONING';
   document.getElementById('qpanel').classList.add('open');
-
   if (!window._siegeHooked) {
     window._siegeHooked = true;
     var realPick = pickAnswer;
@@ -2272,8 +2117,7 @@ function startSiegeChallenge() {
       if (isCorrect) {
         var done = parseInt(localStorage.getItem('sk4_siege_done') || '0') + 1;
         localStorage.setItem('sk4_siege_done', done);
-        renderSiegeLeaderboard();
-        renderSiegeAction();
+        renderSiegeLeaderboard(); renderSiegeAction();
         state.xp += ch.xp; saveState(); updateHUD();
         addWizMsg('wiz', '🔥 <strong>Siege strike!</strong> +' + (ch.xp*2) + ' XP contributed to your Order!');
       }
@@ -2281,54 +2125,29 @@ function startSiegeChallenge() {
   }
 }
 
-// Update order panel whenever XP changes
 var _origSaveState = saveState;
 saveState = function() {
   _origSaveState();
-  if (gameMode === 'order' && orderData) {
-    renderOrderPanel();
-    renderSiegeLeaderboard();
-  }
+  if (gameMode === 'order' && orderData) { renderOrderPanel(); renderSiegeLeaderboard(); }
 };
 
-
 // ═══════════════════════════════════════════════
-// BADGE SHARE CARD GENERATOR
+// BADGE SHARE CARD
 // ═══════════════════════════════════════════════
-function openShareCard() {
-  document.getElementById('shareModal').classList.add('open');
-  drawBadgeCard();
-}
+function openShareCard() { document.getElementById('shareModal').classList.add('open'); drawBadgeCard(); }
 
 function drawBadgeCard() {
   var canvas = document.getElementById('badgeCanvas');
   var c = canvas.getContext('2d');
   var W = 900, H = 500;
   c.clearRect(0,0,W,H);
-
-  // ── Background ──
   var bg = c.createLinearGradient(0,0,W,H);
-  bg.addColorStop(0, '#07091A');
-  bg.addColorStop(0.5, '#0D1130');
-  bg.addColorStop(1, '#070915');
-  c.fillStyle = bg;
-  c.fillRect(0,0,W,H);
-
-  // Border glow
-  c.strokeStyle = 'rgba(232,168,32,0.6)';
-  c.lineWidth = 3;
-  c.strokeRect(8,8,W-16,H-16);
-  c.strokeStyle = 'rgba(232,168,32,0.2)';
-  c.lineWidth = 1;
-  c.strokeRect(14,14,W-28,H-28);
-
-  // Corner ornaments
-  drawCorner(c, 22, 22, 1, 1);
-  drawCorner(c, W-22, 22, -1, 1);
-  drawCorner(c, 22, H-22, 1, -1);
-  drawCorner(c, W-22, H-22, -1, -1);
-
-  // ── Star field ──
+  bg.addColorStop(0, '#07091A'); bg.addColorStop(0.5, '#0D1130'); bg.addColorStop(1, '#070915');
+  c.fillStyle = bg; c.fillRect(0,0,W,H);
+  c.strokeStyle = 'rgba(232,168,32,0.6)'; c.lineWidth = 3; c.strokeRect(8,8,W-16,H-16);
+  c.strokeStyle = 'rgba(232,168,32,0.2)'; c.lineWidth = 1; c.strokeRect(14,14,W-28,H-28);
+  drawCorner(c, 22, 22, 1, 1); drawCorner(c, W-22, 22, -1, 1);
+  drawCorner(c, 22, H-22, 1, -1); drawCorner(c, W-22, H-22, -1, -1);
   c.fillStyle = 'rgba(255,255,255,0.6)';
   var starSeed = 42;
   for (var s=0; s<80; s++) {
@@ -2338,134 +2157,71 @@ function drawBadgeCard() {
     var sy = ((starSeed >>> 0) % H);
     starSeed = (starSeed * 1664525 + 1013904223) & 0xFFFFFFFF;
     var sr = ((starSeed >>> 0) % 10) / 10 * 1.5 + 0.3;
-    c.beginPath();
-    c.arc(sx, sy, sr, 0, Math.PI*2);
-    c.fill();
+    c.beginPath(); c.arc(sx, sy, sr, 0, Math.PI*2); c.fill();
   }
-
-  // ── Central shield ──
-  c.save();
-  c.translate(W/2, H/2 - 20);
-  drawShield(c, 90);
-  c.restore();
-
-  // ── Zone badge (rank) ──
+  c.save(); c.translate(W/2, H/2 - 20); drawShield(c, 90); c.restore();
   var rank = state.rank || 'paige';
-  var rankData = {
-    paige:  { icon:'🛡️', label:'PAIGE', color:'#7BA7D4' },
-    squire: { icon:'⚔️', label:'SQUIRE', color:'#C0976A' },
-    knight: { icon:'👑', label:'KNIGHT', color:'#E8A820' }
-  };
+  var rankData = { paige:{icon:'🛡️',label:'PAIGE',color:'#7BA7D4'}, squire:{icon:'⚔️',label:'SQUIRE',color:'#C0976A'}, knight:{icon:'👑',label:'KNIGHT',color:'#E8A820'} };
   var rd = rankData[rank];
-
-  // ── Title ──
   c.textAlign = 'center';
-  c.fillStyle = 'rgba(232,168,32,0.55)';
-  c.font = '500 13px "Cinzel", serif';
+  c.fillStyle = 'rgba(232,168,32,0.55)'; c.font = '500 13px "Cinzel", serif';
   c.fillText('SECURITY KNIGHTS', W/2, 48);
-
-  c.fillStyle = 'rgba(232,168,32,0.25)';
-  c.fillRect(W/2 - 120, 54, 240, 1);
-
-  c.fillStyle = rd.color;
-  c.font = 'bold 38px "Cinzel", serif';
+  c.fillStyle = 'rgba(232,168,32,0.25)'; c.fillRect(W/2 - 120, 54, 240, 1);
+  c.fillStyle = rd.color; c.font = 'bold 38px "Cinzel", serif';
   c.fillText('CERTIFIED ' + rd.label, W/2, 98);
-
   var completed = (state.completed || []).length;
   var total = CHALLENGES.length;
-
-  c.fillStyle = 'rgba(232,168,32,0.2)';
-  c.fillRect(W/2 - 160, H - 130, 320, 1);
-
-  c.fillStyle = 'rgba(232,200,120,0.8)';
-  c.font = '500 15px "Cinzel", serif';
+  c.fillStyle = 'rgba(232,168,32,0.2)'; c.fillRect(W/2 - 160, H - 130, 320, 1);
+  c.fillStyle = 'rgba(232,200,120,0.8)'; c.font = '500 15px "Cinzel", serif';
   c.fillText('OWASP Top 10 Secure Coding Challenge', W/2, H-108);
-
-  c.fillStyle = '#FFD700';
-  c.font = 'bold 22px "JetBrains Mono", monospace';
+  c.fillStyle = '#FFD700'; c.font = 'bold 22px "JetBrains Mono", monospace';
   c.fillText(state.xp + ' XP  ·  ' + completed + '/' + total + ' Challenges', W/2, H-78);
-
   var now = new Date();
   var dateStr = now.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
-  c.fillStyle = 'rgba(140,160,200,0.55)';
-  c.font = '400 11px "JetBrains Mono", monospace';
+  c.fillStyle = 'rgba(140,160,200,0.55)'; c.font = '400 11px "JetBrains Mono", monospace';
   c.fillText('Completed ' + dateStr + '  ·  didiegons.github.io', W/2, H-48);
-
-  c.fillStyle = 'rgba(232,168,32,0.35)';
-  c.font = '400 11px "Cinzel", serif';
+  c.fillStyle = 'rgba(232,168,32,0.35)'; c.font = '400 11px "Cinzel", serif';
   c.fillText('The realm is safer with you.', W/2, H-26);
 }
 
 function drawShield(c, size) {
   var s = size;
   var shGrad = c.createLinearGradient(-s, -s, s, s);
-  shGrad.addColorStop(0, 'rgba(232,168,32,0.25)');
-  shGrad.addColorStop(1, 'rgba(232,168,32,0.05)');
+  shGrad.addColorStop(0, 'rgba(232,168,32,0.25)'); shGrad.addColorStop(1, 'rgba(232,168,32,0.05)');
   c.beginPath();
-  c.moveTo(0, -s);
-  c.bezierCurveTo(s, -s, s, -s*0.3, s, s*0.2);
-  c.bezierCurveTo(s, s*0.7, 0, s, 0, s);
-  c.bezierCurveTo(0, s, -s, s*0.7, -s, s*0.2);
-  c.bezierCurveTo(-s, -s*0.3, -s, -s, 0, -s);
-  c.closePath();
-  c.fillStyle = shGrad;
-  c.fill();
-  c.strokeStyle = 'rgba(232,168,32,0.7)';
-  c.lineWidth = 2.5;
-  c.stroke();
-
-  c.font = s * 0.6 + 'px serif';
-  c.textAlign = 'center';
-  c.textBaseline = 'middle';
+  c.moveTo(0, -s); c.bezierCurveTo(s, -s, s, -s*0.3, s, s*0.2);
+  c.bezierCurveTo(s, s*0.7, 0, s, 0, s); c.bezierCurveTo(0, s, -s, s*0.7, -s, s*0.2);
+  c.bezierCurveTo(-s, -s*0.3, -s, -s, 0, -s); c.closePath();
+  c.fillStyle = shGrad; c.fill();
+  c.strokeStyle = 'rgba(232,168,32,0.7)'; c.lineWidth = 2.5; c.stroke();
+  c.font = s * 0.6 + 'px serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
   var rank = state.rank || 'paige';
   var icons = { paige:'🛡', squire:'⚔', knight:'👑' };
-  c.fillText(icons[rank] || '⚔', 0, 0);
-  c.textBaseline = 'alphabetic';
+  c.fillText(icons[rank] || '⚔', 0, 0); c.textBaseline = 'alphabetic';
 }
 
 function drawCorner(c, x, y, dx, dy) {
   var len = 22;
-  c.strokeStyle = 'rgba(232,168,32,0.55)';
-  c.lineWidth = 1.5;
-  c.beginPath();
-  c.moveTo(x + dx*len, y);
-  c.lineTo(x, y);
-  c.lineTo(x, y + dy*len);
-  c.stroke();
-  c.beginPath();
-  c.arc(x, y, 3, 0, Math.PI*2);
-  c.fillStyle = 'rgba(232,168,32,0.55)';
-  c.fill();
+  c.strokeStyle = 'rgba(232,168,32,0.55)'; c.lineWidth = 1.5;
+  c.beginPath(); c.moveTo(x + dx*len, y); c.lineTo(x, y); c.lineTo(x, y + dy*len); c.stroke();
+  c.beginPath(); c.arc(x, y, 3, 0, Math.PI*2);
+  c.fillStyle = 'rgba(232,168,32,0.55)'; c.fill();
 }
 
 function downloadBadge() {
   var canvas = document.getElementById('badgeCanvas');
   var link = document.createElement('a');
   link.download = 'SecurityKnights-Certificate-' + (state.rank||'knight') + '.png';
-  link.href = canvas.toDataURL('image/png');
-  link.click();
+  link.href = canvas.toDataURL('image/png'); link.click();
 }
 
 function shareLinkedIn() {
-  var text = encodeURIComponent(
-    "I just completed the Security Knights OWASP Top 10 challenge! " +
-    "Earned " + state.xp + " XP and reached the rank of " + (state.rank||'Knight').toUpperCase() + ". " +
-    "\n\nGreat hands-on secure coding training — try it yourself! " +
-    "\n#CyberSecurity #OWASP #SecureCoding #SecurityKnights"
-  );
-  window.open('https://www.linkedin.com/sharing/share-offsite/?url=' +
-    encodeURIComponent('https://didiegons.github.io/security-knights-live.html') +
-    '&summary=' + text, '_blank');
+  var text = encodeURIComponent("I just completed the Security Knights OWASP Top 10 challenge! Earned " + state.xp + " XP and reached the rank of " + (state.rank||'Knight').toUpperCase() + ".\n\nGreat hands-on secure coding training — try it yourself!\n#CyberSecurity #OWASP #SecureCoding #SecurityKnights");
+  window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent('https://didiegons.github.io/security-knights-live.html') + '&summary=' + text, '_blank');
 }
 
 function copyShareText() {
-  var text = "⚔️ I just became a Security Knight!\n\n" +
-    "Completed the Security Knights OWASP Top 10 challenge:\n" +
-    "✅ " + (state.completed||[]).length + "/15 challenges completed\n" +
-    "🏅 Rank: " + (state.rank||'Knight').toUpperCase() + "\n" +
-    "⭐ XP: " + state.xp + "\n\n" +
-    "Try it: https://didiegons.github.io/security-knights-live.html\n" +
-    "#CyberSecurity #OWASP #SecureCoding";
+  var text = "⚔️ I just became a Security Knight!\n\nCompleted the Security Knights OWASP Top 10 challenge:\n✅ " + (state.completed||[]).length + "/15 challenges completed\n🏅 Rank: " + (state.rank||'Knight').toUpperCase() + "\n⭐ XP: " + state.xp + "\n\nTry it: https://didiegons.github.io/security-knights-live.html\n#CyberSecurity #OWASP #SecureCoding";
   navigator.clipboard.writeText(text).then(function() {
     var btn = document.getElementById('cpyBtn');
     btn.textContent = '✅ Copied!';
@@ -2473,57 +2229,31 @@ function copyShareText() {
   });
 }
 
-
 // ═══════════════════════════════════════════════
 // DRAGON ANIMATION
 // ═══════════════════════════════════════════════
 var dragonAnim = {
-  running: false,
-  t: 0,
-  dc: null,
-  dctx: null,
-  raf: null,
-  fire: [],
+  running: false, t: 0, dc: null, dctx: null, raf: null, fire: [],
 
   show: function() {
     if (this.running) return;
-    this.running = true;
-    this.t = 0;
-    this.fire = [];
-
+    this.running = true; this.t = 0; this.fire = [];
     var overlay = document.getElementById('dragon-overlay');
     overlay.classList.add('active');
-
     var dc = document.getElementById('dragon-canvas');
-    dc.width = window.innerWidth;
-    dc.height = window.innerHeight;
-    this.dc = dc;
-    this.dctx = dc.getContext('2d');
-
-    // Shake the layout
+    dc.width = window.innerWidth; dc.height = window.innerHeight;
+    this.dc = dc; this.dctx = dc.getContext('2d');
     var layout = document.getElementById('layout');
     layout.style.animation = 'screenShake 0.5s ease 0.8s';
     var hud = document.getElementById('hud');
     hud.style.animation = 'screenShake 0.5s ease 0.8s';
-    setTimeout(function() {
-      layout.style.animation = '';
-      hud.style.animation = '';
-    }, 1400);
-
-    setTimeout(function() {
-      document.getElementById('dragon-text').classList.add('show');
-    }, 900);
-
+    setTimeout(function() { layout.style.animation = ''; hud.style.animation = ''; }, 1400);
+    setTimeout(function() { document.getElementById('dragon-text').classList.add('show'); }, 900);
     var self = this;
     setTimeout(function() {
       document.getElementById('dragon-text').classList.remove('show');
-      setTimeout(function() {
-        overlay.classList.remove('active');
-        self.running = false;
-        if (self.raf) cancelAnimationFrame(self.raf);
-      }, 400);
+      setTimeout(function() { overlay.classList.remove('active'); self.running = false; if (self.raf) cancelAnimationFrame(self.raf); }, 400);
     }, 3000);
-
     this.loop();
   },
 
@@ -2531,253 +2261,122 @@ var dragonAnim = {
     if (!this.running) return;
     var self = this;
     this.raf = requestAnimationFrame(function() { self.loop(); });
-    this.t += 0.025;
-    this.draw();
+    this.t += 0.025; this.draw();
   },
 
   draw: function() {
     var W = this.dc.width, H = this.dc.height;
     var dctx = this.dctx;
     dctx.clearRect(0, 0, W, H);
-
     var bgAlpha = Math.min(0.88, this.t * 0.8);
-    dctx.fillStyle = 'rgba(4,0,8,' + bgAlpha + ')';
-    dctx.fillRect(0, 0, W, H);
-
+    dctx.fillStyle = 'rgba(4,0,8,' + bgAlpha + ')'; dctx.fillRect(0, 0, W, H);
     var vgr = dctx.createRadialGradient(W/2, H/2, W*0.2, W/2, H/2, W*0.8);
     vgr.addColorStop(0, 'rgba(60,0,0,0)');
     vgr.addColorStop(1, 'rgba(120,0,0,' + Math.min(0.5, this.t*0.4) + ')');
-    dctx.fillStyle = vgr;
-    dctx.fillRect(0, 0, W, H);
-
-    var progress = Math.min(1, this.t / 2.5);
-    var eased = 1 - Math.pow(1 - progress, 3);
-
+    dctx.fillStyle = vgr; dctx.fillRect(0, 0, W, H);
     var dx, dy;
     if (this.t < 1.2) {
       var p = this.t / 1.2;
-      dx = W * 1.2 - p * W * 0.78;
-      dy = H * 0.18 + Math.sin(p * Math.PI * 1.5) * H * 0.22;
+      dx = W * 1.2 - p * W * 0.78; dy = H * 0.18 + Math.sin(p * Math.PI * 1.5) * H * 0.22;
     } else if (this.t < 2.2) {
       var p = (this.t - 1.2) / 1.0;
-      dx = W * 0.52 + Math.sin(p * Math.PI * 2) * 28;
-      dy = H * 0.28 + Math.cos(p * Math.PI) * 18;
+      dx = W * 0.52 + Math.sin(p * Math.PI * 2) * 28; dy = H * 0.28 + Math.cos(p * Math.PI) * 18;
     } else {
       var p = (this.t - 2.2) / 1.5;
-      dx = W * 0.52 - p * W * 1.4;
-      dy = H * 0.28 - p * H * 0.55;
+      dx = W * 0.52 - p * W * 1.4; dy = H * 0.28 - p * H * 0.55;
     }
-
     var facingLeft = this.t > 2.2;
-
     dctx.save();
     dctx.translate(dx, dy); dctx.scale(1.6, 1.6); dctx.translate(-dx, -dy);
-
     if (this.t > 1.1 && this.t < 2.3) {
       for (var i = 0; i < 4; i++) {
-        this.fire.push({
-          x: dx + (facingLeft ? -60 : 60),
-          y: dy + 40,
-          vx: (facingLeft ? -1 : 1) * (6 + Math.random() * 8),
-          vy: (Math.random() - 0.5) * 4,
-          r: 10 + Math.random() * 18,
-          life: 1.0,
-          hue: 20 + Math.random() * 30
-        });
+        this.fire.push({ x: dx + (facingLeft ? -60 : 60), y: dy + 40, vx: (facingLeft ? -1 : 1) * (6 + Math.random() * 8), vy: (Math.random() - 0.5) * 4, r: 10 + Math.random() * 18, life: 1.0, hue: 20 + Math.random() * 30 });
       }
     }
-
     for (var i = this.fire.length - 1; i >= 0; i--) {
       var p = this.fire[i];
-      p.x += p.vx;
-      p.y += p.vy;
-      p.vx *= 0.94;
-      p.r *= 0.93;
-      p.life -= 0.045;
+      p.x += p.vx; p.y += p.vy; p.vx *= 0.94; p.r *= 0.93; p.life -= 0.045;
       if (p.life <= 0 || p.r < 1) { this.fire.splice(i, 1); continue; }
-      dctx.save();
-      dctx.globalAlpha = p.life * 0.85;
+      dctx.save(); dctx.globalAlpha = p.life * 0.85;
       var fg = dctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
       fg.addColorStop(0, 'rgba(255,240,100,1)');
       fg.addColorStop(0.4, 'hsla(' + p.hue + ',100%,50%,0.9)');
       fg.addColorStop(1, 'rgba(200,0,0,0)');
-      dctx.fillStyle = fg;
-      dctx.beginPath();
-      dctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      dctx.fill();
-      dctx.restore();
+      dctx.fillStyle = fg; dctx.beginPath(); dctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); dctx.fill(); dctx.restore();
     }
-
     this.drawDragon(dctx, dx, dy, facingLeft, this.t);
     dctx.restore();
   },
 
   drawDragon: function(dctx, x, y, flip, t) {
-    dctx.save();
-    dctx.translate(x, y);
+    dctx.save(); dctx.translate(x, y);
     if (flip) dctx.scale(-1, 1);
-
     var wingFlap = Math.sin(t * 8) * 0.4;
     var bodyWobble = Math.sin(t * 4) * 3;
-
-    dctx.globalAlpha = 0.2;
-    dctx.fillStyle = '#000';
-    dctx.beginPath();
-    dctx.ellipse(0, 80, 60, 18, 0, 0, Math.PI * 2);
-    dctx.fill();
-    dctx.globalAlpha = 1;
-
-    // ── TAIL ──
-    dctx.strokeStyle = '#2A1A00';
-    dctx.lineWidth = 14;
-    dctx.lineCap = 'round';
-    dctx.beginPath();
-    dctx.moveTo(30, 20 + bodyWobble);
+    dctx.globalAlpha = 0.2; dctx.fillStyle = '#000';
+    dctx.beginPath(); dctx.ellipse(0, 80, 60, 18, 0, 0, Math.PI * 2); dctx.fill(); dctx.globalAlpha = 1;
+    dctx.strokeStyle = '#2A1A00'; dctx.lineWidth = 14; dctx.lineCap = 'round';
+    dctx.beginPath(); dctx.moveTo(30, 20 + bodyWobble);
     dctx.quadraticCurveTo(80, 40, 110, 10 + Math.sin(t * 5) * 15);
-    dctx.quadraticCurveTo(130, -5, 120, 25 + Math.sin(t * 3) * 10);
-    dctx.stroke();
+    dctx.quadraticCurveTo(130, -5, 120, 25 + Math.sin(t * 3) * 10); dctx.stroke();
     dctx.fillStyle = '#8B0000';
     for (var i = 0; i < 3; i++) {
       var tx2 = 80 + i * 18, ty2 = 30 + i * 5;
-      dctx.beginPath();
-      dctx.moveTo(tx2, ty2 - 12);
-      dctx.lineTo(tx2 - 6, ty2 + 4);
-      dctx.lineTo(tx2 + 6, ty2 + 4);
-      dctx.closePath();
-      dctx.fill();
+      dctx.beginPath(); dctx.moveTo(tx2, ty2 - 12); dctx.lineTo(tx2 - 6, ty2 + 4); dctx.lineTo(tx2 + 6, ty2 + 4); dctx.closePath(); dctx.fill();
     }
-
-    // ── WINGS ──
     dctx.fillStyle = '#4A0000';
-    dctx.beginPath();
-    dctx.moveTo(-10, -10);
+    dctx.beginPath(); dctx.moveTo(-10, -10);
     dctx.quadraticCurveTo(-80, -100 - wingFlap * 80, -120, -60 - wingFlap * 60);
-    dctx.quadraticCurveTo(-140, -20, -100, 20);
-    dctx.quadraticCurveTo(-60, 40, -10, 20);
-    dctx.closePath();
-    dctx.fill();
-    dctx.strokeStyle = '#6A0010';
-    dctx.lineWidth = 1.5;
-    dctx.globalAlpha = 0.6;
+    dctx.quadraticCurveTo(-140, -20, -100, 20); dctx.quadraticCurveTo(-60, 40, -10, 20); dctx.closePath(); dctx.fill();
+    dctx.strokeStyle = '#6A0010'; dctx.lineWidth = 1.5; dctx.globalAlpha = 0.6;
     for (var i = 0; i < 4; i++) {
       var wx = -30 - i * 20, wy = -30 - i * 18;
-      dctx.beginPath();
-      dctx.moveTo(-10, 10);
-      dctx.lineTo(wx - 40, wy - wingFlap * 40);
-      dctx.stroke();
+      dctx.beginPath(); dctx.moveTo(-10, 10); dctx.lineTo(wx - 40, wy - wingFlap * 40); dctx.stroke();
     }
     dctx.globalAlpha = 1;
-
     dctx.fillStyle = '#3A0000';
-    dctx.beginPath();
-    dctx.moveTo(20, 0);
+    dctx.beginPath(); dctx.moveTo(20, 0);
     dctx.quadraticCurveTo(60, -50 + wingFlap * 40, 90, -30 + wingFlap * 30);
-    dctx.quadraticCurveTo(80, 10, 40, 25);
-    dctx.closePath();
-    dctx.fill();
-
-    // ── BODY ──
+    dctx.quadraticCurveTo(80, 10, 40, 25); dctx.closePath(); dctx.fill();
     var bodyGrad = dctx.createRadialGradient(-10, 0, 5, -10, 0, 55);
-    bodyGrad.addColorStop(0, '#3A1A00');
-    bodyGrad.addColorStop(0.5, '#1A0A00');
-    bodyGrad.addColorStop(1, '#0A0500');
+    bodyGrad.addColorStop(0, '#3A1A00'); bodyGrad.addColorStop(0.5, '#1A0A00'); bodyGrad.addColorStop(1, '#0A0500');
     dctx.fillStyle = bodyGrad;
-    dctx.beginPath();
-    dctx.ellipse(-10, 10 + bodyWobble * 0.5, 50, 35, 0.2, 0, Math.PI * 2);
-    dctx.fill();
-
+    dctx.beginPath(); dctx.ellipse(-10, 10 + bodyWobble * 0.5, 50, 35, 0.2, 0, Math.PI * 2); dctx.fill();
     dctx.fillStyle = '#5A2A10';
-    dctx.beginPath();
-    dctx.ellipse(-20, 25 + bodyWobble * 0.3, 28, 18, 0.1, 0, Math.PI * 2);
-    dctx.fill();
-
+    dctx.beginPath(); dctx.ellipse(-20, 25 + bodyWobble * 0.3, 28, 18, 0.1, 0, Math.PI * 2); dctx.fill();
     dctx.fillStyle = '#8B0000';
     for (var i = 0; i < 5; i++) {
       var sx = -30 + i * 12, sy = -22 - (i === 2 ? 6 : 0) + bodyWobble * 0.3;
-      dctx.beginPath();
-      dctx.moveTo(sx, sy - 14 - (i===2?4:0));
-      dctx.lineTo(sx - 5, sy + 4);
-      dctx.lineTo(sx + 5, sy + 4);
-      dctx.closePath();
-      dctx.fill();
+      dctx.beginPath(); dctx.moveTo(sx, sy - 14 - (i===2?4:0)); dctx.lineTo(sx - 5, sy + 4); dctx.lineTo(sx + 5, sy + 4); dctx.closePath(); dctx.fill();
     }
-
-    // ── LEGS ──
-    dctx.strokeStyle = '#2A1200';
-    dctx.lineWidth = 8;
-    dctx.beginPath();
-    dctx.moveTo(0, 30);
-    dctx.lineTo(-20, 65 + Math.sin(t * 6) * 8);
-    dctx.lineTo(-30, 80 + Math.sin(t * 6) * 8);
-    dctx.stroke();
-    dctx.beginPath();
-    dctx.moveTo(20, 35);
-    dctx.lineTo(5, 70 + Math.cos(t * 6) * 8);
-    dctx.lineTo(-5, 82 + Math.cos(t * 6) * 8);
-    dctx.stroke();
-    dctx.strokeStyle = '#555';
-    dctx.lineWidth = 3;
+    dctx.strokeStyle = '#2A1200'; dctx.lineWidth = 8;
+    dctx.beginPath(); dctx.moveTo(0, 30); dctx.lineTo(-20, 65 + Math.sin(t * 6) * 8); dctx.lineTo(-30, 80 + Math.sin(t * 6) * 8); dctx.stroke();
+    dctx.beginPath(); dctx.moveTo(20, 35); dctx.lineTo(5, 70 + Math.cos(t * 6) * 8); dctx.lineTo(-5, 82 + Math.cos(t * 6) * 8); dctx.stroke();
+    dctx.strokeStyle = '#555'; dctx.lineWidth = 3;
     [[-30,80],[-5,82]].forEach(function(pos) {
       for (var c = -1; c <= 1; c++) {
-        dctx.beginPath();
-        dctx.moveTo(pos[0] + c*6, pos[1] + Math.sin(t*6)*8);
-        dctx.lineTo(pos[0] + c*8, pos[1] + 12 + Math.sin(t*6)*8);
-        dctx.stroke();
+        dctx.beginPath(); dctx.moveTo(pos[0] + c*6, pos[1] + Math.sin(t*6)*8); dctx.lineTo(pos[0] + c*8, pos[1] + 12 + Math.sin(t*6)*8); dctx.stroke();
       }
     });
-
-    // ── HEAD & NECK ──
     dctx.fillStyle = '#2A1A00';
-    dctx.beginPath();
-    dctx.moveTo(-40, -20);
+    dctx.beginPath(); dctx.moveTo(-40, -20);
     dctx.quadraticCurveTo(-70, -50, -80, -45 + Math.sin(t * 3) * 8);
-    dctx.quadraticCurveTo(-70, -30, -40, -10);
-    dctx.fill();
-
+    dctx.quadraticCurveTo(-70, -30, -40, -10); dctx.fill();
     var headX = -85, headY = -50 + Math.sin(t * 3) * 8;
     var headGrad = dctx.createRadialGradient(headX, headY, 3, headX, headY, 32);
-    headGrad.addColorStop(0, '#3A1A00');
-    headGrad.addColorStop(1, '#0A0500');
+    headGrad.addColorStop(0, '#3A1A00'); headGrad.addColorStop(1, '#0A0500');
     dctx.fillStyle = headGrad;
-    dctx.beginPath();
-    dctx.ellipse(headX, headY, 32, 22, -0.3, 0, Math.PI * 2);
-    dctx.fill();
-
+    dctx.beginPath(); dctx.ellipse(headX, headY, 32, 22, -0.3, 0, Math.PI * 2); dctx.fill();
     dctx.fillStyle = '#1A0A00';
-    dctx.beginPath();
-    dctx.ellipse(headX - 24, headY + 6, 18, 12, -0.3, 0, Math.PI * 2);
-    dctx.fill();
-
-    dctx.fillStyle = '#FF0000';
-    dctx.beginPath();
-    dctx.arc(headX - 10, headY - 8, 8, 0, Math.PI * 2);
-    dctx.fill();
+    dctx.beginPath(); dctx.ellipse(headX - 24, headY + 6, 18, 12, -0.3, 0, Math.PI * 2); dctx.fill();
+    dctx.fillStyle = '#FF0000'; dctx.beginPath(); dctx.arc(headX - 10, headY - 8, 8, 0, Math.PI * 2); dctx.fill();
     var eyeGlow = dctx.createRadialGradient(headX-10, headY-8, 0, headX-10, headY-8, 18);
-    eyeGlow.addColorStop(0, 'rgba(255,0,0,0.6)');
-    eyeGlow.addColorStop(1, 'rgba(255,0,0,0)');
-    dctx.fillStyle = eyeGlow;
-    dctx.beginPath();
-    dctx.arc(headX - 10, headY - 8, 18, 0, Math.PI * 2);
-    dctx.fill();
-    dctx.fillStyle = '#000';
-    dctx.beginPath();
-    dctx.arc(headX - 11, headY - 7, 3.5, 0, Math.PI * 2);
-    dctx.fill();
-
+    eyeGlow.addColorStop(0, 'rgba(255,0,0,0.6)'); eyeGlow.addColorStop(1, 'rgba(255,0,0,0)');
+    dctx.fillStyle = eyeGlow; dctx.beginPath(); dctx.arc(headX - 10, headY - 8, 18, 0, Math.PI * 2); dctx.fill();
+    dctx.fillStyle = '#000'; dctx.beginPath(); dctx.arc(headX - 11, headY - 7, 3.5, 0, Math.PI * 2); dctx.fill();
     dctx.fillStyle = '#555';
-    dctx.beginPath();
-    dctx.moveTo(headX - 4, headY - 20);
-    dctx.lineTo(headX + 8, headY - 44);
-    dctx.lineTo(headX + 4, headY - 20);
-    dctx.closePath();
-    dctx.fill();
-    dctx.beginPath();
-    dctx.moveTo(headX - 15, headY - 18);
-    dctx.lineTo(headX - 8, headY - 38);
-    dctx.lineTo(headX - 20, headY - 18);
-    dctx.closePath();
-    dctx.fill();
-
+    dctx.beginPath(); dctx.moveTo(headX - 4, headY - 20); dctx.lineTo(headX + 8, headY - 44); dctx.lineTo(headX + 4, headY - 20); dctx.closePath(); dctx.fill();
+    dctx.beginPath(); dctx.moveTo(headX - 15, headY - 18); dctx.lineTo(headX - 8, headY - 38); dctx.lineTo(headX - 20, headY - 18); dctx.closePath(); dctx.fill();
     if (t > 1.1 && t < 2.3) {
       var fIntensity = Math.sin((t - 1.1) / 1.2 * Math.PI);
       var fg2 = dctx.createLinearGradient(headX - 42, headY + 6, headX - 120, headY + 6);
@@ -2786,21 +2385,15 @@ var dragonAnim = {
       fg2.addColorStop(1, 'rgba(200,0,0,0)');
       dctx.fillStyle = fg2;
       var fireW = 80 + Math.sin(t * 12) * 20;
-      dctx.beginPath();
-      dctx.moveTo(headX - 42, headY + 6);
+      dctx.beginPath(); dctx.moveTo(headX - 42, headY + 6);
       dctx.quadraticCurveTo(headX - 80, headY + 6 + Math.sin(t * 8) * 15, headX - 42 - fireW, headY + 18);
-      dctx.quadraticCurveTo(headX - 80, headY + 25 + Math.sin(t * 10) * 10, headX - 42, headY + 25);
-      dctx.closePath();
-      dctx.fill();
+      dctx.quadraticCurveTo(headX - 80, headY + 25 + Math.sin(t * 10) * 10, headX - 42, headY + 25); dctx.closePath(); dctx.fill();
     }
-
     dctx.restore();
   }
 };
 
-function showDragonAttack() {
-  dragonAnim.show();
-}
+function showDragonAttack() { dragonAnim.show(); }
 
 function escHtml(s){
   if(!s) return '';
@@ -2812,11 +2405,7 @@ function escHtml(s){
 // ═══════════════════════════════════════════════
 function showKeyModal(){
   gameState='MODAL';
-  if(apiKey){
-    startGame();
-  } else {
-    document.getElementById('keyModal').classList.remove('hidden');
-  }
+  if(apiKey){ startGame(); } else { document.getElementById('keyModal').classList.remove('hidden'); }
 }
 
 document.addEventListener('DOMContentLoaded',function(){
@@ -2855,10 +2444,7 @@ document.addEventListener('DOMContentLoaded',function(){
     btn.addEventListener('click',function(){askHint(btn.getAttribute('data-hint'));});
   });
 
-  // Build map
   buildMap();
-
-  // Run intro
   runIntro();
   requestAnimationFrame(loop);
 });
@@ -2870,21 +2456,17 @@ function startGame(){
   if (gameMode === 'order' && orderData) {
     document.getElementById('sbOrderTab').style.display = '';
     document.getElementById('sbSiegeTab').style.display = '';
-    renderOrderPanel();
-    initSiege();
+    renderOrderPanel(); initSiege();
     addWizMsg('wiz', '⚔️ <strong>Welcome back, ' + orderData.role + ' of ' + orderData.name + '!</strong> Your Order awaits.');
   }
-
   var lastDone=0;
   for(var i=1;i<=15;i++){
     if(CHALLENGES[i-1]&&state.completed.includes(CHALLENGES[i-1].id)) lastDone=i;
   }
-
   stoneIdx=lastDone;
   charX=WAYPOINTS[stoneIdx].x; charY=WAYPOINTS[stoneIdx].y;
   camX=Math.max(0,charX-vpW*.4);
   updateHUD(); renderSidebar();
-
   if(lastDone===0){
     addWizMsg('wiz','⚔️ <strong>Your quest begins!</strong> The knight walks to the first challenge...');
     setTimeout(walkToNextStone,1200);
@@ -2898,6 +2480,5 @@ function startGame(){
   }
 }
 </script>
-
 </body>
 </html>
