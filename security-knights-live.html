@@ -351,6 +351,25 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
 .ocm-preview-motto{font-size:.75rem;color:var(--muted);}
 .ocm-actions{display:flex;gap:8px;}
 
+/* ── IDENTITY MODAL ── */
+#identityModal{position:fixed;inset:0;z-index:920;background:rgba(4,6,18,.97);backdrop-filter:blur(18px);display:none;align-items:center;justify-content:center;padding:20px;}
+#identityModal.open{display:flex;}
+.idm-card{background:linear-gradient(160deg,rgba(12,10,28,.99),rgba(8,10,22,.99));border:1px solid rgba(232,168,32,.4);border-radius:20px;padding:36px 32px;max-width:460px;width:100%;box-shadow:0 0 100px rgba(232,168,32,.15);text-align:center;}
+.idm-crest{font-size:3.8rem;display:block;margin-bottom:10px;filter:drop-shadow(0 0 24px rgba(232,168,32,.7));animation:float 3s ease-in-out infinite;}
+.idm-title{font-family:'Uncial Antiqua',serif;font-size:1.6rem;color:var(--gold);margin-bottom:4px;}
+.idm-sub{font-size:.78rem;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-bottom:22px;font-family:'Cinzel',serif;}
+.idm-label{font-family:'Cinzel',serif;font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;margin-bottom:6px;display:block;text-align:left;}
+.idm-input{width:100%;padding:11px 14px;background:rgba(4,6,18,.9);border:1px solid var(--bdr);border-radius:8px;color:var(--txt);font-size:.95rem;font-family:'Cinzel',serif;outline:none;margin-bottom:16px;transition:border-color .2s;text-align:center;letter-spacing:.04em;}
+.idm-input:focus{border-color:var(--gold);}
+.idm-input::placeholder{color:rgba(122,139,170,.4);font-size:.82rem;font-family:'Lato',sans-serif;letter-spacing:0;}
+.idm-title-row{display:flex;align-items:center;gap:8px;margin-bottom:16px;}
+.idm-title-display{flex:1;padding:10px 14px;background:rgba(4,6,18,.8);border:1px solid rgba(232,168,32,.2);border-radius:8px;font-family:'Cinzel',serif;font-size:.88rem;color:#FFD700;text-align:center;}
+.idm-reroll{padding:9px 13px;background:rgba(232,168,32,.1);border:1px solid rgba(232,168,32,.3);border-radius:8px;color:var(--gold);cursor:pointer;font-size:.95rem;transition:all .2s;flex-shrink:0;}
+.idm-reroll:hover{background:rgba(232,168,32,.2);transform:rotate(180deg);}
+.idm-preview{background:linear-gradient(135deg,rgba(232,168,32,.06),rgba(232,168,32,.02));border:1px solid rgba(232,168,32,.18);border-radius:10px;padding:14px;margin-bottom:20px;}
+.idm-preview-name{font-family:'Uncial Antiqua',serif;font-size:1.1rem;color:#FFD700;text-shadow:0 0 20px rgba(232,168,32,.4);}
+.idm-preview-sub{font-size:.7rem;color:var(--muted);margin-top:3px;font-family:'JetBrains Mono',monospace;letter-spacing:.08em;}
+
 /* ── SIDEBAR TABS ── */
 .sb-tabs{display:flex;border-bottom:1px solid rgba(232,168,32,.1);flex-shrink:0;}
 .sb-tab{flex:1;padding:9px 4px;font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;text-align:center;color:var(--muted);border:none;background:none;transition:all .2s;border-bottom:2px solid transparent;}
@@ -491,6 +510,36 @@ html,body{height:100%;overflow:hidden;background:#090C18;color:var(--txt);}
 <div id="dragon-overlay">
   <canvas id="dragon-canvas"></canvas>
   <div class="dragon-text" id="dragon-text">🐉 The Dragon Strikes!<br><span style="font-size:55%;color:#FF8844;font-family:'Cinzel',serif">Study the explanation and continue your quest!</span></div>
+</div>
+
+<!-- ── IDENTITY MODAL ── -->
+<div id="identityModal">
+  <div class="idm-card">
+    <span class="idm-crest">⚔️</span>
+    <div class="idm-title">Name Your Knight</div>
+    <div class="idm-sub">Every legend begins with a name</div>
+
+    <label class="idm-label">Your Name</label>
+    <input type="text" class="idm-input" id="idmNameInput"
+           placeholder="Enter your knight's name…"
+           maxlength="22"
+           oninput="updateIdentityPreview()"/>
+
+    <label class="idm-label">Your Title</label>
+    <div class="idm-title-row">
+      <div class="idm-title-display" id="idmTitleDisplay">the Warden</div>
+      <button class="idm-reroll" onclick="rerollTitle()" title="Re-roll title">↻</button>
+    </div>
+
+    <div class="idm-preview">
+      <div class="idm-preview-name" id="idmPreviewName">⚔️ Knight of Codehaven</div>
+      <div class="idm-preview-sub">Guardian of the Realm · OWASP Knight</div>
+    </div>
+
+    <button class="bgold" style="width:100%;padding:13px;font-size:.95rem;letter-spacing:.06em;" onclick="saveIdentity()">
+      ⚔️ Enter the Realm
+    </button>
+  </div>
 </div>
 
 <!-- ── PATH SELECTION ── -->
@@ -1273,8 +1322,14 @@ function startIntro() {
 
 function afterIntro() {
   if (!gameMode) {
-    showPathModal();
+    // New player: name themselves first, then choose path
+    if (!identityData) {
+      showIdentityModal();
+    } else {
+      showPathModal();
+    }
   } else {
+    // Returning player
     if (gameMode === 'order' && orderData) {
       document.getElementById('sbOrderTab').style.display = '';
       document.getElementById('sbSiegeTab').style.display = '';
@@ -1684,11 +1739,14 @@ function showDefeatScreen(){
 }
 
 function showVictory(){
+  var knightName = identityData ? getKnightFull() : 'Security Knight';
   var ov=document.createElement('div');
   ov.className='overlay';
   ov.innerHTML='<div class="mcard" style="text-align:center"><h2>Quest Complete! 👑</h2>'+
     '<p style="font-size:2.8rem;margin:14px 0">🏆</p>'+
-    '<p>You are a true <strong style="color:#E8A820">Security Knight</strong>!<br>Total XP: <strong style="color:#FFD700">'+state.xp+'</strong></p>'+
+    '<p><strong style="color:#FFD700;font-family:\'Uncial Antiqua\',serif;font-size:1.1rem">'+escHtml(knightName)+'</strong><br>'+
+    '<span style="color:var(--muted);font-size:.8rem;font-family:\'Cinzel\',serif">of Codehaven</span></p>'+
+    '<p style="margin-top:10px">You are a true <strong style="color:#E8A820">Security Knight</strong>!<br>Total XP: <strong style="color:#FFD700">'+state.xp+'</strong></p>'+
     '<div style="display:flex;gap:8px;margin-top:18px"><button class="bgold" onclick="this.closest(\'.overlay\').remove()">Keep Exploring</button>'+
     '<button class="bghost" onclick="resetGame()">↺ Play Again</button></div></div>';
   document.body.appendChild(ov);
@@ -1900,6 +1958,84 @@ function burst(x,y,col){
     document.body.appendChild(p);
     setTimeout(function(el){el.remove();},1100,p);
   }
+}
+
+// ═══════════════════════════════════════════════
+// PERSONAL IDENTITY SYSTEM
+// ═══════════════════════════════════════════════
+var identityData = JSON.parse(localStorage.getItem('sk4_identity') || 'null');
+
+var KNIGHT_TITLES = [
+  'the Warden',        'the Shield Bearer',  'the Code Guardian',
+  'the Cipher',        'the Sentinel',       'the Vigilant One',
+  'the Defender',      'the Unbroken',       'the Shadow Hunter',
+  'the Silent Shield', 'the Iron Coder',     'the Secure One',
+  'the Realm Keeper',  'the Watchful',       'the Steadfast',
+  'the Cryptkeeper',   'the Firewall',       'the Faithful Guard',
+  'the Stalwart',      'the Patched One',    'the Gatekeeper'
+];
+
+var currentTitleIdx = Math.floor(Math.random() * KNIGHT_TITLES.length);
+
+function showIdentityModal() {
+  // Reset to a fresh random title each visit
+  currentTitleIdx = Math.floor(Math.random() * KNIGHT_TITLES.length);
+  document.getElementById('idmTitleDisplay').textContent = KNIGHT_TITLES[currentTitleIdx];
+  document.getElementById('idmNameInput').value = '';
+  updateIdentityPreview();
+  document.getElementById('identityModal').classList.add('open');
+  setTimeout(function () { document.getElementById('idmNameInput').focus(); }, 300);
+}
+
+function rerollTitle() {
+  currentTitleIdx = (currentTitleIdx + 1) % KNIGHT_TITLES.length;
+  document.getElementById('idmTitleDisplay').textContent = KNIGHT_TITLES[currentTitleIdx];
+  updateIdentityPreview();
+}
+
+function updateIdentityPreview() {
+  var name  = document.getElementById('idmNameInput').value.trim() || 'Knight';
+  var title = KNIGHT_TITLES[currentTitleIdx];
+  document.getElementById('idmPreviewName').textContent = '⚔️ ' + name + ' ' + title;
+}
+
+function saveIdentity() {
+  var name = document.getElementById('idmNameInput').value.trim();
+  if (!name) {
+    var inp = document.getElementById('idmNameInput');
+    inp.style.borderColor = 'var(--crim)';
+    inp.placeholder = 'A knight must have a name!';
+    setTimeout(function () {
+      inp.style.borderColor = '';
+      inp.placeholder = 'Enter your knight\'s name…';
+    }, 1800);
+    return;
+  }
+  var title = KNIGHT_TITLES[currentTitleIdx];
+  identityData = {
+    name:  name,
+    title: title,
+    full:  name + ' ' + title,
+    realm: 'of Codehaven'
+  };
+  localStorage.setItem('sk4_identity', JSON.stringify(identityData));
+  document.getElementById('identityModal').classList.remove('open');
+
+  // Update the static wizard greeting in the DOM with the player's name
+  var firstMsg = document.querySelector('.wm.wiz');
+  if (firstMsg) {
+    firstMsg.innerHTML = '<strong>Hail, ' + escHtml(name) + '!</strong> I am Merlin. I shall guide you — ' + escHtml(title) + ' — through the realm of Codehaven. Ask for hints, explanations, or real-world examples! 🧙✨';
+  }
+
+  showPathModal();
+}
+
+function getKnightName() {
+  return identityData ? identityData.name : 'Knight';
+}
+
+function getKnightFull() {
+  return identityData ? (identityData.name + ' ' + identityData.title) : 'Security Knight';
 }
 
 // ═══════════════════════════════════════════════
@@ -2169,6 +2305,17 @@ function drawBadgeCard() {
   c.fillStyle = 'rgba(232,168,32,0.25)'; c.fillRect(W/2 - 120, 54, 240, 1);
   c.fillStyle = rd.color; c.font = 'bold 38px "Cinzel", serif';
   c.fillText('CERTIFIED ' + rd.label, W/2, 98);
+
+  // ── Player identity on certificate ──
+  if (identityData) {
+    c.fillStyle = 'rgba(255,215,0,0.9)';
+    c.font = 'bold 24px "Uncial Antiqua", serif';
+    c.fillText(identityData.name + ' ' + identityData.title, W/2, 132);
+    c.fillStyle = 'rgba(232,222,186,0.45)';
+    c.font = '400 11px "Cinzel", serif';
+    c.fillText('of Codehaven', W/2, 150);
+  }
+
   var completed = (state.completed || []).length;
   var total = CHALLENGES.length;
   c.fillStyle = 'rgba(232,168,32,0.2)'; c.fillRect(W/2 - 160, H - 130, 320, 1);
@@ -2221,7 +2368,8 @@ function shareLinkedIn() {
 }
 
 function copyShareText() {
-  var text = "⚔️ I just became a Security Knight!\n\nCompleted the Security Knights OWASP Top 10 challenge:\n✅ " + (state.completed||[]).length + "/15 challenges completed\n🏅 Rank: " + (state.rank||'Knight').toUpperCase() + "\n⭐ XP: " + state.xp + "\n\nTry it: https://didiegons.github.io/security-knights-live.html\n#CyberSecurity #OWASP #SecureCoding";
+  var knightLine = identityData ? (identityData.name + ' ' + identityData.title + ' of Codehaven') : 'Security Knight';
+  var text = "⚔️ " + knightLine + " — Quest Complete!\n\nCompleted the Security Knights OWASP Top 10 challenge:\n✅ " + (state.completed||[]).length + "/15 challenges completed\n🏅 Rank: " + (state.rank||'Knight').toUpperCase() + "\n⭐ XP: " + state.xp + "\n\nTry it: https://didiegons.github.io/security-knights-live.html\n#CyberSecurity #OWASP #SecureCoding";
   navigator.clipboard.writeText(text).then(function() {
     var btn = document.getElementById('cpyBtn');
     btn.textContent = '✅ Copied!';
@@ -2468,14 +2616,16 @@ function startGame(){
   camX=Math.max(0,charX-vpW*.4);
   updateHUD(); renderSidebar();
   if(lastDone===0){
-    addWizMsg('wiz','⚔️ <strong>Your quest begins!</strong> The knight walks to the first challenge...');
+    var greeting = identityData ? '⚔️ <strong>Your quest begins, ' + escHtml(identityData.name) + '!</strong> The knight walks to the first challenge...' : '⚔️ <strong>Your quest begins!</strong> The knight walks to the first challenge...';
+    addWizMsg('wiz', greeting);
     setTimeout(walkToNextStone,1200);
   } else if(lastDone>=15){
     charAction='victory'; gameState='VICTORY';
     addWizMsg('wiz','👑 <strong>All 15 challenges complete!</strong> You are a true Security Knight! XP: '+state.xp);
     setTimeout(showVictory,800);
   } else {
-    addWizMsg('wiz','⚔️ <strong>Welcome back!</strong> Resuming at stone '+(lastDone+1)+'...');
+    var wlcBack = identityData ? '⚔️ <strong>Welcome back, ' + escHtml(getKnightFull()) + '!</strong> Resuming at stone '+(lastDone+1)+'...' : '⚔️ <strong>Welcome back!</strong> Resuming at stone '+(lastDone+1)+'...';
+    addWizMsg('wiz', wlcBack);
     setTimeout(walkToNextStone,800);
   }
 }
