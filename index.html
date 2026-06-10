@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<meta name="description" content="Dayo Egonu — Applied AI Portfolio. Graduate researcher in AI security, NLP, and machine learning at Indiana Wesleyan University."/>
+<meta name="description" content="Dayo Egonu — Applied AI Portfolio. AI Security Engineer and Information Protection Advisor specializing in NLP, adversarial ML, AI governance, and developer security enablement."/>
 <title>Dayo Egonu · Applied AI Portfolio</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
 <style>
@@ -28,6 +28,8 @@
   --blue-dim:rgba(55,138,221,0.1);
   --sky:#58A6FF;
   --sky-dim:rgba(88,166,255,0.12);
+  --red:#f85149;
+  --red-dim:rgba(248,81,73,0.1);
   --text:#E4E8F0;
   --text2:#8990A8;
   --text3:#454D65;
@@ -47,12 +49,11 @@ body{
   overflow-x:hidden;
 }
 
-/* ══ SCROLLBAR ══════════════════════════════════════════ */
 ::-webkit-scrollbar{width:5px;}
 ::-webkit-scrollbar-track{background:var(--bg);}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
 
-/* ══ NAV ════════════════════════════════════════════════ */
+/* NAV */
 nav{
   position:sticky;top:0;z-index:200;
   background:rgba(7,8,10,0.90);
@@ -107,7 +108,7 @@ nav{
   .nav-links{gap:2px;}
 }
 
-/* ══ HERO ═══════════════════════════════════════════════ */
+/* HERO */
 .hero{
   min-height:92vh;
   display:flex;align-items:center;
@@ -115,7 +116,6 @@ nav{
   overflow:hidden;
   border-bottom:1px solid var(--border);
 }
-
 .grid-bg{
   position:absolute;inset:0;
   background-image:
@@ -125,7 +125,6 @@ nav{
   mask-image:radial-gradient(ellipse 80% 60% at 50% 50%,black 30%,transparent 100%);
   opacity:0.4;
 }
-
 .hero-inner{
   max-width:1100px;margin:0 auto;
   padding:6rem 2rem 5rem;
@@ -135,12 +134,10 @@ nav{
   gap:4rem;
   align-items:center;
 }
-
 @media(max-width:768px){
   .hero-inner{grid-template-columns:1fr;gap:2.5rem;}
   .hero-visual{display:none;}
 }
-
 .hero-eyebrow{
   font-family:var(--mono);font-size:11px;
   color:var(--accent);letter-spacing:0.2em;
@@ -152,7 +149,6 @@ nav{
   content:'';display:block;
   width:24px;height:1px;background:var(--accent);
 }
-
 h1.hero-title{
   font-family:var(--sans);
   font-size:clamp(2.4rem,5.5vw,4rem);
@@ -163,7 +159,6 @@ h1.hero-title{
   letter-spacing:-0.02em;
 }
 h1.hero-title .line2{color:var(--accent);}
-
 .hero-bio{
   font-size:16px;
   color:var(--text2);
@@ -172,7 +167,6 @@ h1.hero-title .line2{color:var(--accent);}
   max-width:480px;
   font-family:var(--serif);
 }
-
 .hero-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:2.5rem;}
 .chip{
   font-family:var(--mono);font-size:11px;
@@ -181,7 +175,6 @@ h1.hero-title .line2{color:var(--accent);}
   padding:4px 12px;border-radius:4px;
   letter-spacing:0.04em;
 }
-
 .hero-cta{display:flex;gap:10px;flex-wrap:wrap;}
 .btn{
   font-family:var(--sans);font-weight:700;
@@ -196,7 +189,7 @@ h1.hero-title .line2{color:var(--accent);}
 .btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2);}
 .btn-ghost:hover{border-color:var(--text3);color:var(--text);background:var(--surface2);}
 
-/* ── HERO VISUAL ── */
+/* HERO VISUAL */
 .hero-visual{
   display:flex;justify-content:center;
   position:relative;
@@ -218,7 +211,7 @@ h1.hero-title .line2{color:var(--accent);}
 }
 .node-canvas{position:absolute;inset:0;}
 
-/* ══ SECTIONS ═══════════════════════════════════════════ */
+/* SECTIONS */
 .section{
   max-width:1100px;margin:0 auto;
   padding:5rem 2rem;
@@ -243,13 +236,11 @@ h1.hero-title .line2{color:var(--accent);}
   max-width:540px;font-style:italic;
 }
 
-/* ══ FEATURED PROJECT ════════════════════════════════════ */
+/* FEATURED */
 .featured-wrap{
   border-bottom:1px solid var(--border);
   padding-bottom:5rem;
-  margin-bottom:0;
 }
-
 .featured-card{
   background:var(--surface);
   border:1px solid var(--border);
@@ -261,16 +252,13 @@ h1.hero-title .line2{color:var(--accent);}
   transition:border-color 0.2s;
 }
 .featured-card:hover{border-color:var(--border2);}
-
 @media(max-width:768px){.featured-card{grid-template-columns:1fr;}}
-
 .featured-meta{
   padding:2.5rem;
   display:flex;flex-direction:column;justify-content:space-between;
   border-right:1px solid var(--border);
 }
 @media(max-width:768px){.featured-meta{border-right:none;border-bottom:1px solid var(--border);}}
-
 .featured-badge{
   display:inline-flex;align-items:center;gap:6px;
   font-family:var(--mono);font-size:11px;
@@ -287,7 +275,6 @@ h1.hero-title .line2{color:var(--accent);}
   background:var(--accent);
   animation:breathe 2s ease-in-out infinite;
 }
-
 .featured-title{
   font-family:var(--sans);
   font-size:clamp(1.5rem,2.5vw,2rem);
@@ -295,22 +282,18 @@ h1.hero-title .line2{color:var(--accent);}
   color:var(--text);margin-bottom:0.75rem;
 }
 .featured-title span{color:var(--accent);}
-
 .featured-desc{
   font-size:14px;color:var(--text2);
   line-height:1.8;margin-bottom:1.5rem;
   font-family:var(--serif);font-style:italic;
 }
-
 .featured-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:1.5rem;}
 .ftag{
   font-family:var(--mono);font-size:10px;
   background:var(--bg2);border:1px solid var(--border2);
   color:var(--text3);padding:3px 9px;border-radius:3px;
 }
-
 .featured-links{display:flex;gap:8px;flex-wrap:wrap;}
-
 .featured-visual{
   padding:2.5rem;
   display:flex;flex-direction:column;gap:10px;
@@ -330,7 +313,7 @@ h1.hero-title .line2{color:var(--accent);}
 .score-bar-fill{height:100%;border-radius:3px;}
 .score-num{font-family:var(--mono);font-size:12px;min-width:28px;text-align:right;}
 
-/* ══ PROJECT GRID ═══════════════════════════════════════ */
+/* PROJECT GRID */
 .divider{border:none;border-top:1px solid var(--border);margin:0;}
 
 .projects-grid{
@@ -352,6 +335,36 @@ h1.hero-title .line2{color:var(--accent);}
 }
 .project-card:hover{border-color:var(--border2);transform:translateY(-3px);}
 
+/* Banner cards (full-width) */
+.project-card.banner{
+  grid-column:1/-1;
+  flex-direction:row;
+  align-items:center;
+  min-height:160px;
+}
+.project-card.banner .card-body{flex-direction:row;align-items:center;gap:2rem;}
+.project-card.banner .card-desc{flex:1;margin-bottom:0;}
+.project-card.banner .banner-vis{
+  flex-shrink:0;width:280px;
+  display:flex;flex-direction:column;gap:7px;
+  padding-right:0.5rem;
+}
+@media(max-width:768px){
+  .project-card.banner{flex-direction:column;}
+  .project-card.banner .banner-vis{display:none;}
+  .project-card.banner .card-body{flex-direction:column;gap:0.75rem;}
+}
+
+.banner-score-row{
+  display:grid;
+  grid-template-columns:110px 1fr 28px;
+  align-items:center;gap:8px;
+}
+.banner-score-label{font-family:var(--mono);font-size:10px;color:var(--text3);}
+.banner-bar-bg{height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
+.banner-bar-fill{height:100%;border-radius:2px;}
+.banner-score-num{font-family:var(--mono);font-size:10px;text-align:right;}
+
 .live-pill{
   position:absolute;
   top:10px;right:10px;
@@ -372,6 +385,18 @@ h1.hero-title .line2{color:var(--accent);}
   background:var(--sky);
   animation:breathe 2s ease-in-out infinite;
 }
+.live-pill.green{
+  background:rgba(0,217,126,0.15);
+  color:var(--accent);
+  border-color:rgba(0,217,126,0.35);
+}
+.live-pill.green::before{background:var(--accent);}
+.live-pill.red{
+  background:rgba(248,81,73,0.15);
+  color:var(--red);
+  border-color:rgba(248,81,73,0.35);
+}
+.live-pill.red::before{background:var(--red);}
 
 .card-img-wrap{
   height:160px;overflow:hidden;
@@ -384,19 +409,16 @@ h1.hero-title .line2{color:var(--accent);}
   opacity:0.85;
 }
 .project-card:hover .card-img-wrap img{transform:scale(1.04);opacity:1;}
-
 .card-img-placeholder{
   width:100%;height:100%;
   display:flex;align-items:center;justify-content:center;
   font-family:var(--mono);font-size:11px;
   color:var(--text3);letter-spacing:0.08em;
 }
-
 .card-body{
   padding:1.25rem;flex:1;
   display:flex;flex-direction:column;
 }
-
 .card-tags-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;}
 .ctag{
   font-family:var(--mono);font-size:10px;
@@ -409,6 +431,7 @@ h1.hero-title .line2{color:var(--accent);}
 .ctag-db{background:var(--amber-dim);color:var(--amber);}
 .ctag-nlp{background:rgba(139,82,221,0.12);color:#9B6EE8;}
 .ctag-gov{background:var(--sky-dim);color:var(--sky);}
+.ctag-red{background:var(--red-dim);color:var(--red);}
 
 .card-title{
   font-family:var(--sans);
@@ -433,51 +456,39 @@ h1.hero-title .line2{color:var(--accent);}
   letter-spacing:0.06em;
 }
 .card-link.sky{color:var(--sky);}
+.card-link.red{color:var(--red);}
 .card-link:hover{text-decoration:underline;}
 .card-date{font-family:var(--mono);font-size:10px;color:var(--text3);}
 
-/* ══ SKILLS ═════════════════════════════════════════════ */
+/* SKILLS */
 .skills-wrap{border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
-
 .skills-grid{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
   gap:12px;
 }
-
 .skill-card{
   background:var(--surface);
   border:1px solid var(--border);
   border-radius:12px;
   padding:1.25rem;
 }
-
-.skill-icon{
-  font-size:22px;margin-bottom:10px;
-  display:block;
-}
-.skill-name{
-  font-family:var(--sans);font-size:14px;font-weight:700;
-  color:var(--text);margin-bottom:6px;
-}
-.skill-items{
-  display:flex;flex-wrap:wrap;gap:4px;
-}
+.skill-icon{font-size:22px;margin-bottom:10px;display:block;}
+.skill-name{font-family:var(--sans);font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.skill-items{display:flex;flex-wrap:wrap;gap:4px;}
 .sitem{
   font-family:var(--mono);font-size:10px;
   background:var(--bg2);border:1px solid var(--border);
   color:var(--text3);padding:2px 8px;border-radius:3px;
 }
 
-/* ══ CONTACT ════════════════════════════════════════════ */
+/* CONTACT */
 .contact-wrap{border-top:1px solid var(--border);}
-
 .contact-grid{
   display:grid;grid-template-columns:1fr 1fr;gap:3rem;
   align-items:start;
 }
 @media(max-width:640px){.contact-grid{grid-template-columns:1fr;}}
-
 .contact-blurb{
   font-size:16px;color:var(--text2);
   line-height:1.8;font-style:italic;
@@ -499,7 +510,6 @@ h1.hero-title .line2{color:var(--accent);}
   background:var(--accent-dim);
 }
 .contact-link svg{flex-shrink:0;}
-
 .contact-card{
   background:var(--surface);
   border:1px solid var(--border);
@@ -511,53 +521,31 @@ h1.hero-title .line2{color:var(--accent);}
   color:var(--text3);letter-spacing:0.12em;
   text-transform:uppercase;margin-bottom:14px;
 }
-.contact-name{
-  font-family:var(--sans);font-size:22px;
-  font-weight:800;color:var(--text);
-  margin-bottom:4px;
-}
-.contact-role{
-  font-size:14px;color:var(--text2);
-  font-style:italic;margin-bottom:1.25rem;
-}
-.contact-detail{
-  font-family:var(--mono);font-size:12px;
-  color:var(--text3);line-height:1.8;
-}
+.contact-name{font-family:var(--sans);font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px;}
+.contact-role{font-size:14px;color:var(--text2);font-style:italic;margin-bottom:1.25rem;}
+.contact-detail{font-family:var(--mono);font-size:12px;color:var(--text3);line-height:1.8;}
 .contact-detail span{color:var(--accent);}
 
-/* ══ FOOTER ═════════════════════════════════════════════ */
+/* FOOTER */
 footer{
   border-top:1px solid var(--border);
   padding:2rem;
   text-align:center;
 }
-.footer-text{
-  font-family:var(--mono);font-size:11px;
-  color:var(--text3);letter-spacing:0.06em;
-}
+.footer-text{font-family:var(--mono);font-size:11px;color:var(--text3);letter-spacing:0.06em;}
 .footer-text a{color:var(--accent);text-decoration:none;}
 .footer-text a:hover{text-decoration:underline;}
 
-/* ══ ANIMATIONS ═════════════════════════════════════════ */
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(20px);}
-  to{opacity:1;transform:none;}
-}
-.fade-up{
-  opacity:0;
-  animation:fadeUp 0.6s ease forwards;
-}
-.d1{animation-delay:0.1s;}
-.d2{animation-delay:0.2s;}
-.d3{animation-delay:0.35s;}
-.d4{animation-delay:0.5s;}
-.d5{animation-delay:0.65s;}
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:none;}}
+.fade-up{opacity:0;animation:fadeUp 0.6s ease forwards;}
+.d1{animation-delay:0.1s;}.d2{animation-delay:0.2s;}.d3{animation-delay:0.35s;}
+.d4{animation-delay:0.5s;}.d5{animation-delay:0.65s;}
 </style>
 </head>
 <body>
 
-<!-- ══ NAV ══════════════════════════════════════════════ -->
+<!-- NAV -->
 <nav role="navigation" aria-label="Portfolio navigation">
   <div class="nav-inner">
     <a href="index.html" class="nav-brand">Dayo Portfolio</a>
@@ -590,12 +578,12 @@ footer{
   </div>
 </nav>
 
-<!-- ══ HERO ══════════════════════════════════════════════ -->
+<!-- HERO -->
 <section class="hero">
   <div class="grid-bg"></div>
   <div class="hero-inner">
     <div>
-      <div class="hero-eyebrow fade-up d1">Applied AI Researcher · Graduate Student</div>
+      <div class="hero-eyebrow fade-up d1">AI Security Engineer · Information Protection Advisor</div>
       <h1 class="hero-title fade-up d2">
         Dayo<br/>
         <span class="line2">Egonu</span>
@@ -609,14 +597,13 @@ footer{
         <span class="chip">Machine Learning</span>
         <span class="chip">AI Governance</span>
         <span class="chip">Forensic Accounting</span>
-        <span class="chip">Indiana Wesleyan University</span>
+        <span class="chip">The Cigna Group</span>
       </div>
       <div class="hero-cta fade-up d5">
-        <a href="#featured" class="btn btn-accent">View research ↓</a>
+        <a href="#featured" class="btn btn-accent">View work ↓</a>
         <a href="https://www.linkedin.com/in/dayoegonu/" target="_blank" rel="noopener" class="btn btn-ghost">LinkedIn →</a>
       </div>
     </div>
-
     <div class="hero-visual fade-up d3">
       <div class="visual-frame">
         <canvas class="node-canvas" id="node-canvas" width="360" height="360"></canvas>
@@ -625,7 +612,7 @@ footer{
   </div>
 </section>
 
-<!-- ══ FEATURED PROJECT ═══════════════════════════════════ -->
+<!-- FEATURED -->
 <div id="featured" class="featured-wrap">
   <div class="section">
     <div class="section-header">
@@ -633,7 +620,6 @@ footer{
       <div class="section-title">Latest project</div>
       <div class="section-sub">The deepest dive — a full research paper, live demo, and open-source implementation.</div>
     </div>
-
     <div class="featured-card">
       <div class="featured-meta">
         <div>
@@ -658,7 +644,6 @@ footer{
           <a href="portfolio_card.html" class="btn btn-ghost" style="font-size:12px;padding:9px 18px;">Project card</a>
         </div>
       </div>
-
       <div class="featured-visual">
         <div class="score-row">
           <span class="score-label">Benign query</span>
@@ -690,18 +675,114 @@ footer{
   </div>
 </div>
 
-<!-- ══ ALL PROJECTS ════════════════════════════════════════ -->
+<!-- ALL PROJECTS -->
 <hr class="divider"/>
 <div class="section">
   <div class="section-header">
     <div class="section-eyebrow">All projects</div>
     <div class="section-title">Portfolio artifacts</div>
-    <div class="section-sub">Research, visualizations, and applied AI systems built across the AIML 501 program.</div>
+    <div class="section-sub">Research, live applications, and AI systems spanning security, governance, NLP, and machine learning.</div>
   </div>
 
   <div class="projects-grid">
 
+    <!-- ForensAI — banner -->
+    <a href="forensai.html" class="project-card banner" style="border-color:rgba(248,81,73,0.2);background:linear-gradient(135deg,#0d1117 0%,#111820 100%);">
+      <span class="live-pill red">Live App</span>
+      <div class="card-body">
+        <div>
+          <div class="card-tags-row">
+            <span class="ctag ctag-red">Forensic Accounting</span>
+            <span class="ctag ctag-sec">Fraud Detection</span>
+            <span class="ctag ctag-ai">Applied AI</span>
+          </div>
+          <div class="card-title">ForensAI — AP Fraud Detection</div>
+          <div class="card-desc">AI-powered accounts payable fraud analysis for independent forensic accountants. Runs Benford's Law, duplicate invoice detection, threshold splitting, and shell company scoring — generating court-ready evidence chains in 90 minutes instead of three days.</div>
+          <div class="card-footer-row">
+            <span class="card-link red">Open App →</span>
+            <span class="card-date">2025</span>
+          </div>
+        </div>
+        <div class="banner-vis">
+          <div class="banner-score-row">
+            <span class="banner-score-label">Vertex Solutions LLC</span>
+            <div class="banner-bar-bg"><div class="banner-bar-fill" style="width:95%;background:#f85149;"></div></div>
+            <span class="banner-score-num" style="color:#f85149;">95</span>
+          </div>
+          <div class="banner-score-row">
+            <span class="banner-score-label">Martinez Consulting</span>
+            <div class="banner-bar-bg"><div class="banner-bar-fill" style="width:88%;background:#f85149;"></div></div>
+            <span class="banner-score-num" style="color:#f85149;">88</span>
+          </div>
+          <div class="banner-score-row">
+            <span class="banner-score-label">Apex Supply Co</span>
+            <div class="banner-bar-bg"><div class="banner-bar-fill" style="width:81%;background:#f85149;"></div></div>
+            <span class="banner-score-num" style="color:#f85149;">81</span>
+          </div>
+          <div class="banner-score-row">
+            <span class="banner-score-label">TechParts Inc</span>
+            <div class="banner-bar-bg"><div class="banner-bar-fill" style="width:62%;background:#e3b341;"></div></div>
+            <span class="banner-score-num" style="color:#e3b341;">62</span>
+          </div>
+          <div class="banner-score-row">
+            <span class="banner-score-label">Riverside Maint.</span>
+            <div class="banner-bar-bg"><div class="banner-bar-fill" style="width:44%;background:#e3b341;"></div></div>
+            <span class="banner-score-num" style="color:#e3b341;">44</span>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <!-- FairAudit AI — banner -->
+    <a href="fairaudit_ai.html" class="project-card banner" style="border-color:rgba(88,166,255,0.2);background:linear-gradient(135deg,#0a0f1a 0%,#0f1623 100%);">
+      <span class="live-pill">Live App</span>
+      <div class="card-body">
+        <div>
+          <div class="card-tags-row">
+            <span class="ctag ctag-gov">AI Governance</span>
+            <span class="ctag ctag-sec">Compliance</span>
+            <span class="ctag ctag-ml">Fairness Auditing</span>
+          </div>
+          <div class="card-title">FairAudit AI — Bias Detection for High-Stakes AI</div>
+          <div class="card-desc">A horizontal bias audit framework for AI systems across hiring, lending, healthcare, and justice. Maps regulatory requirements (NYC LL144, EU AI Act, NIST AI RMF) to defensible statistical audits — turning fairness compliance from a checkbox into evidence.</div>
+          <div class="card-footer-row">
+            <span class="card-link sky">View Framework →</span>
+            <span class="card-date">May 2026</span>
+          </div>
+        </div>
+        <div class="banner-vis">
+          <div class="banner-score-row">
+            <span class="banner-score-label">Healthcare AI</span>
+            <div class="banner-bar-bg"><div class="banner-bar-fill" style="width:94%;background:#00D97E;"></div></div>
+            <span class="banner-score-num" style="color:#00D97E;">0.94</span>
+          </div>
+          <div class="banner-score-row">
+            <span class="banner-score-label">Lending Model</span>
+            <div class="banner-bar-bg"><div class="banner-bar-fill" style="width:85%;background:#00D97E;"></div></div>
+            <span class="banner-score-num" style="color:#00D97E;">0.85</span>
+          </div>
+          <div class="banner-score-row">
+            <span class="banner-score-label">Hiring AI</span>
+            <div class="banner-bar-bg"><div class="banner-bar-fill" style="width:71%;background:#e3b341;"></div></div>
+            <span class="banner-score-num" style="color:#e3b341;">0.71</span>
+          </div>
+          <div class="banner-score-row">
+            <span class="banner-score-label">Recidivism</span>
+            <div class="banner-bar-bg"><div class="banner-bar-fill" style="width:58%;background:#f85149;"></div></div>
+            <span class="banner-score-num" style="color:#f85149;">0.58</span>
+          </div>
+          <div class="banner-score-row">
+            <span class="banner-score-label">Tenant Screen</span>
+            <div class="banner-bar-bg"><div class="banner-bar-fill" style="width:42%;background:#f85149;"></div></div>
+            <span class="banner-score-num" style="color:#f85149;">0.42</span>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <!-- Semantic Threat Detector -->
     <a href="semantic_threat_detector.html" class="project-card">
+      <span class="live-pill green">Live Demo</span>
       <div class="card-img-wrap">
         <div class="card-img-placeholder" style="background:linear-gradient(135deg,#07080A 0%,#0D1520 100%);">
           <span style="color:#00D97E;font-size:28px;font-family:var(--mono);">STD</span>
@@ -721,30 +802,67 @@ footer{
       </div>
     </a>
 
-    <a href="fairaudit_ai.html" class="project-card">
-      <span class="live-pill">Live App</span>
+    <!-- Security Knights -->
+    <a href="security-knights.html" class="project-card">
       <div class="card-img-wrap">
-        <div class="card-img-placeholder" style="background:linear-gradient(135deg,#07080A 0%,#0F1623 100%);">
-          <span style="color:#58A6FF;font-size:28px;font-family:var(--mono);">FA</span>
-        </div>
+        <img src="images/security-knights.jpg" alt="Security Knights" style="width:100%;height:100%;object-fit:cover;opacity:0.85;"/>
       </div>
       <div class="card-body">
         <div class="card-tags-row">
-          <span class="ctag ctag-gov">AI Governance</span>
-          <span class="ctag ctag-sec">Compliance</span>
+          <span class="ctag ctag-sec">Cybersecurity</span>
+          <span class="ctag ctag-ai">Gamification</span>
         </div>
-        <div class="card-title">FairAudit AI</div>
-        <div class="card-desc">A horizontal bias audit framework for AI systems across hiring, lending, healthcare, and justice — mapping regulatory requirements to defensible statistical audits.</div>
+        <div class="card-title">Security Knights</div>
+        <div class="card-desc">Gamified OWASP Top 10 developer training — medieval ranks, boss battles, and AI mentor. Built and deployed at The Cigna Group.</div>
         <div class="card-footer-row">
-          <span class="card-link sky">View framework →</span>
-          <span class="card-date">May 2026</span>
+          <span class="card-link">View project →</span>
+          <span class="card-date">2025</span>
         </div>
       </div>
     </a>
 
+    <!-- Model Evaluation Matrix -->
+    <a href="model_evaluation_matrix.html" class="project-card">
+      <div class="card-img-wrap">
+        <img src="images/model_evaluation_thumb.png" alt="Model Evaluation Matrix" style="width:100%;height:100%;object-fit:cover;opacity:0.85;"/>
+      </div>
+      <div class="card-body">
+        <div class="card-tags-row">
+          <span class="ctag ctag-ml">Model Evaluation</span>
+          <span class="ctag ctag-ai">Applied AI</span>
+        </div>
+        <div class="card-title">Pre-Trained Model Trade-Off Matrix</div>
+        <div class="card-desc">Comparative analysis of six leading pre-trained models across NLP, Computer Vision, and Tabular Data — evaluating size, accuracy, speed, explainability, and energy cost.</div>
+        <div class="card-footer-row">
+          <span class="card-link">View artifact →</span>
+          <span class="card-date">2025</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- PromptCraft -->
+    <a href="promptcraft.html" class="project-card">
+      <div class="card-img-wrap">
+        <img src="images/promptcraft.jpg" alt="PromptCraft" style="width:100%;height:100%;object-fit:cover;opacity:0.85;"/>
+      </div>
+      <div class="card-body">
+        <div class="card-tags-row">
+          <span class="ctag ctag-ai">Prompt Engineering</span>
+          <span class="ctag ctag-nlp">LLM</span>
+        </div>
+        <div class="card-title">PromptCraft</div>
+        <div class="card-desc">Live prompt optimization using the RCCO framework — before/after Claude API comparisons with versioning and quality scoring.</div>
+        <div class="card-footer-row">
+          <span class="card-link">View project →</span>
+          <span class="card-date">2025</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Explainable AI -->
     <a href="explainable_ai.html" class="project-card">
       <div class="card-img-wrap">
-        <img src="images/explainable-ai.png" alt="Explainable AI" style="width:100%;height:100%;object-fit:cover;opacity:0.85;transition:transform 0.4s,opacity 0.2s;"/>
+        <img src="images/explainable-ai.png" alt="Explainable AI" style="width:100%;height:100%;object-fit:cover;opacity:0.85;"/>
       </div>
       <div class="card-body">
         <div class="card-tags-row">
@@ -760,9 +878,10 @@ footer{
       </div>
     </a>
 
+    <!-- LLM Training -->
     <a href="llm_training_infographic.html" class="project-card">
       <div class="card-img-wrap">
-        <img src="images/llm-training-infographic.jpg" alt="LLM Training" style="width:100%;height:100%;object-fit:cover;opacity:0.85;transition:transform 0.4s,opacity 0.2s;"/>
+        <img src="images/llm-training-infographic.jpg" alt="LLM Training" style="width:100%;height:100%;object-fit:cover;opacity:0.85;"/>
       </div>
       <div class="card-body">
         <div class="card-tags-row">
@@ -778,9 +897,10 @@ footer{
       </div>
     </a>
 
+    <!-- Neural Network -->
     <a href="neural-network-visual.html" class="project-card">
       <div class="card-img-wrap">
-        <img src="images/neural-network-visual.jpg" alt="Neural Network" style="width:100%;height:100%;object-fit:cover;opacity:0.85;transition:transform 0.4s,opacity 0.2s;"/>
+        <img src="images/neural-network-visual.jpg" alt="Neural Network" style="width:100%;height:100%;object-fit:cover;opacity:0.85;"/>
       </div>
       <div class="card-body">
         <div class="card-tags-row">
@@ -796,9 +916,48 @@ footer{
       </div>
     </a>
 
+    <!-- ML Algorithm -->
+    <a href="ml-algorithm-infographic.html" class="project-card">
+      <div class="card-img-wrap">
+        <img src="images/ml-algorithm-infographic.jpg" alt="ML Algorithm Framework" style="width:100%;height:100%;object-fit:cover;opacity:0.85;"/>
+      </div>
+      <div class="card-body">
+        <div class="card-tags-row">
+          <span class="ctag ctag-ml">Machine Learning</span>
+          <span class="ctag ctag-ai">Visualization</span>
+        </div>
+        <div class="card-title">ML Algorithm Framework</div>
+        <div class="card-desc">Visual guide to selecting, comparing, and understanding machine learning algorithms across supervised, unsupervised, and reinforcement paradigms.</div>
+        <div class="card-footer-row">
+          <span class="card-link">View artifact →</span>
+          <span class="card-date">2025</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- AI Shield -->
+    <a href="ai-shield.html" class="project-card">
+      <div class="card-img-wrap">
+        <img src="images/ai-shield.jpg" alt="AI Shield" style="width:100%;height:100%;object-fit:cover;opacity:0.85;"/>
+      </div>
+      <div class="card-body">
+        <div class="card-tags-row">
+          <span class="ctag ctag-sec">Cybersecurity</span>
+          <span class="ctag ctag-ai">Generative AI</span>
+        </div>
+        <div class="card-title">AI Shield</div>
+        <div class="card-desc">A friendly AI-powered cybersecurity assistant for small business owners — clear, calm, and actionable guidance without jargon.</div>
+        <div class="card-footer-row">
+          <span class="card-link">View project →</span>
+          <span class="card-date">2024</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Smart Travel -->
     <a href="Smart-Travel-By-AirLytics.html" class="project-card">
       <div class="card-img-wrap">
-        <img src="images/smart-travel-airlytics.jpg" alt="Smart Travel by AirLytics" style="width:100%;height:100%;object-fit:cover;opacity:0.85;transition:transform 0.4s,opacity 0.2s;"/>
+        <img src="images/smart-travel-airlytics.jpg" alt="Smart Travel by AirLytics" style="width:100%;height:100%;object-fit:cover;opacity:0.85;"/>
       </div>
       <div class="card-body">
         <div class="card-tags-row">
@@ -814,28 +973,10 @@ footer{
       </div>
     </a>
 
-    <a href="ai-shield.html" class="project-card">
-      <div class="card-img-wrap">
-        <img src="images/ai-shield.jpg" alt="AI Shield" style="width:100%;height:100%;object-fit:cover;opacity:0.85;transition:transform 0.4s,opacity 0.2s;"/>
-      </div>
-      <div class="card-body">
-        <div class="card-tags-row">
-          <span class="ctag ctag-sec">Cybersecurity</span>
-          <span class="ctag ctag-db">Forensics</span>
-        </div>
-        <div class="card-title">AI Shield</div>
-        <div class="card-desc">A friendly AI-powered cybersecurity assistant for small business owners — clear, calm, and actionable guidance without jargon.</div>
-        <div class="card-footer-row">
-          <span class="card-link">View project →</span>
-          <span class="card-date">2024</span>
-        </div>
-      </div>
-    </a>
-
   </div>
 </div>
 
-<!-- ══ SKILLS ════════════════════════════════════════════ -->
+<!-- SKILLS -->
 <div id="skills" class="skills-wrap">
   <div class="section">
     <div class="section-header">
@@ -918,7 +1059,7 @@ footer{
   </div>
 </div>
 
-<!-- ══ CONTACT ════════════════════════════════════════════ -->
+<!-- CONTACT -->
 <div id="contact" class="contact-wrap">
   <div class="section">
     <div class="section-header">
@@ -928,7 +1069,7 @@ footer{
     <div class="contact-grid">
       <div>
         <p class="contact-blurb">
-          Open to research collaborations, AI security projects, and graduate research opportunities. Particularly interested in roles at the intersection of NLP, semantics, and AI safety.
+          Available for AI security engineering, responsible AI consulting, and developer enablement roles. Particularly interested in opportunities at the intersection of NLP, adversarial ML, and enterprise AI governance — where security depth and machine learning meet.
         </p>
         <div class="contact-links">
           <a href="https://www.linkedin.com/in/dayoegonu/" target="_blank" rel="noopener" class="contact-link">
@@ -948,10 +1089,10 @@ footer{
       <div class="contact-card">
         <div class="contact-label">Currently</div>
         <div class="contact-name">Dayo Egonu</div>
-        <div class="contact-role">Graduate Student · Applied AI Program</div>
+        <div class="contact-role">Information Protection Advisor · The Cigna Group</div>
         <div class="contact-detail">
-          Indiana Wesleyan University<br/>
-          AIML 501 — Model Development<br/>
+          Application Security &amp; Developer Enablement<br/>
+          M.S. Applied AI · Indiana Wesleyan University<br/>
           <span>Specialization:</span> NLP · AI Security · Governance<br/>
           <span>Portfolio:</span> didiegons.github.io
         </div>
@@ -960,7 +1101,7 @@ footer{
   </div>
 </div>
 
-<!-- ══ FOOTER ════════════════════════════════════════════ -->
+<!-- FOOTER -->
 <footer>
   <div class="footer-text">
     Built by <a href="index.html">Dayo Egonu</a> ·
@@ -970,14 +1111,13 @@ footer{
   </div>
 </footer>
 
-<!-- ══ ANIMATED NODE CANVAS ══════════════════════════════ -->
+<!-- ANIMATED NODE CANVAS -->
 <script>
 (function(){
   const canvas = document.getElementById('node-canvas');
   if(!canvas) return;
   const ctx = canvas.getContext('2d');
   const W = 360, H = 360;
-
   const nodes = Array.from({length:22},(_,i)=>({
     x: Math.random()*W,
     y: Math.random()*H,
@@ -986,10 +1126,8 @@ footer{
     r: Math.random()*2+1.5,
     color: Math.random()>.6?'#00D97E':Math.random()>.5?'#378ADD':'#555E72'
   }));
-
   function draw(){
     ctx.clearRect(0,0,W,H);
-    // edges
     for(let i=0;i<nodes.length;i++){
       for(let j=i+1;j<nodes.length;j++){
         const dx=nodes[i].x-nodes[j].x, dy=nodes[i].y-nodes[j].y;
@@ -1004,7 +1142,6 @@ footer{
         }
       }
     }
-    // nodes
     nodes.forEach(n=>{
       ctx.beginPath();
       ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
@@ -1015,7 +1152,6 @@ footer{
       ctx.fillStyle=n.color;
       ctx.fill();
     });
-    // update
     nodes.forEach(n=>{
       n.x+=n.vx; n.y+=n.vy;
       if(n.x<0||n.x>W) n.vx*=-1;
