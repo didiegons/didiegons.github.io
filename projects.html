@@ -14,6 +14,8 @@
       --green:#00D97E; --green2:#00F590;
       --red:#f85149; --red-bg:rgba(248,81,73,.12);
       --blue:#58a6ff; --blue2:#93c5fd;
+      --gold:#F59E0B; --gold2:#FCD34D;
+      --sky:#19A7CE; --navy:#0B2447;
     }
     body { background:var(--bg); color:var(--white); font-family:'Instrument Sans',sans-serif; min-height:100vh; }
 
@@ -47,15 +49,17 @@
     .card-10 { grid-column:span 12; grid-row:span 1; }
     .card-11 { grid-column:span 12; grid-row:span 1; }
     .card-12 { grid-column:span 12; grid-row:span 1; }
+    .card-13 { grid-column:span 12; grid-row:span 1; }
 
     @media (max-width:900px) {
       .bento { grid-template-columns:repeat(2,1fr); grid-auto-rows:200px; }
-      .card-1,.card-2,.card-3,.card-4,.card-5,.card-6,.card-7,.card-8,.card-9,.card-10,.card-11,.card-12 { grid-column:span 2; grid-row:span 1; }
+      .card-1,.card-2,.card-3,.card-4,.card-5,.card-6,.card-7,.card-8,.card-9,.card-10,.card-11,.card-12,.card-13 { grid-column:span 2; grid-row:span 1; }
       .card-1 { grid-row:span 2; }
+      .card-13-vis { display:none; }
     }
     @media (max-width:540px) {
       .bento { grid-template-columns:1fr; }
-      .card-1,.card-2,.card-3,.card-4,.card-5,.card-6,.card-7,.card-8,.card-9,.card-10,.card-11,.card-12 { grid-column:span 1; grid-row:span 1; }
+      .card-1,.card-2,.card-3,.card-4,.card-5,.card-6,.card-7,.card-8,.card-9,.card-10,.card-11,.card-12,.card-13 { grid-column:span 1; grid-row:span 1; }
     }
 
     .card-img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform 0.5s ease; }
@@ -135,6 +139,31 @@
     .favis-tags { display:flex; gap:6px; flex-wrap:wrap; margin-top:4px; }
     .favis-chip { font-size:0.55rem; padding:0.15rem 0.5rem; border-radius:3px; background:rgba(88,166,255,0.12); color:var(--blue2); border:1px solid rgba(88,166,255,0.2); text-transform:uppercase; letter-spacing:0.08em; font-weight:600; }
 
+    /* card-13: AeroMind RAI Framework */
+    .card-13 { background:linear-gradient(135deg,#060d1a 0%,#0b1628 55%,#07101e 100%); justify-content:center; border:1px solid rgba(245,158,11,0.18); }
+    .card-13:hover { border-color:rgba(245,158,11,0.45); box-shadow:0 24px 60px rgba(245,158,11,0.07); }
+    .card-13-inner { position:relative; z-index:2; display:grid; grid-template-columns:1fr 1fr; align-items:center; gap:2rem; padding:1.4rem 1.75rem; width:100%; }
+    @media(max-width:640px){ .card-13-inner { grid-template-columns:1fr; } .card-13-vis { display:none; } }
+    .card-13 h3 { font-size:1.4rem; margin-bottom:0.4rem; font-family:'Fraunces',serif; color:#fff; }
+    .card-13 p { display:block; font-size:0.76rem; color:rgba(255,255,255,0.60); line-height:1.6; margin-bottom:0.75rem; }
+    .card-13-tag { font-size:0.6rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; padding:0.2rem 0.55rem; border-radius:3px; margin-bottom:0.6rem; display:inline-block; background:rgba(245,158,11,0.12); color:var(--gold2); border:1px solid rgba(245,158,11,0.28); }
+    .card-13-arrow { display:inline-flex; align-items:center; gap:0.3rem; font-size:0.75rem; font-weight:600; color:var(--gold2); transition:gap 0.2s; }
+    .card-13:hover .card-13-arrow { gap:0.5rem; }
+    .badge-capstone { position:absolute; top:1rem; right:1rem; z-index:3; font-size:0.58rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:0.22rem 0.6rem; border-radius:20px; background:var(--gold); color:#07080A; display:flex; align-items:center; gap:4px; }
+    .capstone-dot { width:5px; height:5px; border-radius:50%; background:#07080A; animation:pulse 2s ease-in-out infinite; }
+    /* Lifecycle vis */
+    .card-13-vis { display:flex; flex-direction:column; gap:6px; }
+    .lc-row { display:grid; grid-template-columns:18px 120px 1fr; align-items:center; gap:8px; }
+    .lc-num-badge { width:18px; height:18px; border-radius:50%; background:rgba(245,158,11,0.2); border:1px solid rgba(245,158,11,0.4); display:flex; align-items:center; justify-content:center; font-size:0.52rem; font-weight:700; color:var(--gold); flex-shrink:0; }
+    .lc-stage-label { font-size:0.6rem; color:rgba(255,255,255,0.50); font-family:'Instrument Sans',sans-serif; }
+    .lc-stage-bar-bg { height:4px; background:rgba(255,255,255,0.06); border-radius:2px; overflow:hidden; }
+    .lc-stage-bar { height:100%; border-radius:2px; }
+    .card-13-chips { display:flex; gap:6px; flex-wrap:wrap; margin-top:6px; }
+    .card-13-chip { font-size:0.55rem; padding:0.15rem 0.5rem; border-radius:3px; background:rgba(245,158,11,0.10); color:var(--gold2); border:1px solid rgba(245,158,11,0.22); text-transform:uppercase; letter-spacing:0.08em; font-weight:600; }
+    /* Subtle grid decoration on card-13 */
+    .card-13-grid { position:absolute; inset:0; opacity:0.05; background-image:linear-gradient(rgba(25,167,206,0.6) 1px,transparent 1px),linear-gradient(90deg,rgba(25,167,206,0.6) 1px,transparent 1px); background-size:36px 36px; pointer-events:none; }
+    .card-13-glow { position:absolute; right:-40px; top:-40px; width:280px; height:280px; border-radius:50%; background:radial-gradient(circle,rgba(245,158,11,0.12) 0%,transparent 65%); pointer-events:none; }
+
     .card-fallback { background:#1C2030; }
     .card-fallback .card-overlay { background:none; }
 
@@ -158,6 +187,7 @@
     .card:nth-child(10) { animation-delay:0.50s }
     .card:nth-child(11) { animation-delay:0.55s }
     .card:nth-child(12) { animation-delay:0.60s }
+    .card:nth-child(13) { animation-delay:0.65s }
   </style>
 </head>
 <body>
@@ -179,7 +209,7 @@
     <div class="overline">Applied AI · Portfolio</div>
     <h1>Project <em>Artifacts</em></h1>
   </div>
-  <div class="project-count">12</div>
+  <div class="project-count">13</div>
 </div>
 
 <main class="bento">
@@ -321,7 +351,7 @@
     </div>
   </a>
 
-  <!-- 11 — ForensAI (full-width banner) -->
+  <!-- 11 — ForensAI -->
   <a href="forensai.html" class="card card-11">
     <div class="badge-live-red"><span class="live-dot-red"></span>Live App</div>
     <div class="card-11-inner">
@@ -367,7 +397,7 @@
     </div>
   </a>
 
-  <!-- 12 — FairAudit AI (full-width banner) -->
+  <!-- 12 — FairAudit AI -->
   <a href="fairaudit_ai.html" class="card card-12">
     <div class="badge-live-blue"><span class="live-dot-blue"></span>Live App</div>
     <div class="card-12-inner">
@@ -408,6 +438,70 @@
           <span class="favis-chip">Equalized Odds</span>
           <span class="favis-chip">4/5ths Rule</span>
           <span class="favis-chip">Intersectional</span>
+        </div>
+      </div>
+    </div>
+  </a>
+
+  <!-- 13 — AeroMind Intelligence RAI Framework -->
+  <a href="aeromind_rai_framework.html" class="card card-13">
+    <div class="card-13-grid"></div>
+    <div class="card-13-glow"></div>
+    <div class="badge-capstone"><span class="capstone-dot"></span>Capstone</div>
+    <div class="card-13-inner">
+      <div>
+        <span class="card-13-tag">Responsible AI · AI Governance · Aviation AI</span>
+        <h3>AeroMind Intelligence — Responsible AI Framework</h3>
+        <p>A production-ready RAI framework for a fictional aviation AI company — integrating 9 ethical principles, 8 governance roles, a 12-month implementation timeline, NIST SP 1270 bias controls, GDPR &amp; EU AI Act compliance, and an 8-stage lifecycle with formal disposition protocols.</p>
+        <span class="card-13-arrow">View Framework →</span>
+      </div>
+      <div class="card-13-vis">
+        <div class="lc-row">
+          <span class="lc-num-badge">1</span>
+          <span class="lc-stage-label">Concept &amp; Design</span>
+          <div class="lc-stage-bar-bg"><div class="lc-stage-bar" style="width:100%;background:rgba(245,158,11,0.7);"></div></div>
+        </div>
+        <div class="lc-row">
+          <span class="lc-num-badge">2</span>
+          <span class="lc-stage-label">Data Preparation</span>
+          <div class="lc-stage-bar-bg"><div class="lc-stage-bar" style="width:100%;background:rgba(245,158,11,0.6);"></div></div>
+        </div>
+        <div class="lc-row">
+          <span class="lc-num-badge">3</span>
+          <span class="lc-stage-label">Model Development</span>
+          <div class="lc-stage-bar-bg"><div class="lc-stage-bar" style="width:100%;background:rgba(245,158,11,0.55);"></div></div>
+        </div>
+        <div class="lc-row">
+          <span class="lc-num-badge">4</span>
+          <span class="lc-stage-label">Testing &amp; Validation</span>
+          <div class="lc-stage-bar-bg"><div class="lc-stage-bar" style="width:100%;background:rgba(245,158,11,0.50);"></div></div>
+        </div>
+        <div class="lc-row">
+          <span class="lc-num-badge">5</span>
+          <span class="lc-stage-label">Ethics Board Review</span>
+          <div class="lc-stage-bar-bg"><div class="lc-stage-bar" style="width:100%;background:rgba(25,167,206,0.60);"></div></div>
+        </div>
+        <div class="lc-row">
+          <span class="lc-num-badge">6</span>
+          <span class="lc-stage-label">Deployment</span>
+          <div class="lc-stage-bar-bg"><div class="lc-stage-bar" style="width:80%;background:rgba(25,167,206,0.50);"></div></div>
+        </div>
+        <div class="lc-row">
+          <span class="lc-num-badge">7</span>
+          <span class="lc-stage-label">Monitoring &amp; Sustainment</span>
+          <div class="lc-stage-bar-bg"><div class="lc-stage-bar" style="width:60%;background:rgba(25,167,206,0.40);"></div></div>
+        </div>
+        <div class="lc-row">
+          <span class="lc-num-badge">8</span>
+          <span class="lc-stage-label">Disposition</span>
+          <div class="lc-stage-bar-bg"><div class="lc-stage-bar" style="width:30%;background:rgba(25,167,206,0.30);"></div></div>
+        </div>
+        <div class="card-13-chips">
+          <span class="card-13-chip">NIST RMF</span>
+          <span class="card-13-chip">EU AI Act</span>
+          <span class="card-13-chip">GDPR</span>
+          <span class="card-13-chip">FAA Compliance</span>
+          <span class="card-13-chip">Bias Mitigation</span>
         </div>
       </div>
     </div>
