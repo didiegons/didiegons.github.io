@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AeroMind Intelligence — Responsible AI Framework | Dayo Egonu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,700;0,900;1,300;1,700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0d1117;
+      --surface:   #161b22;
+      --border:    #30363d;
+      --text:      #e6edf3;
+      --muted:     #8b949e;
+      --navy:      #0b2447;
+      --teal:      #065a82;
+      --sky:       #19a7ce;
+      --gold:      #f59e0b;
+      --gold2:     #d97706;
+      --green:     #059669;
+      --red:       #dc2626;
+      --purple:    #6d28d9;
+      --white:     #ffffff;
+    }
+
+    body {
+      font-family: 'Manrope', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(13,17,23,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 56px;
+    }
+    .nav-brand { font-family: 'Fraunces', serif; font-weight: 700; font-size: 1.1rem; color: var(--gold); text-decoration: none; }
+    .nav-links { display: flex; gap: 1.6rem; list-style: none; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.88rem; font-weight: 500; transition: color .2s; }
+    .nav-links a:hover { color: var(--text); }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, var(--navy) 0%, #0a1628 50%, #051020 100%);
+      padding: 5rem 2rem 4rem;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 70% 40%, rgba(25,167,206,0.12) 0%, transparent 70%);
+    }
+    .hero-inner { max-width: 960px; margin: 0 auto; position: relative; }
+    .hero-overline {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--gold);
+      margin-bottom: 1rem;
+    }
+    .hero h1 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      font-weight: 900; line-height: 1.06;
+      color: var(--white); margin-bottom: 0.6rem;
+    }
+    .hero h1 em { font-style: italic; color: var(--sky); }
+    .hero-sub {
+      font-size: 1.15rem; color: rgba(230,237,243,0.75);
+      max-width: 640px; margin-bottom: 2rem;
+    }
+    .hero-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2.4rem; }
+    .chip {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.74rem;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px; padding: 0.28rem 0.75rem; color: var(--muted);
+    }
+    .chip.gold { background: rgba(245,158,11,0.12); border-color: rgba(245,158,11,0.3); color: var(--gold); }
+    .chip.sky  { background: rgba(25,167,206,0.12); border-color: rgba(25,167,206,0.3); color: var(--sky); }
+
+    /* Stats bar */
+    .stats-bar {
+      display: flex; gap: 2rem; flex-wrap: wrap;
+      border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem;
+    }
+    .stat-item { display: flex; flex-direction: column; }
+    .stat-val { font-family: 'Fraunces', serif; font-size: 2.2rem; font-weight: 900; color: var(--gold); line-height: 1; }
+    .stat-lbl { font-size: 0.8rem; color: var(--muted); margin-top: 0.2rem; }
+
+    /* ── MAIN ── */
+    main { max-width: 960px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+
+    section { margin-bottom: 3.5rem; }
+    .section-label {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 0.6rem;
+    }
+    h2 {
+      font-family: 'Fraunces', serif; font-size: 1.9rem; font-weight: 700;
+      color: var(--white); margin-bottom: 1rem;
+    }
+    p { color: rgba(230,237,243,0.8); margin-bottom: 0.9rem; }
+
+    /* Principle grid */
+    .principle-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem; margin-top: 1.5rem;
+    }
+    .principle-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.1rem;
+      border-left: 3px solid var(--sky);
+    }
+    .principle-card.gold { border-left-color: var(--gold); }
+    .principle-card.green { border-left-color: var(--green); }
+    .principle-card.purple { border-left-color: var(--purple); }
+    .principle-card.red { border-left-color: var(--red); }
+    .p-icon { font-size: 1.4rem; margin-bottom: 0.4rem; }
+    .p-title { font-weight: 700; font-size: 0.9rem; color: var(--white); margin-bottom: 0.3rem; }
+    .p-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+
+    /* Lifecycle */
+    .lifecycle {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 0; border-radius: 12px; overflow: hidden;
+      border: 1px solid var(--border); margin-top: 1.5rem;
+    }
+    .lc-stage {
+      padding: 1rem 0.9rem;
+      border-right: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .lc-stage:last-child { border-right: none; }
+    .lc-stage:nth-child(n+5) { border-top: 1px solid var(--border); }
+    .lc-num { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); margin-bottom: 0.3rem; }
+    .lc-title { font-weight: 700; font-size: 0.85rem; color: var(--white); margin-bottom: 0.5rem; }
+    .lc-items { list-style: none; }
+    .lc-items li { font-size: 0.75rem; color: var(--muted); padding: 0.15rem 0; padding-left: 0.8rem; position: relative; }
+    .lc-items li::before { content: '›'; position: absolute; left: 0; color: var(--sky); }
+
+    /* Risk cards */
+    .risk-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-top: 1.5rem; }
+    .risk-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem; }
+    .risk-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.5rem; }
+    .risk-label.t { color: var(--sky); }
+    .risk-label.b { color: var(--gold); }
+    .risk-label.p { color: var(--purple); }
+    .risk-card h4 { font-size: 0.95rem; color: var(--white); margin-bottom: 0.5rem; }
+    .risk-card p { font-size: 0.82rem; color: var(--muted); margin: 0; }
+
+    /* Timeline */
+    .timeline { margin-top: 1.5rem; position: relative; }
+    .timeline::before {
+      content: ''; position: absolute; left: 1.1rem; top: 0; bottom: 0;
+      width: 2px; background: linear-gradient(to bottom, var(--gold), var(--teal));
+    }
+    .tl-item { display: flex; gap: 1.5rem; margin-bottom: 2rem; }
+    .tl-dot {
+      width: 2.2rem; height: 2.2rem; border-radius: 50%;
+      background: var(--navy); border: 2px solid var(--gold);
+      flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--gold);
+      font-weight: 700; position: relative; z-index: 1;
+    }
+    .tl-content { padding-top: 0.15rem; }
+    .tl-phase { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); }
+    .tl-title { font-weight: 700; color: var(--white); margin: 0.1rem 0 0.3rem; }
+    .tl-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+
+    /* Reference table */
+    .ref-table { margin-top: 1.5rem; }
+    .ref-item {
+      display: grid; grid-template-columns: auto 1fr;
+      gap: 1rem; padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .ref-num { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--gold); font-weight: 700; white-space: nowrap; }
+    .ref-text { font-size: 0.83rem; color: var(--muted); line-height: 1.55; }
+
+    /* CTA */
+    .cta-section {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 2.5rem; text-align: center; margin-top: 3rem;
+    }
+    .cta-section h3 { font-family: 'Fraunces', serif; font-size: 1.6rem; color: var(--white); margin-bottom: 0.5rem; }
+    .cta-section p { color: var(--muted); margin-bottom: 1.5rem; }
+    .cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.7rem 1.5rem; border-radius: 8px;
+      font-weight: 600; font-size: 0.9rem; text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-gold { background: var(--gold); color: #000; }
+    .btn-gold:hover { background: var(--gold2); }
+    .btn-outline { border: 1px solid var(--border); color: var(--text); }
+    .btn-outline:hover { border-color: var(--sky); color: var(--sky); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.5rem 2rem;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+    }
+    footer p { font-size: 0.82rem; color: var(--muted); }
+    .footer-links { display: flex; gap: 1.4rem; list-style: none; }
+    .footer-links a { color: var(--muted); font-size: 0.82rem; text-decoration: none; }
+    .footer-links a:hover { color: var(--text); }
+
+    @media (max-width: 640px) {
+      .lifecycle { grid-template-columns: 1fr 1fr; }
+      .risk-row { grid-template-columns: 1fr; }
+      .stats-bar { gap: 1.2rem; }
+      .stat-val { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="index.html" class="nav-brand">Dayo Egonu</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="projects.html">Projects</a></li>
+    <li><a href="index.html#skills">Skills</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+    <li><a href="https://www.linkedin.com/in/dayoegonu/" target="_blank" rel="noopener" style="color:#60A5FA;">LinkedIn</a></li>
+  </ul>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-inner">
+    <p class="hero-overline">AIML 510 · Indiana Wesleyan University · Capstone Framework</p>
+    <h1>AeroMind Intelligence<br><em>Responsible AI Framework</em></h1>
+    <p class="hero-sub">A comprehensive, production-ready RAI framework for a fictional aviation AI company — integrating governance, lifecycle management, bias controls, privacy compliance, and customer empowerment into one actionable system.</p>
+    <div class="hero-chips">
+      <span class="chip gold">Responsible AI</span>
+      <span class="chip sky">AI Governance</span>
+      <span class="chip">NIST AI RMF</span>
+      <span class="chip">EU AI Act</span>
+      <span class="chip">Bias Mitigation</span>
+      <span class="chip">GDPR / CCPA</span>
+      <span class="chip">Ethics Board Design</span>
+      <span class="chip">AI Lifecycle</span>
+      <span class="chip">Aviation AI</span>
+    </div>
+    <div class="stats-bar">
+      <div class="stat-item"><span class="stat-val">9</span><span class="stat-lbl">Ethical Dimensions</span></div>
+      <div class="stat-item"><span class="stat-val">8</span><span class="stat-lbl">Lifecycle Stages</span></div>
+      <div class="stat-item"><span class="stat-val">18</span><span class="stat-lbl">RAI Roles & Metrics</span></div>
+      <div class="stat-item"><span class="stat-val">12+</span><span class="stat-lbl">APA References</span></div>
+    </div>
+  </div>
+</section>
+
+<main>
+
+  <!-- OVERVIEW -->
+  <section>
+    <p class="section-label">Overview</p>
+    <h2>What Is This Framework?</h2>
+    <p>This is the final deliverable from AIML 510: Responsible AI at Indiana Wesleyan University — a capstone that integrates every prior assignment into one cohesive, deployment-ready framework for a fictional aviation AI company named AeroMind Intelligence.</p>
+    <p>AeroMind's four AI systems — Predictive Maintenance AI, Pilot Fatigue Risk Scoring, Crew Scheduling Optimization, and Safety Incident Pattern Detection — each carry unique ethical risks that this framework addresses through nine principles, eight governance roles, a phased implementation timeline, and detailed guidelines for bias, explainability, privacy, and long-term impact.</p>
+    <p>The framework is grounded in NIST AI RMF, NIST SP 1270, GDPR, the EU AI Act, and FAA regulations — and integrates Biblical ethics (Philippians 4:8; Romans 15:1-2) as a foundation for empowerment and authentic AI design.</p>
+  </section>
+
+  <!-- PRINCIPLES -->
+  <section>
+    <p class="section-label">Ethical Foundation</p>
+    <h2>Nine Guiding Principles</h2>
+    <p>The original six principles from Workshop 1 were expanded through the course to include three customer-facing dimensions surfaced by case studies including Google's "Dear Sydney" ad and the CompanionAI Elara deployment.</p>
+    <div class="principle-grid">
+      <div class="principle-card"><div class="p-icon">🛡</div><div class="p-title">Safety First</div><div class="p-desc">No AI recommendation overrides certified human judgment. Override always available and never penalized.</div></div>
+      <div class="principle-card sky"><div class="p-icon">🔍</div><div class="p-title">Transparency</div><div class="p-desc">All outputs affecting safety or employment explainable in plain language. ≥80% crew comprehension required.</div></div>
+      <div class="principle-card green"><div class="p-icon">⚖</div><div class="p-title">Fairness</div><div class="p-desc">Demographic parity audits quarterly. Disparate impact violations halt deployment within 48 hours.</div></div>
+      <div class="principle-card purple"><div class="p-icon">🔒</div><div class="p-title">Privacy</div><div class="p-desc">Biometric data at highest protection tier. Explicit consent required. Purpose limitation enforced.</div></div>
+      <div class="principle-card gold"><div class="p-icon">👤</div><div class="p-title">Human Oversight</div><div class="p-desc">Named human accountability for all AI-influenced decisions. Ethics Board sign-off before deployment.</div></div>
+      <div class="principle-card green"><div class="p-icon">📊</div><div class="p-title">Reliability</div><div class="p-desc">Monthly drift detection. >2%/quarter triggers mandatory review. Adversarial testing required.</div></div>
+      <div class="principle-card gold"><div class="p-icon">⚡</div><div class="p-title">★ Empowerment</div><div class="p-desc">AI must increase crew capability — not create dependency. Empowerment measured in all usability testing.</div></div>
+      <div class="principle-card red"><div class="p-icon">🤝</div><div class="p-title">★ Authenticity</div><div class="p-desc">AI involvement disclosed at every interaction. No simulated human judgment. Trust earned before go-live.</div></div>
+      <div class="principle-card sky"><div class="p-icon">🌐</div><div class="p-title">★ Customer Trust</div><div class="p-desc">AI must leave customers empowered and connected — not dependent or deceived. Annual Transparency Report.</div></div>
+    </div>
+  </section>
+
+  <!-- LIFECYCLE -->
+  <section>
+    <p class="section-label">AI Lifecycle</p>
+    <h2>Eight-Stage Development Lifecycle</h2>
+    <p>Every AeroMind AI system passes through all eight stages — including a formal Ethics Board Go/No-Go review and a documented disposition protocol before the first line of production code is written.</p>
+    <div class="lifecycle">
+      <div class="lc-stage">
+        <div class="lc-num">Stage 01</div>
+        <div class="lc-title">Concept & Design</div>
+        <ul class="lc-items">
+          <li>Ethics use case review</li>
+          <li>Privacy Impact Assessment</li>
+          <li>Stakeholder mapping</li>
+          <li>Use case charter</li>
+        </ul>
+      </div>
+      <div class="lc-stage">
+        <div class="lc-num">Stage 02</div>
+        <div class="lc-title">Data Preparation</div>
+        <ul class="lc-items">
+          <li>Provenance audit</li>
+          <li>Data Card initiated</li>
+          <li>Bias pre-screening</li>
+          <li>PII scrubbing</li>
+        </ul>
+      </div>
+      <div class="lc-stage">
+        <div class="lc-num">Stage 03</div>
+        <div class="lc-title">Model Development</div>
+        <ul class="lc-items">
+          <li>Fairness constraints</li>
+          <li>Feature proxy audit</li>
+          <li>Model Card initiated</li>
+          <li>Differential privacy</li>
+        </ul>
+      </div>
+      <div class="lc-stage">
+        <div class="lc-num">Stage 04</div>
+        <div class="lc-title">Testing & Validation</div>
+        <ul class="lc-items">
+          <li>Fairness metric suite</li>
+          <li>FMEA analysis</li>
+          <li>Red-team testing</li>
+          <li>90-day shadow-mode</li>
+        </ul>
+      </div>
+      <div class="lc-stage">
+        <div class="lc-num">Stage 05</div>
+        <div class="lc-title">Ethics Board Review</div>
+        <ul class="lc-items">
+          <li>Go / Conditional / No-Go</li>
+          <li>All conditions resolved</li>
+          <li>Override protocol certified</li>
+          <li>CAEO sign-off</li>
+        </ul>
+      </div>
+      <div class="lc-stage">
+        <div class="lc-num">Stage 06</div>
+        <div class="lc-title">Deployment</div>
+        <ul class="lc-items">
+          <li>Crew explainability guide</li>
+          <li>KPI baseline active</li>
+          <li>FAA/GDPR filing</li>
+          <li>Training data tags</li>
+        </ul>
+      </div>
+      <div class="lc-stage">
+        <div class="lc-num">Stage 07</div>
+        <div class="lc-title">Monitoring & Sustainment</div>
+        <ul class="lc-items">
+          <li>Monthly drift detection</li>
+          <li>Quarterly fairness audit</li>
+          <li>Annual re-certification</li>
+          <li>Data lineage audit</li>
+        </ul>
+      </div>
+      <div class="lc-stage">
+        <div class="lc-num">Stage 08</div>
+        <div class="lc-title">Disposition</div>
+        <ul class="lc-items">
+          <li>Triggers in Model Card</li>
+          <li>Crew notification + data deletion</li>
+          <li>Successor evaluated</li>
+          <li>No zombie models</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- RISK AREAS -->
+  <section>
+    <p class="section-label">Risk Guidelines</p>
+    <h2>Three Critical Risk Areas</h2>
+    <div class="risk-row">
+      <div class="risk-card">
+        <div class="risk-label t">Transparency & Explainability</div>
+        <h4>Every AI output must be understandable</h4>
+        <p>XAI tools (SHAP, LIME, InterpretML) integrated into CI/CD pipeline. Crew comprehension ≥80% before deployment. Model Cards published publicly for all systems. Right to explanation honored within 15 days of request. Fiddler AI monitors explanation quality drift in production.</p>
+      </div>
+      <div class="risk-card">
+        <div class="risk-label b">Data Bias</div>
+        <h4>NIST SP 1270 taxonomy applied</h4>
+        <p>Six bias types addressed per use case: historical, representation, measurement, aggregation, feedback loop, and automation bias. Microsoft Fairlearn and IBM AIF360 integrated. Quarterly demographic parity audits with 80% rule enforcement. Proxy attribute audit required before feature selection.</p>
+      </div>
+      <div class="risk-card">
+        <div class="risk-label p">Privacy, Protection & Compliance</div>
+        <h4>US and EU dual compliance</h4>
+        <p>Four-tier privacy classification: Internal / Confidential / Restricted. Biometric data (fatigue scoring) at Restricted tier with 2-year maximum retention. GDPR Art. 9 compliance for EU crew. EU AI Act high-risk classification for fatigue scoring and scheduling. FAA data retention per 14 CFR 121.380.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TIMELINE -->
+  <section>
+    <p class="section-label">Implementation</p>
+    <h2>12-Month Phased Rollout</h2>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot">Q1</div>
+        <div class="tl-content">
+          <div class="tl-phase">Phase 1 · Months 1–3 · Foundation</div>
+          <div class="tl-title">Governance Constitution</div>
+          <div class="tl-desc">CAEO hired. Ethics Board constituted with external independent member. All 8 RAI roles assigned. Governance Decision Register deployed. Data classification framework implemented.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot">Q2</div>
+        <div class="tl-content">
+          <div class="tl-phase">Phase 2 · Months 4–6 · Validation</div>
+          <div class="tl-title">Technical Integration</div>
+          <div class="tl-desc">Fairness tools in CI/CD pipeline. All four use cases submitted to Ethics Board (Go/No-Go). KPI dashboard live. 90-day shadow-mode begins. All-staff RAI baseline training completed at ≥90%.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot">Q3</div>
+        <div class="tl-content">
+          <div class="tl-phase">Phase 3 · Months 7–9 · Deployment</div>
+          <div class="tl-title">Production Go-Live</div>
+          <div class="tl-desc">Approved models deployed to production. Crew explainability guides distributed. Airline operator pre-deployment briefings completed. Annual Transparency Report v1.0 published publicly.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot">Q4</div>
+        <div class="tl-content">
+          <div class="tl-phase">Phase 4 · Months 10–12 · Sustainment</div>
+          <div class="tl-title">Continuous Governance</div>
+          <div class="tl-desc">First quarterly fairness audit. Third-party independent audit commissioned. RAI Champions program launched. Ethics Board re-certifies all deployed systems. Year-2 roadmap approved.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REFERENCES -->
+  <section>
+    <p class="section-label">References</p>
+    <h2>Prioritized RAI References</h2>
+    <p>Twelve APA-formatted sources organized by priority of application — the primary daily-use references for responsible AI practice.</p>
+    <div class="ref-table">
+      <div class="ref-item"><span class="ref-num">01</span><span class="ref-text">NIST. (2023). <em>AI Risk Management Framework (AI RMF 1.0).</em> https://doi.org/10.6028/NIST.AI.100-1</span></div>
+      <div class="ref-item"><span class="ref-num">02</span><span class="ref-text">NIST. (2022). <em>Towards a standard for identifying and managing bias in artificial intelligence (SP 1270).</em> https://doi.org/10.6028/NIST.SP.1270</span></div>
+      <div class="ref-item"><span class="ref-num">03</span><span class="ref-text">Blackman, R. (2022). <em>Ethical machines: Your concise guide to totally unbiased, transparent, and respectful AI.</em> Harvard Business Review Press.</span></div>
+      <div class="ref-item"><span class="ref-num">04</span><span class="ref-text">Dell'Acqua, F., McFowland, E., Mollick, E. R., et al. (2023). Navigating the jagged technological frontier. <em>Harvard Business School Working Paper No. 24-013.</em></span></div>
+      <div class="ref-item"><span class="ref-num">05</span><span class="ref-text">Brynjolfsson, E., Li, D., & Raymond, L. R. (2025). Generative AI at work. <em>Quarterly Journal of Economics.</em></span></div>
+      <div class="ref-item"><span class="ref-num">06</span><span class="ref-text">Gartner. (2024). Gartner says CFOs should reset expectations about AI's impact on workforce productivity. Gartner Newsroom.</span></div>
+      <div class="ref-item"><span class="ref-num">07</span><span class="ref-text">European Parliament. (2024). <em>Regulation (EU) 2024/1689: Artificial Intelligence Act.</em> https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689</span></div>
+      <div class="ref-item"><span class="ref-num">08</span><span class="ref-text">Stanford HAI. (2025). <em>AI Index Report 2025 — Chapter 6: AI Policy.</em> Stanford University. https://hai.stanford.edu/ai-index/2025</span></div>
+      <div class="ref-item"><span class="ref-num">09</span><span class="ref-text">United States Conference of Catholic Bishops. (2015). <em>The dignity of work and the rights of workers.</em> https://www.usccb.org</span></div>
+      <div class="ref-item"><span class="ref-num">10</span><span class="ref-text">Vallor, S. (2017). <em>Technology and the virtues: A philosophical guide to a future worth wanting.</em> Oxford University Press.</span></div>
+      <div class="ref-item"><span class="ref-num">11</span><span class="ref-text">Markkula Center for Applied Ethics. (2023). The ethics of AI applications for mental health care. Santa Clara University.</span></div>
+      <div class="ref-item"><span class="ref-num">12</span><span class="ref-text">Postman, N. (1993). <em>Technopoly: The surrender of culture to technology.</em> Vintage Books.</span></div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <h3>Full Framework Presentation</h3>
+    <p>The complete 15-slide AeroMind RAI Framework is available as a PowerPoint deck with detailed charts, metrics, and lifecycle documentation.</p>
+    <div class="cta-btns">
+      <a href="https://www.linkedin.com/in/dayoegonu/" target="_blank" class="btn btn-gold">Connect on LinkedIn ↗</a>
+      <a href="projects.html" class="btn btn-outline">← Back to Projects</a>
+    </div>
+  </div>
+
+</main>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <p>© 2026 Dayo Egonu. All rights reserved.</p>
+  <ul class="footer-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="projects.html">Projects</a></li>
+    <li><a href="https://www.linkedin.com/in/dayoegonu/" target="_blank" rel="noopener" style="color:#60A5FA;">LinkedIn</a></li>
+  </ul>
+</footer>
+
+</body>
+</html>
