@@ -518,6 +518,50 @@ function filterFindings(type,el){activeFilter=type;document.querySelectorAll('.f
 async function generateReport(){const key=document.getElementById('api-key').value.trim();if(!key){alert('Please enter your Anthropic API key.');return;}if(!DATA.length){alert('Load data first.');return;}sessionStorage.setItem('forensai_key',key);const loading=document.getElementById('loading'),output=document.getElementById('report-output');loading.classList.add('visible');output.classList.remove('visible');const total=DATA.reduce((s,t)=>s+t.amount,0);const fs=FINDINGS.map(f=>`• [${f.severity.toUpperCase()}] ${f.type.toUpperCase()} — ${f.title}: ${f.detail}`).join('\n');const prompt=`You are a forensic accountant writing a court-ready investigation report.\n\nANALYSIS SUMMARY:\n- Period: January–June 2024\n- Transactions: ${DATA.length}\n- Total AP value: $${fmt(total)}\n- Vendors: ${[...new Set(DATA.map(t=>t.vendor))].length}\n- Findings: ${FINDINGS.length} (${FINDINGS.filter(f=>f.severity==='high').length} high severity)\n\nFINDINGS:\n${fs}\n\nWrite a structured investigation report:\n1. EXECUTIVE SUMMARY (3-4 sentences)\n2. METHODOLOGY\n3. FINDINGS — one paragraph per high-severity finding, referencing specific amounts and transaction IDs\n4. RECOMMENDATIONS — 3-5 numbered action items\n\nRequirements: Professional formal tone. Reference specific dollar amounts. Use plain section labels. No filler. 400-600 words.`;
 try{const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,messages:[{role:'user',content:prompt}]})});const data=await res.json();if(data.error)throw new Error(data.error.message);output.textContent=data.content[0].text;output.classList.add('visible');}catch(err){output.textContent='Error: '+err.message;output.classList.add('visible');}finally{loading.classList.remove('visible');}}
 
+// ── Drag & Drop CSV Upload ──
+const uploadZone = document.getElementById('upload-zone');
+if (uploadZone) {
+  uploadZone.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.style.borderColor = 'var(--accent)';
+    this.style.background = 'var(--accent-bg)';
+  });
+
+  uploadZone.addEventListener('dragleave', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.style.borderColor = 'var(--border)';
+    this.style.background = 'var(--surface)';
+  });
+
+  uploadZone.addEventListener('drop', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.style.borderColor = 'var(--border)';
+    this.style.background = 'var(--surface)';
+    const file = e.dataTransfer.files[0];
+    if (file && file.name.endsWith('.csv')) {
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        const lines = ev.target.result.split('\n').filter(l => l.trim());
+        const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/"/g, ''));
+        const rows = lines.slice(1).map((line, i) => {
+          const vals = line.split(',').map(v => v.trim().replace(/"/g, ''));
+          const obj = { id: i + 1 };
+          headers.forEach((h, j) => { obj[h] = vals[j] || ''; });
+          if (obj.amount) obj.amount = parseFloat(obj.amount.replace(/[$,]/g, '')) || 0;
+          return obj;
+        }).filter(r => r.amount > 0);
+        runAnalysis(rows);
+      };
+      reader.readAsText(file);
+    } else {
+      alert('Please drop a .csv file.');
+    }
+  });
+}
+  
 const savedKey=sessionStorage.getItem('forensai_key');
 if(savedKey)document.getElementById('api-key').value=savedKey;
 </script>
