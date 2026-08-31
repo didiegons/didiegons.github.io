@@ -10,6 +10,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;font-size:13px;min-height:100vh;line-height:1.6}
 a{color:var(--accent);text-decoration:none}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 
 /* PORTFOLIO NAV */
 .portfolio-nav{position:sticky;top:0;z-index:200;background:rgba(13,17,23,0.97);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,0.08);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:48px;}
@@ -504,7 +505,7 @@ function renderVendors(data,risk){document.getElementById('vendors-content').inn
 
 function updateStats(data,findings){const total=data.reduce((s,t)=>s+t.amount,0),vendors=new Set(data.map(t=>t.vendor)).size,fi=new Set(findings.flatMap(f=>f.txnIds));document.getElementById('s-txn').textContent=data.length;document.getElementById('s-total').textContent='$'+fmt(total);document.getElementById('s-vendors').textContent=vendors;document.getElementById('s-flags').textContent=findings.length;const high=findings.filter(f=>f.severity==='high').length,med=findings.filter(f=>f.severity==='med').length;document.getElementById('header-badges').innerHTML=`<span class="hbadge red">${high} high severity</span><span class="hbadge amber">${med} medium</span><span class="hbadge green">${data.length-fi.size} clean</span>`;document.getElementById('tab-findings').innerHTML=`Findings <span class="badge">${findings.length}</span>`;}
 
-function runAnalysis(data){DATA=data;const dup=detectDuplicates(data),split=detectThresholdSplitting(data),shell=detectShellCompany(data),br=detectBenford(data),bf=scoreBenfordFindings(br),timing=detectWeekendApprovals(data);FINDINGS=[...dup,...split,...shell,...bf,...timing];VENDOR_RISK=calcVendorRisk(data,FINDINGS);updateStats(data,FINDINGS);renderDataTable(data);renderBenford(br);renderFindings(FINDINGS,activeFilter);renderVendors(data,VENDOR_RISK);document.getElementById('data-stats').style.display='block';document.getElementById('upload-zone').style.display='none';}
+function runAnalysis(data){DATA=data;const sb=document.getElementById('start-badge');if(sb)sb.remove();const dup=detectDuplicates(data),split=detectThresholdSplitting(data),shell=detectShellCompany(data),br=detectBenford(data),bf=scoreBenfordFindings(br),timing=detectWeekendApprovals(data);FINDINGS=[...dup,...split,...shell,...bf,...timing];VENDOR_RISK=calcVendorRisk(data,FINDINGS);updateStats(data,FINDINGS);renderDataTable(data);renderBenford(br);renderFindings(FINDINGS,activeFilter);renderVendors(data,VENDOR_RISK);document.getElementById('data-stats').style.display='block';document.getElementById('upload-zone').style.display='none';}
 
 function loadSampleData(){document.getElementById('data-stats').style.display='block';document.getElementById('upload-zone').style.display='none';runAnalysis(SAMPLE);}
 
